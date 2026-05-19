@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-gradient-to-b from-slate-50 to-slate-100 text-slate-900;
+  min-height: 100vh;
+}
+
+.btn {
+  @apply inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-all;
+}
+.btn-primary {
+  @apply btn bg-brand-500 text-white shadow-soft hover:bg-brand-600 hover:shadow-lift;
+}
+.btn-secondary {
+  @apply btn border border-slate-300 bg-white text-slate-700 hover:bg-slate-50;
+}
+.btn-accent {
+  @apply btn bg-accent-500 text-white shadow-soft hover:bg-accent-600 hover:shadow-lift;
+}
+.input {
+  @apply block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm transition-colors focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500;
+}
+.label {
+  @apply mb-1 block text-sm font-medium text-slate-700;
+}
+.card {
+  @apply rounded-xl border border-slate-200 bg-white p-5 shadow-soft;
+}
+.chip {
+  @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium;
+}

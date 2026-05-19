@@ -1,0 +1,351 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  RESELLER
+  OEM
+  ADMIN
+}
+
+enum UserTrustTier {
+  UNVERIFIED
+  VERIFIED
+  TRADE_ASSURED
+  PREMIUM
+  DIAMOND
+}
+
+enum ListingStatus {
+  ACTIVE
+  PAUSED
+  SOLD
+  ARCHIVED
+}
+
+enum RfqStatus {
+  OPEN
+  ACCEPTED
+  EXPIRED
+  CANCELED
+}
+
+enum RfqVisibility {
+  PUBLIC
+  VERIFIED_ONLY
+}
+
+enum RfqOfferStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  WITHDRAWN
+}
+
+enum TransactionStatus {
+  PENDING
+  SHIPPED
+  COMPLETED
+  CANCELED
+  DISPUTED
+}
+
+enum ReviewTag {
+  FAST_RESPONSE
+  QUALITY_AS_DESCRIBED
+  ON_TIME_DELIVERY
+  FAIR_NEGOTIATION
+}
+
+enum ChemistryBase {
+  MINERAL
+  SYNTHETIC
+  SEMI_SYNTHETIC
+  ESTER
+  PAG
+  OTHER
+}
+
+enum PackagingForm {
+  DRUM
+  IBC
+  TANK
+  CANISTER
+  BULK
+  OTHER
+}
+
+enum SdsCategory {
+  WATER_MISCIBLE_COOLANT
+  NEAT_CUTTING_OIL
+  HYDRAULIC_OIL
+  GEAR_OIL
+  MOTOR_OIL
+  GREASE
+  OTHER
+}
+
+enum SdsLanguage {
+  DE
+  EN
+  FR
+  IT
+  OTHER
+}
+
+model User {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  passwordHash String
+  pseudonym    String        @unique
+  role         UserRole      @default(RESELLER)
+  trustTier    UserTrustTier @default(UNVERIFIED)
+  // KYC light — internal only
+  companyName  String?
+  vatId        String?
+  country      String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  listings        Listing[]
+  buyerThreads    Conversation[] @relation("BuyerThreads")
+  sellerThreads   Conversation[] @relation("SellerThreads")
+  messages        Message[]
+  rfqs            Rfq[]
+  offers          RfqOffer[]
+  buyerTxns       Transaction[] @relation("BuyerTx")
+  sellerTxns      Transaction[] @relation("SellerTx")
+  reviewsGiven    Review[]      @relation("ReviewsGiven")
+  reviewsReceived Review[]      @relation("ReviewsReceived")
+}
+
+model Rfq {
+  id              String         @id @default(cuid())
+  buyerId         String
+  buyer           User           @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+  status          RfqStatus      @default(OPEN)
+  visibility      RfqVisibility  @default(PUBLIC)
+
+  productType     String
+  manufacturer    String?
+  isoViscosity    String?
+  chemistry       ChemistryBase?
+  applicationArea String?
+
+  quantity        Float
+  quantityUnit    String         @default("L")
+  locationRegion  String
+
+  deadline        DateTime
+  budgetMinEur    Float?
+  budgetMaxEur    Float?
+  notes           String?
+
+  // Anforderungen / Pain Points
+  requiredCertifications String[]  @default([])
+  avoidIssues            String[]  @default([])
+  workpieceMaterial      String?
+
+  acceptedOfferId String?        @unique
+
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  offers          RfqOffer[]
+  transaction     Transaction?
+
+  @@index([status])
+  @@index([productType])
+  @@index([locationRegion])
+}
+
+model RfqOffer {
+  id                  String          @id @default(cuid())
+  rfqId               String
+  rfq                 Rfq             @relation(fields: [rfqId], references: [id], onDelete: Cascade)
+  sellerId            String
+  seller              User            @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+
+  priceEur            Float
+  quantity            Float
+  quantityUnit        String          @default("L")
+  deliveryDays        Int
+  notes               String?
+  alternativeProduct  String?
+  alternativeReason   String?
+
+  status              RfqOfferStatus  @default(PENDING)
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+
+  @@unique([rfqId, sellerId])
+  @@index([rfqId])
+  @@index([sellerId])
+}
+
+model Conversation {
+  id        String   @id @default(cuid())
+  buyerId   String
+  sellerId  String
+  listingId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  buyer    User      @relation("BuyerThreads", fields: [buyerId], references: [id], onDelete: Cascade)
+  seller   User      @relation("SellerThreads", fields: [sellerId], references: [id], onDelete: Cascade)
+  listing  Listing?  @relation(fields: [listingId], references: [id], onDelete: SetNull)
+  messages Message[]
+
+  @@unique([buyerId, sellerId, listingId])
+  @@index([buyerId])
+  @@index([sellerId])
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  senderId       String
+  body           String
+  createdAt      DateTime     @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+}
+
+model Listing {
+  id              String         @id @default(cuid())
+  sellerId        String
+  seller          User           @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  status          ListingStatus  @default(ACTIVE)
+
+  // FDS 4.2 Datenmodell
+  productType     String         // Hydrauliköl, KSS-Emulsion, etc.
+  manufacturer    String         // Shell, Fuchs, Mobil, OEM-Eigenmarke
+  productName     String         // z.B. Tellus S2 M 46
+  isoViscosity    String?        // ISO VG 32, 46, 68, ...
+  chemistry       ChemistryBase  @default(MINERAL)
+  applicationArea String         // CNC, Schleifen, Hydraulik, ...
+
+  quantity        Float          // Verfügbare Menge
+  quantityUnit    String         @default("L") // L, kg, drums, IBCs
+  minOrderQty     Float?
+
+  locationRegion  String         // Region/Land — keine Adresse
+  packaging       PackagingForm  @default(DRUM)
+
+  productionDate  DateTime?
+  expiryDate      DateTime?
+
+  certificates    String[]       // OEM-Freigaben, ISO, DIN, TRGS 611
+  priceEur        Float?         // optional, "auf Anfrage" wenn null
+  shippingTerms   String?        // Selbstabholung / Lieferung / verhandelbar
+
+  description     String?
+
+  // Fertigungs-Eignung — Bearbeitungsverfahren
+  machiningOperations String[] @default([])
+
+  // Rezeptur-Info
+  mineralOilContent   Float?   // 0-100 %
+  containsGlycol      Boolean?
+
+  // Automatisierungs-Eignung (1-5) und vom Hersteller empfohlene Messverfahren
+  automationSuitability Int?
+  measurementMethods    String[] @default([])
+
+  sdsId           String?
+  sds             SafetyDataSheet? @relation(fields: [sdsId], references: [id], onDelete: SetNull)
+
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  conversations   Conversation[]
+  transactions    Transaction[]
+
+  @@index([productType])
+  @@index([manufacturer])
+  @@index([isoViscosity])
+  @@index([status])
+  @@index([sdsId])
+}
+
+model Transaction {
+  id            String            @id @default(cuid())
+  buyerId       String
+  sellerId      String
+  rfqId         String?           @unique
+  listingId     String?
+
+  totalEur      Float
+  quantity      Float
+  quantityUnit  String            @default("L")
+
+  status        TransactionStatus @default(PENDING)
+  shippedAt     DateTime?
+  completedAt   DateTime?
+  canceledAt    DateTime?
+
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  buyer    User     @relation("BuyerTx", fields: [buyerId], references: [id], onDelete: Cascade)
+  seller   User     @relation("SellerTx", fields: [sellerId], references: [id], onDelete: Cascade)
+  rfq      Rfq?     @relation(fields: [rfqId], references: [id], onDelete: SetNull)
+  listing  Listing? @relation(fields: [listingId], references: [id], onDelete: SetNull)
+  reviews  Review[]
+
+  @@index([buyerId])
+  @@index([sellerId])
+  @@index([status])
+}
+
+model Review {
+  id            String      @id @default(cuid())
+  transactionId String
+  reviewerId    String
+  revieweeId    String
+  rating        Int         // 1–5
+  comment       String?
+  tags          ReviewTag[]
+  createdAt     DateTime    @default(now())
+
+  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  reviewer    User        @relation("ReviewsGiven", fields: [reviewerId], references: [id], onDelete: Cascade)
+  reviewee    User        @relation("ReviewsReceived", fields: [revieweeId], references: [id], onDelete: Cascade)
+
+  @@unique([transactionId, reviewerId])
+  @@index([revieweeId])
+}
+
+model SafetyDataSheet {
+  id            String       @id @default(cuid())
+  manufacturer  String
+  productName   String
+  category      SdsCategory
+  language      SdsLanguage  @default(DE)
+  version       String?
+  revisionDate  DateTime?
+
+  sourceUrl     String
+  filePath      String
+  fileSizeBytes Int
+  sha256        String       @unique
+  pageCount     Int?
+
+  extractedText String?
+
+  fetchedAt     DateTime     @default(now())
+
+  listings      Listing[]
+
+  @@index([manufacturer])
+  @@index([category])
+  @@index([productName])
+}
