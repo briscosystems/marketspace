@@ -157,7 +157,16 @@ export default function NewListingPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <h1 className="mb-6 text-2xl font-semibold">Neues Listing</h1>
+      <div className="mb-6 rounded-xl border border-blue-200 bg-gradient-to-r from-blue-50 to-white p-4">
+        <div className="mb-1 inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-700">
+          ANBIETEN
+        </div>
+        <h1 className="text-2xl font-bold text-slate-900">Neues Angebot einstellen</h1>
+        <p className="mt-1 text-sm text-slate-600">
+          Du hast einen Restbestand oder Überlager, den du verkaufen möchtest? Stell die
+          wesentlichen Daten ein — andere Reseller können dann kontaktieren oder direkt kaufen.
+        </p>
+      </div>
       <form onSubmit={onSubmit} className="space-y-6">
         {/* 1. PRODUKT */}
         <section className="card space-y-4">

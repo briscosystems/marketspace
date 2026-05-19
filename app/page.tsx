@@ -30,10 +30,7 @@ async function PublicLanding() {
           Über- und Unterbestände zwischen Resellern direkt ausgleichen. Pseudonyme
           Identitäten, AI-gestütztes Matching, sichere Stripe-Abwicklung.
         </p>
-        <div className="mt-6 flex gap-3">
-          <Link href="/listings" className="btn bg-white text-brand-700 hover:bg-brand-50">
-            Listings durchsuchen
-          </Link>
+        <div className="mt-6">
           <Link
             href="/register"
             className="btn border border-white/40 text-white hover:bg-white/10"
@@ -43,10 +40,53 @@ async function PublicLanding() {
         </div>
       </section>
 
+      {/* Zwei klar getrennte Rollen-Einstiege */}
+      <section className="grid gap-4 md:grid-cols-2">
+        <Link
+          href="/listings"
+          className="group relative overflow-hidden rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-white p-6 transition hover:border-blue-400 hover:shadow-lift"
+        >
+          <div className="absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-blue-600 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
+            Anbieten
+          </div>
+          <div className="text-3xl">📦</div>
+          <h2 className="mt-2 text-xl font-bold text-slate-900 group-hover:text-blue-700">
+            Ich habe Bestand zu verkaufen
+          </h2>
+          <p className="mt-1 text-sm text-slate-600">
+            Stell dein Lager als Angebot ein oder durchstöbere, was andere Anbieter
+            verfügbar haben. {listingCount} aktive Angebot{listingCount === 1 ? "" : "e"}.
+          </p>
+          <div className="mt-3 text-sm font-semibold text-blue-700">
+            → Angebote durchsuchen
+          </div>
+        </Link>
+
+        <Link
+          href="/rfqs"
+          className="group relative overflow-hidden rounded-xl border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-white p-6 transition hover:border-amber-400 hover:shadow-lift"
+        >
+          <div className="absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-amber-600 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
+            Suchen
+          </div>
+          <div className="text-3xl">🔎</div>
+          <h2 className="mt-2 text-xl font-bold text-slate-900 group-hover:text-amber-700">
+            Ich suche ein bestimmtes Produkt
+          </h2>
+          <p className="mt-1 text-sm text-slate-600">
+            Stell deinen Bedarf öffentlich ein und lass Anbieter dir Preise nennen.
+            Oder schau dir an, was andere Käufer gerade suchen.
+          </p>
+          <div className="mt-3 text-sm font-semibold text-amber-700">
+            → Bedarfe durchsuchen
+          </div>
+        </Link>
+      </section>
+
       <section className="grid gap-6 md:grid-cols-4">
         <div className="card">
           <div className="text-3xl font-semibold text-brand-500">{listingCount}</div>
-          <div className="text-sm text-slate-600">aktive Listings</div>
+          <div className="text-sm text-slate-600">aktive Angebote</div>
         </div>
         <div className="card">
           <div className="text-3xl font-semibold text-brand-500">{userCount}</div>

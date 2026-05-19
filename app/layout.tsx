@@ -5,7 +5,7 @@ import { authOptions } from "@/lib/auth";
 import { SignOutButton } from "@/components/SignOutButton";
 import { Providers } from "./providers";
 import { CompareBar } from "@/components/compare/CompareBar";
-import { Droplet, FileText, MessagesSquare, LayoutDashboard, ListChecks, Building2 } from "lucide-react";
+import { Droplet, FileText, MessagesSquare, LayoutDashboard, Tag, Search, Building2 } from "lucide-react";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -46,9 +46,19 @@ export default async function RootLayout({
                 </span>
               </Link>
               <nav className="flex items-center gap-1 text-sm">
-                <NavLink href="/listings" icon={ListChecks} label="Listings" />
+                <NavLink
+                  href="/listings"
+                  icon={Tag}
+                  label="Anbieten"
+                  accent="blue"
+                />
+                <NavLink
+                  href="/rfqs"
+                  icon={Search}
+                  label="Suchen"
+                  accent="amber"
+                />
                 <NavLink href="/manufacturers" icon={Building2} label="Hersteller" />
-                <NavLink href="/rfqs" icon={MessagesSquare} label="Anfragen" />
                 <NavLink href="/sds" icon={FileText} label="SDS" />
                 {session?.user ? (
                   <>
@@ -89,17 +99,31 @@ function NavLink({
   href,
   icon: Icon,
   label,
+  accent,
 }: {
   href: string;
   icon: React.ComponentType<{ size?: number; className?: string }>;
   label: string;
+  accent?: "blue" | "amber";
 }) {
+  const accentClasses =
+    accent === "blue"
+      ? "text-blue-700 hover:bg-blue-50 hover:text-blue-800"
+      : accent === "amber"
+        ? "text-amber-700 hover:bg-amber-50 hover:text-amber-800"
+        : "text-slate-700 hover:bg-slate-100 hover:text-brand-600";
+  const iconClasses =
+    accent === "blue"
+      ? "text-blue-600"
+      : accent === "amber"
+        ? "text-amber-600"
+        : "text-slate-500";
   return (
     <Link
       href={href}
-      className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-slate-700 hover:bg-slate-100 hover:text-brand-600"
+      className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 font-medium ${accentClasses}`}
     >
-      <Icon size={15} className="text-slate-500" />
+      <Icon size={15} className={iconClasses} />
       <span className="hidden md:inline">{label}</span>
     </Link>
   );

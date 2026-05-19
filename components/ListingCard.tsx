@@ -8,6 +8,7 @@ import { AutomationBadge } from "./AutomationBadge";
 import { CompareToggle } from "./compare/CompareToggle";
 import { brandColors, PACKAGING_LABEL } from "@/lib/branding";
 import { MACHINING_OPERATIONS, type MachiningOperationId } from "@/lib/kss-automation";
+import { Tag } from "lucide-react";
 
 type Tier = "UNVERIFIED" | "VERIFIED" | "TRADE_ASSURED" | "PREMIUM" | "DIAMOND";
 type Status = "ACTIVE" | "PAUSED" | "SOLD" | "ARCHIVED";
@@ -113,6 +114,12 @@ function CompactCard({
         />
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
+            <span
+              className="inline-flex items-center gap-0.5 rounded-full bg-blue-100 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-blue-800"
+              title="Anbieter stellt diesen Bestand zum Verkauf"
+            >
+              <Tag size={8} /> Bietet
+            </span>
             <BrandLogo manufacturer={listing.manufacturer} size="xs" />
             {!hideStatus && listing.status && listing.status !== "ACTIVE" && (
               <span className={`chip ${statusStyle[listing.status].classes}`}>
@@ -195,7 +202,12 @@ function ExtendedCard({
         />
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
-            <BrandLogo manufacturer={listing.manufacturer} size="sm" />
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-blue-800">
+                <Tag size={10} /> Bietet an
+              </span>
+              <BrandLogo manufacturer={listing.manufacturer} size="sm" />
+            </div>
             <div className="flex items-center gap-2">
               {!hideStatus && listing.status && (
                 <span className={`chip whitespace-nowrap ${statusStyle[listing.status].classes}`}>
@@ -307,6 +319,7 @@ function ExtendedCard({
       <div className="flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50/60 px-4 py-3 text-sm">
         <div className="flex min-w-0 flex-col gap-1">
           <div className="flex items-center gap-1.5">
+            <span className="text-xs text-slate-500">Anbieter:</span>
             <span className="truncate font-medium text-slate-700">
               {listing.seller.pseudonym}
             </span>

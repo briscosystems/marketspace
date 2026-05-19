@@ -92,12 +92,17 @@ export default function NewRfqPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <h1 className="mb-2 text-2xl font-semibold">Neue Anfrage</h1>
-      <p className="mb-6 text-sm text-slate-600">
-        Beschreibe was du suchst. Andere Reseller bieten Preis und Lieferzeit an,
-        Alternativ-Vorschläge sind erlaubt — Pflicht-Zertifikate und Pain Points
-        helfen ihnen, passende Angebote zu machen.
-      </p>
+      <div className="mb-6 rounded-xl border border-amber-200 bg-gradient-to-r from-amber-50 to-white p-4">
+        <div className="mb-1 inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-800">
+          SUCHEN
+        </div>
+        <h1 className="text-2xl font-bold text-slate-900">Bedarf einstellen — was suchst du?</h1>
+        <p className="mt-1 text-sm text-slate-600">
+          Beschreibe was du brauchst. Anbieter sehen deinen Bedarf und melden sich mit
+          Preis und Lieferzeit. Pflicht-Zertifikate und Pain Points helfen ihnen,
+          passende Angebote zu machen — auch Alternativ-Vorschläge sind erlaubt.
+        </p>
+      </div>
       <form onSubmit={onSubmit} className="space-y-6">
         {/* GRUNDDATEN */}
         <section className="card space-y-4">
