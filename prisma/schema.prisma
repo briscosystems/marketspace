@@ -522,6 +522,45 @@ model SafetyDataSheet {
 
   extractedText String?
 
+  // -------------------------------------------------------------------------
+  // Aus extractedText geparste strukturierte Felder (siehe lib/sds-parser.ts)
+  // -------------------------------------------------------------------------
+  // GHS / CLP
+  hStatements      String[]  @default([])  // z.B. "H226", "H315", "H319"
+  pStatements      String[]  @default([])  // z.B. "P210", "P280", "P305+P351+P338"
+  ghsPictograms    String[]  @default([])  // z.B. "GHS02", "GHS07", "GHS09"
+  signalWord       String?                  // "Gefahr" / "Achtung" / "Danger" / "Warning"
+
+  // Physikochemische Kennzahlen (Section 9)
+  physicalState    String?                  // "flüssig", "fest", "Aerosol"
+  appearanceColor  String?                  // "klar", "gelblich", "transparent"
+  odor             String?                  // "öltypisch", "schwach", "geruchlos"
+  phValue          Float?                   // pH (Konzentrat oder Emulsion)
+  phContext        String?                  // "Konzentrat", "5% Emulsion"
+  flashpointC      Float?                   // °C
+  densityGcm3      Float?                   // g/cm³ bei 20°C
+  viscosityKv40    Float?                   // mm²/s bei 40°C
+  pourpointC       Float?                   // Stockpunkt °C
+  boilingPointC    Float?                   // Siedepunkt °C
+  waterSolubility  String?                  // "löslich", "nicht löslich", "emulgierbar"
+
+  // Inhaltsstoffe (Section 3)
+  casNumbers       String[]  @default([])  // alle erkannten CAS-Nummern im Text
+
+  // Transport (Section 14)
+  adrClass         String?                  // "9", "3", "kein Gefahrgut"
+  unNumber         String?                  // "UN 1993" etc.
+  transportClass   String?                  // verbatim Bezeichnung
+
+  // Hersteller-/Lieferant-Info (Section 1)
+  supplierName     String?
+  supplierAddress  String?
+  emergencyPhone   String?
+
+  // Parser-Metadaten
+  parsedAt         DateTime?
+  parsedVersion    String?                  // welche Parser-Version lief
+
   fetchedAt     DateTime     @default(now())
 
   listings      Listing[]

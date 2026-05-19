@@ -612,4 +612,393 @@ export const SDS_SOURCES: SdsSource[] = [
     language: "EN",
     sourceUrl: "https://oel-engel.de/mediafiles/Sicherheitsdatenblatt/SDS_20050_GB-en.pdf",
   },
+
+  // ============ TotalEnergies ============
+  {
+    manufacturer: "TotalEnergies",
+    productName: "Azolla ZS 46",
+    category: "HYDRAULIC_OIL",
+    language: "EN",
+    sourceUrl: "https://fernenergy.co.nz/wp-content/uploads/2022/10/TOT-Azolla-ZS-46-2018_SDS.pdf",
+  },
+  {
+    manufacturer: "TotalEnergies",
+    productName: "Azolla ZS 46 (AU)",
+    category: "HYDRAULIC_OIL",
+    language: "EN",
+    sourceUrl:
+      "https://static1.squarespace.com/static/583398a9893fc0fa3cc8c018/t/5892d6b3579fb36678ba0c09/1486018229038/AZOLLA+ZS+46+-+MSDS.pdf",
+  },
+  {
+    manufacturer: "TotalEnergies",
+    productName: "Lactuca LT 2",
+    category: "NEAT_CUTTING_OIL",
+    language: "EN",
+    sourceUrl: "https://totaloil.com.ph/sites/g/files/wompnd1871/f/atoms/files/sds_lactuca_lt_2_ap.pdf",
+  },
+
+  // ============ Motul ============
+  {
+    manufacturer: "Motul",
+    productName: "8100 X-cess Gen2 5W40",
+    category: "MOTOR_OIL",
+    language: "EN",
+    sourceUrl:
+      "https://d347awuzx0kdse.cloudfront.net/motul/product-download/109910_sds.pdf",
+  },
+  {
+    manufacturer: "Motul",
+    productName: "8100 ECO-NERGY 0W30",
+    category: "MOTOR_OIL",
+    language: "EN",
+    sourceUrl:
+      "https://mekaconsul.com/wp-content/uploads/2022/01/Mekaconsul-MOTUL-8100-ECO-NERGY-0W30.pdf",
+  },
+  {
+    manufacturer: "Motul",
+    productName: "8100 X-clean 5W30",
+    category: "MOTOR_OIL",
+    language: "EN",
+    sourceUrl:
+      "https://jdmfsm.info/Auto/--General--/Articles/Oil/Motul/8100_X-clean_5W30_MSDS_(GB).pdf",
+  },
+  {
+    manufacturer: "Motul",
+    productName: "Motul SDS 102482",
+    category: "OTHER",
+    language: "EN",
+    sourceUrl:
+      "https://d347awuzx0kdse.cloudfront.net/motul/product-download/102482_sds.pdf",
+  },
+  {
+    manufacturer: "Motul",
+    productName: "Motul SDS 104038",
+    category: "OTHER",
+    language: "EN",
+    sourceUrl:
+      "https://d347awuzx0kdse.cloudfront.net/motul/product-download/104038_sds.pdf",
+  },
+
+  // ============ Petronas ============
+  {
+    manufacturer: "Petronas",
+    productName: "Syntium 3000 5W-40",
+    category: "MOTOR_OIL",
+    language: "EN",
+    sourceUrl:
+      "https://www.mymesra.com.my/assets/contentMS/pdf/Passenger_SYNTIUM_3000_5W-40_SDS.pdf",
+  },
+  {
+    manufacturer: "Petronas",
+    productName: "Petronas M 500",
+    category: "MOTOR_OIL",
+    language: "EN",
+    sourceUrl:
+      "https://cdn.pli-petronas.com/2022-07/SDS_M%20500_2020.pdf",
+  },
+  {
+    manufacturer: "Petronas",
+    productName: "Petronas SSIC",
+    category: "OTHER",
+    language: "EN",
+    sourceUrl: "https://www.pli-petronas.com/sites/petronas/files/2019-01/1813_ssic_ENG.pdf",
+  },
+
+  // ============ Shell (mehr) ============
+  {
+    manufacturer: "Shell",
+    productName: "Rimula Super 15W-40",
+    category: "MOTOR_OIL",
+    language: "EN",
+    sourceUrl: "https://petroleumservicecompany.com/content/pdfs/SHELL_RIMULA_SUP_MSDS.pdf",
+  },
+  {
+    manufacturer: "Shell",
+    productName: "Tellus (Keller-Heartt)",
+    category: "HYDRAULIC_OIL",
+    language: "EN",
+    sourceUrl:
+      "https://s3.us-east-2.amazonaws.com/keller-heartt-assets/Data+Sheets/Shell%20Tellus/GSAP_msds_01177991.PDF",
+  },
+  {
+    manufacturer: "Shell",
+    productName: "Omala S4 GXV 150",
+    category: "GEAR_OIL",
+    language: "EN",
+    sourceUrl:
+      "https://industrialfluidsmfg.twinoils.com/Asset/Omala%20S4%20GXV%20150%20SDS.PDF",
+  },
+  {
+    manufacturer: "Shell",
+    productName: "Gadus S3 V220C 2",
+    category: "GREASE",
+    language: "EN",
+    sourceUrl:
+      "https://assets.alfalaval.com/documents/pb8cd26c2/alfa-laval-shell-gadus-s3-v220c-2.pdf",
+  },
+  {
+    manufacturer: "Shell",
+    productName: "Omala S2 G 220",
+    category: "GEAR_OIL",
+    language: "EN",
+    sourceUrl: "https://avepetroleum.com/uploads/msds_docs/SHELL%20OMALA%20S2%20G%20220-msds.PDF",
+  },
+  {
+    manufacturer: "Shell",
+    productName: "Gadus S2 U1000 1",
+    category: "GREASE",
+    language: "EN",
+    sourceUrl: "https://industrialfluidsmfg.twinoils.com/Asset/Gadus%20S2%20U1000%201%20SDS.PDF",
+  },
+  {
+    manufacturer: "Shell",
+    productName: "Tellus S2 M 22/32/46/68",
+    category: "HYDRAULIC_OIL",
+    language: "EN",
+    sourceUrl:
+      "https://www.makino.com/makino-us/media/general/Shell-Tellus-S2-M-22-32-46-68.pdf",
+  },
+  {
+    manufacturer: "Shell",
+    productName: "Omala S4 GX 220",
+    category: "GEAR_OIL",
+    language: "EN",
+    sourceUrl:
+      "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Shell/Shell%20Omala%20S4%20GX%20220%20MSDS.PDF",
+  },
+  {
+    manufacturer: "Shell",
+    productName: "Gadus S2 V1002",
+    category: "GREASE",
+    language: "EN",
+    sourceUrl: "https://avepetroleum.com/uploads/msds_docs/SHELL-GADUS-S2-V1002-MSDS.PDF",
+  },
+
+  // ============ Avia / Bantleon ============
+  {
+    manufacturer: "Avia Bantleon",
+    productName: "Avia Lithoplex 2 EP",
+    category: "GREASE",
+    language: "EN",
+    sourceUrl:
+      "https://motornimasla.bg/wp-content/uploads/2023/10/Eng-MSDS-AVIA-LITHOPLEX-2-EP.pdf",
+  },
+
+  // ============ ROWE ============
+  {
+    manufacturer: "ROWE",
+    productName: "ROWE Hightec 20009-998-00",
+    category: "OTHER",
+    language: "DE",
+    sourceUrl:
+      "https://assets.rowegmbh.de/var/assets/brandhub/safety-data-sheets/de/20009-998-00_D-de_1,14.pdf",
+  },
+  {
+    manufacturer: "ROWE",
+    productName: "ROWE 21033",
+    category: "OTHER",
+    language: "DE",
+    sourceUrl:
+      "https://rowe-cloud.de/haendler/documents/SDB_Safety_Data_Sheet/SDB-ROWE-Deutsch-GHS/21033-SDB-DE-GHS.pdf",
+  },
+  {
+    manufacturer: "ROWE",
+    productName: "ROWE 20006",
+    category: "OTHER",
+    language: "DE",
+    sourceUrl: "https://lichtex.de/mediafiles/Dokumente/Rowe/Sicherheitsdatenblatt/DE/20006-SDB-DE-GHS.pdf",
+  },
+  {
+    manufacturer: "ROWE",
+    productName: "ROWE 25029",
+    category: "OTHER",
+    language: "EN",
+    sourceUrl:
+      "https://lichtex.de/mediafiles/Dokumente/Rowe/Sicherheitsdatenblatt/EN/25029-SDB-GB-GHS.pdf",
+  },
+
+  // ============ Finke Mineralölwerk / Aviaticon ============
+  {
+    manufacturer: "Finke Mineralölwerk",
+    productName: "Aviaticon HLPD 22",
+    category: "HYDRAULIC_OIL",
+    language: "DE",
+    sourceUrl:
+      "https://media.finke-oil.de/sicherheitsdatenblaetter/AVIATICON_HLPD_22-DE-Sicherheitsdatenblatt-63215bb9625e9.pdf",
+  },
+  {
+    manufacturer: "Finke Mineralölwerk",
+    productName: "Aviaticon EP 46",
+    category: "GEAR_OIL",
+    language: "DE",
+    sourceUrl:
+      "https://media.finke-oil.de/sicherheitsdatenblaetter/AVIATICON_EP_46-DE-Sicherheitsdatenblatt-61c57f12a310b.pdf",
+  },
+
+  // ============ Mobil (ExxonMobil) ============
+  {
+    manufacturer: "Mobil",
+    productName: "DTE 25",
+    category: "HYDRAULIC_OIL",
+    language: "EN",
+    sourceUrl: "https://petroleumservicecompany.com/content/pdfs/MOBIL_DTE_25_SDS.pdf",
+  },
+  {
+    manufacturer: "Mobil",
+    productName: "DTE 25 Ultra",
+    category: "HYDRAULIC_OIL",
+    language: "EN",
+    sourceUrl: "https://petroleumservicecompany.com/content/pdfs/Mobil_DTE_25_Ultra_SDS.pdf",
+  },
+  {
+    manufacturer: "Mobil",
+    productName: "DTE 26 Ultra",
+    category: "HYDRAULIC_OIL",
+    language: "EN",
+    sourceUrl: "https://petroleumservicecompany.com/content/pdfs/Mobil_DTE_26_Ultra_SDS.pdf",
+  },
+  {
+    manufacturer: "Mobil",
+    productName: "DTE 10 Excel 68",
+    category: "HYDRAULIC_OIL",
+    language: "EN",
+    sourceUrl: "https://petroleumservicecompany.com/content/pdfs/MOBIL_DTE_10_EXCEL_68_SDS.pdf",
+  },
+  {
+    manufacturer: "Mobil",
+    productName: "DTE Medium Oil",
+    category: "HYDRAULIC_OIL",
+    language: "EN",
+    sourceUrl: "https://petroleumservicecompany.com/content/pdfs/MOBIL_DTE_OIL_MEDIUM_SDS.pdf",
+  },
+  {
+    manufacturer: "Mobil",
+    productName: "Vacuoline 1409",
+    category: "OTHER",
+    language: "EN",
+    sourceUrl: "https://petroleumservicecompany.com/content/pdfs/mobil_vacuoline_1409_SDS.pdf",
+  },
+  {
+    manufacturer: "Mobil",
+    productName: "Vacuoline 537",
+    category: "OTHER",
+    language: "EN",
+    sourceUrl: "https://petroleumservicecompany.com/content/pdfs/Mobil_Vacuoline_537_SDS.pdf",
+  },
+  {
+    manufacturer: "Mobil",
+    productName: "Vacuoline 146",
+    category: "OTHER",
+    language: "EN",
+    sourceUrl: "https://hascooil.com/wp-content/uploads/2016/11/VACUOLINE-146-sds.pdf",
+  },
+
+  // ============ Hebro Chemie (direkt vom Hersteller-Portal) ============
+  {
+    manufacturer: "Hebro Chemie",
+    productName: "Hebro SDS 540144254",
+    category: "OTHER",
+    language: "EN",
+    sourceUrl: "https://www.hebro-chemie.de/sdb/EN/GB/540144254.EN.GB.pdf",
+  },
+  {
+    manufacturer: "Hebro Chemie",
+    productName: "Hebro SDS 540133257",
+    category: "OTHER",
+    language: "EN",
+    sourceUrl: "https://www.hebro-chemie.de/sdb/EN/GB/540133257.EN.GB.pdf",
+  },
+
+  // ============ Oest ============
+  {
+    manufacturer: "Oest",
+    productName: "Gleitoel CGLP 68",
+    category: "OTHER",
+    language: "EN",
+    sourceUrl: "https://www.perma.co.nz/_Resources/Lubricants/Oest/Oest_Gleitoel_CGLP_68_MSDS_en.pdf",
+  },
+  {
+    manufacturer: "Oest",
+    productName: "Hydraulikoel 22 DD",
+    category: "HYDRAULIC_OIL",
+    language: "EN",
+    sourceUrl:
+      "https://elumatec.com/upload/safety/file/Oest_Hydraulikoel_22_DD_l_EN_0004-uPdI.pdf",
+  },
+  {
+    manufacturer: "Oest",
+    productName: "Ixelon LT 200 EP",
+    category: "GEAR_OIL",
+    language: "EN",
+    sourceUrl:
+      "https://www.pellenc.com/docs/website/fiches-donnees-secu/CONSOMMABLES/115174_EN_OEST%20IXELON%20LT%20200%20EP%2042099_2020-11-11.pdf",
+  },
+
+  // ============ BASF ============
+  {
+    manufacturer: "BASF",
+    productName: "Glysantin FC G20 ELECTRIFIED",
+    category: "OTHER",
+    language: "EN",
+    sourceUrl:
+      "https://download.basf.com/p1/000000000030244083_SDS_GEN_US/en_US/GLYSANTIN_FC_G20_RM50_cl_PGS_30244083_SDS_GEN_US_en_3-3.pdf",
+  },
+  {
+    manufacturer: "BASF",
+    productName: "Glysantin G48 blue-green",
+    category: "OTHER",
+    language: "EN",
+    sourceUrl:
+      "https://download.basf.com/p1/000000000030052793_SDS_GEN_US/en_US/GLYSANTIN_G48_bg_PGS_000000000030052793_SDS_GEN_US_en_8-1.pdf",
+  },
+  {
+    manufacturer: "BASF",
+    productName: "Glysantin G22 ELECTRIFIED",
+    category: "OTHER",
+    language: "EN",
+    sourceUrl:
+      "https://download.basf.com/p1/000000000030798170_SDS_GEN_US/en_US/GLYSANTIN_G22_RM50_cl_30798170_SDS_GEN_US_en_2-0.pdf",
+  },
+  {
+    manufacturer: "BASF",
+    productName: "Plurasafe WI 165",
+    category: "OTHER",
+    language: "EN",
+    sourceUrl: "https://www.tri-iso.com/documents/BASF_Plurasafe_WI_165_SDS.pdf",
+  },
+
+  // ============ Cimcool (alternative Quellen) ============
+  {
+    manufacturer: "Cimcool",
+    productName: "Cimstar 10-570-HFP (Squarespace)",
+    category: "WATER_MISCIBLE_COOLANT",
+    language: "EN",
+    sourceUrl:
+      "https://static1.squarespace.com/static/601aa70ddc456378022f742a/t/6139081a6866c938e3fc7edf/1631127579249/CIMSTAR_10-570-HFP_SDS.pdf",
+  },
+  {
+    manufacturer: "Cimcool",
+    productName: "Cimstar Qual Star Pink",
+    category: "WATER_MISCIBLE_COOLANT",
+    language: "EN",
+    sourceUrl:
+      "https://www.aoc.nrao.edu/engineering/ElChemInventory/Merged%20Files%20BC/Cimcool%20cimstar%20Qual%20starpink.pdf",
+  },
+
+  // ============ Master Fluid Solutions (alternative Quellen via Grainger/MSC) ============
+  {
+    manufacturer: "Master Fluid Solutions",
+    productName: "TRIM MicroSol 685XT",
+    category: "WATER_MISCIBLE_COOLANT",
+    language: "EN",
+    sourceUrl:
+      "https://www.grainger.com/sds/pdf/MICROSOL685XT-en-US-US-MCC-0-1__SREY_v1.pdf",
+  },
+  {
+    manufacturer: "Master Fluid Solutions",
+    productName: "TRIM MicroSol 585XT",
+    category: "WATER_MISCIBLE_COOLANT",
+    language: "EN",
+    sourceUrl: "https://www1.mscdirect.com/MSDS/MSDS00028/84212240-20190907.PDF",
+  },
 ];
