@@ -42,3 +42,7 @@ tsconfig.tsbuildinfo
 /backups/
 *.sql.gz
 *.sql.bz2
+
+# persistente postgres-Daten (bind-mount vom Devcontainer)
+# Diese sind binär, gross und vertraulich — gehen nie nach GitHub.
+/.postgres-data/
