@@ -5,6 +5,7 @@ import { ProductImage } from "./ProductImage";
 import { BrandLogo } from "./BrandLogo";
 import { CertBadgeList } from "./CertBadge";
 import { AutomationBadge } from "./AutomationBadge";
+import { CompareToggle } from "./compare/CompareToggle";
 import { brandColors, PACKAGING_LABEL } from "@/lib/branding";
 import { MACHINING_OPERATIONS, type MachiningOperationId } from "@/lib/kss-automation";
 
@@ -94,56 +95,62 @@ function CompactCard({
   const packaging = (listing.packaging as Packaging) ?? "DRUM";
 
   return (
-    <Link
-      href={`/listings/${listing.id}`}
-      className="group flex items-center gap-3 overflow-hidden rounded-xl bg-white p-3 shadow-soft ring-1 ring-slate-200 transition-all hover:-translate-y-0.5 hover:shadow-lift hover:ring-slate-300"
-    >
-      {/* Brand-Farb-Streifen links */}
-      <div
-        className="-my-3 -ml-3 mr-1 h-auto w-1 self-stretch"
-        style={{ background: `linear-gradient(180deg, ${colors.primary}, ${colors.secondary})` }}
-      />
-      <ProductImage
-        manufacturer={listing.manufacturer}
-        productName={listing.productName}
-        packaging={packaging}
-        size="sm"
-      />
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
-          <BrandLogo manufacturer={listing.manufacturer} size="xs" />
-          {!hideStatus && listing.status && listing.status !== "ACTIVE" && (
-            <span className={`chip ${statusStyle[listing.status].classes}`}>
-              {statusStyle[listing.status].label}
-            </span>
-          )}
-        </div>
-        <div className="mt-1 truncate text-sm font-bold text-slate-900">
-          {listing.productName}
-        </div>
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-slate-500">
-          <span>{listing.productType}</span>
-          {listing.isoViscosity && (
-            <>
-              <span className="text-slate-300">·</span>
-              <span>ISO VG {listing.isoViscosity}</span>
-            </>
-          )}
-          <span className="text-slate-300">·</span>
-          <span>📍 {listing.locationRegion}</span>
-          <span className="text-slate-300">·</span>
-          <span>
-            {listing.quantity.toLocaleString("de-DE")} {listing.quantityUnit}
-          </span>
-        </div>
-      </div>
-      <div
-        className="shrink-0 rounded-full px-3 py-1.5 text-sm font-bold text-white shadow-sm"
-        style={{ backgroundColor: listing.priceEur ? colors.primary : "#475569" }}
+    <div className="relative">
+      <Link
+        href={`/listings/${listing.id}`}
+        className="group flex items-center gap-3 overflow-hidden rounded-xl bg-white p-3 shadow-soft ring-1 ring-slate-200 transition-all hover:-translate-y-0.5 hover:shadow-lift hover:ring-slate-300"
       >
-        {listing.priceEur ? `${listing.priceEur.toFixed(2)} €` : "auf Anfrage"}
+        {/* Brand-Farb-Streifen links */}
+        <div
+          className="-my-3 -ml-3 mr-1 h-auto w-1 self-stretch"
+          style={{ background: `linear-gradient(180deg, ${colors.primary}, ${colors.secondary})` }}
+        />
+        <ProductImage
+          manufacturer={listing.manufacturer}
+          productName={listing.productName}
+          packaging={packaging}
+          size="sm"
+        />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <BrandLogo manufacturer={listing.manufacturer} size="xs" />
+            {!hideStatus && listing.status && listing.status !== "ACTIVE" && (
+              <span className={`chip ${statusStyle[listing.status].classes}`}>
+                {statusStyle[listing.status].label}
+              </span>
+            )}
+          </div>
+          <div className="mt-1 truncate text-sm font-bold text-slate-900">
+            {listing.productName}
+          </div>
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-slate-500">
+            <span>{listing.productType}</span>
+            {listing.isoViscosity && (
+              <>
+                <span className="text-slate-300">·</span>
+                <span>ISO VG {listing.isoViscosity}</span>
+              </>
+            )}
+            <span className="text-slate-300">·</span>
+            <span>📍 {listing.locationRegion}</span>
+            <span className="text-slate-300">·</span>
+            <span>
+              {listing.quantity.toLocaleString("de-DE")} {listing.quantityUnit}
+            </span>
+          </div>
+        </div>
+        <div
+          className="shrink-0 rounded-full px-3 py-1.5 text-sm font-bold text-white shadow-sm"
+          style={{ backgroundColor: listing.priceEur ? colors.primary : "#475569" }}
+        >
+          {listing.priceEur ? `${listing.priceEur.toFixed(2)} €` : "auf Anfrage"}
+        </div>
+      </Link>
+      {/* Vergleichs-Häkchen — über dem Link gelegt, abgefangen via stopPropagation */}
+      <div className="absolute right-2 top-2">
+        <CompareToggle id={listing.id} kind="listings" variant="checkbox" />
       </div>
-    </Link>
+    </div>
   );
 }
 
@@ -169,9 +176,10 @@ function ExtendedCard({
     .slice(0, 4);
 
   return (
+    <div className="relative">
     <Link
       href={`/listings/${listing.id}`}
-      className="group relative block overflow-hidden rounded-2xl bg-white shadow-soft ring-1 ring-slate-200 transition-all hover:-translate-y-1 hover:shadow-lift hover:ring-slate-300"
+      className="group block overflow-hidden rounded-2xl bg-white shadow-soft ring-1 ring-slate-200 transition-all hover:-translate-y-1 hover:shadow-lift hover:ring-slate-300"
     >
       <div
         className="h-1.5 w-full"
@@ -188,11 +196,13 @@ function ExtendedCard({
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
             <BrandLogo manufacturer={listing.manufacturer} size="sm" />
-            {!hideStatus && listing.status && (
-              <span className={`chip whitespace-nowrap ${statusStyle[listing.status].classes}`}>
-                {statusStyle[listing.status].label}
-              </span>
-            )}
+            <div className="flex items-center gap-2">
+              {!hideStatus && listing.status && (
+                <span className={`chip whitespace-nowrap ${statusStyle[listing.status].classes}`}>
+                  {statusStyle[listing.status].label}
+                </span>
+              )}
+            </div>
           </div>
           <div className="mt-1.5 text-base font-bold text-slate-900 leading-tight">
             {listing.productName}
@@ -318,6 +328,11 @@ function ExtendedCard({
         </div>
       </div>
     </Link>
+    {/* Vergleichs-Häkchen — absolute, deckt sich nicht mit Link-Click */}
+    <div className="absolute right-3 top-3">
+      <CompareToggle id={listing.id} kind="listings" variant="checkbox" />
+    </div>
+    </div>
   );
 }
 

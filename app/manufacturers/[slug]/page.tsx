@@ -179,7 +179,7 @@ export default async function ManufacturerDetailPage({
                             Brix×{p.refractometerFactor}
                           </span>
                         ) : null}
-                        <CompareToggle productId={p.id} variant="icon" />
+                        <CompareToggle id={p.id} kind="products" variant="icon" />
                       </div>
                     </div>
                   ))}

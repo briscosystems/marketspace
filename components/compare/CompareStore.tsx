@@ -2,14 +2,20 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-const STORAGE_KEY = "brisco:compare-products:v1";
+type Kind = "listings" | "products";
+
+const KEYS: Record<Kind, string> = {
+  listings: "brisco:compare-listings:v1",
+  products: "brisco:compare-products:v1",
+};
+
 const EVENT = "brisco:compare-changed";
 const MAX = 6;
 
-function readStorage(): string[] {
+function readStorage(kind: Kind): string[] {
   if (typeof window === "undefined") return [];
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+    const raw = window.localStorage.getItem(KEYS[kind]);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === "string") : [];
@@ -18,17 +24,13 @@ function readStorage(): string[] {
   }
 }
 
-function writeStorage(ids: string[]) {
+function writeStorage(kind: Kind, ids: string[]) {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
-  window.dispatchEvent(new CustomEvent(EVENT));
+  window.localStorage.setItem(KEYS[kind], JSON.stringify(ids));
+  window.dispatchEvent(new CustomEvent(EVENT, { detail: { kind } }));
 }
 
-/**
- * Liest den Compare-State aus localStorage und re-rendert bei Änderungen
- * (auch über andere Tabs/Tab-Wechsel).
- */
-export function useCompareList(): {
+export function useCompareList(kind: Kind): {
   ids: string[];
   add: (id: string) => void;
   remove: (id: string) => void;
@@ -40,38 +42,42 @@ export function useCompareList(): {
   const [ids, setIds] = useState<string[]>([]);
 
   useEffect(() => {
-    setIds(readStorage());
-    const onChange = () => setIds(readStorage());
+    setIds(readStorage(kind));
+    const onChange = () => setIds(readStorage(kind));
     window.addEventListener(EVENT, onChange);
     window.addEventListener("storage", onChange);
     return () => {
       window.removeEventListener(EVENT, onChange);
       window.removeEventListener("storage", onChange);
     };
-  }, []);
+  }, [kind]);
 
-  const add = useCallback((id: string) => {
-    const current = readStorage();
-    if (current.includes(id)) return;
-    if (current.length >= MAX) return;
-    writeStorage([...current, id]);
-  }, []);
+  const add = useCallback(
+    (id: string) => {
+      const current = readStorage(kind);
+      if (current.includes(id) || current.length >= MAX) return;
+      writeStorage(kind, [...current, id]);
+    },
+    [kind],
+  );
 
-  const remove = useCallback((id: string) => {
-    const current = readStorage();
-    writeStorage(current.filter((x) => x !== id));
-  }, []);
+  const remove = useCallback(
+    (id: string) => {
+      writeStorage(kind, readStorage(kind).filter((x) => x !== id));
+    },
+    [kind],
+  );
 
-  const toggle = useCallback((id: string) => {
-    const current = readStorage();
-    if (current.includes(id)) {
-      writeStorage(current.filter((x) => x !== id));
-    } else if (current.length < MAX) {
-      writeStorage([...current, id]);
-    }
-  }, []);
+  const toggle = useCallback(
+    (id: string) => {
+      const current = readStorage(kind);
+      if (current.includes(id)) writeStorage(kind, current.filter((x) => x !== id));
+      else if (current.length < MAX) writeStorage(kind, [...current, id]);
+    },
+    [kind],
+  );
 
-  const clear = useCallback(() => writeStorage([]), []);
+  const clear = useCallback(() => writeStorage(kind, []), [kind]);
 
   return { ids, add, remove, toggle, clear, isFull: ids.length >= MAX, max: MAX };
 }

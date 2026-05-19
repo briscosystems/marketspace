@@ -3,30 +3,72 @@
 import { useCompareList } from "./CompareStore";
 import { Check, GitCompare, X } from "lucide-react";
 
+type Kind = "listings" | "products";
+
 type Props = {
-  productId: string;
+  id: string;
+  kind: Kind;
+  variant?: "checkbox" | "button" | "icon";
   label?: string;
-  variant?: "button" | "icon";
 };
 
 /**
- * Add-to-compare Toggle für Produkt-Karten und Produkt-Detail.
- * Verwendet localStorage über den shared CompareStore.
+ * Drei Varianten:
+ *  - checkbox: kleines Häkchen-Quadrat, ideal für Listings-Karten
+ *  - icon:     runde Icon-Schaltfläche (für Produkt-Listen im Hersteller-Detail)
+ *  - button:   voller Button mit Label (für Detail-Seiten)
  */
-export function CompareToggle({ productId, label = "Vergleichen", variant = "button" }: Props) {
-  const { ids, toggle, isFull } = useCompareList();
-  const active = ids.includes(productId);
+export function CompareToggle({ id, kind, variant = "button", label = "Vergleichen" }: Props) {
+  const { ids, toggle, isFull } = useCompareList(kind);
+  const active = ids.includes(id);
   const disabled = !active && isFull;
+
+  const onClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!disabled) toggle(id);
+  };
+
+  if (variant === "checkbox") {
+    return (
+      <label
+        onClick={(e) => e.stopPropagation()}
+        className="inline-flex cursor-pointer items-center gap-1.5 select-none"
+        title={
+          active
+            ? "Aus Vergleich entfernen"
+            : disabled
+              ? "Maximal 6 im Vergleich"
+              : "Zum Vergleich hinzufügen"
+        }
+      >
+        <input
+          type="checkbox"
+          checked={active}
+          disabled={disabled}
+          onChange={(e) => {
+            e.stopPropagation();
+            if (!disabled) toggle(id);
+          }}
+          onClick={(e) => e.stopPropagation()}
+          className="h-4 w-4 cursor-pointer rounded border-slate-300 text-brand-600 accent-brand-600 focus:ring-brand-500 disabled:cursor-not-allowed disabled:opacity-40"
+        />
+        <span
+          className={`text-[11px] font-medium ${
+            active ? "text-brand-700" : disabled ? "text-slate-300" : "text-slate-500"
+          }`}
+        >
+          Vergleich
+        </span>
+      </label>
+    );
+  }
 
   if (variant === "icon") {
     return (
       <button
         type="button"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          if (!disabled) toggle(productId);
-        }}
+        onClick={onClick}
         aria-pressed={active}
         title={
           active
@@ -51,11 +93,7 @@ export function CompareToggle({ productId, label = "Vergleichen", variant = "but
   return (
     <button
       type="button"
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (!disabled) toggle(productId);
-      }}
+      onClick={onClick}
       aria-pressed={active}
       disabled={disabled}
       className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition ${
@@ -72,15 +110,12 @@ export function CompareToggle({ productId, label = "Vergleichen", variant = "but
   );
 }
 
-/**
- * Reine Entfernen-Variante (z.B. auf der /compare-Seite).
- */
-export function CompareRemoveButton({ productId }: { productId: string }) {
-  const { remove } = useCompareList();
+export function CompareRemoveButton({ id, kind }: { id: string; kind: Kind }) {
+  const { remove } = useCompareList(kind);
   return (
     <button
       type="button"
-      onClick={() => remove(productId)}
+      onClick={() => remove(id)}
       title="Aus Vergleich entfernen"
       className="inline-flex h-6 w-6 items-center justify-center rounded-full text-slate-400 hover:bg-rose-50 hover:text-rose-600"
     >

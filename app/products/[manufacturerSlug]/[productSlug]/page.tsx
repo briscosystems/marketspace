@@ -126,7 +126,7 @@ export default async function ProductDetailPage({
             <p className="mt-3 text-sm text-slate-700">{product.description}</p>
           ) : null}
           <div className="mt-3">
-            <CompareToggle productId={product.id} />
+            <CompareToggle id={product.id} kind="products" />
           </div>
         </div>
       </header>
