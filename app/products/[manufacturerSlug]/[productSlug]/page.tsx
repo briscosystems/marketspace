@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { ManufacturerLogo } from "@/components/ManufacturerLogo";
 import { RefractometerCalculator } from "@/components/RefractometerCalculator";
+import { CompareToggle } from "@/components/compare/CompareToggle";
 import { Droplets, Beaker, FileText, ExternalLink, AlertTriangle } from "lucide-react";
 
 const CATEGORY_LABEL: Record<string, string> = {
@@ -124,6 +125,9 @@ export default async function ProductDetailPage({
           {product.description ? (
             <p className="mt-3 text-sm text-slate-700">{product.description}</p>
           ) : null}
+          <div className="mt-3">
+            <CompareToggle productId={product.id} />
+          </div>
         </div>
       </header>
 

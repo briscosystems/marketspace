@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { ManufacturerLogo } from "@/components/ManufacturerLogo";
+import { CompareToggle } from "@/components/compare/CompareToggle";
 import { ExternalLink, Globe } from "lucide-react";
 
 const FOCUS_LABEL: Record<string, string> = {
@@ -156,27 +157,31 @@ export default async function ManufacturerDetailPage({
                 <div className="mb-2 text-sm font-semibold text-slate-700">{family}</div>
                 <div className="grid gap-2 sm:grid-cols-2">
                   {ps.map((p) => (
-                    <Link
+                    <div
                       key={p.id}
-                      href={`/products/${m.slug}/${p.slug}`}
-                      className="flex items-start justify-between gap-3 rounded-lg border border-slate-200 bg-white p-3 transition hover:border-brand-400 hover:shadow-soft"
+                      className="group relative flex items-start gap-3 rounded-lg border border-slate-200 bg-white p-3 transition hover:border-brand-400 hover:shadow-soft"
                     >
-                      <div className="min-w-0 flex-1">
-                        <div className="text-sm font-semibold text-slate-900">{p.name}</div>
+                      <Link href={`/products/${m.slug}/${p.slug}`} className="min-w-0 flex-1">
+                        <div className="text-sm font-semibold text-slate-900 group-hover:text-brand-700">
+                          {p.name}
+                        </div>
                         <div className="mt-0.5 text-xs text-slate-500">
                           {CATEGORY_LABEL[p.category] ?? p.category}
                           {p.chemistry ? ` · ${p.chemistry.replace("_", "-").toLowerCase()}` : ""}
                         </div>
+                      </Link>
+                      <div className="flex shrink-0 items-center gap-2">
+                        {p.refractometerFactor != null ? (
+                          <span
+                            className="rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700"
+                            title="Refraktometer-Faktor verfügbar"
+                          >
+                            Brix×{p.refractometerFactor}
+                          </span>
+                        ) : null}
+                        <CompareToggle productId={p.id} variant="icon" />
                       </div>
-                      {p.refractometerFactor != null ? (
-                        <span
-                          className="shrink-0 rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700"
-                          title="Refraktometer-Faktor verfügbar"
-                        >
-                          Brix×{p.refractometerFactor}
-                        </span>
-                      ) : null}
-                    </Link>
+                    </div>
                   ))}
                 </div>
               </div>

@@ -1,4 +1,5 @@
 import { brandColors } from "@/lib/branding";
+import { getLogoPath } from "@/lib/brand-logo-registry";
 
 type Packaging = "DRUM" | "IBC" | "TANK" | "CANISTER" | "BULK" | "OTHER";
 
@@ -26,10 +27,11 @@ export function ProductImage({
   const colors = brandColors(manufacturer);
   const wrap = `relative shrink-0 aspect-square ${sizeMap[size]} ${className}`;
   const gid = `pi-${packaging}-${Math.abs(hash(`${manufacturer}-${productName}-${packaging}`))}`;
+  const logoPath = getLogoPath(manufacturer);
   return (
     <div className={wrap} aria-label={`${manufacturer} ${productName} (${packaging})`}>
       <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" className="h-full w-full">
-        {renderPackaging(packaging, colors, manufacturer, gid)}
+        {renderPackaging(packaging, colors, manufacturer, gid, logoPath)}
       </svg>
     </div>
   );
@@ -46,21 +48,70 @@ function renderPackaging(
   colors: ReturnType<typeof brandColors>,
   brand: string,
   gid: string,
+  logoPath: string | null,
 ) {
   switch (packaging) {
     case "IBC":
-      return renderIbc(colors, brand, gid);
+      return renderIbc(colors, brand, gid, logoPath);
     case "CANISTER":
-      return renderCanister(colors, brand, gid);
+      return renderCanister(colors, brand, gid, logoPath);
     case "TANK":
-      return renderTank(colors, brand, gid);
+      return renderTank(colors, brand, gid, logoPath);
     case "BULK":
-      return renderBulk(colors, brand, gid);
+      return renderBulk(colors, brand, gid, logoPath);
     case "OTHER":
     case "DRUM":
     default:
-      return renderDrum(colors, brand, gid);
+      return renderDrum(colors, brand, gid, logoPath);
   }
+}
+
+/**
+ * Etikett-Inhalt: echtes Logo wenn unter /brand-logos/<slug>.png hinterlegt,
+ * sonst stilisiertes Wordmark in Marken-Primärfarbe.
+ */
+function LabelContent({
+  width,
+  height,
+  brand,
+  logoPath,
+  primary,
+}: {
+  width: number;
+  height: number;
+  brand: string;
+  logoPath: string | null;
+  primary: string;
+}) {
+  if (logoPath) {
+    // Einbettung des echten Logos. preserveAspectRatio meet → Logo zentriert
+    // und vollständig sichtbar, mit kleinem Padding.
+    const pad = Math.min(width, height) * 0.08;
+    return (
+      <image
+        href={logoPath}
+        x={pad}
+        y={pad}
+        width={width - pad * 2}
+        height={height - pad * 2}
+        preserveAspectRatio="xMidYMid meet"
+      />
+    );
+  }
+  return (
+    <text
+      x={width / 2}
+      y={height / 2 + 3}
+      textAnchor="middle"
+      fontSize={Math.min(11, Math.max(7, width / brandFitLength(brand)))}
+      fontWeight="800"
+      fontFamily="ui-sans-serif, system-ui, sans-serif"
+      fill={primary}
+      letterSpacing="0.4"
+    >
+      {brand.toUpperCase()}
+    </text>
+  );
 }
 
 // ============================================================================
@@ -152,6 +203,7 @@ function renderDrum(
   colors: ReturnType<typeof brandColors>,
   brand: string,
   gid: string,
+  logoPath: string | null,
 ) {
   const cx = 50;
   const top = 12;
@@ -208,7 +260,7 @@ function renderDrum(
       <SteelRing cx={cx} rx={rx} y={r2y} h={3.2} gid={gid} />
       <SteelRing cx={cx} rx={rx} y={r3y} h={3.2} gid={gid} />
 
-      {/* Etikett — großes weißes Mittelband mit nur dem Markennamen.
+      {/* Etikett — großes weißes Mittelband mit Logo oder Wordmark.
           Produktname steht ohnehin neben dem Bild, deshalb keine doppelte
           Beschriftung auf dem Fass. */}
       <g transform={`translate(${cx - rx + 4}, ${labelTop + 2})`}>
@@ -228,18 +280,13 @@ function renderDrum(
           fill="#000"
           opacity="0.20"
         />
-        <text
-          x={(rx * 2 - 8) / 2}
-          y={(labelBot - labelTop - 4) / 2 + 3}
-          textAnchor="middle"
-          fontSize={Math.min(11, Math.max(7, (rx * 2 - 8) / brandFitLength(brand)))}
-          fontWeight="800"
-          fontFamily="ui-sans-serif, system-ui, sans-serif"
-          fill={colors.primary}
-          letterSpacing="0.4"
-        >
-          {brand.toUpperCase()}
-        </text>
+        <LabelContent
+          width={rx * 2 - 8}
+          height={labelBot - labelTop - 4}
+          brand={brand}
+          logoPath={logoPath}
+          primary={colors.primary}
+        />
       </g>
 
       {/* Oberer Deckel — Stahlring um die Öffnung */}
@@ -308,6 +355,7 @@ function renderIbc(
   colors: ReturnType<typeof brandColors>,
   brand: string,
   gid: string,
+  logoPath: string | null,
 ) {
   const fx = 14,
     fy = 28,
@@ -412,21 +460,16 @@ function renderIbc(
       <circle cx={fx + fw / 2} cy={fy + fh + 0.5} r="1.5" fill="#1e293b" />
       <rect x={fx + fw / 2 - 1} y={fy + fh + 2.5} width="2" height="4" fill="#334155" />
 
-      {/* Etikett vorne — nur Markenname, prominent */}
+      {/* Etikett vorne — Logo oder Wordmark */}
       <g transform={`translate(${fx + 5}, ${fy + fh / 2 - 10})`}>
         <rect x="0" y="0" width={fw - 10} height="20" fill="#ffffff" rx="1" />
-        <text
-          x={(fw - 10) / 2}
-          y="13"
-          textAnchor="middle"
-          fontSize={Math.min(11, Math.max(7, (fw - 10) / brandFitLength(brand)))}
-          fontWeight="800"
-          fontFamily="ui-sans-serif, system-ui, sans-serif"
-          fill={colors.primary}
-          letterSpacing="0.4"
-        >
-          {brand.toUpperCase()}
-        </text>
+        <LabelContent
+          width={fw - 10}
+          height={20}
+          brand={brand}
+          logoPath={logoPath}
+          primary={colors.primary}
+        />
       </g>
     </>
   );
@@ -439,6 +482,7 @@ function renderCanister(
   colors: ReturnType<typeof brandColors>,
   brand: string,
   gid: string,
+  logoPath: string | null,
 ) {
   return (
     <>
@@ -485,21 +529,16 @@ function renderCanister(
         strokeLinecap="round"
       />
 
-      {/* Etikett — nur Markenname */}
+      {/* Etikett — Logo oder Wordmark */}
       <g transform="translate(33, 40)">
         <rect x="0" y="0" width="34" height="34" fill="#ffffff" rx="1.5" />
-        <text
-          x="17"
-          y="22"
-          textAnchor="middle"
-          fontSize={Math.min(10, Math.max(6, 34 / brandFitLength(brand)))}
-          fontWeight="800"
-          fontFamily="ui-sans-serif, system-ui, sans-serif"
-          fill={colors.primary}
-          letterSpacing="0.3"
-        >
-          {brand.toUpperCase()}
-        </text>
+        <LabelContent
+          width={34}
+          height={34}
+          brand={brand}
+          logoPath={logoPath}
+          primary={colors.primary}
+        />
       </g>
     </>
   );
@@ -512,6 +551,7 @@ function renderTank(
   colors: ReturnType<typeof brandColors>,
   brand: string,
   gid: string,
+  logoPath: string | null,
 ) {
   return (
     <>
@@ -542,21 +582,16 @@ function renderTank(
       <rect x="20" y="89" width="6" height="1.5" fill="#000" opacity="0.4" />
       <rect x="74" y="89" width="6" height="1.5" fill="#000" opacity="0.4" />
 
-      {/* Etikett — nur Markenname */}
+      {/* Etikett — Logo oder Wordmark */}
       <g transform="translate(24, 54)">
         <rect x="0" y="0" width="52" height="20" fill="#ffffff" rx="1.2" />
-        <text
-          x="26"
-          y="14"
-          textAnchor="middle"
-          fontSize={Math.min(11, Math.max(7, 52 / brandFitLength(brand)))}
-          fontWeight="800"
-          fontFamily="ui-sans-serif, system-ui, sans-serif"
-          fill={colors.primary}
-          letterSpacing="0.4"
-        >
-          {brand.toUpperCase()}
-        </text>
+        <LabelContent
+          width={52}
+          height={20}
+          brand={brand}
+          logoPath={logoPath}
+          primary={colors.primary}
+        />
       </g>
     </>
   );
@@ -569,6 +604,7 @@ function renderBulk(
   colors: ReturnType<typeof brandColors>,
   brand: string,
   gid: string,
+  logoPath: string | null,
 ) {
   return (
     <>
@@ -580,18 +616,13 @@ function renderBulk(
       <circle cx="50" cy="40" r="5" fill={`url(#${gid}-steel)`} opacity="0.3" />
       <g transform="translate(30, 60)">
         <rect x="0" y="0" width="40" height="18" fill="#ffffff" rx="1.2" />
-        <text
-          x="20"
-          y="13"
-          textAnchor="middle"
-          fontSize={Math.min(10, Math.max(6, 40 / brandFitLength(brand)))}
-          fontWeight="800"
-          fontFamily="ui-sans-serif, system-ui, sans-serif"
-          fill={colors.primary}
-          letterSpacing="0.4"
-        >
-          {brand.toUpperCase()}
-        </text>
+        <LabelContent
+          width={40}
+          height={18}
+          brand={brand}
+          logoPath={logoPath}
+          primary={colors.primary}
+        />
       </g>
     </>
   );
