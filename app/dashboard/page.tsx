@@ -199,14 +199,19 @@ export default async function DashboardPage() {
 
       <section>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Eigene Listings</h2>
-          <Link href="/listings/new" className="btn-primary">Neues Listing</Link>
+          <h2 className="text-lg font-semibold">Ich biete an</h2>
+          <Link
+            href="/listings/new"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-blue-700"
+          >
+            Neues Angebot
+          </Link>
         </div>
         {listings.length === 0 ? (
           <div className="card text-center text-slate-500">
-            Noch keine Listings.{" "}
-            <Link href="/listings/new" className="text-brand-500 hover:underline">
-              Erstes anlegen
+            Du hast noch nichts angeboten.{" "}
+            <Link href="/listings/new" className="text-blue-600 hover:underline">
+              Erstes Angebot einstellen
             </Link>
           </div>
         ) : (
@@ -240,11 +245,16 @@ export default async function DashboardPage() {
 
       <section>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Eigene Anfragen (RFQ)</h2>
-          <Link href="/rfqs/new" className="btn-secondary">Neue Anfrage</Link>
+          <h2 className="text-lg font-semibold">Ich suche</h2>
+          <Link
+            href="/rfqs/new"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-amber-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-amber-700"
+          >
+            Neuer Bedarf
+          </Link>
         </div>
         {myRfqs.length === 0 ? (
-          <div className="card text-sm text-slate-500">Keine Anfragen.</div>
+          <div className="card text-sm text-slate-500">Du suchst aktuell nichts.</div>
         ) : (
           <div className="card divide-y divide-slate-200">
             {myRfqs.map((r) => (

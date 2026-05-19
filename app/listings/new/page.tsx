@@ -75,8 +75,6 @@ export default function NewListingPage() {
     productType.toLowerCase().includes("emulsion") ||
     productType.toLowerCase().includes("kss");
 
-  if (status !== "authenticated") return <div className="text-slate-500">Lade …</div>;
-
   const productNameSuggestions = useMemo<(q: string) => Suggestion[]>(
     () => (q: string) =>
       suggestFamilies(q, 8).map((f) => ({
@@ -86,6 +84,8 @@ export default function NewListingPage() {
       })),
     [],
   );
+
+  if (status !== "authenticated") return <div className="text-slate-500">Lade …</div>;
 
   const manufacturerSuggestions = (q: string): Suggestion[] =>
     suggestFrom(KNOWN_MANUFACTURERS, q, 8).map((m) => ({ value: m, label: m }));

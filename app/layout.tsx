@@ -5,17 +5,30 @@ import { authOptions } from "@/lib/auth";
 import { SignOutButton } from "@/components/SignOutButton";
 import { Providers } from "./providers";
 import { CompareBar } from "@/components/compare/CompareBar";
+import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 import { Droplet, FileText, MessagesSquare, LayoutDashboard, Tag, Search, Building2 } from "lucide-react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Brisco Marketplace — Industrial Oil Trading",
-  description: "B2B-Marktplatz für Industrieöle, KSS und Schmierstoffe",
+  title: "Brisco Marketplace — Industrieöle, KSS & Schmierstoffe",
+  description: "B2B-Marktplatz für Industrieöle, KSS und Schmierstoffe — Anbieten & Suchen",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
     title: "Brisco",
+    startupImage: ["/icons/apple-touch-icon.png"],
+  },
+  icons: {
+    icon: [
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
+  applicationName: "Brisco",
+  formatDetection: {
+    telephone: false,
   },
 };
 
@@ -34,6 +47,7 @@ export default async function RootLayout({
   return (
     <html lang="de">
       <body>
+        <ServiceWorkerRegistration />
         <Providers>
           <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
             <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 md:px-6">
