@@ -1,0 +1,446 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { prisma } from "@/lib/prisma";
+import { ManufacturerLogo } from "@/components/ManufacturerLogo";
+import { RefractometerCalculator } from "@/components/RefractometerCalculator";
+import { Droplets, Beaker, FileText, ExternalLink, AlertTriangle } from "lucide-react";
+
+const CATEGORY_LABEL: Record<string, string> = {
+  COOLANT_WATER_MIX: "KSS (wassermischbar)",
+  COOLANT_NEAT: "Schneidöl (nicht wassermischbar)",
+  GRINDING_OIL: "Schleiföl",
+  EDM_FLUID: "Erodier-Dielektrikum",
+  HYDRAULIC_OIL: "Hydrauliköl",
+  GEAR_OIL: "Getriebeöl",
+  COMPRESSOR_OIL: "Kompressoröl",
+  SLIDEWAY_OIL: "Bettbahnöl",
+  FORMING_OIL: "Umform-/Stanzöl",
+  CLEANER: "Reiniger",
+  CORROSION_PROTECTION: "Korrosionsschutz",
+  GREASE: "Fett",
+  SPECIALTY: "Spezial",
+  ADDITIVE: "Additiv",
+  OTHER: "Sonstiges",
+};
+
+const CHEMISTRY_LABEL: Record<string, string> = {
+  MINERAL: "Mineralölbasiert (Soluble Oil)",
+  SEMI_SYNTHETIC: "Semi-synthetisch",
+  SYNTHETIC: "Vollsynthetisch",
+  ESTER: "Ester-Basis",
+  PAG: "PAG (Polyalkylenglykol)",
+  OTHER: "Andere",
+};
+
+const COMPAT_STYLE: Record<string, string> = {
+  RECOMMENDED: "border-emerald-300 bg-emerald-50 text-emerald-800",
+  COMPATIBLE: "border-slate-300 bg-slate-50 text-slate-700",
+  CAUTION: "border-amber-300 bg-amber-50 text-amber-800",
+  UNSUITABLE: "border-rose-300 bg-rose-50 text-rose-800",
+};
+
+const COMPAT_LABEL: Record<string, string> = {
+  RECOMMENDED: "Empfohlen",
+  COMPATIBLE: "Geeignet",
+  CAUTION: "Vorsicht",
+  UNSUITABLE: "Nicht geeignet",
+};
+
+export default async function ProductDetailPage({
+  params,
+}: {
+  params: Promise<{ manufacturerSlug: string; productSlug: string }>;
+}) {
+  const { manufacturerSlug, productSlug } = await params;
+  const m = await prisma.manufacturer.findUnique({ where: { slug: manufacturerSlug } });
+  if (!m) notFound();
+
+  const product = await prisma.product.findUnique({
+    where: { manufacturerId_slug: { manufacturerId: m.id, slug: productSlug } },
+    include: { compatibilityNotes: true },
+  });
+  if (!product) notFound();
+
+  // Allgemeines Material-Wissen (scope = "general") für die Werkstoffe in suitable + unsuitable
+  const materials = [...product.suitableMaterials, ...product.unsuitableMaterials];
+  const generalNotes = await prisma.materialCompatibilityNote.findMany({
+    where: {
+      scope: "general",
+      productId: null,
+      OR: [
+        { material: { in: materials } },
+        { material: "Ansetzwasser (Allgemein)" },
+      ],
+    },
+    orderBy: [{ material: "asc" }, { compatibility: "asc" }],
+  });
+
+  return (
+    <div className="space-y-6">
+      <nav className="text-sm">
+        <Link href="/manufacturers" className="text-brand-600 hover:underline">
+          Hersteller
+        </Link>{" "}
+        →{" "}
+        <Link
+          href={`/manufacturers/${m.slug}`}
+          className="text-brand-600 hover:underline"
+        >
+          {m.name}
+        </Link>
+      </nav>
+
+      <header className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-6 sm:flex-row sm:items-center">
+        <ManufacturerLogo name={m.name} logoPath={m.logoPath} height={64} />
+        <div className="flex-1">
+          <div className="text-xs uppercase tracking-wide text-slate-500">{m.name}</div>
+          <h1 className="mt-0.5 text-2xl font-bold text-slate-900">{product.name}</h1>
+          <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+            <span className="rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-medium text-brand-700">
+              {CATEGORY_LABEL[product.category] ?? product.category}
+            </span>
+            {product.chemistry ? (
+              <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs text-slate-700">
+                {CHEMISTRY_LABEL[product.chemistry] ?? product.chemistry}
+              </span>
+            ) : null}
+            {product.productFamily ? (
+              <span className="text-xs text-slate-500">Familie: {product.productFamily}</span>
+            ) : null}
+            <span className="text-xs text-slate-400">·</span>
+            <span
+              className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${
+                product.sourceConfidence === "verifiziert"
+                  ? "bg-emerald-100 text-emerald-700"
+                  : product.sourceConfidence === "hersteller-doku"
+                    ? "bg-blue-100 text-blue-700"
+                    : "bg-slate-100 text-slate-600"
+              }`}
+              title="Daten-Vertrauenslevel"
+            >
+              {product.sourceConfidence}
+            </span>
+          </div>
+          {product.description ? (
+            <p className="mt-3 text-sm text-slate-700">{product.description}</p>
+          ) : null}
+        </div>
+      </header>
+
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* LINKE SPALTE: Technische Daten + Werkstoffe */}
+        <div className="space-y-5 lg:col-span-2">
+          {/* Anwendung & Werkstoffe */}
+          {(product.applicationAreas.length > 0 ||
+            product.suitableMaterials.length > 0 ||
+            product.unsuitableMaterials.length > 0) && (
+            <section className="rounded-xl border border-slate-200 bg-white p-5">
+              <h2 className="font-semibold text-slate-900">Anwendung & Werkstoffe</h2>
+              <div className="mt-3 grid gap-4 sm:grid-cols-2">
+                {product.applicationAreas.length > 0 ? (
+                  <div>
+                    <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                      Bearbeitungsverfahren
+                    </div>
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      {product.applicationAreas.map((a) => (
+                        <span
+                          key={a}
+                          className="rounded bg-slate-100 px-2 py-0.5 text-xs text-slate-700"
+                        >
+                          {a}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+                {product.suitableMaterials.length > 0 ? (
+                  <div>
+                    <div className="text-xs font-medium uppercase tracking-wide text-emerald-600">
+                      Geeignet für
+                    </div>
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      {product.suitableMaterials.map((m) => (
+                        <span
+                          key={m}
+                          className="rounded bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700"
+                        >
+                          ✓ {m}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+                {product.unsuitableMaterials.length > 0 ? (
+                  <div className="sm:col-span-2">
+                    <div className="text-xs font-medium uppercase tracking-wide text-rose-600">
+                      Nicht geeignet für
+                    </div>
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      {product.unsuitableMaterials.map((m) => (
+                        <span
+                          key={m}
+                          className="rounded bg-rose-50 px-2 py-0.5 text-xs font-medium text-rose-700"
+                        >
+                          ✗ {m}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            </section>
+          )}
+
+          {/* Technische Daten */}
+          <section className="rounded-xl border border-slate-200 bg-white p-5">
+            <div className="flex items-center gap-2">
+              <Beaker size={16} className="text-brand-600" />
+              <h2 className="font-semibold text-slate-900">Technische Daten</h2>
+            </div>
+            <dl className="mt-3 grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
+              <DataRow
+                label="Refraktometer-Faktor"
+                value={
+                  product.refractometerFactor != null
+                    ? `${product.refractometerFactor} (Brix × Faktor = % Konz.)`
+                    : null
+                }
+                highlight
+              />
+              <DataRow
+                label="Empfohlene Konzentration"
+                value={
+                  product.recommendedConcentrationMin != null && product.recommendedConcentrationMax != null
+                    ? `${product.recommendedConcentrationMin}–${product.recommendedConcentrationMax} %`
+                    : null
+                }
+              />
+              <DataRow label="pH (Konzentrat)" value={product.phConcentrate?.toString() ?? null} />
+              <DataRow
+                label="pH (Emulsion)"
+                value={
+                  product.phEmulsionMin != null
+                    ? product.phEmulsionMax != null && product.phEmulsionMin !== product.phEmulsionMax
+                      ? `${product.phEmulsionMin}–${product.phEmulsionMax}`
+                      : `${product.phEmulsionMin}`
+                    : null
+                }
+              />
+              <DataRow label="ISO VG" value={product.viscosityIso} />
+              <DataRow
+                label="Viskosität @40°C"
+                value={product.viscosityKv40 != null ? `${product.viscosityKv40} mm²/s` : null}
+              />
+              <DataRow
+                label="Dichte @20°C"
+                value={product.densityGcm3 != null ? `${product.densityGcm3} g/cm³` : null}
+              />
+              <DataRow
+                label="Flammpunkt"
+                value={product.flashpointC != null ? `${product.flashpointC} °C` : null}
+              />
+              <DataRow label="Bor-frei" value={booleanLabel(product.containsBor, true)} />
+              <DataRow
+                label="Formaldehyd-Depot"
+                value={booleanLabel(product.containsFormaldehydeDepot)}
+              />
+              <DataRow label="Chlor-frei" value={booleanLabel(product.containsChlorine, true)} />
+              <DataRow
+                label="Mineralöl"
+                value={
+                  product.mineralOilContentPct != null
+                    ? `${product.mineralOilContentPct} %`
+                    : booleanLabel(product.containsMineralOil)
+                }
+              />
+            </dl>
+            {product.certifications.length > 0 ? (
+              <div className="mt-4">
+                <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                  Zertifikate / Freigaben
+                </div>
+                <div className="mt-1 flex flex-wrap gap-1">
+                  {product.certifications.map((c) => (
+                    <span
+                      key={c}
+                      className="rounded bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700"
+                    >
+                      {c}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+          </section>
+
+          {/* Ansetzwasser */}
+          {(product.waterHardnessMinDh != null ||
+            product.waterHardnessMaxDh != null ||
+            product.waterHardnessNotes) && (
+            <section className="rounded-xl border border-blue-200 bg-blue-50 p-5">
+              <div className="flex items-center gap-2">
+                <Droplets size={16} className="text-blue-600" />
+                <h2 className="font-semibold text-slate-900">Ansetzwasser-Anforderung</h2>
+              </div>
+              {product.waterHardnessMinDh != null || product.waterHardnessMaxDh != null ? (
+                <div className="mt-2 font-mono text-lg font-bold text-blue-900">
+                  {product.waterHardnessMinDh ?? 0}–{product.waterHardnessMaxDh ?? "?"} °dH
+                </div>
+              ) : null}
+              {product.waterHardnessNotes ? (
+                <p className="mt-2 text-sm text-slate-700">{product.waterHardnessNotes}</p>
+              ) : null}
+            </section>
+          )}
+
+          {/* Werkstoff-Wissen */}
+          {generalNotes.length > 0 ? (
+            <section className="rounded-xl border border-slate-200 bg-white p-5">
+              <div className="flex items-center gap-2">
+                <AlertTriangle size={16} className="text-amber-600" />
+                <h2 className="font-semibold text-slate-900">
+                  Allgemeine Werkstoff-Hinweise
+                </h2>
+              </div>
+              <p className="mt-1 text-xs text-slate-500">
+                Branchen-Wissen zu den für dieses Produkt relevanten Werkstoffen und zum Ansetzwasser.
+              </p>
+              <div className="mt-3 space-y-2">
+                {generalNotes.map((n) => (
+                  <div
+                    key={n.id}
+                    className={`rounded-lg border p-3 text-sm ${COMPAT_STYLE[n.compatibility]}`}
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-semibold">
+                        {n.material}
+                        {n.condition ? <span className="font-normal"> · {n.condition}</span> : null}
+                      </span>
+                      <span className="rounded bg-white/60 px-1.5 py-0.5 text-[10px] font-bold uppercase">
+                        {COMPAT_LABEL[n.compatibility]}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-xs leading-relaxed">{n.note}</p>
+                    {n.sourceLabel ? (
+                      <div className="mt-1 text-[10px] opacity-70">
+                        Quelle: {n.sourceLabel}
+                        {n.sourceUrl ? (
+                          <a
+                            href={n.sourceUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="ml-1 underline"
+                          >
+                            ↗
+                          </a>
+                        ) : null}
+                      </div>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            </section>
+          ) : null}
+
+          {/* Notes */}
+          {product.notes ? (
+            <section className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+              <strong>Hinweis:</strong> {product.notes}
+            </section>
+          ) : null}
+        </div>
+
+        {/* RECHTE SPALTE: Refraktometer-Rechner + Quellen */}
+        <aside className="space-y-5">
+          <RefractometerCalculator
+            productName={product.name}
+            factor={product.refractometerFactor}
+            recommendedMin={product.recommendedConcentrationMin}
+            recommendedMax={product.recommendedConcentrationMax}
+          />
+
+          {(product.sourceUrl || product.dataSheetUrl || product.sdsUrl) && (
+            <section className="rounded-xl border border-slate-200 bg-white p-4">
+              <div className="flex items-center gap-2">
+                <FileText size={16} className="text-slate-600" />
+                <h3 className="font-semibold text-slate-900">Quellen & Doku</h3>
+              </div>
+              <ul className="mt-2 space-y-1.5 text-sm">
+                {product.sourceUrl ? (
+                  <li>
+                    <a
+                      href={product.sourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-brand-600 hover:underline"
+                    >
+                      Hersteller-Seite <ExternalLink size={11} />
+                    </a>
+                  </li>
+                ) : null}
+                {product.dataSheetUrl ? (
+                  <li>
+                    <a
+                      href={product.dataSheetUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-brand-600 hover:underline"
+                    >
+                      Tech. Datenblatt (PDS) <ExternalLink size={11} />
+                    </a>
+                  </li>
+                ) : null}
+                {product.sdsUrl ? (
+                  <li>
+                    <a
+                      href={product.sdsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-brand-600 hover:underline"
+                    >
+                      Sicherheitsdatenblatt (SDS) <ExternalLink size={11} />
+                    </a>
+                  </li>
+                ) : null}
+              </ul>
+            </section>
+          )}
+        </aside>
+      </div>
+    </div>
+  );
+}
+
+function DataRow({
+  label,
+  value,
+  highlight,
+}: {
+  label: string;
+  value: string | null | undefined;
+  highlight?: boolean;
+}) {
+  return (
+    <div className="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1 last:border-none">
+      <dt className="text-xs text-slate-500">{label}</dt>
+      <dd
+        className={`text-right text-sm ${
+          value == null
+            ? "text-slate-300"
+            : highlight
+              ? "font-mono font-semibold text-brand-700"
+              : "font-medium text-slate-800"
+        }`}
+      >
+        {value ?? "—"}
+      </dd>
+    </div>
+  );
+}
+
+function booleanLabel(v: boolean | null | undefined, invertForFreiPrefix?: boolean): string | null {
+  if (v == null) return null;
+  if (invertForFreiPrefix) return v ? "nein (enthält)" : "ja";
+  return v ? "ja" : "nein";
+}

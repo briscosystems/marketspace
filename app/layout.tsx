@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { SignOutButton } from "@/components/SignOutButton";
 import { Providers } from "./providers";
-import { Droplet, FileText, MessagesSquare, LayoutDashboard, ListChecks } from "lucide-react";
+import { Droplet, FileText, MessagesSquare, LayoutDashboard, ListChecks, Building2 } from "lucide-react";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -46,6 +46,7 @@ export default async function RootLayout({
               </Link>
               <nav className="flex items-center gap-1 text-sm">
                 <NavLink href="/listings" icon={ListChecks} label="Listings" />
+                <NavLink href="/manufacturers" icon={Building2} label="Hersteller" />
                 <NavLink href="/rfqs" icon={MessagesSquare} label="Anfragen" />
                 <NavLink href="/sds" icon={FileText} label="SDS" />
                 {session?.user ? (

@@ -116,6 +116,13 @@ enum ProductCategory {
   OTHER
 }
 
+enum MaterialCompatibility {
+  RECOMMENDED   // explizit für diesen Werkstoff empfohlen
+  COMPATIBLE    // unproblematisch
+  CAUTION       // mit Einschränkungen / Bedingungen
+  UNSUITABLE    // nicht geeignet, dokumentierte Probleme
+}
+
 enum BusinessFocus {
   COOLANT              // Kühlschmierstoffe (wassermischbar)
   NEAT_OIL             // Nicht wassermischbare Schneidöle
@@ -220,10 +227,37 @@ model Product {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
+  compatibilityNotes MaterialCompatibilityNote[]
+
   @@unique([manufacturerId, slug])
   @@index([manufacturerId])
   @@index([category])
   @@index([productFamily])
+}
+
+model MaterialCompatibilityNote {
+  id          String                @id @default(cuid())
+  productId   String?
+  product     Product?              @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  // Bei productId = null: allgemeine Regel (z.B. "Buntmetall + pH > 9.5 → Verfärbung")
+  // Bei productId gesetzt: produkt-spezifischer Hinweis
+  scope       String                // "product" oder "general"
+
+  material    String                // "Aluminium", "Buntmetall", "Magnesium", "Grauguss", "Titan", "Stahl", "Edelstahl"
+  compatibility MaterialCompatibility
+
+  condition   String?               // z.B. "pH > 9.5", "Konzentration > 8%", "demineralisiertes Wasser"
+  note        String                // Erklärung was passiert / worauf zu achten
+
+  sourceUrl   String?               // Hersteller-Doku, Fachartikel, FAQ
+  sourceLabel String?               // z.B. "Blaser FAQ", "VSI-Merkblatt"
+
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+
+  @@index([productId])
+  @@index([material])
 }
 
 model User {
