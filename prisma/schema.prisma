@@ -98,6 +98,46 @@ enum SdsLanguage {
   OTHER
 }
 
+enum BusinessFocus {
+  COOLANT              // Kühlschmierstoffe (wassermischbar)
+  NEAT_OIL             // Nicht wassermischbare Schneidöle
+  LUBRICANT            // Schmierstoffe allgemein (Hydraulik, Getriebe, Motor)
+  GREASE               // Schmierfette
+  CLEANER              // Reiniger / Entfetter
+  CORROSION_PROTECTION // Korrosionsschutz
+  CHEMICAL_SUPPLIER    // Chemie-Distributor / Mineralöl-Handel
+  ADDITIVE             // Additiv-Hersteller
+}
+
+model Manufacturer {
+  id        String   @id @default(cuid())
+  name      String   @unique   // Display name, z.B. "Blaser Swisslube"
+  slug      String   @unique   // url-safe, z.B. "blaser-swisslube"
+
+  logoPath  String?            // /brand-logos/BlaserSwisslubeLogo.png
+  website   String?            // https://www.blaser.com
+
+  headquartersCountry String?  // ISO-3166-1 alpha-2 oder Klartext
+  headquartersCity    String?
+  foundedYear         Int?
+
+  businessFocus   BusinessFocus[] @default([])
+  productFamilies String[]        @default([])  // z.B. ["Blasocut", "Vasco", "Synergy"]
+  description     String?
+
+  // Wissens-Metadaten — was wir aus dem Web/Datenblättern wissen
+  knownForApplications String[] @default([])    // z.B. ["Schleifen", "Drehen Alu", "Tiefbohren"]
+  notes               String?                    // freitext, manuell pflegbar
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  listings  Listing[]
+  sds       SafetyDataSheet[]
+
+  @@index([slug])
+}
+
 model User {
   id           String        @id @default(cuid())
   email        String        @unique
@@ -227,7 +267,9 @@ model Listing {
 
   // FDS 4.2 Datenmodell
   productType     String         // Hydrauliköl, KSS-Emulsion, etc.
-  manufacturer    String         // Shell, Fuchs, Mobil, OEM-Eigenmarke
+  manufacturer    String         // Shell, Fuchs, Mobil, OEM-Eigenmarke — Freitext, deprecated zugunsten manufacturerId
+  manufacturerId  String?
+  manufacturerRef Manufacturer?  @relation(fields: [manufacturerId], references: [id], onDelete: SetNull)
   productName     String         // z.B. Tellus S2 M 46
   isoViscosity    String?        // ISO VG 32, 46, 68, ...
   chemistry       ChemistryBase  @default(MINERAL)
@@ -271,6 +313,7 @@ model Listing {
 
   @@index([productType])
   @@index([manufacturer])
+  @@index([manufacturerId])
   @@index([isoViscosity])
   @@index([status])
   @@index([sdsId])
@@ -326,7 +369,9 @@ model Review {
 
 model SafetyDataSheet {
   id            String       @id @default(cuid())
-  manufacturer  String
+  manufacturer  String       // Freitext, deprecated zugunsten manufacturerId
+  manufacturerId String?
+  manufacturerRef Manufacturer? @relation(fields: [manufacturerId], references: [id], onDelete: SetNull)
   productName   String
   category      SdsCategory
   language      SdsLanguage  @default(DE)
@@ -346,6 +391,7 @@ model SafetyDataSheet {
   listings      Listing[]
 
   @@index([manufacturer])
+  @@index([manufacturerId])
   @@index([category])
   @@index([productName])
 }
