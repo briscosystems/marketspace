@@ -98,6 +98,24 @@ enum SdsLanguage {
   OTHER
 }
 
+enum ProductCategory {
+  COOLANT_WATER_MIX     // wassermischbarer KSS-Konzentrat
+  COOLANT_NEAT          // nicht wassermischbares Schneidöl
+  GRINDING_OIL          // Schleiföl
+  EDM_FLUID             // Erodieröl (Senk/Draht), Dielektrikum
+  HYDRAULIC_OIL
+  GEAR_OIL
+  COMPRESSOR_OIL
+  SLIDEWAY_OIL          // Bettbahnöl
+  FORMING_OIL           // Stanz-/Umform-/Tiefziehöl
+  CLEANER               // Reiniger / Entfetter
+  CORROSION_PROTECTION
+  GREASE
+  SPECIALTY             // Spezial-/Sonderschmierstoff
+  ADDITIVE
+  OTHER
+}
+
 enum BusinessFocus {
   COOLANT              // Kühlschmierstoffe (wassermischbar)
   NEAT_OIL             // Nicht wassermischbare Schneidöle
@@ -134,8 +152,78 @@ model Manufacturer {
 
   listings  Listing[]
   sds       SafetyDataSheet[]
+  products  Product[]
 
   @@index([slug])
+}
+
+model Product {
+  id              String       @id @default(cuid())
+  manufacturerId  String
+  manufacturer    Manufacturer @relation(fields: [manufacturerId], references: [id], onDelete: Cascade)
+
+  name            String       // Vollständiger Name z.B. "Blasocut 2000 CF"
+  slug            String       // url-safe, eindeutig pro Hersteller
+  productFamily   String?      // z.B. "Blasocut"
+  category        ProductCategory
+  chemistry       ChemistryBase?
+
+  description     String?
+
+  // Anwendung
+  applicationAreas    String[] @default([])  // Drehen, Fräsen, Schleifen, Stanzen, ...
+  suitableMaterials   String[] @default([])  // Stahl, Alu, Buntmetall, Guss, Titan, Hartmetall
+  unsuitableMaterials String[] @default([])  // Werkstoffe wo Probleme dokumentiert sind
+
+  // Refraktometer — Schlüsselwert für KSS-Konzentratbestimmung
+  refractometerFactor Float?    // Brix × Faktor = % Konzentration
+
+  // Empfohlene Konzentration im Gebrauchsbereich (wassermischbare KSS)
+  recommendedConcentrationMin Float?  // % v/v
+  recommendedConcentrationMax Float?  // % v/v
+
+  // pH
+  phConcentrate Float?
+  phEmulsionMin Float?           // bei Soll-Konzentration
+  phEmulsionMax Float?
+
+  // Physik
+  densityGcm3   Float?           // bei 20 °C
+  flashpointC   Int?              // °C (nur für Öle)
+  viscosityIso  String?           // ISO VG (für Öle)
+  viscosityKv40 Float?            // mm²/s bei 40 °C
+  viscosityKv100 Float?           // mm²/s bei 100 °C
+
+  // Ansetzwasser-Anforderungen (wassermischbare KSS)
+  waterHardnessMinDh  Int?       // °dH min empfohlen
+  waterHardnessMaxDh  Int?       // °dH max empfohlen
+  waterHardnessNotes  String?    // z.B. "demineralisiertes Wasser ungeeignet"
+
+  // Lebensmittel-/Norm-Freigaben
+  certifications  String[]  @default([])  // FDA H1, DIN 51385, TRGS 611, OEM-Freigaben
+
+  // Markierungen
+  containsBor              Boolean?
+  containsFormaldehydeDepot Boolean?
+  containsMineralOil       Boolean?
+  containsChlorine         Boolean?
+  mineralOilContentPct     Float?       // 0-100 %
+
+  // Quellen
+  sourceUrl       String?       // Produktseite Hersteller
+  dataSheetUrl    String?       // technisches Datenblatt (PDS)
+  sdsUrl          String?       // Sicherheitsdatenblatt
+  sourceConfidence String?      // "verifiziert", "modelliert", "geschätzt"
+
+  notes           String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([manufacturerId, slug])
+  @@index([manufacturerId])
+  @@index([category])
+  @@index([productFamily])
 }
 
 model User {
