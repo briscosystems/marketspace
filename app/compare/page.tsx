@@ -2,9 +2,11 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { ManufacturerLogo } from "@/components/ManufacturerLogo";
 import { CompareRemoveButton } from "@/components/compare/CompareToggle";
+import { AiAnalysisPanel } from "@/components/compare/AiAnalysisPanel";
 import { BrandLogo } from "@/components/BrandLogo";
 import { PACKAGING_LABEL } from "@/lib/branding";
-import { GitCompare, AlertCircle, ListChecks, Boxes } from "lucide-react";
+import { getCachedAnalysis } from "@/lib/comparison-analysis";
+import { GitCompare, AlertCircle, AlertTriangle, ListChecks, Boxes } from "lucide-react";
 
 export const metadata = {
   title: "Vergleich — Brisco Marketplace",
@@ -318,6 +320,16 @@ export default async function ComparePage({
 
   const total = sortedListings.length + sortedProducts.length;
 
+  // KI-Bewertung: Cache vor-laden (synchron mit Page-Render), Mixed-Type-Check
+  const listingTypes = new Set(sortedListings.map((l) => l.productType));
+  const aiEligible = sortedListings.length >= 2 && listingTypes.size === 1;
+  const cachedAnalysis =
+    aiEligible ? await getCachedAnalysis(sortedListings.map((l) => l.id)) : null;
+  const listingMap: Record<string, { productName: string; manufacturer: string }> = {};
+  for (const l of sortedListings) {
+    listingMap[l.id] = { productName: l.productName, manufacturer: l.manufacturer };
+  }
+
   return (
     <div className="space-y-8 pb-24">
       <header>
@@ -342,13 +354,37 @@ export default async function ComparePage({
       ) : null}
 
       {sortedListings.length > 0 ? (
-        <section>
-          <div className="mb-3 flex items-center gap-2">
+        <section className="space-y-4">
+          <div className="mb-1 flex items-center gap-2">
             <ListChecks size={18} className="text-slate-600" />
             <h2 className="text-lg font-semibold text-slate-900">
               Listings <span className="text-sm font-normal text-slate-500">({sortedListings.length})</span>
             </h2>
           </div>
+
+          {/* Mixed-Type Warnbanner */}
+          {(() => {
+            const types = new Set(sortedListings.map((l) => l.productType));
+            if (types.size > 1) {
+              return (
+                <div className="flex items-start gap-2 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
+                  <AlertTriangle size={16} className="mt-0.5 shrink-0" />
+                  <div>
+                    <strong>Unterschiedliche Produkttypen ausgewählt:</strong>{" "}
+                    {Array.from(types).join(", ")}. Diese sind technisch nicht direkt vergleichbar
+                    (z.B. ein Hydrauliköl gegen einen KSS). Der Vergleich ist trotzdem sichtbar,
+                    die KI-Bewertung ist aber deaktiviert. Filtere die Listings vorher per
+                    Produkttyp-Chip auf{" "}
+                    <Link href="/listings" className="underline">
+                      /listings
+                    </Link>{" "}
+                    auf eine Kategorie ein.
+                  </div>
+                </div>
+              );
+            }
+            return null;
+          })()}
           <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
             <table className="w-full text-sm">
               <thead>
@@ -401,6 +437,21 @@ export default async function ComparePage({
               </tbody>
             </table>
           </div>
+
+          {/* KI-Bewertung — nur für Listings, mind. 2 mit gleichem Typ */}
+          {sortedListings.length >= 2 ? (
+            <AiAnalysisPanel
+              listingIds={sortedListings.map((l) => l.id)}
+              listingMap={listingMap}
+              disabled={!aiEligible}
+              disabledReason={
+                !aiEligible
+                  ? `KI-Bewertung deaktiviert: Listings haben unterschiedliche Produkttypen (${Array.from(listingTypes).join(", ")}).`
+                  : undefined
+              }
+              initialResult={cachedAnalysis}
+            />
+          ) : null}
         </section>
       ) : null}
 

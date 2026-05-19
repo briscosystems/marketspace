@@ -235,6 +235,20 @@ model Product {
   @@index([productFamily])
 }
 
+model ComparisonAnalysis {
+  id           String   @id @default(cuid())
+  // sha256 über die sortierte Liste der verglichenen IDs (Listings oder Products)
+  cacheKey     String   @unique
+  scope        String   // "listings" oder "products"
+  ids          String[] // die verglichenen IDs (sortiert wie cacheKey berechnet)
+  // Strukturiertes Ergebnis als JSON: { perItem: [...], recommendation: "...", model: "..." }
+  result       Json
+  source       String   // "anthropic-claude" | "heuristic-fallback"
+  createdAt    DateTime @default(now())
+
+  @@index([scope, createdAt])
+}
+
 model MaterialCompatibilityNote {
   id          String                @id @default(cuid())
   productId   String?
