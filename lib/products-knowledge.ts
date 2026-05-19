@@ -41,6 +41,29 @@ export const KNOWN_MANUFACTURERS: string[] = [
   "Ravenol",
   "Rowe",
   "Pennzoil",
+  // Erweiterung — KSS-Schwerpunkt-Hersteller (wlw.ch Recherche)
+  "Bantleon",
+  "Avia",
+  "Cimcool",
+  "Divinol",
+  "Zeller+Gmelin",
+  "Aquaslide",
+  "Motorex",
+  "Rhenus Lub",
+  "Oelheld",
+  "Bechem",
+  "Oest",
+  "Henkel",
+  "Kluthe",
+  "Scharr",
+  "Jokisch",
+  "hebro chemie",
+  "Green CNC",
+  "Phi Oil",
+  "ESL Schmiertechnik",
+  "Mapo Schmierstofftechnik",
+  "WISURA",
+  "Carl Bechem",
 ];
 
 // Bekannte Produkttypen
@@ -240,9 +263,96 @@ export const PRODUCT_FAMILIES: ProductFamily[] = [
   { family: "Novamet", manufacturer: "Oemeta", productType: "Kühlschmierstoff (Emulsion, wassermischbar)" },
   { family: "Hytec", manufacturer: "Oemeta", productType: "Schneidöl (nicht-wassermischbar)" },
 
-  // ---------- Houghton ----------
-  { family: "Hocut", manufacturer: "Houghton", productType: "Kühlschmierstoff (Emulsion, wassermischbar)" },
+  // ---------- Houghton / Quaker Houghton ----------
+  {
+    family: "Hocut",
+    manufacturer: "Houghton",
+    productType: "Kühlschmierstoff (Emulsion, wassermischbar)",
+    aliases: ["Hocut B", "Hocut WS"],
+  },
   { family: "Garia", manufacturer: "Houghton", productType: "Korrosionsschutzöl" },
+  { family: "Hocut HD", manufacturer: "Quaker Houghton", productType: "Kühlschmierstoff (Emulsion, wassermischbar)" },
+  { family: "Macron", manufacturer: "Quaker Houghton", productType: "Schneidöl (nicht-wassermischbar)" },
+  { family: "Hocut SP", manufacturer: "Quaker Houghton", productType: "Schleiföl" },
+
+  // ---------- Bantleon / Avia ----------
+  { family: "Avia", manufacturer: "Bantleon", productType: "Hydrauliköl", aliases: ["Avia Hydrosynth", "Avia Hydrofluid HVI", "Avia HM"] },
+  { family: "Avia Gear", manufacturer: "Bantleon", productType: "Getriebeöl", aliases: ["Avia Gear RSX", "Avia Compound"] },
+  { family: "Avilub", manufacturer: "Bantleon", productType: "Kühlschmierstoff (Emulsion, wassermischbar)", aliases: ["Avilub Metacut", "Avilub Mikrosol"] },
+  { family: "Avilub Sint", manufacturer: "Bantleon", productType: "Kühlschmierstoff (Lösung, wassermischbar)" },
+  { family: "Avia Schleiföl", manufacturer: "Bantleon", productType: "Schleiföl" },
+  { family: "Avia Stanzöl", manufacturer: "Bantleon", productType: "Stanzöl" },
+  { family: "Aviaticon", manufacturer: "Bantleon", productType: "Hydrauliköl" },
+
+  // ---------- Cimcool ----------
+  { family: "Cimstar", manufacturer: "Cimcool", productType: "Kühlschmierstoff (Emulsion, wassermischbar)", aliases: ["Cimstar 597", "Cimstar 700", "Cimstar Q"] },
+  { family: "Cimperial", manufacturer: "Cimcool", productType: "Kühlschmierstoff (Emulsion, wassermischbar)", aliases: ["Cimperial 1011", "Cimperial HD"] },
+  { family: "Cimtech", manufacturer: "Cimcool", productType: "Kühlschmierstoff (Lösung, wassermischbar)", aliases: ["Cimtech 310", "Cimtech 320"] },
+  { family: "Cimcool", manufacturer: "Cimcool", productType: "Kühlschmierstoff (Emulsion, wassermischbar)" },
+  { family: "Cimcut", manufacturer: "Cimcool", productType: "Schneidöl (nicht-wassermischbar)" },
+  { family: "Cimflo", manufacturer: "Cimcool", productType: "Schneidöl (nicht-wassermischbar)" },
+  { family: "Cimguard", manufacturer: "Cimcool", productType: "Korrosionsschutzöl" },
+
+  // ---------- Divinol / Zeller+Gmelin ----------
+  { family: "Divinol HLP", manufacturer: "Divinol", productType: "Hydrauliköl", aliases: ["HLP ISO 46", "HLP 32"] },
+  { family: "Divinol ICL", manufacturer: "Divinol", productType: "Getriebeöl", aliases: ["ICL ISO 220"] },
+  { family: "Divinol Schleiföl", manufacturer: "Divinol", productType: "Schleiföl" },
+  { family: "Divisynth", manufacturer: "Divinol", productType: "Kühlschmierstoff (Emulsion, wassermischbar)", aliases: ["Divisynth N", "Divisynth XB"] },
+  { family: "Divinol Multimax", manufacturer: "Divinol", productType: "Motoröl" },
+  { family: "Multifak", manufacturer: "Divinol", productType: "Schmierfett" },
+
+  // ---------- Aquaslide ----------
+  { family: "Aquaslide", manufacturer: "Aquaslide", productType: "Kühlschmierstoff (Emulsion, wassermischbar)", aliases: ["Aquaslide WG", "Aquaslide HD"] },
+
+  // ---------- Motorex ----------
+  { family: "Swisscut", manufacturer: "Motorex", productType: "Schneidöl (nicht-wassermischbar)" },
+  { family: "Swisscool", manufacturer: "Motorex", productType: "Kühlschmierstoff (Emulsion, wassermischbar)", aliases: ["Swisscool Magnum", "Swisscool Pluto"] },
+  { family: "Ortho NF", manufacturer: "Motorex", productType: "Schneidöl (nicht-wassermischbar)" },
+  { family: "Corex", manufacturer: "Motorex", productType: "Korrosionsschutzöl" },
+  { family: "Motorex Hydra", manufacturer: "Motorex", productType: "Hydrauliköl" },
+
+  // ---------- Rhenus Lub ----------
+  { family: "Rhenus", manufacturer: "Rhenus Lub", productType: "Kühlschmierstoff (Emulsion, wassermischbar)", aliases: ["Rhenus FU", "Rhenus TY", "Rhenus XY"] },
+  { family: "Rhenus Cool", manufacturer: "Rhenus Lub", productType: "Kühlschmierstoff (Lösung, wassermischbar)" },
+  { family: "Rhenus SF", manufacturer: "Rhenus Lub", productType: "Schleiföl" },
+
+  // ---------- Oelheld ----------
+  { family: "Sintogrind", manufacturer: "Oelheld", productType: "Schleiföl", aliases: ["Sintogrind TT", "Sintogrind BHS"] },
+  { family: "Sintoplan", manufacturer: "Oelheld", productType: "Honöl" },
+  { family: "Sintocut", manufacturer: "Oelheld", productType: "Schneidöl (nicht-wassermischbar)" },
+  { family: "Hydrocut", manufacturer: "Oelheld", productType: "Kühlschmierstoff (Emulsion, wassermischbar)" },
+  { family: "IonoGrind", manufacturer: "Oelheld", productType: "Schleiföl" },
+
+  // ---------- Bechem (Carl Bechem) ----------
+  { family: "Bechem", manufacturer: "Bechem", productType: "Schmierfett", aliases: ["Berutox", "Beruplex", "Berusynth"] },
+  { family: "Avantin", manufacturer: "Bechem", productType: "Kühlschmierstoff (Emulsion, wassermischbar)" },
+  { family: "Berucut", manufacturer: "Bechem", productType: "Schneidöl (nicht-wassermischbar)" },
+
+  // ---------- Oest ----------
+  { family: "Oestolan", manufacturer: "Oest", productType: "Hydrauliköl" },
+  { family: "Oesterol", manufacturer: "Oest", productType: "Getriebeöl" },
+
+  // ---------- Henkel / Kluthe ----------
+  { family: "Multan", manufacturer: "Henkel", productType: "Kühlschmierstoff (Emulsion, wassermischbar)" },
+  { family: "Hakuform", manufacturer: "Kluthe", productType: "Umformöl" },
+  { family: "Hakucut", manufacturer: "Kluthe", productType: "Schneidöl (nicht-wassermischbar)" },
+  { family: "Hakuwett", manufacturer: "Kluthe", productType: "Kühlschmierstoff (Emulsion, wassermischbar)" },
+
+  // ---------- Jokisch ----------
+  { family: "Jokisch", manufacturer: "Jokisch", productType: "Schneidöl (nicht-wassermischbar)", aliases: ["Jokisch S", "Jokisch FBS"] },
+  { family: "Joko", manufacturer: "Jokisch", productType: "Kühlschmierstoff (Emulsion, wassermischbar)" },
+
+  // ---------- hebro ----------
+  { family: "Hebro Chemie", manufacturer: "hebro chemie", productType: "Kühlschmierstoff (Emulsion, wassermischbar)" },
+  { family: "Hebrocut", manufacturer: "hebro chemie", productType: "Schneidöl (nicht-wassermischbar)" },
+
+  // ---------- Green CNC ----------
+  { family: "Green CNC", manufacturer: "Green CNC", productType: "Kühlschmierstoff (Emulsion, wassermischbar)" },
+  { family: "GreenCool", manufacturer: "Green CNC", productType: "Kühlschmierstoff (Emulsion, wassermischbar)" },
+
+  // ---------- Phi Oil ----------
+  { family: "Phi Oil Hydra", manufacturer: "Phi Oil", productType: "Hydrauliköl" },
+  { family: "Phi Cool", manufacturer: "Phi Oil", productType: "Kühlschmierstoff (Emulsion, wassermischbar)" },
 ];
 
 function tok(s: string): string {

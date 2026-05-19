@@ -5,10 +5,13 @@ export type BrandColors = {
 };
 
 const BRANDS: { match: RegExp; colors: BrandColors }[] = [
-  { match: /castrol/i, colors: { primary: "#00A651", secondary: "#E30613", text: "#ffffff" } },
-  { match: /fuchs/i, colors: { primary: "#E30613", secondary: "#FFC627", text: "#ffffff" } },
+  // Castrol — grüner Korpus, rotes Mittelband (klassisches Castrol-Fass)
+  { match: /castrol/i, colors: { primary: "#00853F", secondary: "#E30613", text: "#ffffff" } },
+  // Fuchs Petrolub — dunkles Marken-Blau (Fuchs-Corporate), weißes Band
+  { match: /fuchs/i, colors: { primary: "#003F87", secondary: "#E30613", text: "#ffffff" } },
+  // Shell — gelber Korpus, rotes Mittelband (Pecten-Farben)
   { match: /shell/i, colors: { primary: "#FBCE07", secondary: "#DD1D21", text: "#1a1a1a" } },
-  { match: /mobil|exxon/i, colors: { primary: "#005EB8", secondary: "#ED1A3B", text: "#ffffff" } },
+  { match: /mobil|exxon/i, colors: { primary: "#0033A0", secondary: "#ED1A3B", text: "#ffffff" } },
   { match: /kl(ü|ue)ber/i, colors: { primary: "#005CA9", secondary: "#F39200", text: "#ffffff" } },
   { match: /total|elf/i, colors: { primary: "#F37021", secondary: "#1E3A8A", text: "#ffffff" } },
   { match: /\bbp\b/i, colors: { primary: "#009639", secondary: "#FFD700", text: "#ffffff" } },
@@ -22,6 +25,23 @@ const BRANDS: { match: RegExp; colors: BrandColors }[] = [
   { match: /houghton|quaker/i, colors: { primary: "#003C71", secondary: "#FFB81C", text: "#ffffff" } },
   { match: /blaser/i, colors: { primary: "#003B6F", secondary: "#E30613", text: "#ffffff" } },
   { match: /oemeta/i, colors: { primary: "#004F9F", secondary: "#FF9900", text: "#ffffff" } },
+  // Neue Marken
+  { match: /bantleon|avia/i, colors: { primary: "#E30613", secondary: "#1E3A8A", text: "#ffffff" } },
+  { match: /cimcool|cimstar|cimperial/i, colors: { primary: "#00A0DF", secondary: "#003366", text: "#ffffff" } },
+  { match: /divinol|zeller/i, colors: { primary: "#E30613", secondary: "#003366", text: "#ffffff" } },
+  { match: /aquaslide/i, colors: { primary: "#0070C0", secondary: "#00B0F0", text: "#ffffff" } },
+  { match: /motorex/i, colors: { primary: "#E30613", secondary: "#000000", text: "#ffffff" } },
+  { match: /rhenus/i, colors: { primary: "#003F87", secondary: "#E30613", text: "#ffffff" } },
+  { match: /oelheld/i, colors: { primary: "#0066B3", secondary: "#FFCC00", text: "#ffffff" } },
+  { match: /bechem/i, colors: { primary: "#003366", secondary: "#FFC107", text: "#ffffff" } },
+  { match: /\boest\b/i, colors: { primary: "#005099", secondary: "#FFCC00", text: "#ffffff" } },
+  { match: /henkel|loctite/i, colors: { primary: "#E2001A", secondary: "#000000", text: "#ffffff" } },
+  { match: /kluthe/i, colors: { primary: "#005CA9", secondary: "#E30613", text: "#ffffff" } },
+  { match: /scharr/i, colors: { primary: "#E30613", secondary: "#003366", text: "#ffffff" } },
+  { match: /jokisch/i, colors: { primary: "#003366", secondary: "#E30613", text: "#ffffff" } },
+  { match: /hebro/i, colors: { primary: "#006633", secondary: "#FFCC00", text: "#ffffff" } },
+  { match: /green\s*cnc|greencnc/i, colors: { primary: "#1B6E1B", secondary: "#A4D33C", text: "#ffffff" } },
+  { match: /phi\s*oil|phioil/i, colors: { primary: "#1E40AF", secondary: "#F59E0B", text: "#ffffff" } },
 ];
 
 /**

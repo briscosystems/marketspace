@@ -29,7 +29,7 @@ export function ProductImage({
   return (
     <div className={wrap} aria-label={`${manufacturer} ${productName} (${packaging})`}>
       <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" className="h-full w-full">
-        {renderPackaging(packaging, colors, manufacturer, productName, gid)}
+        {renderPackaging(packaging, colors, manufacturer, gid)}
       </svg>
     </div>
   );
@@ -45,14 +45,13 @@ function renderPackaging(
   packaging: Packaging,
   colors: ReturnType<typeof brandColors>,
   brand: string,
-  productName: string,
   gid: string,
 ) {
   switch (packaging) {
     case "IBC":
       return renderIbc(colors, brand, gid);
     case "CANISTER":
-      return renderCanister(colors, brand, productName, gid);
+      return renderCanister(colors, brand, gid);
     case "TANK":
       return renderTank(colors, brand, gid);
     case "BULK":
@@ -60,17 +59,8 @@ function renderPackaging(
     case "OTHER":
     case "DRUM":
     default:
-      return renderDrum(colors, brand, productName, gid);
+      return renderDrum(colors, brand, gid);
   }
-}
-
-function shortName(productName: string): string {
-  return productName
-    .split(/\s+/)
-    .filter((p) => p.length > 0)
-    .map((p) => (/^[0-9]+$/.test(p) ? p : /^[A-Z]+[0-9]+/i.test(p) ? p.toUpperCase() : p[0]?.toUpperCase()))
-    .join("")
-    .slice(0, 6);
 }
 
 // ============================================================================
@@ -161,7 +151,6 @@ function GroundShadow({
 function renderDrum(
   colors: ReturnType<typeof brandColors>,
   brand: string,
-  productName: string,
   gid: string,
 ) {
   const cx = 50;
@@ -219,58 +208,37 @@ function renderDrum(
       <SteelRing cx={cx} rx={rx} y={r2y} h={3.2} gid={gid} />
       <SteelRing cx={cx} rx={rx} y={r3y} h={3.2} gid={gid} />
 
-      {/* Etikett-Karte */}
+      {/* Etikett — großes weißes Mittelband mit nur dem Markennamen.
+          Produktname steht ohnehin neben dem Bild, deshalb keine doppelte
+          Beschriftung auf dem Fass. */}
       <g transform={`translate(${cx - rx + 4}, ${labelTop + 2})`}>
         <rect
           x="0"
           y="0"
           width={rx * 2 - 8}
           height={labelBot - labelTop - 4}
-          rx="1.5"
-          fill={`url(#${gid}-label)`}
+          rx="1"
+          fill="#ffffff"
         />
-        {/* Subtiler Schatten unter dem Etikett */}
         <rect
           x="0"
           y={labelBot - labelTop - 4}
           width={rx * 2 - 8}
-          height="0.5"
+          height="0.6"
           fill="#000"
-          opacity="0.18"
+          opacity="0.20"
         />
-        {/* Brand-Color-Streifen oben */}
-        <rect x="0" y="0" width={rx * 2 - 8} height="3" fill={colors.primary} />
         <text
           x={(rx * 2 - 8) / 2}
-          y={(labelBot - labelTop - 4) / 2 - 1}
+          y={(labelBot - labelTop - 4) / 2 + 3}
           textAnchor="middle"
-          fontSize="6"
+          fontSize={Math.min(11, Math.max(7, (rx * 2 - 8) / brandFitLength(brand)))}
           fontWeight="800"
           fontFamily="ui-sans-serif, system-ui, sans-serif"
           fill={colors.primary}
           letterSpacing="0.4"
         >
-          {brand.toUpperCase().slice(0, 9)}
-        </text>
-        <text
-          x={(rx * 2 - 8) / 2}
-          y={(labelBot - labelTop - 4) / 2 + 5}
-          textAnchor="middle"
-          fontSize="4.2"
-          fontFamily="ui-sans-serif, system-ui, sans-serif"
-          fill="#475569"
-        >
-          {shortName(productName)}
-        </text>
-        <text
-          x={(rx * 2 - 8) / 2}
-          y={labelBot - labelTop - 6}
-          textAnchor="middle"
-          fontSize="3.2"
-          fontFamily="ui-monospace, monospace"
-          fill="#94a3b8"
-        >
-          200 L
+          {brand.toUpperCase()}
         </text>
       </g>
 
@@ -444,30 +412,20 @@ function renderIbc(
       <circle cx={fx + fw / 2} cy={fy + fh + 0.5} r="1.5" fill="#1e293b" />
       <rect x={fx + fw / 2 - 1} y={fy + fh + 2.5} width="2" height="4" fill="#334155" />
 
-      {/* Etikett vorne */}
-      <g transform={`translate(${fx + 5}, ${fy + fh / 2 - 11})`}>
-        <rect x="0" y="0" width={fw - 10} height="22" fill={`url(#${gid}-label)`} rx="1.2" />
-        <rect x="0" y="0" width={fw - 10} height="3.5" fill={colors.primary} />
+      {/* Etikett vorne — nur Markenname, prominent */}
+      <g transform={`translate(${fx + 5}, ${fy + fh / 2 - 10})`}>
+        <rect x="0" y="0" width={fw - 10} height="20" fill="#ffffff" rx="1" />
         <text
           x={(fw - 10) / 2}
-          y="12"
+          y="13"
           textAnchor="middle"
-          fontSize="6.5"
+          fontSize={Math.min(11, Math.max(7, (fw - 10) / brandFitLength(brand)))}
           fontWeight="800"
           fontFamily="ui-sans-serif, system-ui, sans-serif"
           fill={colors.primary}
+          letterSpacing="0.4"
         >
-          {brand.toUpperCase().slice(0, 9)}
-        </text>
-        <text
-          x={(fw - 10) / 2}
-          y="19"
-          textAnchor="middle"
-          fontSize="3.6"
-          fontFamily="ui-monospace, monospace"
-          fill="#64748b"
-        >
-          IBC · 1000 L
+          {brand.toUpperCase()}
         </text>
       </g>
     </>
@@ -480,7 +438,6 @@ function renderIbc(
 function renderCanister(
   colors: ReturnType<typeof brandColors>,
   brand: string,
-  productName: string,
   gid: string,
 ) {
   return (
@@ -528,18 +485,20 @@ function renderCanister(
         strokeLinecap="round"
       />
 
-      {/* Etikett */}
-      <g transform="translate(33, 36)">
-        <rect x="0" y="0" width="34" height="44" fill={`url(#${gid}-label)`} rx="1.5" />
-        <rect x="0" y="0" width="34" height="3.5" fill={colors.primary} />
-        <text x="17" y="15" textAnchor="middle" fontSize="6" fontWeight="800" fontFamily="ui-sans-serif, system-ui, sans-serif" fill={colors.primary}>
-          {brand.toUpperCase().slice(0, 8)}
-        </text>
-        <text x="17" y="24" textAnchor="middle" fontSize="4.6" fontFamily="ui-sans-serif, system-ui, sans-serif" fill="#475569">
-          {shortName(productName)}
-        </text>
-        <text x="17" y="40" textAnchor="middle" fontSize="3.4" fontFamily="ui-monospace, monospace" fill="#94a3b8">
-          20 L
+      {/* Etikett — nur Markenname */}
+      <g transform="translate(33, 40)">
+        <rect x="0" y="0" width="34" height="34" fill="#ffffff" rx="1.5" />
+        <text
+          x="17"
+          y="22"
+          textAnchor="middle"
+          fontSize={Math.min(10, Math.max(6, 34 / brandFitLength(brand)))}
+          fontWeight="800"
+          fontFamily="ui-sans-serif, system-ui, sans-serif"
+          fill={colors.primary}
+          letterSpacing="0.3"
+        >
+          {brand.toUpperCase()}
         </text>
       </g>
     </>
@@ -583,15 +542,20 @@ function renderTank(
       <rect x="20" y="89" width="6" height="1.5" fill="#000" opacity="0.4" />
       <rect x="74" y="89" width="6" height="1.5" fill="#000" opacity="0.4" />
 
-      {/* Etikett */}
-      <g transform="translate(24, 56)">
-        <rect x="0" y="0" width="52" height="18" fill={`url(#${gid}-label)`} rx="1.2" />
-        <rect x="0" y="0" width="52" height="3.2" fill={colors.primary} />
-        <text x="26" y="11" textAnchor="middle" fontSize="6.5" fontWeight="800" fontFamily="ui-sans-serif, system-ui, sans-serif" fill={colors.primary}>
-          {brand.toUpperCase().slice(0, 9)}
-        </text>
-        <text x="26" y="16" textAnchor="middle" fontSize="3.4" fontFamily="ui-monospace, monospace" fill="#64748b">
-          TANK
+      {/* Etikett — nur Markenname */}
+      <g transform="translate(24, 54)">
+        <rect x="0" y="0" width="52" height="20" fill="#ffffff" rx="1.2" />
+        <text
+          x="26"
+          y="14"
+          textAnchor="middle"
+          fontSize={Math.min(11, Math.max(7, 52 / brandFitLength(brand)))}
+          fontWeight="800"
+          fontFamily="ui-sans-serif, system-ui, sans-serif"
+          fill={colors.primary}
+          letterSpacing="0.4"
+        >
+          {brand.toUpperCase()}
         </text>
       </g>
     </>
@@ -614,13 +578,30 @@ function renderBulk(
       <path d="M 14 84 L 50 28 L 86 84 Z" fill={`url(#${gid}-cyl)`} />
       <circle cx="50" cy="40" r="5" fill={colors.secondary} />
       <circle cx="50" cy="40" r="5" fill={`url(#${gid}-steel)`} opacity="0.3" />
-      <g transform="translate(34, 62)">
-        <rect x="0" y="0" width="32" height="14" fill={`url(#${gid}-label)`} rx="1.2" />
-        <rect x="0" y="0" width="32" height="3" fill={colors.primary} />
-        <text x="16" y="10" textAnchor="middle" fontSize="6" fontWeight="800" fontFamily="ui-sans-serif, system-ui, sans-serif" fill={colors.primary}>
-          {brand.toUpperCase().slice(0, 9)}
+      <g transform="translate(30, 60)">
+        <rect x="0" y="0" width="40" height="18" fill="#ffffff" rx="1.2" />
+        <text
+          x="20"
+          y="13"
+          textAnchor="middle"
+          fontSize={Math.min(10, Math.max(6, 40 / brandFitLength(brand)))}
+          fontWeight="800"
+          fontFamily="ui-sans-serif, system-ui, sans-serif"
+          fill={colors.primary}
+          letterSpacing="0.4"
+        >
+          {brand.toUpperCase()}
         </text>
       </g>
     </>
   );
+}
+
+/**
+ * Heuristik: wieviel Platz braucht der Markenname relativ zur Label-Breite?
+ * Kurze Marken (FUCHS, BP) bekommen größere Schrift, lange (BANTLEON,
+ * HOUGHTON QUAKER) eine entsprechend kleinere.
+ */
+function brandFitLength(brand: string): number {
+  return Math.max(4, brand.length * 0.7);
 }
