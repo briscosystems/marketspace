@@ -1001,4 +1001,79 @@ export const SDS_SOURCES: SdsSource[] = [
     language: "EN",
     sourceUrl: "https://www1.mscdirect.com/MSDS/MSDS00028/84212240-20190907.PDF",
   },
+
+  // ============ Welle 5 (Etappe 11) — REACH-fokussierte KSS-Erweiterung ============
+  // Blaser B-Cool 755 (Art. 11755-01 / -03 / -94 — alle gleiche Rezeptur, nur Gebinde):
+  // einziger öffentlich erreichbarer SDS via russischen Distributor. Blaser-Portal
+  // selbst (blaser.com/safety-data-sheets/) ist JS-gated und liefert nicht direkt.
+  {
+    manufacturer: "Blaser Swisslube",
+    productName: "B-Cool 755 (Art. 11755)",
+    category: "WATER_MISCIBLE_COOLANT",
+    language: "OTHER", // RU — wir nutzen "OTHER", da Enum DE/EN/FR/IT/OTHER
+    sourceUrl: "https://abamet-info.ru/pdf/catalog-products/blaser/b-cool-755_sds.pdf",
+  },
+
+  // Quaker Houghton — Hocut-Serie (wassermischbar)
+  {
+    manufacturer: "Quaker Houghton",
+    productName: "Hocut 795-H",
+    category: "WATER_MISCIBLE_COOLANT",
+    language: "EN",
+    sourceUrl: "https://www.dynateco.gr/datafiles/HOCUT%20795-H_CLP%20SDS-EN.pdf",
+  },
+
+  // Rhenus Lub — FU-Serie (water-miscible) via egp-handel Distributor-Mirror
+  {
+    manufacturer: "Rhenus Lub",
+    productName: "Rhenus FU 750",
+    category: "WATER_MISCIBLE_COOLANT",
+    language: "DE",
+    sourceUrl:
+      "https://www.egp-handel.de/mediafiles/Datenblaetter/RhenusSicherheitsDatenblaetter/SIDA_rhenus%20FU%20750_15.12.2023_D_DE.pdf",
+  },
+  {
+    manufacturer: "Rhenus Lub",
+    productName: "Rhenus FU 800",
+    category: "WATER_MISCIBLE_COOLANT",
+    language: "DE",
+    sourceUrl:
+      "https://www.egp-handel.de/mediafiles/Datenblaetter/RhenusSicherheitsDatenblaetter/SIDA_rhenus%20FU%20800_15.12.2023_D_DE.pdf",
+  },
+  {
+    manufacturer: "Rhenus Lub",
+    productName: "Rhenus FU 51",
+    category: "WATER_MISCIBLE_COOLANT",
+    language: "DE",
+    sourceUrl:
+      "https://www.egp-handel.de/mediafiles/Datenblaetter/RhenusSicherheitsDatenblaetter/SIDA_rhenus%20FU%2051_15.12.2023_D_DE.pdf",
+  },
+  {
+    manufacturer: "Rhenus Lub",
+    productName: "Rhenus FU 60 TN",
+    category: "WATER_MISCIBLE_COOLANT",
+    language: "OTHER", // DK
+    sourceUrl:
+      "https://www.ok.dk/produktkatalog/rhenus/bearbejdning/vandblandbar/rhenus-fu-60_dk.msds.pdf",
+  },
+  {
+    manufacturer: "Rhenus Lub",
+    productName: "Rhenus FU 855",
+    category: "WATER_MISCIBLE_COOLANT",
+    language: "OTHER", // DK
+    sourceUrl:
+      "https://www.ok.dk/produktkatalog/rhenus/bearbejdning/vandblandbar/rhenus-fu-855_dk.msds.pdf",
+  },
+
+  // Klüber Lubrication — Klüberoil 4 UH1-1500 N (food-grade)
+  {
+    manufacturer: "Klüber Lubrication",
+    productName: "Klüberoil 4 UH1-1500 N",
+    category: "GEAR_OIL",
+    language: "EN",
+    sourceUrl: "https://www.konecranes.com/sites/default/files/sds_files/QB_D66402844_01_US-1.PDF",
+  },
+
+  // Oemeta — weitere Hycut-Varianten (CF 21 + ET 68 sind bereits oben, neu nur englische Versionen
+  // falls vorhanden — überspringen, da Duplikat).
 ];

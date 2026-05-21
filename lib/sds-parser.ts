@@ -13,7 +13,9 @@
  * Standard-SDS gut ab.
  */
 
-export const PARSER_VERSION = "1.0";
+import { detectIngredientFlags, EMPTY_FLAGS, type IngredientFlags } from "./sds-ingredients";
+
+export const PARSER_VERSION = "1.1";
 
 export type ParsedSds = {
   hStatements: string[];
@@ -42,7 +44,7 @@ export type ParsedSds = {
   supplierName: string | null;
   supplierAddress: string | null;
   emergencyPhone: string | null;
-};
+} & IngredientFlags;
 
 const EMPTY: ParsedSds = {
   hStatements: [],
@@ -67,11 +69,15 @@ const EMPTY: ParsedSds = {
   supplierName: null,
   supplierAddress: null,
   emergencyPhone: null,
+  ...EMPTY_FLAGS,
 };
 
 export function parseSdsText(text: string | null | undefined): ParsedSds {
   if (!text) return EMPTY;
   const t = text.replace(/\r\n?/g, "\n");
+
+  const casNumbers = extractCasNumbers(t);
+  const flags = detectIngredientFlags(t, casNumbers);
 
   return {
     hStatements: extractStatements(t, /\bH\d{3}[A-Za-z]?\b/g),
@@ -96,13 +102,15 @@ export function parseSdsText(text: string | null | undefined): ParsedSds {
     boilingPointC: extractBoilingPoint(t),
     waterSolubility: extractSolubility(t),
 
-    casNumbers: extractCasNumbers(t),
+    casNumbers,
 
     ...extractTransport(t),
 
     supplierName: null, // schwer ohne Layout-Wissen; vorerst leer
     supplierAddress: null,
     emergencyPhone: extractEmergencyPhone(t),
+
+    ...flags,
   };
 }
 

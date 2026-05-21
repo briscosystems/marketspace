@@ -547,6 +547,27 @@ model SafetyDataSheet {
   // Inhaltsstoffe (Section 3)
   casNumbers       String[]  @default([])  // alle erkannten CAS-Nummern im Text
 
+  // -------------------------------------------------------------------------
+  // REACH + Inhaltsstoff-Flags (Parser-Heuristik, siehe lib/sds-ingredients.ts)
+  // -------------------------------------------------------------------------
+  // REACH-Konformität: null = unbekannt, true = registriert/konform, false = nicht
+  reachCompliant            Boolean?
+  reachNotes                String?         // Freitext, z.B. "Annex XVII", "SVHC: keine"
+  svhcSubstances            String[]  @default([])  // erkannte SVHC-Stoffe (Name+CAS)
+
+  // Inhaltsstoff-Klassen (true = enthalten laut SDS, false = ausdrücklich frei, null = unklar)
+  containsBoron             Boolean?    // Borsäure, Borate, Borax (CAS 10043-35-3 u.a.)
+  containsFormaldehydeReleaser Boolean? // Bronopol, DMDM-Hydantoin, Triazin etc.
+  containsSecondaryAmines   Boolean?    // DEA, Morpholin, Diethylamin (Nitrosamin-Risiko)
+  containsChlorinatedParaffins Boolean? // SCCP, MCCP — REACH Anhang XVII
+  containsMineralOil        Boolean?    // Mineralöl als Hauptkomponente
+  containsPrimaryAromaticAmines Boolean? // PAA — REACH-relevant
+
+  // Wirkstoffe / Biozide
+  hasBactericide            Boolean?    // MIT, BIT, CMIT, OIT, Formaldehyd-Donatoren
+  hasFungicide              Boolean?    // IPBC, Pyrithion-Natrium etc.
+  biocidalActives           String[]  @default([])  // konkrete Wirkstoffe als Strings
+
   // Transport (Section 14)
   adrClass         String?                  // "9", "3", "kein Gefahrgut"
   unNumber         String?                  // "UN 1993" etc.
