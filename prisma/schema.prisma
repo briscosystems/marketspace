@@ -274,6 +274,135 @@ model MaterialCompatibilityNote {
   @@index([material])
 }
 
+// ============================================================
+// Material-/Inhaltsstoff-Verträglichkeit (Dichtungen, Kunststoffe)
+// ============================================================
+
+enum MaterialCategory {
+  ELASTOMER      // NBR, EPDM, FKM, Silikon, HNBR, FFKM, PUR, ...
+  THERMOPLASTIC  // PA, POM, PP, PE, PVC, PTFE, PEEK
+  THERMOSET      // Epoxidharz, Phenolharz
+  METAL          // Stahl, Alu, Cu, Mg, ...
+  COATING        // Lacke, Beschichtungen
+}
+
+enum IngredientCategory {
+  AMINE                 // Mono/Di/Triethanolamin, Morpholin, DEA
+  BIOCIDE               // Isothiazolinone, Bronopol, Triazin, Pyrithion, OIT
+  FORMALDEHYDE_RELEASER // Bronopol, DMDM-Hydantoin, Triazin (Untergruppe Biozide)
+  BASE_OIL_MINERAL      // Mineralöl (Naphthenisch, Paraffinisch)
+  BASE_OIL_ESTER        // Ester-Basisöl
+  BASE_OIL_PAO          // Polyalphaolefin
+  BASE_OIL_PAG          // Polyalkylenglykol
+  EMULSIFIER            // Tenside (anionisch, nichtionisch)
+  EP_ADDITIVE_S         // Schwefel-EP
+  EP_ADDITIVE_P         // Phosphor-EP (ZDDP, ZnDTP)
+  EP_ADDITIVE_CL        // Chlorparaffine (SCCP, MCCP)
+  CORROSION_INHIBITOR   // Carboxylate, MBT, BTA, Aminborate
+  BORATE                // Borsäure, Borax, Perborate
+  CHELATE               // EDTA, NTA
+  GLYCOL_ETHER          // Butylglykol, Methoxypropanol
+  SOLVENT_AROMATIC      // Toluol, Xylol, Naphtha
+  SOLVENT_POLAR         // Ketone, Aceton, Alkohole
+  WATER                 // Träger / Hauptphase wassermischbarer KSS
+  ACID                  // Carbonsäuren, Borsäure, Phosphorsäure
+  ALKALI                // KOH, NaOH, Carbonate
+  OTHER
+}
+
+enum EffectType {
+  SWELLING       // Volumen-/Längenzunahme
+  SHRINKAGE      // Schwund (Weichmacher-/Additiv-Extraktion)
+  HARDENING      // Verhärtung
+  EMBRITTLEMENT  // Versprödung, Rissbildung
+  EXTRACTION     // Auswaschen von Mischungsbestandteilen
+  ATTACK_NETWORK // Angriff der Vernetzungsbrücken (irreversibel)
+  NONE
+}
+
+model Material {
+  id              String           @id @default(cuid())
+  slug            String           @unique     // "nbr", "epdm", "fkm-bisphenol"
+  name            String                       // "NBR (Nitril-Butadien-Kautschuk)"
+  shortName       String                       // "NBR"
+  category        MaterialCategory
+
+  description     String?
+  typicalUseCases String[]         @default([])  // ["Hydraulik-O-Ringe", "Wellendichtringe"]
+  temperatureMinC Int?
+  temperatureMaxC Int?
+
+  // Charakteristik nach Polarität (similia similibus solvuntur)
+  isPolar         Boolean?
+
+  // Wenn Untertyp: Verweis auf "Eltern"-Familie (FKM-Bisphenol → FKM)
+  parentSlug      String?
+
+  sourceUrl       String?
+  sourceLabel     String?
+  notes           String?
+
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  compatibilities IngredientMaterialCompatibility[]
+
+  @@index([category])
+  @@index([slug])
+}
+
+model Ingredient {
+  id           String              @id @default(cuid())
+  slug         String              @unique    // "monoethanolamine", "boric-acid"
+  name         String                          // "Monoethanolamin (MEA)"
+  shortName    String?                         // "MEA"
+  category     IngredientCategory
+  casNumbers   String[]            @default([])
+
+  functionInFluid          String? // "pH-Stabilisierung & Korrosionsschutz für Eisen"
+  typicalConcentrationPct  Float?  // typischer Anteil in KSS-Konzentrat in %
+  isSvhc                   Boolean @default(false)
+  description              String?
+
+  sourceUrl   String?
+  sourceLabel String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  compatibilities IngredientMaterialCompatibility[]
+
+  @@index([category])
+}
+
+model IngredientMaterialCompatibility {
+  id           String   @id @default(cuid())
+  ingredientId String
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+  materialId   String
+  material     Material   @relation(fields: [materialId], references: [id], onDelete: Cascade)
+
+  rating       MaterialCompatibility   // RECOMMENDED, COMPATIBLE, CAUTION, UNSUITABLE
+  effectType   EffectType?
+  swellPctMin  Float?                   // erwartete Volumenquellung in %
+  swellPctMax  Float?
+
+  conditionNote String?                 // "bei T > 60°C", "Langzeit > 1000h", "dynamisch"
+  note          String                  // Erklärung des Mechanismus / praktische Wirkung
+
+  sourceUrl    String?
+  sourceLabel  String?                  // "ISM Compatibility Chart", "Trelleborg DB"
+  confidence   String?                  // "verifiziert", "indikativ", "geschätzt"
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([ingredientId, materialId])
+  @@index([materialId])
+  @@index([ingredientId])
+  @@index([rating])
+}
+
 model User {
   id           String        @id @default(cuid())
   email        String        @unique

@@ -6,7 +6,7 @@ import { SignOutButton } from "@/components/SignOutButton";
 import { Providers } from "./providers";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
-import { Droplet, FileText, MessagesSquare, LayoutDashboard, Tag, Search, Building2 } from "lucide-react";
+import { Droplet, FileText, MessagesSquare, LayoutDashboard, Tag, Search, Building2, Shield } from "lucide-react";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -74,6 +74,7 @@ export default async function RootLayout({
                 />
                 <NavLink href="/manufacturers" icon={Building2} label="Hersteller" />
                 <NavLink href="/sds" icon={FileText} label="SDS" />
+                <NavLink href="/materials" icon={Shield} label="Materialien" />
                 {session?.user ? (
                   <>
                     <NavLink href="/dashboard" icon={LayoutDashboard} label="Dashboard" />

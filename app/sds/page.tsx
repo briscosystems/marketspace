@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { SDS_CATEGORY_LABEL, SDS_LANGUAGE_LABEL } from "@/lib/sds";
+import { LiveFilterForm } from "@/components/LiveFilterForm";
 import type { SdsCategory } from "@prisma/client";
 
 type SearchParams = Promise<{
@@ -90,7 +91,7 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
         </div>
       </div>
 
-      <form className="card space-y-4">
+      <LiveFilterForm pathname="/sds" className="card space-y-4">
         {/* Zeile 1: Volltext + Hersteller + Kategorie */}
         <div className="grid gap-4 md:grid-cols-4">
           <div className="md:col-span-2">
@@ -154,14 +155,14 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
         </div>
 
         <div className="flex gap-2">
-          <button type="submit" className="btn-primary">
-            Suchen
-          </button>
           <Link href="/sds" className="btn-secondary">
             Zurücksetzen
           </Link>
+          <span className="text-xs text-slate-400 self-center">
+            Filter wirken live — Ergebnisse aktualisieren sich automatisch.
+          </span>
         </div>
-      </form>
+      </LiveFilterForm>
 
       {sheets.length === 0 ? (
         <div className="card text-center text-slate-500">Keine Datenblätter gefunden.</div>

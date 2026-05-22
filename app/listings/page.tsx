@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { ListingCard } from "@/components/ListingCard";
+import { LiveFilterForm } from "@/components/LiveFilterForm";
 import { Filter, Tag, Plus } from "lucide-react";
 
 type SearchParams = Promise<{
@@ -198,7 +199,7 @@ export default async function ListingsPage({
         ) : null}
       </div>
 
-      <form className="card grid gap-4 md:grid-cols-5">
+      <LiveFilterForm pathname="/listings" className="card grid gap-4 md:grid-cols-5">
         <div className="md:col-span-2">
           <label className="label">Volltext</label>
           <input name="q" defaultValue={q} className="input" placeholder="z.B. Tellus, Hydraulik" />
@@ -232,12 +233,12 @@ export default async function ListingsPage({
         {!showCertificates && <input type="hidden" name="certs" value="0" />}
         {variant === "compact" && <input type="hidden" name="view" value="compact" />}
         <div className="md:col-span-5 flex flex-wrap items-center gap-2">
-          <button type="submit" className="btn-primary">
-            Suchen
-          </button>
           <Link href="/listings" className="btn-secondary">
             Filter zurücksetzen
           </Link>
+          <span className="text-xs text-slate-400 self-center">
+            Filter wirken live.
+          </span>
           <div className="ml-auto flex items-center gap-2">
             <div className="inline-flex overflow-hidden rounded-md ring-1 ring-slate-200">
               <Link
@@ -275,7 +276,7 @@ export default async function ListingsPage({
             </Link>
           </div>
         </div>
-      </form>
+      </LiveFilterForm>
 
       {/* Aktive Filter als Chips zum Abwählen */}
       {(productType || chemistry || manufacturer || isoViscosity || region || q) && (
