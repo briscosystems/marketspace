@@ -4,7 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { ManufacturerLogo } from "@/components/ManufacturerLogo";
 import { RefractometerCalculator } from "@/components/RefractometerCalculator";
 import { CompareToggle } from "@/components/compare/CompareToggle";
-import { Droplets, Beaker, FileText, ExternalLink, AlertTriangle } from "lucide-react";
+import { recommendMaterialsForProduct } from "@/lib/seal-recommendations";
+import { Droplets, Beaker, FileText, ExternalLink, AlertTriangle, Shield, AlertOctagon, CheckCircle2 } from "lucide-react";
 
 const CATEGORY_LABEL: Record<string, string> = {
   COOLANT_WATER_MIX: "KSS (wassermischbar)",
@@ -74,6 +75,16 @@ export default async function ProductDetailPage({
       ],
     },
     orderBy: [{ material: "asc" }, { compatibility: "asc" }],
+  });
+
+  // Berechnete Dichtungs-/Kunststoff-Empfehlung basierend auf Produkt-Chemie
+  const sealRec = await recommendMaterialsForProduct({
+    category: product.category,
+    chemistry: product.chemistry,
+    containsBor: product.containsBor,
+    containsFormaldehydeDepot: product.containsFormaldehydeDepot,
+    containsMineralOil: product.containsMineralOil,
+    containsChlorine: product.containsChlorine,
   });
 
   return (
@@ -194,6 +205,14 @@ export default async function ProductDetailPage({
                 ) : null}
               </div>
             </section>
+          )}
+
+          {/* Empfohlene Dichtungs- und Kunststoffwerkstoffe (berechnet) */}
+          {sealRec.recommendations.length > 0 && (
+            <SealCompatibilitySection
+              recommendations={sealRec.recommendations}
+              inferredIngredients={sealRec.inferredIngredients}
+            />
           )}
 
           {/* Technische Daten */}
@@ -447,4 +466,157 @@ function booleanLabel(v: boolean | null | undefined, invertForFreiPrefix?: boole
   if (v == null) return null;
   if (invertForFreiPrefix) return v ? "nein (enthält)" : "ja";
   return v ? "ja" : "nein";
+}
+
+const SEAL_RATING_STYLE: Record<
+  "RECOMMENDED" | "COMPATIBLE" | "CAUTION" | "UNSUITABLE",
+  { bg: string; border: string; text: string; iconColor: string; label: string }
+> = {
+  RECOMMENDED: {
+    bg: "bg-emerald-50",
+    border: "border-emerald-300",
+    text: "text-emerald-800",
+    iconColor: "text-emerald-600",
+    label: "empfohlen",
+  },
+  COMPATIBLE: {
+    bg: "bg-green-50",
+    border: "border-green-200",
+    text: "text-green-800",
+    iconColor: "text-green-600",
+    label: "geeignet",
+  },
+  CAUTION: {
+    bg: "bg-amber-50",
+    border: "border-amber-300",
+    text: "text-amber-900",
+    iconColor: "text-amber-600",
+    label: "Vorsicht",
+  },
+  UNSUITABLE: {
+    bg: "bg-rose-50",
+    border: "border-rose-300",
+    text: "text-rose-900",
+    iconColor: "text-rose-600",
+    label: "nicht geeignet",
+  },
+};
+
+function SealCompatibilitySection({
+  recommendations,
+  inferredIngredients,
+}: {
+  recommendations: import("@/lib/seal-recommendations").MaterialRec[];
+  inferredIngredients: { slug: string; name: string; why: string }[];
+}) {
+  const groups: Record<"UNSUITABLE" | "CAUTION" | "COMPATIBLE" | "RECOMMENDED", typeof recommendations> = {
+    UNSUITABLE: [],
+    CAUTION: [],
+    COMPATIBLE: [],
+    RECOMMENDED: [],
+  };
+  for (const r of recommendations) groups[r.worstRating].push(r);
+
+  return (
+    <section className="rounded-xl border border-slate-200 bg-white p-5">
+      <div className="flex items-baseline justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <Shield size={16} className="text-brand-600" />
+          <h2 className="font-semibold text-slate-900">Empfohlene Dichtungs- &amp; Kunststoff-Werkstoffe</h2>
+        </div>
+        <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-600">
+          modelliert
+        </span>
+      </div>
+      <p className="mt-1 text-xs text-slate-500">
+        Basierend auf Chemie und Markierungen dieses Produkts. Werkstoffe sind nach{" "}
+        <Link href="/materials" className="text-brand-600 hover:underline">
+          Verträglichkeitsmatrix
+        </Link>{" "}
+        ISM/Trelleborg/Parker bewertet. Vor Anwendung Praxisversuche bei Einsatztemperatur empfohlen.
+      </p>
+
+      {/* Empfehlungs-Chips, nach Severität gruppiert */}
+      <div className="mt-4 space-y-3">
+        {(["UNSUITABLE", "CAUTION", "COMPATIBLE", "RECOMMENDED"] as const).map((bucket) => {
+          const items = groups[bucket];
+          if (items.length === 0) return null;
+          const s = SEAL_RATING_STYLE[bucket];
+          const Icon =
+            bucket === "UNSUITABLE"
+              ? AlertOctagon
+              : bucket === "CAUTION"
+                ? AlertTriangle
+                : CheckCircle2;
+          return (
+            <div key={bucket}>
+              <div className={`mb-1.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide ${s.text}`}>
+                <Icon size={12} className={s.iconColor} />
+                {s.label} ({items.length})
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {items.map((r) => (
+                  <Link
+                    key={r.materialId}
+                    href={`/materials/${r.materialSlug}`}
+                    className={`group inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium transition hover:shadow-sm ${s.bg} ${s.border} ${s.text}`}
+                    title={
+                      r.drivers.length > 0
+                        ? r.drivers.map((d) => `${d.ingredientName}: ${d.rating} — ${d.note}`).join(" | ")
+                        : `Verträglich gegen alle abgeleiteten Inhaltsstoffe`
+                    }
+                  >
+                    {r.materialShortName}
+                    {r.materialCategory === "THERMOPLASTIC" && (
+                      <span className="text-[9px] opacity-60">(Kunststoff)</span>
+                    )}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Driver-Details für die kritischen Materialien */}
+      {groups.UNSUITABLE.length + groups.CAUTION.length > 0 && (
+        <div className="mt-4 border-t border-slate-100 pt-3">
+          <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+            Begründung
+          </div>
+          <div className="mt-2 space-y-2 text-xs">
+            {[...groups.UNSUITABLE, ...groups.CAUTION].slice(0, 6).map((r) => (
+              <div key={r.materialId} className="rounded bg-slate-50 p-2">
+                <div className="font-medium text-slate-800">
+                  {r.materialShortName} — {SEAL_RATING_STYLE[r.worstRating].label}
+                </div>
+                <ul className="mt-1 list-disc pl-4 text-slate-600">
+                  {r.drivers.slice(0, 3).map((d, i) => (
+                    <li key={i}>
+                      <span className="font-medium">{d.ingredientName}:</span> {d.note}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Inferenz-Transparenz: welche Inhaltsstoffe wurden angenommen */}
+      <details className="mt-4 border-t border-slate-100 pt-3">
+        <summary className="cursor-pointer text-xs font-semibold text-slate-500 hover:text-slate-700">
+          Angenommene Inhaltsstoffe ({inferredIngredients.length}) anzeigen
+        </summary>
+        <ul className="mt-2 space-y-1 text-xs">
+          {inferredIngredients.map((i) => (
+            <li key={i.slug} className="rounded bg-slate-50 px-2 py-1">
+              <span className="font-medium text-slate-800">{i.name}</span>
+              <span className="text-slate-600"> — {i.why}</span>
+            </li>
+          ))}
+        </ul>
+      </details>
+    </section>
+  );
 }
