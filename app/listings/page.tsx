@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { ListingCard } from "@/components/ListingCard";
 import { LiveFilterForm } from "@/components/LiveFilterForm";
 import { Collapsible } from "@/components/Collapsible";
+import { SearchSection } from "@/components/SearchSection";
 import { Filter, Tag, Plus } from "lucide-react";
 
 type SearchParams = Promise<{
@@ -200,13 +201,39 @@ export default async function ListingsPage({
         ) : null}
       </div>
 
-      <LiveFilterForm pathname="/listings" className="space-y-2">
-        {/* Volltext immer sichtbar */}
-        <div className="rounded-xl border border-slate-200 bg-white px-4 py-3">
-          <label className="label">Volltext</label>
-          <input name="q" defaultValue={q} className="input" placeholder="z.B. Tellus, Hydraulik" />
-        </div>
+      <LiveFilterForm pathname="/listings" className="space-y-3">
+        {/* ① SUCHFELD — grün */}
+        <SearchSection
+          step="1"
+          color="emerald"
+          title="Suchfeld"
+          subtitle="Volltextsuche nach Produktname, Hersteller oder Beschreibung"
+        >
+          <input
+            name="q"
+            defaultValue={q}
+            className="input border-emerald-200 bg-white focus:border-emerald-400 focus:ring-emerald-300"
+            placeholder="z.B. Tellus, Hydraulik, ISO 46…"
+            autoComplete="off"
+          />
+        </SearchSection>
 
+        {/* ② SUCHKRITERIEN — grau */}
+        <SearchSection
+          step="2"
+          color="slate"
+          title="Suchkriterien"
+          subtitle="Hersteller · ISO VG · Region (zusätzlich zu den Schnellfilter-Chips oben)"
+          rightSlot={
+            (manufacturer || isoViscosity || region) && (
+              <span className="text-[11px]">
+                <Link href="/listings" className="font-medium text-rose-600 hover:underline">
+                  zurücksetzen
+                </Link>
+              </span>
+            )
+          }
+        >
         <Collapsible
           title="Hersteller / ISO VG / Region"
           subtitle="Genauere Eingrenzung"
@@ -245,49 +272,42 @@ export default async function ListingsPage({
         {showCertificates && <input type="hidden" name="certs" value="1" />}
         {!showCertificates && <input type="hidden" name="certs" value="0" />}
         {variant === "compact" && <input type="hidden" name="view" value="compact" />}
-
-        <div className="flex flex-wrap items-center justify-between gap-2 px-1 pt-1">
-          <Link href="/listings" className="text-xs text-brand-600 hover:underline">
-            Alle Filter zurücksetzen
-          </Link>
-          <div className="ml-auto flex items-center gap-2">
-            <div className="inline-flex overflow-hidden rounded-md ring-1 ring-slate-200">
-              <Link
-                href={urlWithParam("view", "compact")}
-                className={`px-3 py-1.5 text-xs font-medium transition-colors ${
-                  variant === "compact"
-                    ? "bg-brand-500 text-white"
-                    : "bg-white text-slate-600 hover:bg-slate-50"
-                }`}
-                title="Kompakte Liste"
-              >
-                ≡ Kompakt
-              </Link>
-              <Link
-                href={urlWithParam("view", null)}
-                className={`px-3 py-1.5 text-xs font-medium transition-colors ${
-                  variant === "extended"
-                    ? "bg-brand-500 text-white"
-                    : "bg-white text-slate-600 hover:bg-slate-50"
-                }`}
-                title="Detaillierte Karten"
-              >
-                ▦ Erweitert
-              </Link>
-            </div>
-            <Link
-              href={urlWithParam("certs", showCertificates ? "0" : null)}
-              className={`chip ${
-                showCertificates
-                  ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200"
-                  : "bg-slate-100 text-slate-600 ring-1 ring-slate-200"
-              }`}
-            >
-              <span>Zertifikate {showCertificates ? "an" : "aus"}</span>
-            </Link>
-          </div>
-        </div>
+        </SearchSection>
       </LiveFilterForm>
+
+      {/* Darstellungs-Optionen */}
+      <div className="flex items-center justify-end gap-2 text-xs text-slate-500">
+        <div className="inline-flex overflow-hidden rounded-md ring-1 ring-slate-200">
+          <Link
+            href={urlWithParam("view", "compact")}
+            className={`px-3 py-1.5 font-medium transition-colors ${
+              variant === "compact" ? "bg-brand-500 text-white" : "bg-white text-slate-600 hover:bg-slate-50"
+            }`}
+            title="Kompakte Liste"
+          >
+            ≡ Kompakt
+          </Link>
+          <Link
+            href={urlWithParam("view", null)}
+            className={`px-3 py-1.5 font-medium transition-colors ${
+              variant === "extended" ? "bg-brand-500 text-white" : "bg-white text-slate-600 hover:bg-slate-50"
+            }`}
+            title="Detaillierte Karten"
+          >
+            ▦ Erweitert
+          </Link>
+        </div>
+        <Link
+          href={urlWithParam("certs", showCertificates ? "0" : null)}
+          className={`chip ${
+            showCertificates
+              ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200"
+              : "bg-slate-100 text-slate-600 ring-1 ring-slate-200"
+          }`}
+        >
+          <span>Zertifikate {showCertificates ? "an" : "aus"}</span>
+        </Link>
+      </div>
 
       {/* Aktive Filter als Chips zum Abwählen */}
       {(productType || chemistry || manufacturer || isoViscosity || region || q) && (
@@ -344,8 +364,15 @@ export default async function ListingsPage({
         </div>
       )}
 
+      {/* ③ ERGEBNISSE — brand-violett */}
+      <SearchSection
+        step="3"
+        color="brand"
+        title="Ergebnisse"
+        subtitle={`${listings.length} ${listings.length === 1 ? "Angebot" : "Angebote"} sichtbar`}
+      >
       {listings.length === 0 ? (
-        <div className="card text-center text-slate-500">
+        <div className="rounded-lg border border-slate-200 bg-white p-4 text-center text-slate-500">
           Keine Listings gefunden.{" "}
           <Link href="/listings" className="text-brand-500 hover:underline">
             Filter zurücksetzen
@@ -381,6 +408,7 @@ export default async function ListingsPage({
           ))}
         </div>
       )}
+      </SearchSection>
     </div>
   );
 }

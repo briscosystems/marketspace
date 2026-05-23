@@ -3,7 +3,9 @@ import { prisma } from "@/lib/prisma";
 import { SDS_CATEGORY_LABEL, SDS_LANGUAGE_LABEL } from "@/lib/sds";
 import { LiveFilterForm } from "@/components/LiveFilterForm";
 import { Collapsible } from "@/components/Collapsible";
+import { SearchSection } from "@/components/SearchSection";
 import { buildSearchWhere } from "@/lib/normalize-search";
+import { FileText } from "lucide-react";
 import type { SdsCategory } from "@prisma/client";
 
 type SearchParams = Promise<{
@@ -85,29 +87,71 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
 
   const totalCount = manufacturers.reduce((sum, m) => sum + m._count._all, 0);
 
+  const filterCount =
+    (manufacturer ? 1 : 0) +
+    (category ? 1 : 0) +
+    (sp.reach ? 1 : 0) +
+    (sp.svhc ? 1 : 0) +
+    (sp.boron ? 1 : 0) +
+    (sp.formaldehyde ? 1 : 0) +
+    (sp.amines ? 1 : 0) +
+    (sp.chlorParaffins ? 1 : 0) +
+    (sp.mineralOil ? 1 : 0) +
+    (sp.bactericide ? 1 : 0) +
+    (sp.fungicide ? 1 : 0);
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-baseline justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">Sicherheitsdatenblätter</h1>
-          <p className="text-sm text-slate-500">
-            {totalCount} Dokumente · Hersteller-Originale, EU-Format · REACH-/Inhaltsstoff-Filter
-          </p>
+    <div className="space-y-3">
+      {/* 🔵 BRANDING-HEADER */}
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border-l-4 border-blue-500 bg-blue-50 px-4 py-2.5 shadow-sm">
+        <div className="flex items-center gap-2">
+          <FileText size={20} className="text-blue-600" />
+          <h1 className="text-lg font-bold text-slate-900">Sicherheitsdatenblätter</h1>
+          <span className="text-xs text-slate-600">
+            {totalCount} Dokumente · REACH/Inhaltsstoff-Filter
+          </span>
         </div>
       </div>
 
-      <LiveFilterForm pathname="/sds" className="space-y-2">
-        {/* Volltext immer sichtbar */}
-        <div className="rounded-xl border border-slate-200 bg-white px-4 py-3">
-          <label className="label">Volltext (auch in PDF-Inhalt)</label>
+      <LiveFilterForm pathname="/sds" className="space-y-3">
+        {/* ① SUCHFELD — grün */}
+        <SearchSection
+          step="1"
+          color="emerald"
+          title="Suchfeld"
+          subtitle="Volltextsuche im Produktname, Hersteller und PDF-Inhalt — live beim Tippen"
+        >
           <input
             name="q"
             defaultValue={q}
-            className="input"
-            placeholder="z.B. Hysol, ISO VG 46, Borsäure, Triazin"
+            className="input border-emerald-200 bg-white focus:border-emerald-400 focus:ring-emerald-300"
+            placeholder="z.B. bcool755, Hysol, ISO VG 46, Borsäure, Triazin…"
+            autoComplete="off"
           />
-        </div>
+        </SearchSection>
 
+        {/* ② SUCHKRITERIEN — grau */}
+        <SearchSection
+          step="2"
+          color="slate"
+          title="Suchkriterien"
+          subtitle="Hersteller · Kategorie · REACH/SVHC · Inhaltsstoff-Flags"
+          rightSlot={
+            <span className="flex items-center gap-2 text-[11px]">
+              {filterCount > 0 && (
+                <span className="rounded-full bg-amber-100 px-2 py-0.5 font-semibold text-amber-800 ring-1 ring-amber-300">
+                  {filterCount} aktiv
+                </span>
+              )}
+              {filterCount > 0 && (
+                <Link href="/sds" className="font-medium text-rose-600 hover:underline">
+                  zurücksetzen
+                </Link>
+              )}
+            </span>
+          }
+        >
+        <div className="space-y-2">
         <Collapsible
           title="Hersteller & Kategorie"
           subtitle="Eingrenzen auf bestimmte Anbieter oder Produktklasse"
@@ -191,19 +235,24 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
             der CAS-Nummern (~CLP/SDS-Standard) plus Klartext-Treffern.
           </p>
         </Collapsible>
-
-        <div className="flex items-center justify-between px-1 pt-2">
-          <Link href="/sds" className="text-xs text-brand-600 hover:underline">
-            Alle Filter zurücksetzen
-          </Link>
-          <span className="text-xs text-slate-400">Filter wirken live.</span>
         </div>
+        </SearchSection>
       </LiveFilterForm>
 
+      {/* ③ ERGEBNISSE — brand-violett */}
+      <SearchSection
+        step="3"
+        color="brand"
+        title="Ergebnisse"
+        subtitle={`${sheets.length} ${sheets.length === 1 ? "Datenblatt" : "Datenblätter"} aus ${totalCount} gesamt`}
+      >
       {sheets.length === 0 ? (
-        <div className="card text-center text-slate-500">Keine Datenblätter gefunden.</div>
+        <div className="rounded-lg border border-slate-200 bg-white p-4 text-center text-slate-500">
+          Keine Datenblätter gefunden — Filter aufweichen oder{" "}
+          <Link href="/sds" className="text-brand-600 hover:underline">zurücksetzen</Link>.
+        </div>
       ) : (
-        <div className="card divide-y divide-slate-200">
+        <div className="rounded-lg border border-slate-200 bg-white divide-y divide-slate-200 px-4">
           {sheets.map((s) => (
             <Link
               key={s.id}
@@ -241,6 +290,7 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
           ))}
         </div>
       )}
+      </SearchSection>
     </div>
   );
 }

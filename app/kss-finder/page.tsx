@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { Collapsible } from "@/components/Collapsible";
 import { LiveFilterForm } from "@/components/LiveFilterForm";
 import { KssWizardLauncher } from "@/components/KssWizardLauncher";
+import { SearchSection } from "@/components/SearchSection";
 import { buildSearchWhere } from "@/lib/normalize-search";
 import {
   APPLICATION_AREAS,
@@ -102,7 +103,7 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
 
   return (
     <div className="space-y-3">
-      {/* 🔵 BRANDING & TOOL-IDENTITÄT — blau */}
+      {/* 🔵 BRANDING-HEADER */}
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border-l-4 border-blue-500 bg-blue-50 px-4 py-2.5 shadow-sm">
         <div className="flex items-center gap-2">
           <Droplets size={20} className="text-blue-600" />
@@ -115,14 +116,13 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
       </div>
 
       <LiveFilterForm pathname="/kss-finder" className="space-y-3">
-        {/* 🟢 SCHNELLSUCHE — grün hervorgehoben, "die primäre Suchaktion" */}
-        <div className="rounded-lg border-l-4 border-emerald-500 bg-emerald-50/60 px-3 py-2.5 shadow-sm">
-          <div className="mb-1 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide text-emerald-700">
-            <span>🔍 Schnellsuche</span>
-            <span className="font-normal normal-case tracking-normal text-emerald-600/70">
-              · live, beim Tippen
-            </span>
-          </div>
+        {/* ① SUCHFELD — grün */}
+        <SearchSection
+          step="1"
+          color="emerald"
+          title="Suchfeld"
+          subtitle="Volltextsuche, live beim Tippen"
+        >
           <input
             name="q"
             defaultValue={q ?? ""}
@@ -130,36 +130,31 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
             className="input border-emerald-200 bg-white focus:border-emerald-400 focus:ring-emerald-300"
             autoComplete="off"
           />
-        </div>
+        </SearchSection>
 
-        {/* ⚪ ERWEITERTE FILTER — grauer, sekundärer Bereich */}
-        <details open className="group rounded-lg border border-slate-200 bg-slate-50 shadow-sm">
-          <summary className="flex cursor-pointer items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-sm hover:bg-slate-100">
-            <span className="flex items-center gap-2">
-              <span className="text-[10px] font-bold uppercase tracking-wide text-slate-600">
-                ⚙️ Weitere Suchkriterien
-              </span>
+        {/* ② SUCHKRITERIEN — grau */}
+        <SearchSection
+          step="2"
+          color="slate"
+          title="Suchkriterien"
+          subtitle="Bearbeitungsverfahren · KSS-Form · Werkstoffe · Produktionsart · Kritische Punkte · Zertifizierungen"
+          rightSlot={
+            <span className="flex items-center gap-2 text-[11px]">
               {activeTotal > 0 && (
-                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-800 ring-1 ring-amber-300">
+                <span className="rounded-full bg-amber-100 px-2 py-0.5 font-semibold text-amber-800 ring-1 ring-amber-300">
                   {activeTotal} aktiv
                 </span>
               )}
-            </span>
-            <span className="text-[11px] text-slate-500">
               {activeTotal > 0 && (
-                <>
-                  <Link href="/kss-finder" className="font-medium text-rose-600 hover:underline">
-                    zurücksetzen
-                  </Link>
-                  {" · "}
-                </>
+                <Link href="/kss-finder" className="font-medium text-rose-600 hover:underline">
+                  zurücksetzen
+                </Link>
               )}
-              ▼ klick zum Auf-/Zuklappen
             </span>
-          </summary>
-
+          }
+        >
           {/* Kompakte 2-Spalten-Grid für die Collapsibles */}
-          <div className="grid gap-2 px-2 pb-2 md:grid-cols-2">
+          <div className="grid gap-2 md:grid-cols-2">
             <Collapsible
               title="Bearbeitungsverfahren"
               subtitle="Drehen, Fräsen, Schleifen, MMS, …"
@@ -222,24 +217,23 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
               />
             </Collapsible>
           </div>
-        </details>
+        </SearchSection>
       </LiveFilterForm>
 
-      {/* 📋 TREFFER-SEKTION — klarer Trenner mit Brand-Akzent */}
-      <div className="-mx-2 mt-4 flex items-baseline justify-between border-t-2 border-brand-500/30 px-2 pt-3">
-        <h2 className="flex items-baseline gap-2 text-lg font-semibold text-slate-900">
-          <span className="rounded-md bg-brand-100 px-2 py-0.5 text-base font-bold text-brand-700">
-            {products.length}
-          </span>
-          <span>Treffer</span>
-        </h2>
-        {products.length === 100 && (
-          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-800 ring-1 ring-amber-300">
-            ⚠ begrenzt auf 100 — Filter verfeinern
-          </span>
-        )}
-      </div>
-
+      {/* ③ ERGEBNISSE — brand-violett */}
+      <SearchSection
+        step="3"
+        color="brand"
+        title="Ergebnisse"
+        subtitle={`${products.length} ${products.length === 1 ? "Treffer" : "Treffer"} aus ${totalCount} KSS`}
+        rightSlot={
+          products.length === 100 ? (
+            <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] text-amber-800 ring-1 ring-amber-300">
+              ⚠ begrenzt auf 100 — Filter verfeinern
+            </span>
+          ) : undefined
+        }
+      >
       {products.length === 0 ? (
         <div className="card text-center text-slate-500">
           Keine KSS gefunden. Filter aufweichen oder{" "}
@@ -294,6 +288,7 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
           ))}
         </div>
       )}
+      </SearchSection>
     </div>
   );
 }
