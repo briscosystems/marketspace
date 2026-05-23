@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { ManufacturerLogo } from "@/components/ManufacturerLogo";
 import { CompareToggle } from "@/components/compare/CompareToggle";
+import { getCurrentPricesBatch } from "@/lib/price-aggregation";
 import { ExternalLink, Globe } from "lucide-react";
 
 const FOCUS_LABEL: Record<string, string> = {
@@ -50,6 +51,9 @@ export default async function ManufacturerDetailPage({
     },
   });
   if (!m) notFound();
+
+  // Aktuelle Marktpreise pro Produkt batch laden
+  const pricesMap = await getCurrentPricesBatch(m.products.map((p) => p.id));
 
   const productsByFamily = new Map<string, typeof m.products>();
   for (const p of m.products) {
@@ -171,6 +175,14 @@ export default async function ManufacturerDetailPage({
                         </div>
                       </Link>
                       <div className="flex shrink-0 items-center gap-2">
+                        {pricesMap.get(p.id) && (
+                          <span
+                            className="rounded-md bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold text-amber-900 ring-1 ring-amber-300"
+                            title={`Marktpreis: ${pricesMap.get(p.id)!.observationCount} Beobachtungen, Konfidenz ${pricesMap.get(p.id)!.confidence}`}
+                          >
+                            💰 {pricesMap.get(p.id)!.median.toFixed(2)} {pricesMap.get(p.id)!.unitLabel}
+                          </span>
+                        )}
                         {p.refractometerFactor != null ? (
                           <span
                             className="rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700"

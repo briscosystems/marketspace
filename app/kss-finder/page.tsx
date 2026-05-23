@@ -5,6 +5,7 @@ import { LiveFilterForm } from "@/components/LiveFilterForm";
 import { KssWizardLauncher } from "@/components/KssWizardLauncher";
 import { SearchSection } from "@/components/SearchSection";
 import { buildSearchWhere } from "@/lib/normalize-search";
+import { getCurrentPricesBatch } from "@/lib/price-aggregation";
 import {
   APPLICATION_AREAS,
   MATERIALS,
@@ -24,6 +25,8 @@ type SearchParams = Promise<{
   criticalIssues?: string;
   certifications?: string;
   manufacturer?: string;
+  minPrice?: string;
+  maxPrice?: string;
 }>;
 
 export const metadata = {
@@ -71,14 +74,29 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
     ...(sp.manufacturer && { manufacturer: { name: { contains: sp.manufacturer, mode: "insensitive" } } }),
   };
 
-  const products = await prisma.product.findMany({
+  const productsRaw = await prisma.product.findMany({
     where,
     include: {
       manufacturer: { select: { name: true, slug: true } },
     },
     orderBy: [{ manufacturer: { name: "asc" } }, { name: "asc" }],
-    take: 100,
+    take: 200,
   });
+
+  // Aktuelle Marktpreise batch laden + min/max-Filter anwenden
+  const pricesMap = await getCurrentPricesBatch(productsRaw.map((p) => p.id));
+  const minPrice = sp.minPrice ? parseFloat(sp.minPrice) : undefined;
+  const maxPrice = sp.maxPrice ? parseFloat(sp.maxPrice) : undefined;
+  const products = productsRaw
+    .map((p) => ({ ...p, price: pricesMap.get(p.id) ?? null }))
+    .filter((p) => {
+      if (minPrice === undefined && maxPrice === undefined) return true;
+      if (!p.price) return false; // Preis-Filter aktiv → ohne Preis ausschließen
+      if (minPrice !== undefined && p.price.median < minPrice) return false;
+      if (maxPrice !== undefined && p.price.median > maxPrice) return false;
+      return true;
+    })
+    .slice(0, 100);
 
   const totalCount = await prisma.product.count({
     where: { category: { in: ["COOLANT_WATER_MIX", "COOLANT_NEAT", "GRINDING_OIL"] } },
@@ -98,6 +116,7 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
     concentrateForm: sp.concentrateForm ? 1 : 0,
     issues: issues.length,
     certs: certs.length,
+    price: (minPrice !== undefined ? 1 : 0) + (maxPrice !== undefined ? 1 : 0),
   };
   const activeTotal = Object.values(counts).reduce((a, b) => a + b, 0) + (q ? 1 : 0);
 
@@ -216,6 +235,41 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
                 selected={certs}
               />
             </Collapsible>
+
+            <Collapsible
+              title="Marktpreis"
+              subtitle="Min / Max EUR pro L oder kg"
+              badgeCount={counts.price}
+              defaultOpen={counts.price > 0}
+            >
+              <div className="grid gap-2 sm:grid-cols-2">
+                <div>
+                  <label className="label">Min-Preis</label>
+                  <input
+                    name="minPrice"
+                    type="number"
+                    step="0.1"
+                    defaultValue={sp.minPrice ?? ""}
+                    placeholder="z.B. 5"
+                    className="input"
+                  />
+                </div>
+                <div>
+                  <label className="label">Max-Preis</label>
+                  <input
+                    name="maxPrice"
+                    type="number"
+                    step="0.1"
+                    defaultValue={sp.maxPrice ?? ""}
+                    placeholder="z.B. 12"
+                    className="input"
+                  />
+                </div>
+              </div>
+              <p className="mt-2 text-[10px] text-slate-500">
+                Filter wirkt nur auf Produkte mit verifiziertem Marktpreis. Produkte ohne Preis fallen raus.
+              </p>
+            </Collapsible>
           </div>
         </SearchSection>
       </LiveFilterForm>
@@ -257,11 +311,21 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
                   </div>
                   <div className="text-base font-semibold">{p.name}</div>
                 </div>
-                {p.concentrateForm && (
-                  <span className="shrink-0 rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-medium text-blue-700">
-                    {COOLANT_FORMS.find((c) => c.value === p.concentrateForm)?.label}
-                  </span>
-                )}
+                <div className="flex shrink-0 flex-col items-end gap-1">
+                  {p.price && (
+                    <span
+                      className="rounded-md bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-900 ring-1 ring-amber-300"
+                      title={`Spanne ${p.price.min.toFixed(2)}–${p.price.max.toFixed(2)} · ${p.price.observationCount} Beob. (${p.price.confidence})`}
+                    >
+                      💰 {p.price.median.toFixed(2)} {p.price.unitLabel}
+                    </span>
+                  )}
+                  {p.concentrateForm && (
+                    <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-medium text-blue-700">
+                      {COOLANT_FORMS.find((c) => c.value === p.concentrateForm)?.label}
+                    </span>
+                  )}
+                </div>
               </div>
               {p.description && (
                 <p className="mt-2 line-clamp-2 text-sm text-slate-600">{p.description}</p>

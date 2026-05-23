@@ -138,3 +138,66 @@ export async function getCurrentMarketPrice(productId: string): Promise<CurrentM
   }
   return null;
 }
+
+/**
+ * Effizient: aktuelle Marktpreise für viele Produkte in einer einzigen Query.
+ * Liefert Map<productId, CurrentMarketPrice | null>.
+ *
+ * Strategie: alle verifizierten Beobachtungen der letzten 365 Tage holen,
+ * dann pro Produkt in JS Median berechnen (bevorzugt 60-Tage-Fenster).
+ */
+export async function getCurrentPricesBatch(
+  productIds: string[],
+): Promise<Map<string, CurrentMarketPrice | null>> {
+  if (productIds.length === 0) return new Map();
+
+  const cutoff365 = new Date();
+  cutoff365.setDate(cutoff365.getDate() - 365);
+
+  const all = await prisma.priceObservation.findMany({
+    where: {
+      productId: { in: productIds },
+      status: "VERIFIED",
+      observedAt: { gte: cutoff365 },
+    },
+    select: { productId: true, pricePerUnit: true, unit: true, observedAt: true },
+  });
+
+  // Pro Produkt gruppieren
+  const byProduct = new Map<string, typeof all>();
+  for (const o of all) {
+    if (!byProduct.has(o.productId)) byProduct.set(o.productId, []);
+    byProduct.get(o.productId)!.push(o);
+  }
+
+  const result = new Map<string, CurrentMarketPrice | null>();
+  for (const pid of productIds) {
+    const obs = byProduct.get(pid) ?? [];
+    if (obs.length === 0) {
+      result.set(pid, null);
+      continue;
+    }
+    // Versuche 60 → 180 → 365 Tage
+    for (const windowDays of [60, 180, 365]) {
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - windowDays);
+      const inWindow = obs.filter((o) => o.observedAt >= cutoff);
+      if (inWindow.length === 0) continue;
+      const normalized = inWindow.map((o) => normalizeToEurPerL(o.pricePerUnit, o.unit));
+      const values = normalized.map((n) => n.value);
+      const med = median(values);
+      result.set(pid, {
+        median: Math.round(med * 100) / 100,
+        unitLabel: normalized[0].unitLabel,
+        observationCount: inWindow.length,
+        windowDays,
+        min: Math.round(Math.min(...values) * 100) / 100,
+        max: Math.round(Math.max(...values) * 100) / 100,
+        confidence: windowDays === 60 ? "high" : windowDays === 180 ? "medium" : "low",
+      });
+      break;
+    }
+    if (!result.has(pid)) result.set(pid, null);
+  }
+  return result;
+}
