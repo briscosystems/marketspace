@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { SDS_CATEGORY_LABEL, SDS_LANGUAGE_LABEL } from "@/lib/sds";
 import { LiveFilterForm } from "@/components/LiveFilterForm";
 import { Collapsible } from "@/components/Collapsible";
-import { normalizeForSearch } from "@/lib/normalize-search";
+import { buildSearchWhere } from "@/lib/normalize-search";
 import type { SdsCategory } from "@prisma/client";
 
 type SearchParams = Promise<{
@@ -51,15 +51,16 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
   const where: import("@prisma/client").Prisma.SafetyDataSheetWhereInput = {
     ...(manufacturer && { manufacturer: { contains: manufacturer, mode: "insensitive" } }),
     ...(category && { category: category as SdsCategory }),
-    // Suche: normalisiert (lowercase, ohne Trennzeichen) gegen searchTokens-Index +
-    // Fallback gegen extractedText (Volltext-PDF, mit Original-Schreibweise).
-    // Beispiel: "bcool755" matcht "B-Cool 755" weil searchTokens="bcool755..." enthält.
-    ...(q && q.trim().length > 0 && {
-      OR: [
-        { searchTokens: { contains: normalizeForSearch(q) } },
-        { extractedText: { contains: q, mode: "insensitive" } },
-      ],
-    }),
+    // Intelligente Multi-Token-Suche: jeder Token muss im normalisierten searchTokens
+    // vorkommen (AND). "bcool 755" → ["bcool","755"], beide müssen matchen.
+    // Plus Fallback: ein Token im PDF-Volltext (extractedText).
+    ...(() => {
+      const sw = buildSearchWhere("searchTokens", q);
+      if (!sw) return {};
+      return {
+        OR: [{ AND: sw.AND }, ...(q && q.trim().length >= 3 ? [{ extractedText: { contains: q, mode: "insensitive" as const } }] : [])],
+      };
+    })(),
     ...(reach !== undefined && { reachCompliant: reach }),
     ...(boron !== undefined && { containsBoron: boron }),
     ...(formaldehyde !== undefined && { containsFormaldehydeReleaser: formaldehyde }),

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { Collapsible } from "@/components/Collapsible";
 import { LiveFilterForm } from "@/components/LiveFilterForm";
 import { KssWizardLauncher } from "@/components/KssWizardLauncher";
+import { buildSearchWhere } from "@/lib/normalize-search";
 import {
   APPLICATION_AREAS,
   MATERIALS,
@@ -45,16 +46,13 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
   const issues = parseMulti(sp.criticalIssues);
   const certs = parseMulti(sp.certifications);
 
-  // WHERE-Klausel zusammenbauen
+  // Intelligente Multi-Token-Suche gegen den normalisierten searchTokens-Index:
+  // "bcool" matcht "B-Cool", "blaser 755" matcht beide Tokens UND-verknüpft.
+  const searchWhere = buildSearchWhere("searchTokens", q);
+
   const where: import("@prisma/client").Prisma.ProductWhereInput = {
     category: { in: ["COOLANT_WATER_MIX", "COOLANT_NEAT", "GRINDING_OIL"] },
-    ...(q && {
-      OR: [
-        { name: { contains: q, mode: "insensitive" } },
-        { description: { contains: q, mode: "insensitive" } },
-        { productFamily: { contains: q, mode: "insensitive" } },
-      ],
-    }),
+    ...(searchWhere && { AND: searchWhere.AND }),
     ...(sp.productionType && {
       productionType: sp.productionType as "CONTRACT_MANUFACTURING" | "SERIAL_PRODUCTION" | "MIXED",
     }),
