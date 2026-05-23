@@ -101,57 +101,65 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
   const activeTotal = Object.values(counts).reduce((a, b) => a + b, 0) + (q ? 1 : 0);
 
   return (
-    <div className="space-y-4">
-      {/* Kompakter Header — Wizard-Button direkt neben Title */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-blue-200 bg-blue-50/60 px-4 py-2.5">
+    <div className="space-y-3">
+      {/* 🔵 BRANDING & TOOL-IDENTITÄT — blau */}
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border-l-4 border-blue-500 bg-blue-50 px-4 py-2.5 shadow-sm">
         <div className="flex items-center gap-2">
           <Droplets size={20} className="text-blue-600" />
           <h1 className="text-lg font-bold text-slate-900">KSS-Finder</h1>
-          <span className="text-xs text-slate-500">
+          <span className="text-xs text-slate-600">
             {totalCount} KSS · {manufacturersAll.length} Hersteller
           </span>
         </div>
         <KssWizardLauncher />
       </div>
 
-      <LiveFilterForm pathname="/kss-finder" className="space-y-2">
-        {/* Volltext immer sichtbar — kompakt */}
-        <div className="rounded-lg border border-slate-200 bg-white px-3 py-2">
+      <LiveFilterForm pathname="/kss-finder" className="space-y-3">
+        {/* 🟢 SCHNELLSUCHE — grün hervorgehoben, "die primäre Suchaktion" */}
+        <div className="rounded-lg border-l-4 border-emerald-500 bg-emerald-50/60 px-3 py-2.5 shadow-sm">
+          <div className="mb-1 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide text-emerald-700">
+            <span>🔍 Schnellsuche</span>
+            <span className="font-normal normal-case tracking-normal text-emerald-600/70">
+              · live, beim Tippen
+            </span>
+          </div>
           <input
             name="q"
             defaultValue={q ?? ""}
-            placeholder="🔍 Suchen — z.B. bcool, hocut 795, blaser, ISO VG 46, borfrei…"
-            className="input"
+            placeholder="z.B. bcool, hocut 795, blaser, ISO VG 46, borfrei…"
+            className="input border-emerald-200 bg-white focus:border-emerald-400 focus:ring-emerald-300"
             autoComplete="off"
           />
         </div>
 
-        {/* Erweiterte Filter — visuell als separater Abschnitt mit Trenner + Header */}
-        <details open className="group">
-          <summary className="flex cursor-pointer items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm hover:bg-slate-100">
-            <span className="font-semibold text-slate-700">
-              ⚙️ Weitere Suchkriterien
+        {/* ⚪ ERWEITERTE FILTER — grauer, sekundärer Bereich */}
+        <details open className="group rounded-lg border border-slate-200 bg-slate-50 shadow-sm">
+          <summary className="flex cursor-pointer items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-sm hover:bg-slate-100">
+            <span className="flex items-center gap-2">
+              <span className="text-[10px] font-bold uppercase tracking-wide text-slate-600">
+                ⚙️ Weitere Suchkriterien
+              </span>
               {activeTotal > 0 && (
-                <span className="ml-2 rounded-full bg-brand-100 px-2 py-0.5 text-[10px] font-semibold text-brand-700">
+                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-800 ring-1 ring-amber-300">
                   {activeTotal} aktiv
                 </span>
               )}
             </span>
-            <span className="text-xs text-slate-500">
+            <span className="text-[11px] text-slate-500">
               {activeTotal > 0 && (
                 <>
-                  <Link href="/kss-finder" className="text-brand-600 hover:underline">
+                  <Link href="/kss-finder" className="font-medium text-rose-600 hover:underline">
                     zurücksetzen
                   </Link>
                   {" · "}
                 </>
               )}
-              Live-Update
+              ▼ klick zum Auf-/Zuklappen
             </span>
           </summary>
 
           {/* Kompakte 2-Spalten-Grid für die Collapsibles */}
-          <div className="mt-2 grid gap-2 md:grid-cols-2">
+          <div className="grid gap-2 px-2 pb-2 md:grid-cols-2">
             <Collapsible
               title="Bearbeitungsverfahren"
               subtitle="Drehen, Fräsen, Schleifen, MMS, …"
@@ -217,13 +225,18 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
         </details>
       </LiveFilterForm>
 
-      {/* Ergebnisse */}
-      <div className="flex items-baseline justify-between">
-        <h2 className="text-lg font-semibold">
-          {products.length} {products.length === 1 ? "Treffer" : "Treffer"}
+      {/* 📋 TREFFER-SEKTION — klarer Trenner mit Brand-Akzent */}
+      <div className="-mx-2 mt-4 flex items-baseline justify-between border-t-2 border-brand-500/30 px-2 pt-3">
+        <h2 className="flex items-baseline gap-2 text-lg font-semibold text-slate-900">
+          <span className="rounded-md bg-brand-100 px-2 py-0.5 text-base font-bold text-brand-700">
+            {products.length}
+          </span>
+          <span>Treffer</span>
         </h2>
         {products.length === 100 && (
-          <span className="text-xs text-amber-700">(begrenzt auf 100 — Filter verfeinern)</span>
+          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-800 ring-1 ring-amber-300">
+            ⚠ begrenzt auf 100 — Filter verfeinern
+          </span>
         )}
       </div>
 
