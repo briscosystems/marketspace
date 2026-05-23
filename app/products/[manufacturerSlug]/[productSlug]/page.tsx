@@ -5,7 +5,7 @@ import { ManufacturerLogo } from "@/components/ManufacturerLogo";
 import { RefractometerCalculator } from "@/components/RefractometerCalculator";
 import { CompareToggle } from "@/components/compare/CompareToggle";
 import { recommendMaterialsForProduct } from "@/lib/seal-recommendations";
-import { Droplets, Beaker, FileText, ExternalLink, AlertTriangle, Shield, AlertOctagon, CheckCircle2 } from "lucide-react";
+import { Droplets, Beaker, FileText, ExternalLink, AlertTriangle, Shield, AlertOctagon, CheckCircle2, FileSearch } from "lucide-react";
 
 const CATEGORY_LABEL: Record<string, string> = {
   COOLANT_WATER_MIX: "KSS (wassermischbar)",
@@ -59,7 +59,27 @@ export default async function ProductDetailPage({
 
   const product = await prisma.product.findUnique({
     where: { manufacturerId_slug: { manufacturerId: m.id, slug: productSlug } },
-    include: { compatibilityNotes: true },
+    include: {
+      compatibilityNotes: true,
+      safetyDataSheet: {
+        select: {
+          id: true,
+          language: true,
+          pageCount: true,
+          signalWord: true,
+          hStatements: true,
+          reachCompliant: true,
+          svhcSubstances: true,
+          containsBoron: true,
+          containsFormaldehydeReleaser: true,
+          containsSecondaryAmines: true,
+          containsChlorinatedParaffins: true,
+          phValue: true,
+          flashpointC: true,
+          densityGcm3: true,
+        },
+      },
+    },
   });
   if (!product) notFound();
 
@@ -214,6 +234,9 @@ export default async function ProductDetailPage({
               inferredIngredients={sealRec.inferredIngredients}
             />
           )}
+
+          {/* Verlinktes SDS aus eigener Bibliothek */}
+          {product.safetyDataSheet && <LinkedSdsCard sds={product.safetyDataSheet} />}
 
           {/* Technische Daten */}
           <section className="rounded-xl border border-slate-200 bg-white p-5">
@@ -501,6 +524,137 @@ const SEAL_RATING_STYLE: Record<
     label: "nicht geeignet",
   },
 };
+
+function LinkedSdsCard({
+  sds,
+}: {
+  sds: {
+    id: string;
+    language: string;
+    pageCount: number | null;
+    signalWord: string | null;
+    hStatements: string[];
+    reachCompliant: boolean | null;
+    svhcSubstances: string[];
+    containsBoron: boolean | null;
+    containsFormaldehydeReleaser: boolean | null;
+    containsSecondaryAmines: boolean | null;
+    containsChlorinatedParaffins: boolean | null;
+    phValue: number | null;
+    flashpointC: number | null;
+    densityGcm3: number | null;
+  };
+}) {
+  const flags: { label: string; v: boolean | null; tone: "neg" | "neutral" }[] = [
+    { label: "Bor/Borate", v: sds.containsBoron, tone: "neg" },
+    { label: "Formaldehyd-Donor", v: sds.containsFormaldehydeReleaser, tone: "neg" },
+    { label: "sek. Amine", v: sds.containsSecondaryAmines, tone: "neg" },
+    { label: "Chlorparaffine", v: sds.containsChlorinatedParaffins, tone: "neg" },
+  ];
+  return (
+    <section className="rounded-xl border border-blue-200 bg-blue-50/40 p-5">
+      <div className="flex items-baseline justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <FileSearch size={16} className="text-blue-600" />
+          <h2 className="font-semibold text-slate-900">Sicherheitsdatenblatt</h2>
+        </div>
+        <Link
+          href={`/sds/${sds.id}`}
+          className="inline-flex items-center gap-1 rounded-md bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700"
+        >
+          SDS öffnen <ExternalLink size={12} />
+        </Link>
+      </div>
+      <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
+        {sds.signalWord && (
+          <span
+            className={`rounded px-2 py-0.5 font-bold uppercase ${
+              /gefahr|danger/i.test(sds.signalWord)
+                ? "bg-rose-100 text-rose-800"
+                : "bg-amber-100 text-amber-800"
+            }`}
+          >
+            {sds.signalWord}
+          </span>
+        )}
+        <span className="text-slate-500">
+          {sds.language} · {sds.pageCount ?? "?"} Seiten
+        </span>
+        {sds.reachCompliant === true && (
+          <span className="rounded bg-emerald-50 px-2 py-0.5 text-emerald-700 ring-1 ring-emerald-200">
+            REACH ✓
+          </span>
+        )}
+        {sds.reachCompliant === false && (
+          <span className="rounded bg-rose-50 px-2 py-0.5 text-rose-700 ring-1 ring-rose-200">
+            nicht REACH-konform
+          </span>
+        )}
+        {sds.svhcSubstances.length > 0 && (
+          <span className="rounded bg-rose-100 px-2 py-0.5 text-rose-800 ring-1 ring-rose-300">
+            SVHC ({sds.svhcSubstances.length})
+          </span>
+        )}
+      </div>
+
+      {/* Physiko-Werte aus SDS, falls vorhanden */}
+      {(sds.phValue !== null || sds.flashpointC !== null || sds.densityGcm3 !== null) && (
+        <div className="mt-3 flex flex-wrap gap-3 text-xs text-slate-700">
+          {sds.phValue !== null && <span>pH: <strong>{sds.phValue.toFixed(1)}</strong></span>}
+          {sds.flashpointC !== null && (
+            <span>
+              Flammpunkt: <strong>{sds.flashpointC} °C</strong>
+            </span>
+          )}
+          {sds.densityGcm3 !== null && (
+            <span>
+              Dichte: <strong>{sds.densityGcm3.toFixed(3)} g/cm³</strong>
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* H-Sätze */}
+      {sds.hStatements.length > 0 && (
+        <div className="mt-3">
+          <div className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+            H-Sätze
+          </div>
+          <div className="mt-1 flex flex-wrap gap-1">
+            {sds.hStatements.slice(0, 12).map((h) => (
+              <span key={h} className="rounded bg-amber-50 px-1.5 py-0.5 text-[10px] text-amber-800 ring-1 ring-amber-200">
+                {h}
+              </span>
+            ))}
+            {sds.hStatements.length > 12 && (
+              <span className="text-[10px] text-slate-400">+{sds.hStatements.length - 12}</span>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Inhaltsstoff-Flags */}
+      {flags.some((f) => f.v !== null) && (
+        <div className="mt-3 flex flex-wrap gap-1">
+          {flags.map((f) => {
+            if (f.v === null) return null;
+            if (f.v === true)
+              return (
+                <span key={f.label} className="rounded bg-rose-50 px-1.5 py-0.5 text-[10px] text-rose-700 ring-1 ring-rose-200">
+                  ⚠ {f.label}: enthält
+                </span>
+              );
+            return (
+              <span key={f.label} className="rounded bg-emerald-50 px-1.5 py-0.5 text-[10px] text-emerald-700 ring-1 ring-emerald-200">
+                ✓ {f.label}: frei
+              </span>
+            );
+          })}
+        </div>
+      )}
+    </section>
+  );
+}
 
 function SealCompatibilitySection({
   recommendations,

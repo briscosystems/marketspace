@@ -30,6 +30,19 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
         },
         take: 20,
       },
+      products: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          category: true,
+          chemistry: true,
+          viscosityIso: true,
+          manufacturer: { select: { name: true, slug: true } },
+        },
+        orderBy: { name: "asc" },
+        take: 30,
+      },
     },
   });
   if (!sds) notFound();
@@ -376,6 +389,35 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
             </div>
           )}
         </>
+      )}
+
+      {sds.products.length > 0 && (
+        <section>
+          <h2 className="mb-3 text-lg font-semibold">
+            Produkte aus dem Katalog ({sds.products.length})
+          </h2>
+          <div className="card divide-y divide-slate-200">
+            {sds.products.map((p) => (
+              <Link
+                key={p.id}
+                href={`/products/${p.manufacturer.slug}/${p.slug}`}
+                className="flex items-baseline justify-between gap-3 py-3 first:pt-0 last:pb-0 hover:text-brand-500"
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="font-medium">
+                    {p.manufacturer.name} · {p.name}
+                  </div>
+                  <div className="text-xs text-slate-500">
+                    {p.category}
+                    {p.chemistry ? ` · ${p.chemistry}` : ""}
+                    {p.viscosityIso ? ` · ${p.viscosityIso}` : ""}
+                  </div>
+                </div>
+                <span className="text-xs text-slate-400">→</span>
+              </Link>
+            ))}
+          </div>
+        </section>
       )}
 
       {sds.listings.length > 0 && (

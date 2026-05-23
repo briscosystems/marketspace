@@ -224,6 +224,10 @@ model Product {
 
   notes           String?
 
+  // Verlinktes SDS aus der eigenen SDS-Bibliothek (sofern Match per Hersteller+Name möglich war)
+  safetyDataSheetId String?
+  safetyDataSheet   SafetyDataSheet? @relation(fields: [safetyDataSheetId], references: [id], onDelete: SetNull)
+
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
@@ -233,6 +237,7 @@ model Product {
   @@index([manufacturerId])
   @@index([category])
   @@index([productFamily])
+  @@index([safetyDataSheetId])
 }
 
 model ComparisonAnalysis {
@@ -714,6 +719,7 @@ model SafetyDataSheet {
   fetchedAt     DateTime     @default(now())
 
   listings      Listing[]
+  products      Product[]
 
   @@index([manufacturer])
   @@index([manufacturerId])
