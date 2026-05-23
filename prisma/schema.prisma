@@ -264,6 +264,7 @@ model Product {
   updatedAt       DateTime @updatedAt
 
   compatibilityNotes MaterialCompatibilityNote[]
+  priceObservations  PriceObservation[]
 
   @@unique([manufacturerId, slug])
   @@index([manufacturerId])
@@ -465,6 +466,93 @@ model User {
   sellerTxns      Transaction[] @relation("SellerTx")
   reviewsGiven    Review[]      @relation("ReviewsGiven")
   reviewsReceived Review[]      @relation("ReviewsReceived")
+  submittedPrices PriceObservation[] @relation("SubmittedPrices")
+  verifiedPrices  PriceObservation[] @relation("VerifiedPrices")
+}
+
+// ============================================================
+// Preisbeobachtungen — historische Marktpreise
+// ============================================================
+//
+// Quellen:
+//   - USER_SUBMITTED:  User meldet beobachteten Preis → PENDING bis verifiziert
+//   - TRANSACTION:     automatisch aus abgeschlossener Marketplace-Transaktion → direkt VERIFIED
+//   - LIST_PRICE:      Hersteller-Listenpreis (selten verfügbar)
+//   - DISTRIBUTOR_QUOTE: Distributor-Webshop-Preis
+//   - SEED_INDICATIVE: initial-Seed-Beispieldaten (markiert!)
+//
+// Aggregation: lib/price-aggregation.ts berechnet monatlichen Median für Charts.
+
+enum PriceSource {
+  USER_SUBMITTED
+  TRANSACTION
+  LIST_PRICE
+  DISTRIBUTOR_QUOTE
+  AGGREGATED
+  SEED_INDICATIVE
+}
+
+enum PriceStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum PriceUnit {
+  EUR_PER_L
+  EUR_PER_KG
+  EUR_PER_PIECE
+  CHF_PER_L
+  CHF_PER_KG
+  USD_PER_L
+  USD_PER_KG
+}
+
+model PriceObservation {
+  id            String      @id @default(cuid())
+  productId     String
+  product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  observedAt    DateTime    // Datum des Preises (kann historisch sein)
+  pricePerUnit  Float
+  unit          PriceUnit   @default(EUR_PER_L)
+
+  // Mengenstaffel
+  quantityMin   Float?      // ab welcher Menge gilt der Preis
+  quantityMax   Float?
+  packagingForm PackagingForm?  // DRUM, IBC, CANISTER ...
+
+  regionCode    String?     // ISO-2 Country: DE, CH, AT, ...
+
+  source        PriceSource
+  status        PriceStatus @default(PENDING)
+
+  // Submission
+  submittedByUserId String?
+  submittedByUser   User?     @relation("SubmittedPrices", fields: [submittedByUserId], references: [id], onDelete: SetNull)
+  submittedAt       DateTime  @default(now())
+
+  // Verifizierung
+  verifiedByUserId  String?
+  verifiedByUser    User?     @relation("VerifiedPrices", fields: [verifiedByUserId], references: [id], onDelete: SetNull)
+  verifiedAt        DateTime?
+  rejectionReason   String?
+
+  // Provenance
+  sourceUrl     String?
+  sourceLabel   String?
+  notes         String?
+
+  // Wenn aus Transaction abgeleitet
+  transactionId String?     @unique
+
+  createdAt     DateTime    @default(now())
+
+  @@index([productId])
+  @@index([observedAt])
+  @@index([status])
+  @@index([source])
+  @@index([productId, status, observedAt])
 }
 
 model Rfq {

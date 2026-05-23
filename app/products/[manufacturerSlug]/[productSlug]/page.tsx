@@ -5,7 +5,10 @@ import { ManufacturerLogo } from "@/components/ManufacturerLogo";
 import { RefractometerCalculator } from "@/components/RefractometerCalculator";
 import { CompareToggle } from "@/components/compare/CompareToggle";
 import { recommendMaterialsForProduct } from "@/lib/seal-recommendations";
-import { Droplets, Beaker, FileText, ExternalLink, AlertTriangle, Shield, AlertOctagon, CheckCircle2, FileSearch } from "lucide-react";
+import { getMonthlyMedianHistory, getCurrentMarketPrice } from "@/lib/price-aggregation";
+import { PriceHistoryChart } from "@/components/PriceHistoryChart";
+import { PriceSubmitLauncher } from "@/components/PriceSubmitLauncher";
+import { Droplets, Beaker, FileText, ExternalLink, AlertTriangle, Shield, AlertOctagon, CheckCircle2, FileSearch, TrendingUp } from "lucide-react";
 
 const CATEGORY_LABEL: Record<string, string> = {
   COOLANT_WATER_MIX: "KSS (wassermischbar)",
@@ -98,6 +101,12 @@ export default async function ProductDetailPage({
   });
 
   // Berechnete Dichtungs-/Kunststoff-Empfehlung basierend auf Produkt-Chemie
+  // Preis-Daten parallel laden
+  const [priceHistory, currentPrice] = await Promise.all([
+    getMonthlyMedianHistory(product.id, 60),
+    getCurrentMarketPrice(product.id),
+  ]);
+
   const sealRec = await recommendMaterialsForProduct({
     category: product.category,
     chemistry: product.chemistry,
@@ -237,6 +246,16 @@ export default async function ProductDetailPage({
 
           {/* Verlinktes SDS aus eigener Bibliothek */}
           {product.safetyDataSheet && <LinkedSdsCard sds={product.safetyDataSheet} />}
+
+          {/* Marktpreis & Historie */}
+          <PriceSection
+            productId={product.id}
+            productName={product.name}
+            manufacturer={m.name}
+            priceHistory={priceHistory}
+            currentPrice={currentPrice}
+          />
+
 
           {/* Technische Daten */}
           <section className="rounded-xl border border-slate-200 bg-white p-5">
@@ -524,6 +543,86 @@ const SEAL_RATING_STYLE: Record<
     label: "nicht geeignet",
   },
 };
+
+function PriceSection({
+  productId,
+  productName,
+  manufacturer,
+  priceHistory,
+  currentPrice,
+}: {
+  productId: string;
+  productName: string;
+  manufacturer: string;
+  priceHistory: import("@/lib/price-aggregation").MonthlyPriceDataPoint[];
+  currentPrice: import("@/lib/price-aggregation").CurrentMarketPrice | null;
+}) {
+  return (
+    <section className="rounded-xl border-2 border-amber-300 bg-amber-50/30 shadow-sm">
+      <header className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-amber-300 px-4 py-2">
+        <div className="flex items-center gap-2">
+          <TrendingUp size={16} className="text-amber-700" />
+          <h2 className="text-sm font-bold uppercase tracking-wide text-amber-900">
+            Marktpreis &amp; Historie
+          </h2>
+          <span className="text-[10px] uppercase tracking-wide text-amber-600/80">
+            5-Jahres-Trend
+          </span>
+        </div>
+        <PriceSubmitLauncher
+          productId={productId}
+          productName={productName}
+          manufacturer={manufacturer}
+        />
+      </header>
+
+      <div className="space-y-4 p-4">
+        {/* Aktueller Marktpreis */}
+        {currentPrice ? (
+          <div className="flex flex-wrap items-baseline gap-4 rounded-lg border border-amber-200 bg-white p-3">
+            <div>
+              <div className="text-[10px] uppercase tracking-wide text-slate-500">Aktueller Marktpreis</div>
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl font-bold text-slate-900">
+                  {currentPrice.median.toFixed(2)}
+                </span>
+                <span className="text-sm font-medium text-slate-600">{currentPrice.unitLabel}</span>
+              </div>
+            </div>
+            <div className="text-xs text-slate-500">
+              Spanne: <strong>{currentPrice.min.toFixed(2)}</strong> – <strong>{currentPrice.max.toFixed(2)}</strong> ·{" "}
+              {currentPrice.observationCount} Beobachtungen · letzte {currentPrice.windowDays} Tage
+            </div>
+            <span
+              className={`ml-auto rounded-full px-2 py-0.5 text-[10px] font-medium ${
+                currentPrice.confidence === "high"
+                  ? "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-300"
+                  : currentPrice.confidence === "medium"
+                    ? "bg-amber-100 text-amber-800 ring-1 ring-amber-300"
+                    : "bg-rose-100 text-rose-800 ring-1 ring-rose-300"
+              }`}
+            >
+              Konfidenz: {currentPrice.confidence}
+            </span>
+          </div>
+        ) : (
+          <div className="rounded-lg border border-dashed border-amber-300 bg-white p-3 text-sm text-slate-600">
+            Noch keine verifizierten Preise vorhanden — sei der erste und melde einen Preis!
+          </div>
+        )}
+
+        {/* Chart */}
+        <PriceHistoryChart data={priceHistory} />
+
+        <p className="text-[10px] text-slate-500">
+          ⚠ Preisdaten stammen aus User-Meldungen, Marketplace-Transaktionen und indikativen
+          Marktwerten. Alle Datenpunkte sind verifiziert. Verbindlich bleibt das individuelle
+          Angebot des Anbieters.
+        </p>
+      </div>
+    </section>
+  );
+}
 
 function LinkedSdsCard({
   sds,

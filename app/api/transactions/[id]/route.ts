@@ -4,6 +4,7 @@ import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { recalcTrustTier } from "@/lib/trust";
+import { capturePriceFromTransaction } from "@/lib/transaction-price-capture";
 
 const patchSchema = z.object({
   action: z.enum(["SHIP", "COMPLETE", "CANCEL", "DISPUTE"]),
@@ -75,7 +76,12 @@ export async function PATCH(
   });
 
   if (nextStatus === "COMPLETED") {
-    await Promise.all([recalcTrustTier(tx.buyerId), recalcTrustTier(tx.sellerId)]);
+    await Promise.all([
+      recalcTrustTier(tx.buyerId),
+      recalcTrustTier(tx.sellerId),
+      // Auto-Capture: dieser Transaktionspreis ist ein belegter Marktpreis
+      capturePriceFromTransaction(id),
+    ]);
   }
 
   return NextResponse.json(updated);
