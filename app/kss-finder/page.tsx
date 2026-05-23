@@ -101,108 +101,120 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
   const activeTotal = Object.values(counts).reduce((a, b) => a + b, 0) + (q ? 1 : 0);
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-xl border border-blue-200 bg-gradient-to-r from-blue-50 to-white p-5">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <Droplets size={28} className="text-blue-600" />
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900">KSS-Finder</h1>
-              <p className="mt-1 text-sm text-slate-600">
-                {totalCount} Kühlschmierstoffe von {manufacturersAll.length} Herstellern. Filtere nach
-                Bearbeitungsverfahren, Werkstoff, Form, kritischen Punkten und Zertifizierungen — oder
-                lass dir per KI einen Alternativ-KSS vorschlagen.
-              </p>
-            </div>
-          </div>
-          <KssWizardLauncher />
+    <div className="space-y-4">
+      {/* Kompakter Header — Wizard-Button direkt neben Title */}
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-blue-200 bg-blue-50/60 px-4 py-2.5">
+        <div className="flex items-center gap-2">
+          <Droplets size={20} className="text-blue-600" />
+          <h1 className="text-lg font-bold text-slate-900">KSS-Finder</h1>
+          <span className="text-xs text-slate-500">
+            {totalCount} KSS · {manufacturersAll.length} Hersteller
+          </span>
         </div>
+        <KssWizardLauncher />
       </div>
 
-      {/* Filter — alle ausklappbar */}
       <LiveFilterForm pathname="/kss-finder" className="space-y-2">
-        {/* Volltext immer sichtbar */}
-        <div className="rounded-xl border border-slate-200 bg-white px-4 py-3">
-          <label className="text-xs font-semibold text-slate-600">Volltextsuche</label>
+        {/* Volltext immer sichtbar — kompakt */}
+        <div className="rounded-lg border border-slate-200 bg-white px-3 py-2">
           <input
             name="q"
             defaultValue={q ?? ""}
-            placeholder="z.B. Hocut, ISO VG 46, Aluminium, borfrei…"
-            className="input mt-1"
+            placeholder="🔍 Suchen — z.B. bcool, hocut 795, blaser, ISO VG 46, borfrei…"
+            className="input"
+            autoComplete="off"
           />
         </div>
 
-        <Collapsible
-          title="Bearbeitungsverfahren"
-          subtitle="Drehen, Fräsen, Schleifen, Tieflochbohren, MMS, …"
-          badgeCount={counts.apps}
-          defaultOpen={counts.apps > 0}
-        >
-          <input type="hidden" name="applicationAreas" value={apps.join("|")} />
-          <ChipMultiSelect name="applicationAreas" options={[...APPLICATION_AREAS]} selected={apps} />
-        </Collapsible>
+        {/* Erweiterte Filter — visuell als separater Abschnitt mit Trenner + Header */}
+        <details open className="group">
+          <summary className="flex cursor-pointer items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm hover:bg-slate-100">
+            <span className="font-semibold text-slate-700">
+              ⚙️ Weitere Suchkriterien
+              {activeTotal > 0 && (
+                <span className="ml-2 rounded-full bg-brand-100 px-2 py-0.5 text-[10px] font-semibold text-brand-700">
+                  {activeTotal} aktiv
+                </span>
+              )}
+            </span>
+            <span className="text-xs text-slate-500">
+              {activeTotal > 0 && (
+                <>
+                  <Link href="/kss-finder" className="text-brand-600 hover:underline">
+                    zurücksetzen
+                  </Link>
+                  {" · "}
+                </>
+              )}
+              Live-Update
+            </span>
+          </summary>
 
-        <Collapsible
-          title="KSS-Form"
-          subtitle="Konventionelle Emulsion (milchig), Teilsynthetisch, Vollsynthetisch (klar), Zweikomponenten"
-          badgeCount={counts.concentrateForm}
-          defaultOpen={counts.concentrateForm > 0}
-        >
-          <RadioCards name="concentrateForm" options={[...COOLANT_FORMS]} selected={sp.concentrateForm} />
-        </Collapsible>
+          {/* Kompakte 2-Spalten-Grid für die Collapsibles */}
+          <div className="mt-2 grid gap-2 md:grid-cols-2">
+            <Collapsible
+              title="Bearbeitungsverfahren"
+              subtitle="Drehen, Fräsen, Schleifen, MMS, …"
+              badgeCount={counts.apps}
+              defaultOpen={counts.apps > 0}
+            >
+              <input type="hidden" name="applicationAreas" value={apps.join("|")} />
+              <ChipMultiSelect name="applicationAreas" options={[...APPLICATION_AREAS]} selected={apps} />
+            </Collapsible>
 
-        <Collapsible
-          title="Werkstoffe"
-          subtitle="Stahl, Aluminium, Buntmetall, Titan, Inconel…"
-          badgeCount={counts.mats}
-          defaultOpen={counts.mats > 0}
-        >
-          <input type="hidden" name="materials" value={mats.join("|")} />
-          <ChipMultiSelect name="materials" options={[...MATERIALS]} selected={mats} />
-        </Collapsible>
+            <Collapsible
+              title="KSS-Form"
+              subtitle="Emulsion / Teilsynth / Vollsynth / 2K"
+              badgeCount={counts.concentrateForm}
+              defaultOpen={counts.concentrateForm > 0}
+            >
+              <RadioCards name="concentrateForm" options={[...COOLANT_FORMS]} selected={sp.concentrateForm} />
+            </Collapsible>
 
-        <Collapsible
-          title="Produktionsart"
-          subtitle="Lohnfertigung (Universal) vs. Serienproduktion (Spezial)"
-          badgeCount={counts.productionType}
-          defaultOpen={counts.productionType > 0}
-        >
-          <RadioCards name="productionType" options={[...PRODUCTION_TYPES]} selected={sp.productionType} />
-        </Collapsible>
+            <Collapsible
+              title="Werkstoffe"
+              subtitle="Stahl, Aluminium, Buntmetall, …"
+              badgeCount={counts.mats}
+              defaultOpen={counts.mats > 0}
+            >
+              <input type="hidden" name="materials" value={mats.join("|")} />
+              <ChipMultiSelect name="materials" options={[...MATERIALS]} selected={mats} />
+            </Collapsible>
 
-        <Collapsible
-          title="Kritische Punkte"
-          subtitle="Fleckenbildung, Geruch, Schaum, Hautirritation, Werkzeugstandzeit, …"
-          badgeCount={counts.issues}
-          defaultOpen={counts.issues > 0}
-        >
-          <input type="hidden" name="criticalIssues" value={issues.join("|")} />
-          <ChipMultiSelect name="criticalIssues" options={[...CRITICAL_ISSUES]} selected={issues} />
-        </Collapsible>
+            <Collapsible
+              title="Produktionsart"
+              subtitle="Lohnfertigung vs. Serie"
+              badgeCount={counts.productionType}
+              defaultOpen={counts.productionType > 0}
+            >
+              <RadioCards name="productionType" options={[...PRODUCTION_TYPES]} selected={sp.productionType} />
+            </Collapsible>
 
-        <Collapsible
-          title="Zertifizierungen"
-          subtitle="TRGS 611, NSF H1, Blauer Engel, OEM-Freigaben, …"
-          badgeCount={counts.certs}
-          defaultOpen={counts.certs > 0}
-        >
-          <input type="hidden" name="certifications" value={certs.join("|")} />
-          <ChipMultiSelect
-            name="certifications"
-            options={CERTIFICATIONS.map((c) => c.label)}
-            selected={certs}
-          />
-        </Collapsible>
+            <Collapsible
+              title="Kritische Punkte"
+              subtitle="Geruch, Schaum, Hautirritation, …"
+              badgeCount={counts.issues}
+              defaultOpen={counts.issues > 0}
+            >
+              <input type="hidden" name="criticalIssues" value={issues.join("|")} />
+              <ChipMultiSelect name="criticalIssues" options={[...CRITICAL_ISSUES]} selected={issues} />
+            </Collapsible>
 
-        <div className="flex items-center justify-between gap-2 px-1 pt-2">
-          <span className="text-xs text-slate-500">
-            {activeTotal > 0 ? `${activeTotal} Filter aktiv — ` : ""}
-            <Link href="/kss-finder" className="text-brand-600 hover:underline">
-              alle zurücksetzen
-            </Link>
-          </span>
-          <span className="text-xs text-slate-400">Filter wirken live.</span>
-        </div>
+            <Collapsible
+              title="Zertifizierungen"
+              subtitle="TRGS 611, NSF H1, OEM-Freigaben, …"
+              badgeCount={counts.certs}
+              defaultOpen={counts.certs > 0}
+            >
+              <input type="hidden" name="certifications" value={certs.join("|")} />
+              <ChipMultiSelect
+                name="certifications"
+                options={CERTIFICATIONS.map((c) => c.label)}
+                selected={certs}
+              />
+            </Collapsible>
+          </div>
+        </details>
       </LiveFilterForm>
 
       {/* Ergebnisse */}
