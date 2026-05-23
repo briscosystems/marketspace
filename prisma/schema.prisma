@@ -96,6 +96,7 @@ enum PackagingForm {
 enum SdsCategory {
   WATER_MISCIBLE_COOLANT
   NEAT_CUTTING_OIL
+  GRINDING_OIL
   HYDRAULIC_OIL
   GEAR_OIL
   MOTOR_OIL
@@ -683,6 +684,11 @@ model SafetyDataSheet {
 
   extractedText String?
 
+  // Normalisierter Suchindex: productName + manufacturer + version, lowercase,
+  // ohne Bindestriche/Spaces/Punkte/Schrägstriche. Erlaubt "bcool755" → "B-Cool 755".
+  // Wird beim Seed (lib/normalize-search.ts) und Backfill gesetzt.
+  searchTokens  String?
+
   // -------------------------------------------------------------------------
   // Aus extractedText geparste strukturierte Felder (siehe lib/sds-parser.ts)
   // -------------------------------------------------------------------------
@@ -752,4 +758,5 @@ model SafetyDataSheet {
   @@index([manufacturerId])
   @@index([category])
   @@index([productName])
+  @@index([searchTokens])
 }

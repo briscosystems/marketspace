@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { SDS_CATEGORY_LABEL, SDS_LANGUAGE_LABEL } from "@/lib/sds";
 import { LiveFilterForm } from "@/components/LiveFilterForm";
 import { Collapsible } from "@/components/Collapsible";
+import { normalizeForSearch } from "@/lib/normalize-search";
 import type { SdsCategory } from "@prisma/client";
 
 type SearchParams = Promise<{
@@ -50,10 +51,12 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
   const where: import("@prisma/client").Prisma.SafetyDataSheetWhereInput = {
     ...(manufacturer && { manufacturer: { contains: manufacturer, mode: "insensitive" } }),
     ...(category && { category: category as SdsCategory }),
-    ...(q && {
+    // Suche: normalisiert (lowercase, ohne Trennzeichen) gegen searchTokens-Index +
+    // Fallback gegen extractedText (Volltext-PDF, mit Original-Schreibweise).
+    // Beispiel: "bcool755" matcht "B-Cool 755" weil searchTokens="bcool755..." enthält.
+    ...(q && q.trim().length > 0 && {
       OR: [
-        { productName: { contains: q, mode: "insensitive" } },
-        { manufacturer: { contains: q, mode: "insensitive" } },
+        { searchTokens: { contains: normalizeForSearch(q) } },
         { extractedText: { contains: q, mode: "insensitive" } },
       ],
     }),

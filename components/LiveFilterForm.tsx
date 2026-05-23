@@ -10,7 +10,7 @@ type Props = {
   debounceMs?: number;
 };
 
-export function LiveFilterForm({ pathname, children, className, debounceMs = 300 }: Props) {
+export function LiveFilterForm({ pathname, children, className, debounceMs = 150 }: Props) {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -29,7 +29,9 @@ export function LiveFilterForm({ pathname, children, className, debounceMs = 300
     });
   }
 
-  function handleChange(e: React.FormEvent<HTMLFormElement>) {
+  // Triggert sowohl bei Text-Eingabe (onInput, per Tastendruck) als auch bei
+  // Select/Checkbox/Radio-Wechsel (onChange).
+  function handleEvent(e: React.FormEvent<HTMLFormElement>) {
     const t = e.target as HTMLInputElement | HTMLSelectElement;
     const isText =
       t.tagName === "INPUT" &&
@@ -48,7 +50,8 @@ export function LiveFilterForm({ pathname, children, className, debounceMs = 300
   return (
     <form
       ref={formRef}
-      onChange={handleChange}
+      onInput={handleEvent}
+      onChange={handleEvent}
       onSubmit={(e) => {
         e.preventDefault();
         if (timeoutRef.current) clearTimeout(timeoutRef.current);
