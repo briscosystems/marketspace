@@ -71,6 +71,19 @@ enum ChemistryBase {
   OTHER
 }
 
+enum ProductionType {
+  CONTRACT_MANUFACTURING   // Lohnfertigung — wechselnde Werkstoffe/Aufträge
+  SERIAL_PRODUCTION        // Serienproduktion — konstantes Werkstück/Verfahren
+  MIXED                    // Mischbetrieb
+}
+
+enum CoolantConcentrateForm {
+  CONVENTIONAL_EMULSION    // klassische milchige Emulsion (Mineralöl + Tenside)
+  SEMI_SYNTHETIC           // halbsynthetisch (milchig-opal)
+  FULL_SYNTHETIC           // vollsynthetisch (klar, ohne Mineralöl)
+  TWO_COMPONENT            // Zweikomponenten-System
+}
+
 enum PackagingForm {
   DRUM
   IBC
@@ -181,6 +194,20 @@ model Product {
   applicationAreas    String[] @default([])  // Drehen, Fräsen, Schleifen, Stanzen, ...
   suitableMaterials   String[] @default([])  // Stahl, Alu, Buntmetall, Guss, Titan, Hartmetall
   unsuitableMaterials String[] @default([])  // Werkstoffe wo Probleme dokumentiert sind
+
+  // Eignung für Produktionsart (Lohnfertigung vs Serie)
+  productionType      ProductionType?
+
+  // Form bei wassermischbaren KSS — entscheidend für Auswahl (milchig vs klar)
+  concentrateForm     CoolantConcentrateForm?
+
+  // Praxis-Probleme die mit diesem Produkt explizit adressiert (oder bekannt) sind
+  // Werte: "Fleckenbildung Buntmetall", "Schaum", "Geruch", "Hautirritation",
+  //   "harzartige Ablagerungen", "kurze Standzeit", "schlechte Filtrierbarkeit",
+  //   "Alu-Verfärbung", "Spritzwasserbeständigkeit", "Kompatibilität mit anderen
+  //   Hochdruck-MMS", "Werkzeugstandzeit", "Tramp-Oil-Aufnahme"
+  criticalIssuesAddressed String[] @default([])
+  criticalIssuesKnown     String[] @default([])  // dokumentierte Schwachpunkte
 
   // Refraktometer — Schlüsselwert für KSS-Konzentratbestimmung
   refractometerFactor Float?    // Brix × Faktor = % Konzentration

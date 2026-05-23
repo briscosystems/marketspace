@@ -6,7 +6,7 @@ import { SignOutButton } from "@/components/SignOutButton";
 import { Providers } from "./providers";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
-import { Droplet, FileText, MessagesSquare, LayoutDashboard, Tag, Search, Building2, Shield } from "lucide-react";
+import { Droplet, FileText, MessagesSquare, LayoutDashboard, Tag, Search, Building2, Shield, Sparkles } from "lucide-react";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -75,6 +75,7 @@ export default async function RootLayout({
                 <NavLink href="/manufacturers" icon={Building2} label="Hersteller" />
                 <NavLink href="/sds" icon={FileText} label="SDS" />
                 <NavLink href="/materials" icon={Shield} label="Materialien" />
+                <NavLink href="/kss-finder" icon={Sparkles} label="KSS-Finder" accent="purple" />
                 {session?.user ? (
                   <>
                     <NavLink href="/dashboard" icon={LayoutDashboard} label="Dashboard" />
@@ -119,20 +120,24 @@ function NavLink({
   href: string;
   icon: React.ComponentType<{ size?: number; className?: string }>;
   label: string;
-  accent?: "blue" | "amber";
+  accent?: "blue" | "amber" | "purple";
 }) {
   const accentClasses =
     accent === "blue"
       ? "text-blue-700 hover:bg-blue-50 hover:text-blue-800"
       : accent === "amber"
         ? "text-amber-700 hover:bg-amber-50 hover:text-amber-800"
-        : "text-slate-700 hover:bg-slate-100 hover:text-brand-600";
+        : accent === "purple"
+          ? "text-purple-700 hover:bg-purple-50 hover:text-purple-800"
+          : "text-slate-700 hover:bg-slate-100 hover:text-brand-600";
   const iconClasses =
     accent === "blue"
       ? "text-blue-600"
       : accent === "amber"
         ? "text-amber-600"
-        : "text-slate-500";
+        : accent === "purple"
+          ? "text-purple-600"
+          : "text-slate-500";
   return (
     <Link
       href={href}

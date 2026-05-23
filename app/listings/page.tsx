@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { ListingCard } from "@/components/ListingCard";
 import { LiveFilterForm } from "@/components/LiveFilterForm";
+import { Collapsible } from "@/components/Collapsible";
 import { Filter, Tag, Plus } from "lucide-react";
 
 type SearchParams = Promise<{
@@ -199,46 +200,56 @@ export default async function ListingsPage({
         ) : null}
       </div>
 
-      <LiveFilterForm pathname="/listings" className="card grid gap-4 md:grid-cols-5">
-        <div className="md:col-span-2">
+      <LiveFilterForm pathname="/listings" className="space-y-2">
+        {/* Volltext immer sichtbar */}
+        <div className="rounded-xl border border-slate-200 bg-white px-4 py-3">
           <label className="label">Volltext</label>
           <input name="q" defaultValue={q} className="input" placeholder="z.B. Tellus, Hydraulik" />
         </div>
-        <div>
-          <label className="label">Hersteller</label>
-          <input
-            name="manufacturer"
-            defaultValue={manufacturer}
-            className="input"
-            placeholder="Shell"
-          />
-        </div>
-        <div>
-          <label className="label">ISO VG</label>
-          <input
-            name="isoViscosity"
-            defaultValue={isoViscosity}
-            className="input"
-            placeholder="46"
-          />
-        </div>
-        <div>
-          <label className="label">Region</label>
-          <input name="region" defaultValue={region} className="input" placeholder="DE" />
-        </div>
+
+        <Collapsible
+          title="Hersteller / ISO VG / Region"
+          subtitle="Genauere Eingrenzung"
+          badgeCount={(manufacturer ? 1 : 0) + (isoViscosity ? 1 : 0) + (region ? 1 : 0)}
+          defaultOpen={!!(manufacturer || isoViscosity || region)}
+        >
+          <div className="grid gap-3 md:grid-cols-3">
+            <div>
+              <label className="label">Hersteller</label>
+              <input
+                name="manufacturer"
+                defaultValue={manufacturer}
+                className="input"
+                placeholder="Shell"
+              />
+            </div>
+            <div>
+              <label className="label">ISO VG</label>
+              <input
+                name="isoViscosity"
+                defaultValue={isoViscosity}
+                className="input"
+                placeholder="46"
+              />
+            </div>
+            <div>
+              <label className="label">Region</label>
+              <input name="region" defaultValue={region} className="input" placeholder="DE" />
+            </div>
+          </div>
+        </Collapsible>
+
         {/* Schnellfilter-Werte als hidden inputs ans Form weitergeben */}
         {productType && <input type="hidden" name="productType" value={productType} />}
         {chemistry && <input type="hidden" name="chemistry" value={chemistry} />}
         {showCertificates && <input type="hidden" name="certs" value="1" />}
         {!showCertificates && <input type="hidden" name="certs" value="0" />}
         {variant === "compact" && <input type="hidden" name="view" value="compact" />}
-        <div className="md:col-span-5 flex flex-wrap items-center gap-2">
-          <Link href="/listings" className="btn-secondary">
-            Filter zurücksetzen
+
+        <div className="flex flex-wrap items-center justify-between gap-2 px-1 pt-1">
+          <Link href="/listings" className="text-xs text-brand-600 hover:underline">
+            Alle Filter zurücksetzen
           </Link>
-          <span className="text-xs text-slate-400 self-center">
-            Filter wirken live.
-          </span>
           <div className="ml-auto flex items-center gap-2">
             <div className="inline-flex overflow-hidden rounded-md ring-1 ring-slate-200">
               <Link

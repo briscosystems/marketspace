@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { SDS_CATEGORY_LABEL, SDS_LANGUAGE_LABEL } from "@/lib/sds";
 import { LiveFilterForm } from "@/components/LiveFilterForm";
+import { Collapsible } from "@/components/Collapsible";
 import type { SdsCategory } from "@prisma/client";
 
 type SearchParams = Promise<{
@@ -91,54 +92,88 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
         </div>
       </div>
 
-      <LiveFilterForm pathname="/sds" className="card space-y-4">
-        {/* Zeile 1: Volltext + Hersteller + Kategorie */}
-        <div className="grid gap-4 md:grid-cols-4">
-          <div className="md:col-span-2">
-            <label className="label">Volltext (auch in PDF-Inhalt)</label>
-            <input
-              name="q"
-              defaultValue={q}
-              className="input"
-              placeholder="z.B. Hysol, ISO VG 46, Borsäure, Triazin"
-            />
-          </div>
-          <div>
-            <label className="label">Hersteller</label>
-            <select name="manufacturer" defaultValue={manufacturer ?? ""} className="input">
-              <option value="">Alle</option>
-              {manufacturers.map((m) => (
-                <option key={m.manufacturer} value={m.manufacturer}>
-                  {m.manufacturer} ({m._count._all})
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="label">Kategorie</label>
-            <select name="category" defaultValue={category ?? ""} className="input">
-              <option value="">Alle</option>
-              {categoryCounts.map((c) => (
-                <option key={c.category} value={c.category}>
-                  {SDS_CATEGORY_LABEL[c.category] ?? c.category} ({c._count._all})
-                </option>
-              ))}
-            </select>
-          </div>
+      <LiveFilterForm pathname="/sds" className="space-y-2">
+        {/* Volltext immer sichtbar */}
+        <div className="rounded-xl border border-slate-200 bg-white px-4 py-3">
+          <label className="label">Volltext (auch in PDF-Inhalt)</label>
+          <input
+            name="q"
+            defaultValue={q}
+            className="input"
+            placeholder="z.B. Hysol, ISO VG 46, Borsäure, Triazin"
+          />
         </div>
 
-        {/* Zeile 2: REACH + Inhaltsstoff-Flags */}
-        <div>
-          <div className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2">
-            REACH & Inhaltsstoffe
+        <Collapsible
+          title="Hersteller & Kategorie"
+          subtitle="Eingrenzen auf bestimmte Anbieter oder Produktklasse"
+          badgeCount={(manufacturer ? 1 : 0) + (category ? 1 : 0)}
+          defaultOpen={!!manufacturer || !!category}
+        >
+          <div className="grid gap-3 md:grid-cols-2">
+            <div>
+              <label className="label">Hersteller</label>
+              <select name="manufacturer" defaultValue={manufacturer ?? ""} className="input">
+                <option value="">Alle</option>
+                {manufacturers.map((m) => (
+                  <option key={m.manufacturer} value={m.manufacturer}>
+                    {m.manufacturer} ({m._count._all})
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="label">Kategorie</label>
+              <select name="category" defaultValue={category ?? ""} className="input">
+                <option value="">Alle</option>
+                {categoryCounts.map((c) => (
+                  <option key={c.category} value={c.category}>
+                    {SDS_CATEGORY_LABEL[c.category] ?? c.category} ({c._count._all})
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-          <div className="grid gap-3 md:grid-cols-4 lg:grid-cols-5">
+        </Collapsible>
+
+        <Collapsible
+          title="REACH & SVHC"
+          subtitle="Konformität & SVHC-Kandidaten"
+          badgeCount={(sp.reach ? 1 : 0) + (sp.svhc ? 1 : 0)}
+          defaultOpen={!!sp.reach || !!sp.svhc}
+        >
+          <div className="grid gap-3 md:grid-cols-2">
             <TriSelect name="reach" label="REACH-konform" value={sp.reach} />
-            <TriSelect name="svhc" label="SVHC erkannt" value={sp.svhc} options={[
-              { value: "", label: "egal" },
-              { value: "yes", label: "ja, vorhanden" },
-              { value: "no", label: "nein" },
-            ]} />
+            <TriSelect
+              name="svhc"
+              label="SVHC erkannt"
+              value={sp.svhc}
+              options={[
+                { value: "", label: "egal" },
+                { value: "yes", label: "ja, vorhanden" },
+                { value: "no", label: "nein" },
+              ]}
+            />
+          </div>
+        </Collapsible>
+
+        <Collapsible
+          title="Inhaltsstoff-Flags"
+          subtitle="Bor, Formaldehyd-Donor, Amine, Chlorparaffine, Mineralöl, Biozide"
+          badgeCount={
+            (sp.boron ? 1 : 0) +
+            (sp.formaldehyde ? 1 : 0) +
+            (sp.amines ? 1 : 0) +
+            (sp.chlorParaffins ? 1 : 0) +
+            (sp.mineralOil ? 1 : 0) +
+            (sp.bactericide ? 1 : 0) +
+            (sp.fungicide ? 1 : 0)
+          }
+          defaultOpen={
+            !!(sp.boron || sp.formaldehyde || sp.amines || sp.chlorParaffins || sp.mineralOil || sp.bactericide || sp.fungicide)
+          }
+        >
+          <div className="grid gap-3 md:grid-cols-3 lg:grid-cols-4">
             <TriSelect name="boron" label="Borhaltig" value={sp.boron} />
             <TriSelect name="formaldehyde" label="Formaldehyd-Donor" value={sp.formaldehyde} />
             <TriSelect name="amines" label="Sek. Amine (DEA/Morpholin)" value={sp.amines} />
@@ -147,20 +182,17 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
             <TriSelect name="bactericide" label="Bakterizid" value={sp.bactericide} />
             <TriSelect name="fungicide" label="Fungizid" value={sp.fungicide} />
           </div>
-          <p className="mt-2 text-xs text-slate-400">
+          <p className="mt-3 text-xs text-slate-400">
             <span className="font-medium">Hinweis:</span> Flags stammen aus heuristischer Erkennung
-            der CAS-Nummern (~CLP/SDS-Standard) plus Klartext-Treffern. Bei „egal" werden auch
-            unklare Datensätze angezeigt.
+            der CAS-Nummern (~CLP/SDS-Standard) plus Klartext-Treffern.
           </p>
-        </div>
+        </Collapsible>
 
-        <div className="flex gap-2">
-          <Link href="/sds" className="btn-secondary">
-            Zurücksetzen
+        <div className="flex items-center justify-between px-1 pt-2">
+          <Link href="/sds" className="text-xs text-brand-600 hover:underline">
+            Alle Filter zurücksetzen
           </Link>
-          <span className="text-xs text-slate-400 self-center">
-            Filter wirken live — Ergebnisse aktualisieren sich automatisch.
-          </span>
+          <span className="text-xs text-slate-400">Filter wirken live.</span>
         </div>
       </LiveFilterForm>
 
