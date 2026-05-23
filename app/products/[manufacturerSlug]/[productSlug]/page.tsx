@@ -171,6 +171,14 @@ export default async function ProductDetailPage({
         </div>
       </header>
 
+      {/* PROMINENTE PREIS-KARTE — direkt unter Header, immer sofort sichtbar */}
+      <PriceBanner
+        productId={product.id}
+        productName={product.name}
+        manufacturer={m.name}
+        currentPrice={currentPrice}
+      />
+
       <div className="grid gap-6 lg:grid-cols-3">
         {/* LINKE SPALTE: Technische Daten + Werkstoffe */}
         <div className="space-y-5 lg:col-span-2">
@@ -544,6 +552,75 @@ const SEAL_RATING_STYLE: Record<
   },
 };
 
+function PriceBanner({
+  productId,
+  productName,
+  manufacturer,
+  currentPrice,
+}: {
+  productId: string;
+  productName: string;
+  manufacturer: string;
+  currentPrice: import("@/lib/price-aggregation").CurrentMarketPrice | null;
+}) {
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border-2 border-amber-400 bg-gradient-to-r from-amber-50 to-yellow-50 px-5 py-3 shadow-sm">
+      <div className="flex flex-wrap items-baseline gap-3">
+        <div className="flex items-center gap-2">
+          <TrendingUp size={20} className="text-amber-700" />
+          <span className="text-sm font-bold uppercase tracking-wide text-amber-900">
+            Marktpreis
+          </span>
+        </div>
+        {currentPrice ? (
+          <>
+            <div className="flex items-baseline gap-1">
+              <span className="text-3xl font-bold text-slate-900">
+                {currentPrice.median.toFixed(2)}
+              </span>
+              <span className="text-base font-semibold text-slate-700">
+                {currentPrice.unitLabel}
+              </span>
+            </div>
+            <span className="text-xs text-slate-600">
+              Spanne {currentPrice.min.toFixed(2)} – {currentPrice.max.toFixed(2)} ·{" "}
+              {currentPrice.observationCount} Beobachtungen · letzte {currentPrice.windowDays} Tage
+            </span>
+            <span
+              className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${
+                currentPrice.confidence === "high"
+                  ? "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-300"
+                  : currentPrice.confidence === "medium"
+                    ? "bg-amber-100 text-amber-800 ring-1 ring-amber-300"
+                    : "bg-rose-100 text-rose-800 ring-1 ring-rose-300"
+              }`}
+            >
+              {currentPrice.confidence}
+            </span>
+          </>
+        ) : (
+          <span className="text-sm text-slate-600">
+            Noch keine verifizierten Preise — sei der erste!
+          </span>
+        )}
+      </div>
+      <div className="flex items-center gap-2">
+        <a
+          href="#preis-historie"
+          className="rounded-md border border-amber-300 bg-white px-3 py-1.5 text-xs font-semibold text-amber-800 hover:bg-amber-100"
+        >
+          📈 Chart ansehen
+        </a>
+        <PriceSubmitLauncher
+          productId={productId}
+          productName={productName}
+          manufacturer={manufacturer}
+        />
+      </div>
+    </div>
+  );
+}
+
 function PriceSection({
   productId,
   productName,
@@ -558,7 +635,7 @@ function PriceSection({
   currentPrice: import("@/lib/price-aggregation").CurrentMarketPrice | null;
 }) {
   return (
-    <section className="rounded-xl border-2 border-amber-300 bg-amber-50/30 shadow-sm">
+    <section id="preis-historie" className="scroll-mt-4 rounded-xl border-2 border-amber-300 bg-amber-50/30 shadow-sm">
       <header className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-amber-300 px-4 py-2">
         <div className="flex items-center gap-2">
           <TrendingUp size={16} className="text-amber-700" />
