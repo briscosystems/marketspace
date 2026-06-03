@@ -5332,4 +5332,475 @@ export const SDS_SOURCES: SdsSource[] = [
   { manufacturer: "Carl Bechem", productName: "Berulub FB 34-2 (TDS)", category: "GREASE", language: "DE", sourceUrl: "https://www.perma-tec.com/_Resources/Lubricants/Bechem/Berulub_FB_34-2_TDS_de.pdf" },
   { manufacturer: "Carl Bechem", productName: "High-Lub SW 2", category: "GREASE", language: "DE", sourceUrl: "https://bf3shop.de/WebRoot/Store18/Shops/13bf69e0-fe4d-4cc7-a892-14d7de4a9cb7/MediaGallery/Datenblaetter/215736_Sicherheitsdatenblatt.pdf" },
 
+  // ============ Etappe 21 — Welle 8: SDS-Lücken (ROCOL Accu-Lube/Aerospec/FoodLube/Biogen/Chainguard/Easyline/Galva/Glassflo, ENEOS Europe ATF/Gear/Grand/Hydraulic, SKF LGMT/LGEP/LGEM/LGFP/LGGB/LGHB/LGWA/LGWM/LGLT, Klüber UH1 Food-Grade, Lubcon Turmofluid, Petrofer Isolubric) ============
+
+  { manufacturer: "ROCOL", productName: "ACCU-LUBE LB-10000", category: "NEAT_CUTTING_OIL", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/ACCU-LUBE%20LB-10000" },
+  { manufacturer: "ROCOL", productName: "ACCU-LUBE LB-4000", category: "NEAT_CUTTING_OIL", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/ACCU-LUBE%20LB-4000" },
+  { manufacturer: "ROCOL", productName: "ACCU-LUBE LB-4500", category: "NEAT_CUTTING_OIL", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/ACCU-LUBE%20LB-4500" },
+  { manufacturer: "ROCOL", productName: "ACCU-LUBE LB-5000", category: "NEAT_CUTTING_OIL", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/ACCU-LUBE%20LB-5000" },
+  { manufacturer: "ROCOL", productName: "ACCU-LUBE LB-6000", category: "NEAT_CUTTING_OIL", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/ACCU-LUBE%20LB-6000" },
+  { manufacturer: "ROCOL", productName: "ACCU-LUBE LB-8000", category: "NEAT_CUTTING_OIL", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/ACCU-LUBE%20LB-8000" },
+  { manufacturer: "ROCOL", productName: "AEROSPEC 100", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/AEROSPEC%20100" },
+  { manufacturer: "ROCOL", productName: "AEROSPEC 200", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/AEROSPEC%20200" },
+  { manufacturer: "ROCOL", productName: "AEROSPEC 210", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/AEROSPEC%20210" },
+  { manufacturer: "ROCOL", productName: "AEROSPEC 250", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/AEROSPEC%20250" },
+  { manufacturer: "ROCOL", productName: "AEROSPEC 300", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/AEROSPEC%20300" },
+  { manufacturer: "ROCOL", productName: "AEROSPEC 3052", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/AEROSPEC%203052" },
+  { manufacturer: "ROCOL", productName: "AEROSPEC 350", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/AEROSPEC%20350" },
+  { manufacturer: "ROCOL", productName: "AEROSPEC 400", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/AEROSPEC%20400" },
+  { manufacturer: "ROCOL", productName: "AEROSPEC 533", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/AEROSPEC%20533" },
+  { manufacturer: "ROCOL", productName: "AEROSPEC Protect Spray", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/AEROSPEC%20Protect%20Spray" },
+  { manufacturer: "ROCOL", productName: "ANTI-SEIZE 797", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/ANTI-SEIZE%20797" },
+  { manufacturer: "ROCOL", productName: "ANTI-SEIZE Compound", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/ANTI-SEIZE%20Compound" },
+  { manufacturer: "ROCOL", productName: "ANTI-SEIZE SA 610", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/ANTI-SEIZE%20SA%20610" },
+  { manufacturer: "ROCOL", productName: "ANTI-SEIZE Spray", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/ANTI-SEIZE%20Spray" },
+  { manufacturer: "ROCOL", productName: "ANTI-SEIZE Stainless", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/ANTI-SEIZE%20Stainless" },
+  { manufacturer: "ROCOL", productName: "ASO OIL REINFORCEMENT", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/ASO%20OIL%20REINFORCEMENT" },
+  { manufacturer: "ROCOL", productName: "ATR3 CONCENTRATE", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/ATR3%20CONCENTRATE" },
+  { manufacturer: "ROCOL", productName: "BAKERLUBE CL", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/BAKERLUBE%20CL" },
+  { manufacturer: "ROCOL", productName: "BAKERLUBE HT", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/BAKERLUBE%20HT" },
+  { manufacturer: "ROCOL", productName: "BELT DRESSING Spray", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/BELT%20DRESSING%20Spray" },
+  { manufacturer: "ROCOL", productName: "BG 521", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/BG%20521" },
+  { manufacturer: "ROCOL", productName: "BG211", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/BG211" },
+  { manufacturer: "ROCOL", productName: "BIOGEN Fluid", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/BIOGEN%20Fluid" },
+  { manufacturer: "ROCOL", productName: "BIOGEN Rope Dressing", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/BIOGEN%20Rope%20Dressing" },
+  { manufacturer: "ROCOL", productName: "BIOGEN WIRESHIELD", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/BIOGEN%20WIRESHIELD" },
+  { manufacturer: "ROCOL", productName: "BLACK CHUCK PASTE", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/BLACK%20CHUCK%20PASTE" },
+  { manufacturer: "ROCOL", productName: "Biogen Matrix", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/Biogen%20Matrix" },
+  { manufacturer: "ROCOL", productName: "CHAIN GUARD Hi-Load Spray", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/CHAIN%20GUARD%20Hi-Load%20Spray" },
+  { manufacturer: "ROCOL", productName: "CHAINGUARD 200P", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/CHAINGUARD%20200P" },
+  { manufacturer: "ROCOL", productName: "CHAINGUARD 230", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/CHAINGUARD%20230" },
+  { manufacturer: "ROCOL", productName: "CHAINGUARD 280", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/CHAINGUARD%20280" },
+  { manufacturer: "ROCOL", productName: "CHAINGUARD 550", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/CHAINGUARD%20550" },
+  { manufacturer: "ROCOL", productName: "COLD GALVANISING SPRAY", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/COLD%20GALVANISING%20SPRAY" },
+  { manufacturer: "ROCOL", productName: "DL-44 SPRAY", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/DL-44%20SPRAY" },
+  { manufacturer: "ROCOL", productName: "DRY MOLY Fluid", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/DRY%20MOLY%20Fluid" },
+  { manufacturer: "ROCOL", productName: "DRY MOLY Paste", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/DRY%20MOLY%20Paste" },
+  { manufacturer: "ROCOL", productName: "DRY MOLY Spray", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/DRY%20MOLY%20Spray" },
+  { manufacturer: "ROCOL", productName: "DRY PTFE Spray", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/DRY%20PTFE%20Spray" },
+  { manufacturer: "ROCOL", productName: "EASYLINE EDGE", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/EASYLINE%20EDGE" },
+  { manufacturer: "ROCOL", productName: "EASYLINE EDGE CONCENTRATE - BLACK", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/EASYLINE%20EDGE%20CONCENTRATE%20-%20BLACK" },
+  { manufacturer: "ROCOL", productName: "EASYLINE EDGE CONCENTRATE - WHITE", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/EASYLINE%20EDGE%20CONCENTRATE%20-%20WHITE" },
+  { manufacturer: "ROCOL", productName: "EASYLINE EDGE CONCENTRATE - YELLOW", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/EASYLINE%20EDGE%20CONCENTRATE%20-%20YELLOW" },
+  { manufacturer: "ROCOL", productName: "EASYLINE LINE MARKING PAINT PART A", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/EASYLINE%20LINE%20MARKING%20PAINT%20PART%20A" },
+  { manufacturer: "ROCOL", productName: "EASYLINE LINE MARKING PAINT PART B", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/EASYLINE%20LINE%20MARKING%20PAINT%20PART%20B" },
+  { manufacturer: "ROCOL", productName: "ELECTRA CLEAN Spray", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/ELECTRA%20CLEAN%20Spray" },
+  { manufacturer: "ROCOL", productName: "FLAWFINDER CLEANER Spray", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FLAWFINDER%20CLEANER%20Spray" },
+  { manufacturer: "ROCOL", productName: "FLAWFINDER DEVELOPER Spray", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FLAWFINDER%20DEVELOPER%20Spray" },
+  { manufacturer: "ROCOL", productName: "FLAWFINDER DYE PENETRANT Spray", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FLAWFINDER%20DYE%20PENETRANT%20Spray" },
+  { manufacturer: "ROCOL", productName: "FLAWFINDER VW PENETRANT", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FLAWFINDER%20VW%20PENETRANT" },
+  { manufacturer: "ROCOL", productName: "FLO-LINE 100", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FLO-LINE%20100" },
+  { manufacturer: "ROCOL", productName: "FLO-LINE 500", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FLO-LINE%20500" },
+  { manufacturer: "ROCOL", productName: "FLO-LINE 600", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FLO-LINE%20600" },
+  { manufacturer: "ROCOL", productName: "FLO-LINE 700", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FLO-LINE%20700" },
+  { manufacturer: "ROCOL", productName: "FOAM CLEANER Spray", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FOAM%20CLEANER%20Spray" },
+  { manufacturer: "ROCOL", productName: "FOODLUBE 1500 Spray", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FOODLUBE%201500%20Spray" },
+  { manufacturer: "ROCOL", productName: "FOODLUBE AUTOLUBE", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FOODLUBE%20AUTOLUBE" },
+  { manufacturer: "ROCOL", productName: "FOODLUBE CHAIN FLUID UNILUBE", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FOODLUBE%20CHAIN%20FLUID%20UNILUBE" },
+  { manufacturer: "ROCOL", productName: "FOODLUBE Chain Fluid", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FOODLUBE%20Chain%20Fluid" },
+  { manufacturer: "ROCOL", productName: "FOODLUBE Dismantling Spray", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FOODLUBE%20Dismantling%20Spray" },
+  { manufacturer: "ROCOL", productName: "FOODLUBE Extreme", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FOODLUBE%20Extreme" },
+  { manufacturer: "ROCOL", productName: "FOODLUBE HT 240", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FOODLUBE%20HT%20240" },
+  { manufacturer: "ROCOL", productName: "FOODLUBE Hi-Load SF", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FOODLUBE%20Hi-Load%20SF" },
+  { manufacturer: "ROCOL", productName: "FOODLUBE Hi-Power Range", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FOODLUBE%20Hi-Power%20Range" },
+  { manufacturer: "ROCOL", productName: "FOODLUBE Hi-Temp 2", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FOODLUBE%20Hi-Temp%202" },
+  { manufacturer: "ROCOL", productName: "FOODLUBE Hi-Torque Range", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FOODLUBE%20Hi-Torque%20Range" },
+  { manufacturer: "ROCOL", productName: "FOODLUBE MULTIPASTE SPRAY", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FOODLUBE%20MULTIPASTE%20SPRAY" },
+  { manufacturer: "ROCOL", productName: "FOODLUBE MultiPaste", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FOODLUBE%20MultiPaste" },
+  { manufacturer: "ROCOL", productName: "FOODLUBE Overhead Chain Fluid", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FOODLUBE%20Overhead%20Chain%20Fluid" },
+  { manufacturer: "ROCOL", productName: "FOODLUBE PROTECT SPRAY", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FOODLUBE%20PROTECT%20SPRAY" },
+  { manufacturer: "ROCOL", productName: "FOODLUBE SEAMER FLUID 150", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FOODLUBE%20SEAMER%20FLUID%20150" },
+  { manufacturer: "ROCOL", productName: "FOODLUBE UNILUBE", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FOODLUBE%20UNILUBE" },
+  { manufacturer: "ROCOL", productName: "FOODLUBE Ultra", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FOODLUBE%20Ultra" },
+  { manufacturer: "ROCOL", productName: "FOODLUBE XT CHAIN Fluid", category: "GREASE", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/FOODLUBE%20XT%20CHAIN%20Fluid" },
+  { manufacturer: "ROCOL", productName: "GALVA BRIGHT", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/GALVA%20BRIGHT" },
+  { manufacturer: "ROCOL", productName: "GALVA FLASH", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/GALVA%20FLASH" },
+  { manufacturer: "ROCOL", productName: "GASSEAL", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/GASSEAL" },
+  { manufacturer: "ROCOL", productName: "GLASSFLO 2017", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/GLASSFLO%202017" },
+  { manufacturer: "ROCOL", productName: "GLASSFLO 5000", category: "OTHER", language: "EN", sourceUrl: "https://www.rocol.com/datasheets/download/clp/6/GLASSFLO%205000" },
+  { manufacturer: "ENEOS", productName: "ENEOS ATF D-III", category: "OTHER", language: "EN", sourceUrl: "https://eneoseurope.com/wp-content/uploads/2020/04/EN_V161500408_SDS_161500_5.2-1.pdf" },
+  { manufacturer: "ENEOS", productName: "ENEOS ATF DCT", category: "OTHER", language: "EN", sourceUrl: "https://eneoseurope.com/wp-content/uploads/2022/07/EN_V161500462_SDS_161500_3.3.pdf" },
+  { manufacturer: "ENEOS", productName: "ENEOS Eco ATF", category: "OTHER", language: "EN", sourceUrl: "https://eneoseurope.com/wp-content/uploads/2020/04/EN_V161500410_SDS_161500_4.1-1.pdf" },
+  { manufacturer: "ENEOS", productName: "ENEOS Eco CVT Fluid", category: "OTHER", language: "EN", sourceUrl: "https://eneoseurope.com/wp-content/uploads/2020/04/EN_V161500409_SDS_161500_3.1-1.pdf" },
+  { manufacturer: "ENEOS", productName: "ENEOS Gear Oil 75W-90", category: "GEAR_OIL", language: "EN", sourceUrl: "https://eneoseurope.com/wp-content/uploads/2020/04/EN_V161500411_SDS_161500_4.2-1.pdf" },
+  { manufacturer: "ENEOS", productName: "ENEOS Gear Oil 80W-90", category: "GEAR_OIL", language: "EN", sourceUrl: "https://eneoseurope.com/wp-content/uploads/2020/04/EN_V161500433_SDS_161500_4.1-1.pdf" },
+  { manufacturer: "ENEOS", productName: "ENEOS Grand 10W-40", category: "MOTOR_OIL", language: "EN", sourceUrl: "https://eneoseurope.com/wp-content/uploads/2020/04/EN_V161500429_SDS_161500_5.1-1.pdf" },
+  { manufacturer: "ENEOS", productName: "ENEOS Grand Agri 10W-40", category: "MOTOR_OIL", language: "EN", sourceUrl: "https://eneoseurope.com/wp-content/uploads/2025/03/EN_V161500486_SDS_161500_1.0-3.pdf" },
+  { manufacturer: "ENEOS", productName: "ENEOS Grand Agri 15W-40", category: "MOTOR_OIL", language: "EN", sourceUrl: "https://eneoseurope.com/wp-content/uploads/2025/03/EN_V161500487_SDS_161500_1.0-2.pdf" },
+  { manufacturer: "ENEOS", productName: "ENEOS Grand FA 15W-40", category: "MOTOR_OIL", language: "EN", sourceUrl: "https://eneoseurope.com/wp-content/uploads/2020/04/EN_V161500406_SDS_161500_7.1-2.pdf" },
+  { manufacturer: "ENEOS", productName: "ENEOS Grand FA 20W-50", category: "MOTOR_OIL", language: "EN", sourceUrl: "https://eneoseurope.com/wp-content/uploads/2020/04/EN_V161500407_SDS_161500_5.2-1.pdf" },
+  { manufacturer: "ENEOS", productName: "ENEOS Grand LA 10W-40", category: "MOTOR_OIL", language: "EN", sourceUrl: "https://eneoseurope.com/wp-content/uploads/2020/04/EN_V161500428_SDS_161500_5.0-1.pdf" },
+  { manufacturer: "ENEOS", productName: "ENEOS Grand LX 5W-30", category: "MOTOR_OIL", language: "EN", sourceUrl: "https://eneoseurope.com/wp-content/uploads/2020/04/EN_V161500450_SDS_161500_4.1-1.pdf" },
+  { manufacturer: "ENEOS", productName: "ENEOS Grand Multi 15W-40", category: "MOTOR_OIL", language: "EN", sourceUrl: "https://eneoseurope.com/wp-content/uploads/2020/04/EN_V161500427_SDS_161500_6.1-1.pdf" },
+  { manufacturer: "ENEOS", productName: "ENEOS Hyper Cool XB", category: "OTHER", language: "EN", sourceUrl: "https://eneoseurope.com/wp-content/uploads/2020/04/EN_V161500476_SDS_161500_2.1-1.pdf" },
+  { manufacturer: "ENEOS", productName: "ENEOS Hyper Cool XLR", category: "OTHER", language: "EN", sourceUrl: "https://eneoseurope.com/wp-content/uploads/2020/04/EN_V161500473_SDS_161500_2.0-1.pdf" },
+  { manufacturer: "ENEOS", productName: "ENEOS Super Cool BSG", category: "OTHER", language: "EN", sourceUrl: "https://eneoseurope.com/wp-content/uploads/2020/04/EN_V161500478_SDS_161500_2.1-1.pdf" },
+  { manufacturer: "ENEOS", productName: "ENEOS Super Hydraulic 46/68", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://eneoseurope.com/wp-content/uploads/2020/04/EN_V161500435_SDS_161500_4.2-1.pdf" },
+  { manufacturer: "ENEOS", productName: "ENEOS Sustina CVT Fluid", category: "OTHER", language: "EN", sourceUrl: "https://eneoseurope.com/wp-content/uploads/2020/04/EN_V161500401_SDS_161500_2.0.pdf" },
+  { manufacturer: "ENEOS", productName: "ENEOS X Prime AT Fluid", category: "OTHER", language: "EN", sourceUrl: "https://eneoseurope.com/wp-content/uploads/2022/07/EN_V161500467_SDS_161500_3.0-1.pdf" },
+  { manufacturer: "ENEOS", productName: "ENEOS X Prime CVT Fluid", category: "OTHER", language: "EN", sourceUrl: "https://eneoseurope.com/wp-content/uploads/2022/07/EN_V161500468_SDS_161500_3.0-1.pdf" },
+  { manufacturer: "SKF", productName: "SKF LGMT 2 General Purpose Industrial Grease", category: "GREASE", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/SKF/LGMT%202%20MSDS.pdf" },
+  { manufacturer: "SKF", productName: "SKF LGEP 2 Extreme Pressure Grease", category: "GREASE", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/SKF/LGEP%202%20MSDS.pdf" },
+  { manufacturer: "SKF", productName: "SKF LGEM 2 High Viscosity Bearing Grease", category: "GREASE", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/SKF/LGEM%202%20MSDS.pdf" },
+  { manufacturer: "SKF", productName: "SKF LGFP 2 Food Grade Grease", category: "GREASE", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/SKF/LGFP%202%20MSDS.pdf" },
+  { manufacturer: "SKF", productName: "SKF LGGB 2 Biodegradable Grease", category: "GREASE", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/SKF/LGGB%202%20MSDS.pdf" },
+  { manufacturer: "SKF", productName: "SKF LGHB 2 High-Viscosity High-Temperature Grease", category: "GREASE", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/SKF/LGHB%202%20MSDS.pdf" },
+  { manufacturer: "SKF", productName: "SKF LGWA 2 Wide Temperature Range EP Grease", category: "GREASE", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/SKF/LGWA%202%20MSDS.pdf" },
+  { manufacturer: "SKF", productName: "SKF LGWM 2 Wide Temperature High Load Grease", category: "GREASE", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/SKF/LGWM%202%20MSDS.pdf" },
+  { manufacturer: "SKF", productName: "SKF LGMT 3 General Purpose Industrial Grease", category: "GREASE", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/SKF/LGMT%203%20MSDS.pdf" },
+  { manufacturer: "SKF", productName: "SKF LGLT 2 Low Temperature Bearing Grease", category: "GREASE", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/SKF/LGLT%202%20MSDS.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth UH1 14-151 (EN QBO)", category: "GREASE", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Kluber/Kl%C3%BCbersynth_UH1_14-151_EN_en.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth UH1 14-31 (EN QBO)", category: "GREASE", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Kluber/Kl%C3%BCbersynth_UH1_14-31_EN_en.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth UH1 14-222 (EN QBO)", category: "GREASE", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Kluber/Kl%C3%BCbersynth_UH1_14-222_EN_en.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth GE 46-1200 (EN QBO)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Kluber/Kl%C3%BCbersynth_GE_46-1200_EN_en.pdf" },
+  { manufacturer: "Lubcon", productName: "TURMOFLUID 40 B (perma EN)", category: "OTHER", language: "EN", sourceUrl: "https://www.perma-tec.com/_Resources/Lubricants/Lubcon%20Lubricant%20Consult/TURMOFLUID_40_B_MSDS_en.pdf" },
+  { manufacturer: "Lubcon", productName: "TURMOFLUID 40 B (perma DE)", category: "OTHER", language: "DE", sourceUrl: "https://www.perma-tec.com/_Resources/Lubricants/Lubcon%20Lubricant%20Consult/TURMOFLUID_40_B_MSDS_de.pdf" },
+  { manufacturer: "Petrofer", productName: "Isolubric VG 220 Zinkfrei (perma DE)", category: "HYDRAULIC_OIL", language: "DE", sourceUrl: "https://www.perma-tec.com/_Resources/Lubricants/Petrofer/Isolubric_VG_220_Zinkfrei_MSDS_de.pdf" },
+
+  // ============ FOOD-GRADE NSF H1: KLÜBER LUBRICATION (deep, via Hayley Group, qualitybearingsonline & klsummit) ============
+  // Klüberoil 4 UH1 N range (Food-Grade Gear/Chain Oils, hayley-group)
+  { manufacturer: "Klüber Lubrication", productName: "Klüberoil 4 UH1-15 (NSF H1, Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/45026cb7-c82d-11eb-a066-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberoil 4 UH1-32 N (NSF H1, Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/4502008c-c82d-11eb-a066-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberoil 4 UH1-68 N (NSF H1, Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/45020331-c82d-11eb-a066-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberoil 4 UH1-100 N (NSF H1, Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/4502083d-c82d-11eb-a066-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberoil 4 UH1-220 N (NSF H1, Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/600156e8-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberoil 4 UH1-1500 N Spray (NSF H1, Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/4ae4735a-b874-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberoil 4 UH1-68 N (NSF H1, oilmart)", category: "GEAR_OIL", language: "EN", sourceUrl: "http://www.oilmart.com/data/products/sds/1649/SDS%20Kluber%20Kluberoil%204%20UH1-68N%2005102017%20EN.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberoil 4 UH1-1500 N (NSF H1, Konecranes)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://www.konecranes.com/sites/default/files/sds_files/QB_D66402844_01_EN-1.PDF" },
+
+  // Klübersynth UH1 14-xxx greases (Food-Grade NSF H1, Hayley)
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth UH1 14-1600 (NSF H1, Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/4ae70a70-b874-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth UH1 64-62 (NSF H1, Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/4ae599f6-b874-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth UH1 64-1302 (NSF H1, Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/600435da-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth UH1 64-2403 (NSF H1, Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/6002b06a-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth UH1 6-100 (NSF H1, Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/450249b5-c82d-11eb-a066-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth UH1 6-460 (NSF H1, oilmart)", category: "GEAR_OIL", language: "EN", sourceUrl: "http://oilmart.com/data/products/sds/1625/SDS%20Kluber%20Klubersynth%20UH1%206-460%2005132020%20EN.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth UH1 14-31 (NSF H1, LinMot US)", category: "GREASE", language: "EN", sourceUrl: "https://shop.linmot.com/data/import/Dokumente/0185-0016-US_096029_SDS_LU02_UH1_14-31.PDF" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth UH1 14-31 (NSF H1, QBO)", category: "GREASE", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Kluber/Kl%C3%BCbersynth_UH1_14-31_EN_en.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth UH1 14-1600 (NSF H1, QBO)", category: "GREASE", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Kluber/Kl%C3%BCbersynth_UH1_14-1600_EN_en.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth UH1 4-18 (NSF H1, Hayley)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/5ffe763f-15f7-11ec-9e82-42010a150102.pdf" },
+
+  // Klüberlub NH1 series (Food-Grade greases, Hayley)
+  { manufacturer: "Klüber Lubrication", productName: "Klüberlub NH1 11-222 (NSF H1, Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/6002befc-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberlub NH1 11-231 (NSF H1, Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/60045b57-15f7-11ec-9e82-42010a150102.pdf" },
+
+  // Klüberoil NH1 4-xxx series (Food-Grade Gear Oils, Hayley)
+  { manufacturer: "Klüber Lubrication", productName: "Klüberoil NH1 4-150 (NSF H1, Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/5ffb302f-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberoil NH1 4-220 (NSF H1, Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/5ffb20c1-15f7-11ec-9e82-42010a150102.pdf" },
+
+  // Klüberfood NH1 series (Food-Grade incidental contact, Hayley)
+  { manufacturer: "Klüber Lubrication", productName: "Klüberfood NH1 94-402 (NSF H1, Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/45024c5c-c82d-11eb-a066-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberfood NH1 94-402 (NSF H1, Simalube BE)", category: "GREASE", language: "EN", sourceUrl: "https://www.simalube.be/uploads/images/SDS_Klueberfood_NH1_94-402_096097_BE_EN_2024-11-06-162525_oxtz.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberfood NH1 94-301 (NSF H1, Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/600469c3-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberfood NH1 C 8-80 (NSF H1, Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/4ae69481-b874-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberfood NH1 4-002 Spray (NSF H1, Hayley)", category: "OTHER", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/4502ad75-c82d-11eb-a066-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberfood NH1 4-220 N Spray (NSF H1, Hayley)", category: "OTHER", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/4ae675d4-b874-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberfood NH1 CH 2-220 Plus (NSF H1, Hayley)", category: "OTHER", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/5fff4303-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberfood NH1 64-422 (NSF H1, Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/6002b931-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberfood 4 NH1-32 (NSF H1, Hayley)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/5ffd24a7-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberfood 4 NH1-32 (NSF H1, AlliedOil)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://www.alliedoil.com/wp-content/uploads/2021/03/SDS_KLUBERFOOD-4-NH1-32_050067_CA_EN-1.pdf" },
+
+  // Klüber Summit HySyn FG (Food-Grade Compressor Oils, NSF H1)
+  { manufacturer: "Klüber Lubrication", productName: "Klüber Summit HySyn FG-22 (NSF H1)", category: "OTHER", language: "EN", sourceUrl: "https://www.klsummit.com/ecoma/files/SDS_HYSYN_FG-22_340199_AR_EN.pdf?download=1" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüber Summit HySyn FG-32 (NSF H1)", category: "OTHER", language: "EN", sourceUrl: "https://www.klsummit.com/ecoma/files/SDS_HYSYN_FG-32_340468_GB_EN.pdf?download=1" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüber Summit HySyn FG-46 (NSF H1)", category: "OTHER", language: "EN", sourceUrl: "https://www.klsummit.com/ecoma/files/SDS_HYSYN_FG-46_340469_US_EN.pdf?download=1" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüber Summit HySyn FG-68 (NSF H1)", category: "OTHER", language: "EN", sourceUrl: "https://www.klsummit.com/ecoma/files/SDS_HYSYN_FG-68_340470_US_EN.pdf?download=1" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüber Summit HySyn FG-15 (NSF H1)", category: "OTHER", language: "EN", sourceUrl: "https://www.klsummit.com/ecoma/files/SDS_HYSYN_FG-15_340474_CA_EN.pdf?download=1" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüber Summit FG-100 (NSF H1)", category: "OTHER", language: "EN", sourceUrl: "https://www.klsummit.com/ecoma/files/SDS_FG-100_340505_GB_EN.pdf?download=1" },
+
+  // Klüber Summit Hysyn FG 46 (Hayley)
+  { manufacturer: "Klüber Lubrication", productName: "Klüber Summit HySyn FG 46 (NSF H1, Hayley)", category: "OTHER", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/5ffcde64-15f7-11ec-9e82-42010a150102.pdf" },
+
+  // Klübersynth (non-food, gear) — added for completeness
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth AG 14-61 (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/6004a634-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth GH 6-460 (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/4501cf57-c82d-11eb-a066-42010a150102.pdf" },
+
+  // Klüberbio (Biodegradable EAL, Hayley)
+  { manufacturer: "Klüber Lubrication", productName: "Klüberbio RM 2-100 (Biodegradable, Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/5ff33434-15f7-11ec-9e82-42010a150102.pdf" },
+
+  // ============ FOOD-GRADE NSF H1: CASTROL OPTILEB (via msdspds.castrol.com) ============
+  { manufacturer: "Castrol", productName: "Optileb HY 32 (NSF H1 Hydraulic)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://msdspds.castrol.com/ussds/amersdsf.nsf/0/A309C8DC458A38A1802589500058780C/$file/2939400.pdf" },
+  { manufacturer: "Castrol", productName: "Optileb HY 68 (NSF H1 Hydraulic)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://msdspds.castrol.com/ussds/amersdsf.nsf/0/202CC5DB58076FE680258D0E005524F6/$file/3215602.pdf" },
+  { manufacturer: "Castrol", productName: "Optileb GT 100 (NSF H1 Gear)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://msdspds.castrol.com/ussds/amersdsf.nsf/0/A6EC9DA705E7308F80258AD80058A3B9/$file/3077258.pdf" },
+  { manufacturer: "Castrol", productName: "Optileb GT 460 (NSF H1 Gear)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://msdspds.castrol.com/ussds/amersdsf.nsf/Files/7FC48DDE809AB16380258AFF00185EF6/$File/3085849.pdf" },
+  { manufacturer: "Castrol", productName: "Optileb CH 150 (NSF H1 Chain)", category: "OTHER", language: "EN", sourceUrl: "https://msdspds.castrol.com/ussds/amersdsf.nsf/0/5C79B0A1FE929571802588D800528A59/$file/2881763.pdf" },
+  { manufacturer: "Castrol", productName: "Optileb CH 150 (NSF H1 Chain, alt)", category: "OTHER", language: "EN", sourceUrl: "https://msdspds.castrol.com/ussds/amersdsf.nsf/0/4318299C8EC2944680258CE30053229B/$file/3206487.pdf" },
+  { manufacturer: "Castrol", productName: "Optileb GR 823-2 (NSF H1 Grease)", category: "GREASE", language: "EN", sourceUrl: "https://msdspds.castrol.com/ussds/amersdsf.nsf/Files/03BD8448D83496C18025855900531884/$File/2606492.pdf" },
+  { manufacturer: "Castrol", productName: "Optileb DAB 8 (NSF H1 White Oil)", category: "OTHER", language: "EN", sourceUrl: "https://msdspds.castrol.com/ussds/amersdsf.nsf/Files/5CBA3293E6FA2F8080258B51005406C7/$File/3106371.pdf" },
+
+  // ============ FOOD-GRADE NSF H1: MOBIL SHC CIBUS (via Grainger) ============
+  { manufacturer: "Mobil", productName: "Mobil SHC Cibus 46 (NSF H1)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://www.grainger.com/sds/pdf/212134.pdf" },
+
+  // ============ FOOD-GRADE NSF H1: PETRO-CANADA PURITY FG (via Power Lube) ============
+  { manufacturer: "Petro-Canada", productName: "Purity FG AW 46 (NSF H1 Hydraulic)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://www.powerlubeind.com/assets/common/Petro_Canada_Purity_FG_AW_46_sds.pdf" },
+  { manufacturer: "Petro-Canada", productName: "Purity FG Chain Fluid Heavy (NSF H1)", category: "OTHER", language: "EN", sourceUrl: "https://www.powerlubeind.com/assets/common/Petro_Canada_Purity20FG_Chain_Fluid_Hvy_sds.pdf" },
+  { manufacturer: "Petro-Canada", productName: "Purity FG2 Grease (NSF H1)", category: "GREASE", language: "EN", sourceUrl: "https://www.powerlubeind.com/assets/common/Petro_Canada_Purity20FG2_sds.pdf" },
+  { manufacturer: "Petro-Canada", productName: "Purity FG00 Grease (NSF H1)", category: "GREASE", language: "EN", sourceUrl: "https://www.powerlubeind.com/assets/common/Petro_Canada_Purity20FG00_sds.pdf" },
+
+  // ============ FOOD-GRADE NSF H1: ANDEROL (via Alfa Laval, ChemPoint) ============
+  { manufacturer: "Anderol", productName: "Anderol FGCS-2 (NSF H1 Compressor)", category: "OTHER", language: "EN", sourceUrl: "https://assets.alfalaval.com/documents/p67eb060a/alfa-laval-anderol-fgcs2.pdf" },
+  { manufacturer: "Anderol", productName: "Anderol 465 (Synthetic Lubricant)", category: "OTHER", language: "EN", sourceUrl: "https://www.chempoint.com/products/download?grade=2905&type=sds" },
+
+  // ============ FOOD-GRADE NSF H1: ROCOL FOODLUBE ============
+  { manufacturer: "ROCOL", productName: "FOODLUBE MultiPaste (NSF H1)", category: "GREASE", language: "EN", sourceUrl: "https://eriksdigitalcdn.azureedge.net/hlr-system/rocol/documents/foodlube%20multipaste__%20gb%20(2)%20safety%20data%20sheet.pdf" },
+
+  // ============ FOOD-GRADE NSF H1: FUCHS CASSIDA / SHELL CASSIDA (via PetSrvCo) ============
+  { manufacturer: "FUCHS", productName: "Cassida Fluid GL 150 (NSF H1 Gear)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/FUCHS_CASSIDA_FLUID_GL_150_SDS.pdf" },
+  { manufacturer: "FUCHS", productName: "Cassida Fluid GL 220 (NSF H1 Gear)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/FUCHS_CASSIDA_FLUID_GL_220_SDS.pdf" },
+  { manufacturer: "FUCHS", productName: "Cassida Fluid GL 460 (NSF H1 Gear)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/FUCHS_CASSIDA_FLUID_GL_460_SDS.pdf" },
+  { manufacturer: "FUCHS", productName: "Cassida Fluid HF 32 (NSF H1 Hydraulic)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/FUCHS_CASSIDA_FLUID_HF_32_SDS.pdf" },
+  { manufacturer: "FUCHS", productName: "Cassida Fluid HF 46 (NSF H1 Hydraulic)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/FUCHS_CASSIDA_FLUID_HF_46_SDS.pdf" },
+  { manufacturer: "FUCHS", productName: "Cassida Fluid HF 68 (NSF H1 Hydraulic)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/FUCHS_CASSIDA_FLUID_HF_68_SDS.pdf" },
+
+  // ============ FOOD-GRADE NSF H1: CHESTERTON ============
+  { manufacturer: "Chesterton", productName: "690 FG H1 Food-Grade Lubricant", category: "OTHER", language: "EN", sourceUrl: "https://www.pumpworld.com/assets/chesterton-690-fg-h1-food-grade-lubricant-SDS-Bulk-NA.pdf" },
+  { manufacturer: "Chesterton", productName: "690 FG H1 (manufacturer)", category: "OTHER", language: "EN", sourceUrl: "https://chesterton.com/Files/Product%20assets/Lubricants/ts690FGB_NA_EN.pdf" },
+
+  // ============ FOOD-GRADE NSF H1: BEL-RAY NO-TOX ============
+  { manufacturer: "Bel-Ray", productName: "No-Tox Food Grade Chain Lubricant", category: "OTHER", language: "EN", sourceUrl: "https://www.perma-tec.com/_Resources/Lubricants/Bel%20Ray/No_Tox_Food_Grade_Chain_Lubricant_MSDS_en.pdf" },
+  { manufacturer: "Bel-Ray", productName: "Molylube Synthetic EP Grease 1 (Powerlube)", category: "GREASE", language: "EN", sourceUrl: "https://www.powerlubeind.com/sites/default/files/default_images/downloads/lubricant_specifications/sds/bel-ray/bel-ray_molylube_synthetic_extreme_pressure_grease_1_sds.pdf" },
+
+  // ============ AEROSPACE / AVIATION INDUSTRIAL: SHELL AEROSHELL FLUIDS (Hydraulic) ============
+  { manufacturer: "AeroShell", productName: "AeroShell Fluid 1 (Hydraulic)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Shell/AeroShell%20Fluid%201%20MSDS.PDF" },
+  { manufacturer: "AeroShell", productName: "AeroShell Fluid 12 (Hydraulic/General)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Shell/AeroShell%20Fluid%2012%20MSDS.PDF" },
+  { manufacturer: "AeroShell", productName: "AeroShell Fluid 18 (Hydraulic)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Shell/AeroShell%20Fluid%2018%20MSDS.PDF" },
+  { manufacturer: "AeroShell", productName: "AeroShell Fluid 31 (Synthetic Hydraulic)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Shell/AeroShell%20Fluid%2031%20MSDS.PDF" },
+  { manufacturer: "AeroShell", productName: "AeroShell Fluid 61 (Hydraulic)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Shell/AeroShell%20Fluid%2061%20MSDS.PDF" },
+  { manufacturer: "AeroShell", productName: "AeroShell Fluid 71 (Hydraulic)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Shell/AeroShell%20Fluid%2071%20MSDS.PDF" },
+  { manufacturer: "AeroShell", productName: "AeroShell Fluid 41 (PetSrvCo)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/AEROSHELL_FLUID_41_SDS.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Fluid 41 (AvOilOutlet)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://aviationoiloutlet.com/content/pdfs/AEROSHELL_FLUID_41_SDS.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Fluid 41 (AircraftSpruce)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://www.aircraftspruce.com/catalog/pdf/aeroshell41msds.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Fluid 31 (PetSrvCo)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/AEROSHELL_FLUID_31_SDS.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Fluid 31 (AvOilOutlet)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://aviationoiloutlet.com/content/pdfs/AEROSHELL_FLUID_31_SDS.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Fluid 4 (PetSrvCo)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/AEROSHELL_FLUID_4_SDS.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Fluid 4 (AvOilOutlet)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://aviationoiloutlet.com/content/pdfs/AEROSHELL_FLUID_4_SDS.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Fluid 4 (SC Lubricants)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://shop.sclubricants.com/pub/media/sds/aeroshell/AeroShell-Fluid-4-MSDS.pdf" },
+
+  // ============ AEROSPACE / AVIATION INDUSTRIAL: SHELL AEROSHELL TURBINE OILS ============
+  { manufacturer: "AeroShell", productName: "AeroShell Turbine Oil 2 (TO2)", category: "OTHER", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Shell/AeroShell%20Turbine%20Oil%202%20MSDS.PDF" },
+  { manufacturer: "AeroShell", productName: "AeroShell Turbine Oil 308 (ASTO 308)", category: "OTHER", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Shell/AeroShell%20Turbine%20Oil%20308%20MSDS.PDF" },
+  { manufacturer: "AeroShell", productName: "AeroShell Turbine Oil 390 (ASTO 390)", category: "OTHER", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Shell/AeroShell%20Turbine%20Oil%20390%20MSDS.PDF" },
+  { manufacturer: "AeroShell", productName: "AeroShell Turbine Oil 500 (ASTO 500)", category: "OTHER", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Shell/AeroShell%20Turbine%20Oil%20500%20MSDS.PDF" },
+  { manufacturer: "AeroShell", productName: "AeroShell Turbine Oil 555 (ASTO 555)", category: "OTHER", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Shell/AeroShell%20Turbine%20Oil%20555%20MSDS.PDF" },
+  { manufacturer: "AeroShell", productName: "AeroShell Turbine Oil 560 (ASTO 560)", category: "OTHER", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Shell/AeroShell%20Turbine%20Oil%20560%20MSDS.PDF" },
+  { manufacturer: "AeroShell", productName: "AeroShell Turbine Oil 750 (ASTO 750)", category: "OTHER", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Shell/AeroShell%20Turbine%20Oil%20750%20MSDS.PDF" },
+  { manufacturer: "AeroShell", productName: "AeroShell Turbine Oil 500 (PetSrvCo)", category: "OTHER", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/AEROSHELL_TURBINE_OIL_500_SDS.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Turbine Oil 555 (PetSrvCo)", category: "OTHER", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/AEROSHELL_TURBINE_OIL_555_SDS.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Turbine Oil 560 (PetSrvCo)", category: "OTHER", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/AEROSHELL_TURBINE_OIL_560_SDS.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Turbine Oil 500 (SCL)", category: "OTHER", language: "EN", sourceUrl: "https://shop.sclubricants.com/pub/media/sds/aeroshell/AeroShell-Turbine-Oil-500-MSDS.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Turbine Oil 555 (SCL)", category: "OTHER", language: "EN", sourceUrl: "https://shop.sclubricants.com/pub/media/sds/aeroshell/AeroShell-Turbine-Oil-555-MSDS.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Turbine Oil 560 (SCL)", category: "OTHER", language: "EN", sourceUrl: "https://shop.sclubricants.com/pub/media/sds/aeroshell/AeroShell-Turbine-Oil-560-MSDS.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Turbine Oil 308 (transair)", category: "OTHER", language: "EN", sourceUrl: "https://transair.co.uk/document/4333/Aeroshell%20Turbine%20Oil%20500%20(SDS).pdf" },
+
+  // ============ AEROSPACE / AVIATION INDUSTRIAL: SHELL AEROSHELL GREASES ============
+  { manufacturer: "AeroShell", productName: "AeroShell Grease 5 (SCL)", category: "GREASE", language: "EN", sourceUrl: "https://shop.sclubricants.com/pub/media/sds/aeroshell/AeroShell-Grease-5-MSDS.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Grease 6 (QBO)", category: "GREASE", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Shell/AeroShell%20Grease%206%20MSDS.PDF" },
+  { manufacturer: "AeroShell", productName: "AeroShell Grease 7 (QBO)", category: "GREASE", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Shell/AeroShell%20Grease%207%20MSDS.PDF" },
+  { manufacturer: "AeroShell", productName: "AeroShell Grease 14 (QBO)", category: "GREASE", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Shell/AeroShell%20Grease%2014%20MSDS.PDF" },
+  { manufacturer: "AeroShell", productName: "AeroShell Grease 14 (SCL)", category: "GREASE", language: "EN", sourceUrl: "https://shop.sclubricants.com/pub/media/sds/aeroshell/AeroShell-Grease-14-MSDS.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Grease 22 (QBO)", category: "GREASE", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Shell/AeroShell%20Grease%2022%20MSDS.PDF" },
+  { manufacturer: "AeroShell", productName: "AeroShell Grease 22 (SCL)", category: "GREASE", language: "EN", sourceUrl: "https://shop.sclubricants.com/pub/media/sds/aeroshell/AeroShell-Grease-22-MSDS.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Grease 22 (AircraftSpruce 2022)", category: "GREASE", language: "EN", sourceUrl: "https://www.aircraftspruce.com/documents/msds/AeroshellGrease22_SDS_2022.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Grease 33 (QBO)", category: "GREASE", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Shell/AeroShell%20Grease%2033%20MSDS.PDF" },
+  { manufacturer: "AeroShell", productName: "AeroShell Grease 33 (SCL)", category: "GREASE", language: "EN", sourceUrl: "https://shop.sclubricants.com/pub/media/sds/aeroshell/AeroShell-Grease-33-MSDS.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Grease 33 (AvOilOutlet)", category: "GREASE", language: "EN", sourceUrl: "https://aviationoiloutlet.com/content/pdfs/Aeroshell_Grease_33_SDS.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Grease 33MS (QBO)", category: "GREASE", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Shell/AeroShell%20Grease%2033MS%20MSDS.PDF" },
+  { manufacturer: "AeroShell", productName: "AeroShell Sport Plus 4 (AvOilOutlet)", category: "MOTOR_OIL", language: "EN", sourceUrl: "https://aviationoiloutlet.com/content/pdfs/AeroShell_Sport_Plus_4_SDS.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Sport Plus 4 (SCL)", category: "MOTOR_OIL", language: "EN", sourceUrl: "https://shop.sclubricants.com/pub/media/sds/aeroshell/AeroShell-Sport-Plus-4-MSDS.pdf" },
+
+  // ============ AEROSPACE / AVIATION INDUSTRIAL: MOBIL JET & AERO HF ============
+  { manufacturer: "Mobil", productName: "Mobil Jet Oil II (ExxonMobilDist)", category: "OTHER", language: "EN", sourceUrl: "https://www.exxonmobildistributor.com/media/files/msds_mobiljet_II.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil Jet Oil II (AircraftSpruce)", category: "OTHER", language: "EN", sourceUrl: "https://www.aircraftspruce.com/catalog/pdf/MOBIL%20JET%20OIL%20II.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil Jet Oil 254 (AircraftSpruce.ca)", category: "OTHER", language: "EN", sourceUrl: "https://www.aircraftspruce.ca/catalog/pdf/mobil254_sds.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil Jet Oil 254 (AircraftSpruce)", category: "OTHER", language: "EN", sourceUrl: "https://www.aircraftspruce.com/catalog/pdf/mobil%20jet%20254%20sds.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil Aero HF (ExxonMobilDist)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://www.exxonmobildistributor.com/media/files/msds_aero_hf.pdf" },
+
+  // ============ AEROSPACE / AVIATION INDUSTRIAL: CASTROL BRAYCO ============
+  { manufacturer: "Castrol", productName: "Castrol Brayco Micronic 882 (Aerospace Hydraulic)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://msdspds.castrol.com/bpglis/FusionPDS.nsf/Files/B6FCC748B06276D180257796002F85F0/$File/Brayco%20Micronic%20882.pdf" },
+  { manufacturer: "Castrol", productName: "Castrol Brayco 815Z (Aerospace Hydraulic)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://msdspds.castrol.com/bpglis/FusionPDS.nsf/Files/C6FBF7AD844E7A6480257796002F8319/$File/Brayco%20815Z.pdf" },
+  { manufacturer: "Castrol", productName: "Castrol Brayco Micronic 882 (US SDS)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://msdspds.castrol.com/ussds/amersdsf.nsf/0/73CFDD88C9FBE15480258C1500583129/$file/3147296.pdf" },
+  { manufacturer: "Castrol", productName: "Castrol Brayco Micronic 885 (US SDS)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://msdspds.castrol.com/ussds/amersdsf.nsf/Files/E840F37C0B0C883880258A8C00585930/$File/3057769.pdf" },
+  { manufacturer: "Castrol", productName: "Castrol Brayco 363 (Aerospace, US SDS)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://msdspds.castrol.com/ussds/amersdsf.nsf/0/CC650DA543A6A55D80258A8C00585291/$file/3057581.pdf" },
+  { manufacturer: "Castrol", productName: "Castrol Brayco 363 (Aerospace, BP EU)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://msdspds.castrol.com/bpglis/FusionPDS.nsf/Files/E9E8CD4A414898B480257796002F80FE/$File/453463_XI_en.pdf" },
+
+  // ============ AEROSPACE / AVIATION INDUSTRIAL: NYCO TURBONYCOIL ============
+  { manufacturer: "NyCo", productName: "Turbonycoil 600 (Aviation Turbine Oil)", category: "OTHER", language: "EN", sourceUrl: "https://www.petron.com/wp-content/uploads/2018/09/MSDS-Turbonycoil-600.pdf" },
+
+  // ============ AEROSPACE / AVIATION INDUSTRIAL: ROYCO (ANDEROL) ============
+  { manufacturer: "Royco", productName: "Royco 782 MIL-PRF-83282D (Aerospace Hydraulic)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://avepetroleum.com/uploads/msds_docs/ROYCO-782-MSDS.pdf" },
+  { manufacturer: "Royco", productName: "Royco 555 DOD-PRF-85734 (ChemPoint)", category: "OTHER", language: "EN", sourceUrl: "https://www.chempoint.com/products/download?grade=3033&doctype=sds&documentid=010300027665170414191&language=English" },
+  { manufacturer: "Royco", productName: "Royco 782 MIL-PRF-83282 (ChemPoint)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://www.chempoint.com/products/download?grade=3211&type=sds" },
+
+  // ============ BIO/EAL: SHELL PANOLIN (S4 HLP Synth) ============
+  { manufacturer: "Shell", productName: "PANOLIN S4 HLP Synth 32 (EAL, Shell EPC)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://www.epc.shell.com/DocumentManagement/BlobDocumentDownload?DocId=187549640" },
+  { manufacturer: "Shell", productName: "PANOLIN S4 HLP Synth 46 (EAL, Shell EPC)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://www.epc.shell.com/DocumentManagement/BlobDocumentDownload?DocId=187550080" },
+  { manufacturer: "Shell", productName: "PANOLIN S4 HLP Synth 68 (EAL, Shell EPC)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://www.epc.shell.com/DocumentManagement/BlobDocumentDownload?DocId=189762677" },
+
+  // ============ BIO/EAL: FUCHS PLANTOHYD ============
+  { manufacturer: "FUCHS", productName: "Plantohyd 46 (Biodegradable, lupinsys)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://go.lupinsys.com/fuchs/harms/public/materials/719bd20a8b8eb184a69056f6882747da-published/attachments_api/4d46a5aa1198ce044d698e10e8c3c663/search_api/PLANTOHYD_46-SDS.pdf" },
+  { manufacturer: "FUCHS", productName: "Plantohyd 46 S (Biodegradable, Kärcher)", category: "HYDRAULIC_OIL", language: "DE", sourceUrl: "https://s1.kaercher-media.com/media/file/199890/027505-plantohyd.pdf" },
+  { manufacturer: "FUCHS", productName: "Plantohyd 40N (Biodegradable, ChemTel US)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://sds.chemtel.net/docs/Fuchs%20Lubricants%20Co-0002505/Fuchs%20Lubricants%20Company_PLANTOHYD%2040N_R00000450653_06-02-2015_English.pdf" },
+
+  // ============ FUCHS CASSIDA (additional FUCHS sources via lupinsys) ============
+  { manufacturer: "FUCHS", productName: "Cassida Fluid HF 32 (NSF H1, lupinsys)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://go.lupinsys.com/fuchs/harms/public/materials/35dce8110976d5191cf2e006b433a4f5-published/attachments_api/ba646ef282b9a138b5c0ad4592b536cb/search_api/CASSIDA_FLUID_HF_32-SDS.pdf" },
+  { manufacturer: "FUCHS", productName: "Cassida Fluid DC 32 (NSF H1, lupinsys)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://go.lupinsys.com/fuchs/harms/public/materials/7356acd3a71e1dd737941c4018754f44-published/attachments_api/ddb466cacf9c8604e08bb2e81ab61236/search_api/CASSIDA_FLUID_DC_32-SDS.pdf" },
+  { manufacturer: "FUCHS", productName: "Cassida Fluid CR 32 (NSF H1, lupinsys)", category: "OTHER", language: "EN", sourceUrl: "https://go.lupinsys.com/fuchs/harms/public/materials/7356acd3a71e1dd737941c40186b6e5b-published/attachments_api/3b888c5412dd98bc98a5bb414bd212c5/search_api/CASSIDA_FLUID_CR_32-SDS.pdf" },
+  { manufacturer: "FUCHS", productName: "Cassida Fluid GL 220 (NSF H1, lupinsys)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://go.lupinsys.com/fuchs/harms/public/materials/9ebb560b107674a60bcb37fb81f08757-published/attachments_api/b3eaf5b0fca84ce934e20bc345d9b5bf/search_api/CASSIDA_FLUID_GL_220-SDS.pdf" },
+  { manufacturer: "FUCHS", productName: "Cassida Fluid GL 220 (perma-tec)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://www.perma-tec.com/_Resources/Lubricants/Fuchs/CASSIDA_FLUID_GL_220_MSDS_en.pdf" },
+  { manufacturer: "FUCHS", productName: "Cassida Silicone Fluid Spray (NSF H1)", category: "OTHER", language: "EN", sourceUrl: "https://go.lupinsys.com/fuchs/harms/public/materials/35dce8110976d5191cf2e006b4328de6-published/attachments_api/068a7f7911b1176a6e9812a9ce4b4c8f/search_api/CASSIDA_SILICONE_FLUID_SPRAY-SDS.pdf" },
+
+  // ============ KLÜBER (Hayley) — additional industrial specialty greases & oils ============
+  { manufacturer: "Klüber Lubrication", productName: "Klüberlub BE 41-542 (Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/4aec8c5a-b874-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth BH 72-422 (Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/60041ca1-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth BHP 72-102 (Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/45022df1-c82d-11eb-a066-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "CENTOPLEX 2 (Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/60036b4f-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "CENTOPLEX 3 (Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/4501f187-c82d-11eb-a066-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "CENTOPLEX 2 DL (Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/60036149-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberalfa YV 93-302 (Hayley)", category: "OTHER", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/6005c96f-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberalfa YV 93-1202 (Hayley)", category: "OTHER", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/6004f1be-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberalfa HX 83-302 (Hayley)", category: "OTHER", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/5ff6ffe0-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "MICROLUBE GB 00 (Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/4ae5eb60-b874-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "MICROLUBE GBU-Y 131 (Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/4ae58a75-b874-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "ISOFLEX TOPAS NB 52 (Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/4ae659fd-b874-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "ISOFLEX TOPAS NCA 152 (Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/5ff841d9-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "ISOFLEX TOPAS NCA 51 (Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/5ff83211-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth GE 4 75 W 90 (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/4ae6613c-b874-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth EG 4-320 (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/5ff403b0-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth GEM 4-150 N (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/5ff968ea-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberoil GEM 1-100 N (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/5ffb5025-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberoil GEM 1-220 N (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/5ffb599d-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth HB 74-401 (Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/4ae8e158-b874-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberplex BEM 41-141 (Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/183cab32-c83b-11eb-a066-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth EL 42-32 (Hayley)", category: "OTHER", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/183986a0-c83b-11eb-a066-42010a150102.pdf" },
+
+  // ============ KLÜBER BIO (Hayley) — Biodegradable / EAL ============
+  { manufacturer: "Klüber Lubrication", productName: "Klüberbio RM 2-150 (Biodegradable, Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/5ff3236b-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberbio EG 2-100 (Biodegradable, Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/5ff8cd0a-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberbio ALO 32-4000 (Biodegradable, Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/5ff8b007-15f7-11ec-9e82-42010a150102.pdf" },
+
+  // ============ HAAS CNC (other Klüber product) ============
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth GEM 4-1500 N (Haas CNC)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://www.haascnc.com/content/dam/haascnc/service/guides/references/sds-sheets/SDS_Kluebersynth_GEM_4-1500_N_012374_US_EN.PDF" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth EG 4-1500 (Haas CNC)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://www.haascnc.com/content/dam/haascnc/service/guides/references/sds-sheets/KLUBER%20EG%204-1500%20MSDS.pdf" },
+
+  // ============ POWER LUBE INDUSTRIAL (Klüber additional) ============
+  { manufacturer: "Klüber Lubrication", productName: "Klüberplex BEM 41-132 (PowerLube)", category: "GREASE", language: "EN", sourceUrl: "https://www.powerlubeind.com/assets/common/KLUBERPLEX_BEM_41-132_SDS.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "MICROLUBE GBU-Y 131 (PowerLube US)", category: "GREASE", language: "EN", sourceUrl: "https://www.powerlubeind.com/assets/common/KLUBER_MICROLUBE_GBU-Y_131_US_SDS.pdf" },
+
+  // ============ KLÜBER (Hayley) — additional industrial greases ============
+  { manufacturer: "Klüber Lubrication", productName: "POLYLUB WH 2 (Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/45023a09-c82d-11eb-a066-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "STABURAGS NBU 12 K, 30 K (Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/4aec3cd2-b874-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth CH 2-100 N (Hayley)", category: "OTHER", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/4ae69212-b874-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüber Summit FG 100 (NSF H1, Hayley)", category: "OTHER", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/5ff65192-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberalfa XZ 3-1 LV (Hayley)", category: "OTHER", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/4af15f8a-b874-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberalfa HX 83-301, HX 83-302 (Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/4af009d0-b874-11eb-9ac9-42010a150102.pdf" },
+
+  // ============ AEROSPACE: AeroShell Turbine Oil 308 (multi-source) ============
+  { manufacturer: "AeroShell", productName: "AeroShell Turbine Oil 308 (transair)", category: "OTHER", language: "EN", sourceUrl: "https://transair.co.uk/document/2133/Aeroshell-Turbine-Oil-308-MSDS.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Turbine Oil 308 (avepetroleum)", category: "OTHER", language: "EN", sourceUrl: "https://avepetroleum.com/uploads/msds_docs/AEROSHELL%20TURBINE%20OIL%20308%20SDS.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Turbine Oil 308 (BAC Online)", category: "OTHER", language: "EN", sourceUrl: "https://bac-online.com/content/PDF/AS308_sds.pdf" },
+
+  // ============ AEROSPACE: Mobil Jet Oil 387 ============
+  { manufacturer: "Mobil", productName: "Mobil Jet Oil 387 (ExxonMobilDist)", category: "OTHER", language: "EN", sourceUrl: "https://www.exxonmobildistributor.com/media/files/msds_mobiljet_387.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil Jet Oil 387 (Hayley)", category: "OTHER", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/682ba7f3-b48f-11eb-9ac9-42010a150102.pdf" },
+
+  // ============ MOBIL (Hayley + PetSrvCo) — additional industrial coverage ============
+  { manufacturer: "Mobil", productName: "Mobil SHC 626 (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/682b33ce-b48f-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil SHC 626 (PetSrvCo)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/MOBIL_SHC_626_SDS.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil SHC 634 (PetSrvCo)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/MOBIL_SHC_634_SDS.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil SHC 846 Ultra (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/682baacb-b48f-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil SHC Gear 320 (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/682b2a1b-b48f-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil SHC Gear 460 (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/c2352e22-fa73-11ef-823f-42010a150102.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil DTE 24 Ultra (Hayley)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/682b77b7-b48f-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil Velocite No. 6 (Hayley)", category: "OTHER", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/24576269-bf7d-11e8-aa0f-0894ef1f7db7.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil Velocite 6 (PetSrvCo)", category: "OTHER", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/MOBIL_VELOCITE_6_SDS.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil Velocite 10 (PetSrvCo)", category: "OTHER", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/MOBIL_VELOCITE_10_SDS.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil Vactra Oil No. 1 (PetSrvCo)", category: "OTHER", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/MOBIL_VACTRA_1_SDS.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil Hydraulic AW 68 (Hayley)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/682b58b9-b48f-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Mobil", productName: "Mobilgear 600 XP 460 (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/682b153b-b48f-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Mobil", productName: "Mobilgear 600 XP 320 (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/682b1432-b48f-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Mobil", productName: "Mobilgear 600 XP 150 (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/682b1239-b48f-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Mobil", productName: "Mobilgear 600 XP 460 (PetSrvCo)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/MOBILGEAR_600_XP_460_SDS.pdf" },
+  { manufacturer: "Mobil", productName: "Mobilgear 600 XP 320 (PetSrvCo)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/MOBILGEAR_600_XP_320_SDS.pdf" },
+  { manufacturer: "Mobil", productName: "Mobilgear 600 XP 220 (PetSrvCo)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/MOBILGEAR_600_XP_220_SDS.pdf" },
+  { manufacturer: "Mobil", productName: "Mobilith SHC 460 (PetSrvCo)", category: "GREASE", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/MOBILITH_SHC_460_SDS.pdf" },
+  { manufacturer: "Mobil", productName: "Mobilith SHC 100 (PetSrvCo)", category: "GREASE", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/MOBILITH_SHC_100_SDS.pdf" },
+  { manufacturer: "Mobil", productName: "Mobilith SHC 220 (PetSrvCo)", category: "GREASE", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/MOBILITH_SHC_220_SDS.pdf" },
+  { manufacturer: "Mobil", productName: "Mobilith SHC 460 (Alfa Laval)", category: "GREASE", language: "EN", sourceUrl: "https://assets.alfalaval.com/documents/p4bc4ad1a/alfa-laval-mobilith-shc-460.pdf" },
+  { manufacturer: "Mobil", productName: "Mobilgrease XHP 222 (Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/682c6d8b-b48f-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Mobil", productName: "Mobilgrease XHP 222 (PetSrvCo)", category: "GREASE", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/MOBILGREASE_XHP_222_SDS.pdf" },
+  { manufacturer: "Mobil", productName: "Mobilgrease FM 222 (NSF H1, Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/682a44f2-b48f-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Mobil", productName: "Mobilgard HSD 15W-40 (Marine, Hayley)", category: "MOTOR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/682ad0ff-b48f-11eb-9ac9-42010a150102.pdf" },
+
+  // ============ SHELL (Hayley) — additional industrial coverage ============
+  { manufacturer: "Shell", productName: "Shell Omala S2 G 460 (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/244030ae-bf7d-11e8-aa0f-0894ef1f7db7.pdf" },
+  { manufacturer: "Shell", productName: "Shell Omala S4 WE 220 (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/2440326a-bf7d-11e8-aa0f-0894ef1f7db7.pdf" },
+  { manufacturer: "Shell", productName: "Shell Tellus S2 VX 68 (Hayley)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/eba1054a-c6b0-11ea-9514-42010a150102.pdf" },
+
+  // ============ KLÜBER (Hayley) — Klübersynth GH 6 oils ============
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth GH 6-150 (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/4501cbcb-c82d-11eb-a066-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth GH 6-680 (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/5ff9385a-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth EG 4-680 (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/5ff426cf-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klübersynth PEG 46-121 (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/6001315a-15f7-11ec-9e82-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberpaste HEL 46-450 (Hayley SDS)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/450222d5-c82d-11eb-a066-42010a150102.pdf" },
+  { manufacturer: "Klüber Lubrication", productName: "Klüberpaste HEL 46-450 (Hayley PI)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/4ae95724-b874-11eb-9ac9-42010a150102.pdf" },
+
+  // ============ MORE MOBIL / HAYLEY / PetSrvCo ============
+  { manufacturer: "Mobil", productName: "Mobil Delvac 1 Transmission Fluid 75W-80 (Hayley)", category: "OTHER", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/682b9097-b48f-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil DTE PM 220 (Hayley)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/682be750-b48f-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil Delvac 1 Gear Oil 75W-90 (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/682b0e0d-b48f-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil Glygoyle 220 (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/c2341af5-fa73-11ef-823f-42010a150102.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil Glygoyle 68 (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/682bf8e6-b48f-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil Glygoyle 680 (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/682bf082-b48f-11eb-9ac9-42010a150102.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil Glygoyle 460 (AvePetroleum)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://avepetroleum.com/uploads/msds_docs/MOBIL-GLYGOYLE-460-MSDS.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil DTE Oil Light (PetSrvCo)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/MOBIL_DTE_OIL_LIGHT_SDS.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil DTE Oil Medium (PetSrvCo)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/MOBIL_DTE_OIL_MEDIUM_SDS.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil Vacuoline 1409 (PetSrvCo)", category: "OTHER", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/mobil_vacuoline_1409_SDS.pdf" },
+  { manufacturer: "Mobil", productName: "Mobil Delvac Xtreme Service Grease (PetSrvCo)", category: "GREASE", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/MOBIL_DELVAC_XTREME_SERVICE_GREASE_SDS.pdf" },
+
+  // ============ HAYLEY — Shell Corena / Tellus / Omala technical PDFs ============
+  { manufacturer: "Shell", productName: "Shell Corena S4 R 68 (Hayley TDS)", category: "OTHER", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/24401d3e-bf7d-11e8-aa0f-0894ef1f7db7.pdf" },
+  { manufacturer: "Shell", productName: "Shell Corena S4 R 46 (SCL)", category: "OTHER", language: "EN", sourceUrl: "https://shop.sclubricants.com/pub/media/sds/shell/Shell-Corena-S4-R-46-MSDS.pdf" },
+  { manufacturer: "Shell", productName: "Shell Corena S4 R 68 (SCL)", category: "OTHER", language: "EN", sourceUrl: "https://shop.sclubricants.com/pub/media/sds/shell/Shell-Corena-S4-R-68-MSDS.pdf" },
+  { manufacturer: "Shell", productName: "Shell Corena S4 P 68 (QBO)", category: "OTHER", language: "EN", sourceUrl: "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Shell/Shell%20Corena%20S4%20P%2068%20MSDS.PDF" },
+  { manufacturer: "Shell", productName: "Shell Gadus S2 V100 2 (SCL)", category: "GREASE", language: "EN", sourceUrl: "https://shop.sclubricants.com/pub/media/sds/shell/Shell-Gadus-S2-V100-2-MSDS.pdf" },
+  { manufacturer: "Shell", productName: "Shell Omala S2 G 220 (SCL)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://shop.sclubricants.com/pub/media/sds/shell/Shell-Omala-S2-G-220-MSDS.pdf" },
+
+  // ============ MORE AEROSPACE: AeroShell additional fluids ============
+  { manufacturer: "AeroShell", productName: "AeroShell Fluid 3 (Pooleys)", category: "OTHER", language: "EN", sourceUrl: "https://www.pooleys.com/media/11059/aeroshell-fluid-3-msds.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Compound 07 De-Icing Fluid (AircraftSpruce)", category: "OTHER", language: "EN", sourceUrl: "https://www.aircraftspruce.com/documents/msds/AeroshellCompound07_SDS_2024.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Compound 7 (transair TDS)", category: "OTHER", language: "EN", sourceUrl: "https://transair.co.uk/document/4354/Aeroshell%20Compound%207%20(TDS).pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Smoke Oil (PetSrvCo)", category: "OTHER", language: "EN", sourceUrl: "https://petroleumservicecompany.com/content/pdfs/Aeroshell_Smoke_Oil_SDS.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Smoke Oil (F&L)", category: "OTHER", language: "EN", sourceUrl: "https://fandl.com/content/sds/aeroshellsmokeoil_sds.pdf" },
+
+  // ============ EASTMAN AVIATION TURBO OILS ============
+  { manufacturer: "Eastman", productName: "Eastman Turbo Oil 2389 (AFA Alaska)", category: "OTHER", language: "EN", sourceUrl: "https://afaalaska.org/wp-content/uploads/2018/07/EASTMAN-2389-SDS1-1.pdf" },
+
+  // ============ HAYLEY — Castrol additional products ============
+  { manufacturer: "Castrol", productName: "Castrol EDGE 5W-30 LL (Hayley)", category: "MOTOR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/12c8280f-c82a-11eb-a066-42010a150102.pdf" },
+
+  // ============ HAYLEY — more Shell coverage ============
+  { manufacturer: "Shell", productName: "Shell Morlina S2 BL 5 (Hayley)", category: "OTHER", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/0c1ae8ee-6096-11eb-8e9a-42010a150102.pdf" },
+  { manufacturer: "Shell", productName: "Shell Stamina Grease RL 2 (Hayley TDS)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/244022a1-bf7d-11e8-aa0f-0894ef1f7db7.pdf" },
+  { manufacturer: "Shell", productName: "Shell Gadus S3 V220C 2 (Hayley)", category: "GREASE", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/eba12ccd-c6b0-11ea-9514-42010a150102.pdf" },
+  { manufacturer: "Shell", productName: "Shell Spirax S3 ALS 85W-90 (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/710023ec-e897-11ef-823f-42010a150102.pdf" },
+  { manufacturer: "Shell", productName: "Shell Omala S4 GXV 220 (Hayley)", category: "GEAR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/eba12857-c6b0-11ea-9514-42010a150102.pdf" },
+  { manufacturer: "Shell", productName: "Shell Helix HX5 15W-40 (Hayley)", category: "MOTOR_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/0c1af95f-6096-11eb-8e9a-42010a150102.pdf" },
+  { manufacturer: "Shell", productName: "Shell SDS (Hayley)", category: "OTHER", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/243fd5e6-bf7d-11e8-aa0f-0894ef1f7db7.pdf" },
+
+  // ============ POOLEYS — AeroShell additional SDS ============
+  { manufacturer: "AeroShell", productName: "AeroShell Fluid 41 EU (Pooleys)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://www.pooleys.com/media/11069/aeroshell-fluid-41-msds.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Fluid 31 (Pooleys)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://www.pooleys.com/media/11066/aeroshell-fluid-31-msds.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Fluid 12 (Pooleys)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://www.pooleys.com/media/11063/aeroshell-fluid-12-msds.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Turbine Oil 308 (Pooleys)", category: "OTHER", language: "EN", sourceUrl: "https://www.pooleys.com/media/11075/aeroshell-turbine-oil-308-msds.pdf" },
+
+  // ============ TRANSAIR — AeroShell additional SDS ============
+  { manufacturer: "AeroShell", productName: "AeroShell Turbine Oil 555 (transair)", category: "OTHER", language: "EN", sourceUrl: "https://transair.co.uk/document/4350/Aeroshell%20Turbine%20Oil%20555%20(SDS).pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Turbine Oil 560 Drum (transair)", category: "OTHER", language: "EN", sourceUrl: "https://transair.co.uk/document/4352/Aeroshell%20Turbine%20Oil%20560%20Drum%20(SDS).pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Fluid 41 Barrel (transair)", category: "HYDRAULIC_OIL", language: "EN", sourceUrl: "https://transair.co.uk/document/4377/Aeroshell%20Fluid%2041%20Barrel%20(SDS).pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell W80 Aero Engine Oil (transair)", category: "MOTOR_OIL", language: "EN", sourceUrl: "https://transair.co.uk/document/4359/Aeroshell%20W80%20(SDS).pdf" },
+
+  // ============ F&L — AeroShell additional SDS ============
+  { manufacturer: "AeroShell", productName: "AeroShell Turbine Oil 750 (F&L)", category: "OTHER", language: "EN", sourceUrl: "https://fandl.com/content/sds/aeroshellturbineoil750_sds.pdf" },
+  { manufacturer: "AeroShell", productName: "AeroShell Diesel Ultra (F&L)", category: "MOTOR_OIL", language: "EN", sourceUrl: "https://fandl.com/content/sds/aeroshelldieselultra_sds.pdf" },
+
 ];
