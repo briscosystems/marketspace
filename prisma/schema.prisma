@@ -265,6 +265,7 @@ model Product {
 
   compatibilityNotes MaterialCompatibilityNote[]
   priceObservations  PriceObservation[]
+  issues             ProductIssue[]
 
   @@unique([manufacturerId, slug])
   @@index([manufacturerId])
@@ -468,6 +469,9 @@ model User {
   reviewsReceived Review[]      @relation("ReviewsReceived")
   submittedPrices PriceObservation[] @relation("SubmittedPrices")
   verifiedPrices  PriceObservation[] @relation("VerifiedPrices")
+
+  submittedIssues ProductIssue[]     @relation("ProductIssueSubmitted")
+  verifiedIssues  ProductIssue[]     @relation("ProductIssueVerified")
 }
 
 // ============================================================
@@ -852,4 +856,102 @@ model SafetyDataSheet {
   @@index([category])
   @@index([productName])
   @@index([searchTokens])
+}
+
+// === Praxis-Probleme aus Foren, Hersteller-Hinweisen, Distributoren, Reviews ===
+enum IssueCategory {
+  BIOLOGY           // Bakterien, Pilze, Verkeimung, Geruch
+  FOAM              // Schaumbildung
+  CORROSION         // Korrosion an Werkstücken, Maschinen, Tank
+  TOOL_WEAR         // Werkzeugverschleiß, kürzere Standzeiten
+  OPERATOR_HEALTH   // Hautirritation, Atemwege, Allergien, MAK
+  SEAL_DAMAGE       // Dichtungen, Schläuche, Lackangriff
+  WORKPIECE_STAINS  // Fleckenbildung Buntmetall, Alu-Anlauffarben, Niro
+  RESIDUES          // Klebrige Rückstände, Harzbildung, Maschinenverschmutzung
+  FILTRATION        // Filtrierbarkeit, Tramp-Oil-Aufnahme
+  STABILITY         // Emulsionsstabilität, Frostempfindlichkeit, Lagerung
+  PERFORMANCE       // Kühlleistung, Schmierleistung, Spülwirkung unzureichend
+  COMPATIBILITY     // Mischbarkeit mit anderem Öl/MMS/HD-Konzentrat
+  REGULATORY        // REACH, TRGS 611, Biozid-VO, Borfrei-Konflikte
+  SHELF_LIFE        // Kurze Lager-/Standzeit im Tank
+  OTHER
+}
+
+enum IssueSeverity {
+  LOW      // Hinweis/kosmetisch
+  MEDIUM   // Beeinträchtigt Prozess, aber lösbar
+  HIGH     // Ausfall, Maschinenschaden, Gesundheitsrisiko
+}
+
+enum IssueSourceType {
+  FORUM             // industryarena, praktiker.com, cnczone, reddit r/Machinists, fachforum
+  MANUFACTURER      // Hersteller-FAQ, Anwendungstipps, Servicedokument
+  DISTRIBUTOR       // Distributor-Warnung, Anwendungshinweis
+  CASE_STUDY        // dokumentierte Fallstudie (Verein, Hochschule)
+  REVIEW            // User-Review (Amazon, Trustpilot)
+  REGULATORY        // BAuA, ECHA, TRGS-Updates
+  SDS               // direkt aus Sicherheitsdatenblatt entnommen
+  USER_REPORT       // direkt vom Plattform-User gemeldet
+  OTHER
+}
+
+enum IssueStatus {
+  PENDING    // gemeldet, nicht verifiziert
+  VERIFIED   // von Admin/TRADE_ASSURED bestätigt
+  RESOLVED   // Hersteller hat in neuerer Formulierung behoben
+  REJECTED   // unzutreffend / nicht reproduzierbar
+}
+
+model ProductIssue {
+  id              String          @id @default(cuid())
+
+  productId       String
+  product         Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  category        IssueCategory
+  severity        IssueSeverity   @default(MEDIUM)
+  status          IssueStatus     @default(PENDING)
+
+  title           String          // Kurzbeschreibung, z.B. "Schaumbildung bei niedriger Konzentration"
+  description     String          // Ausführlicher Bericht
+
+  symptoms        String[]        @default([])  // ["pH-Drop", "Geruch", "Fleckenbildung Messing"]
+  rootCause       String?         // wenn bekannt: "Bakterien (Pseudomonas) bei Stillstand"
+  workaround      String?         // Tipps zur Behebung
+  preventiveMeasure String?       // wie vermeiden
+
+  // Kontext
+  affectedMaterials   String[]   @default([])  // Materialien wo Problem auftritt
+  affectedOperations  String[]   @default([])  // Anwendungen wo Problem auftritt
+  reportedConcentration Float?   // bei wassermischbaren KSS, %
+  reportedPh            Float?
+  reportedWaterHardness Int?     // °dH
+
+  sourceType      IssueSourceType
+  sourceUrl       String?         // URL des Forenposts / Doks
+  sourceTitle     String?         // Titel des Posts / Artikels
+  sourceAuthor    String?         // wenn bekannt
+  sourceDate      DateTime?       // wann der Bericht erstellt wurde
+
+  language        SdsLanguage     @default(DE)
+
+  // Verifizierung
+  submittedByUserId String?
+  submittedByUser   User?         @relation("ProductIssueSubmitted", fields: [submittedByUserId], references: [id], onDelete: SetNull)
+  verifiedByUserId  String?
+  verifiedByUser    User?         @relation("ProductIssueVerified", fields: [verifiedByUserId], references: [id], onDelete: SetNull)
+  verifiedAt        DateTime?
+
+  // Trust-Indikatoren
+  isOfficial       Boolean        @default(false)  // Hersteller-Doku
+  reportCount      Int            @default(1)      // wie oft gemeldet (similar issues merged)
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([productId])
+  @@index([category])
+  @@index([severity])
+  @@index([status])
+  @@index([sourceType])
 }

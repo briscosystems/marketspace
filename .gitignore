@@ -46,3 +46,8 @@ tsconfig.tsbuildinfo
 # persistente postgres-Daten (bind-mount vom Devcontainer)
 # Diese sind binär, gross und vertraulich — gehen nie nach GitHub.
 /.postgres-data/
+
+# Claude-Session-State: Chats, Memory und Login-Token.
+# Wandert per Datei-Kopie mit dem Ordner mit (siehe MIGRATION.md),
+# darf aber NIEMALS nach Git/GitHub — enthält den OAuth-Token.
+/.claude-state/

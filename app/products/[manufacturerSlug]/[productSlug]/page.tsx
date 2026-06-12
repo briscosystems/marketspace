@@ -8,6 +8,7 @@ import { recommendMaterialsForProduct } from "@/lib/seal-recommendations";
 import { getMonthlyMedianHistory, getCurrentMarketPrice } from "@/lib/price-aggregation";
 import { PriceHistoryChart } from "@/components/PriceHistoryChart";
 import { PriceSubmitLauncher } from "@/components/PriceSubmitLauncher";
+import { ProductIssuesSection } from "@/components/ProductIssuesSection";
 import { Droplets, Beaker, FileText, ExternalLink, AlertTriangle, Shield, AlertOctagon, CheckCircle2, FileSearch, TrendingUp } from "lucide-react";
 
 const CATEGORY_LABEL: Record<string, string> = {
@@ -101,10 +102,14 @@ export default async function ProductDetailPage({
   });
 
   // Berechnete Dichtungs-/Kunststoff-Empfehlung basierend auf Produkt-Chemie
-  // Preis-Daten parallel laden
-  const [priceHistory, currentPrice] = await Promise.all([
+  // Preis-Daten + Praxis-Probleme parallel laden
+  const [priceHistory, currentPrice, issues] = await Promise.all([
     getMonthlyMedianHistory(product.id, 60),
     getCurrentMarketPrice(product.id),
+    prisma.productIssue.findMany({
+      where: { productId: product.id, status: { in: ["VERIFIED", "PENDING"] } },
+      orderBy: [{ severity: "asc" }, { isOfficial: "desc" }, { reportCount: "desc" }],
+    }),
   ]);
 
   const sealRec = await recommendMaterialsForProduct({
@@ -254,6 +259,9 @@ export default async function ProductDetailPage({
 
           {/* Verlinktes SDS aus eigener Bibliothek */}
           {product.safetyDataSheet && <LinkedSdsCard sds={product.safetyDataSheet} />}
+
+          {/* Praxis-Probleme aus Foren, Hersteller-FAQs, Distributoren — Value Add für Anwender */}
+          <ProductIssuesSection issues={issues} />
 
           {/* Marktpreis & Historie */}
           <PriceSection

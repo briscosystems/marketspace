@@ -7,10 +7,12 @@
   "workspaceFolder": "/workspace",
   "mounts": [
     "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
-    "source=${localWorkspaceFolder}/.postgres-data,target=/var/lib/postgresql/data,type=bind,consistency=cached"
+    "source=${localWorkspaceFolder}/.postgres-data,target=/var/lib/postgresql/data,type=bind,consistency=cached",
+    "source=${localWorkspaceFolder}/.claude-state/projects,target=/home/node/.claude/projects,type=bind,consistency=cached",
+    "source=${localWorkspaceFolder}/.claude-state/credentials.json,target=/home/node/.claude/.credentials.json,type=bind,consistency=cached"
   ],
   "forwardPorts": [3000, 5432, 8081, 19000, 19001, 19002],
-  "postCreateCommand": "sudo apk add --no-cache git openssh poppler-utils librsvg imagemagick && npm install -g @anthropic-ai/claude-code expo-cli && bash /workspace/scripts/init-postgres.sh",
+  "postCreateCommand": "sudo apk add --no-cache git openssh poppler-utils librsvg imagemagick && npm install -g @anthropic-ai/claude-code expo-cli && bash /workspace/scripts/init-postgres.sh && bash /workspace/scripts/bootstrap-app.sh",
   "remoteEnv": {
     "ANTHROPIC_API_KEY": "${localEnv:ANTHROPIC_API_KEY}"
   },
