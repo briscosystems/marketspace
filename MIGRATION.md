@@ -18,12 +18,18 @@ Nach jedem Container-Start/-Rebuild stellt **ein** Befehl alles wieder her
 (DB starten + App-Abhängigkeiten + Chats/Memory + Dev-Server):
 
 ```bash
-bash scripts/start.sh
+init
 ```
+
+`init` ist ein Kurzbefehl-Alias für `bash scripts/start.sh`. Er wird beim
+Container-Aufbau automatisch eingerichtet (`scripts/install-alias.sh`), ist also
+in jedem neuen Terminal sofort da. Falls er mal nicht greift (z.B. allererstes
+Terminal nach Einrichtung), einmal `source ~/.bashrc` — oder direkt
+`bash scripts/start.sh` tippen.
 
 Das ist idempotent und gefahrlos beliebig oft ausführbar. (Bei einem frisch
 gebauten Container läuft das meiste davon ohnehin automatisch über den
-`postCreateCommand` — `start.sh` ist die manuelle Garantie, falls etwas hakt.)
+`postCreateCommand` — `init` ist die manuelle Garantie, falls etwas hakt.)
 
 ---
 
