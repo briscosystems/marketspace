@@ -73,7 +73,7 @@ export default async function ManufacturerDetailPage({
       <header className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-6 sm:flex-row sm:items-center">
         <ManufacturerLogo name={m.name} logoPath={m.logoPath} height={80} />
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-slate-900">{m.name}</h1>
+          <h1 className="page-title">{m.name}</h1>
           {m.description ? (
             <p className="mt-1 text-sm text-slate-600">{m.description}</p>
           ) : null}
@@ -144,7 +144,7 @@ export default async function ManufacturerDetailPage({
       ) : null}
 
       <section>
-        <h2 className="text-lg font-bold text-slate-900">
+        <h2 className="section-title">
           Produktkatalog{" "}
           <span className="text-sm font-normal text-slate-500">
             ({m.products.length} Produkte)

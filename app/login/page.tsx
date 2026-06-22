@@ -34,7 +34,7 @@ export default function LoginPage() {
 
   return (
     <div className="mx-auto max-w-md">
-      <h1 className="mb-6 text-2xl font-semibold">Anmelden</h1>
+      <h1 className="mb-6 page-title">Anmelden</h1>
       <form onSubmit={onSubmit} className="card space-y-4">
         <div>
           <label className="label" htmlFor="email">Email</label>
@@ -48,7 +48,15 @@ export default function LoginPage() {
           />
         </div>
         <div>
-          <label className="label" htmlFor="password">Passwort</label>
+          <div className="flex items-center justify-between">
+            <label className="label" htmlFor="password">Passwort</label>
+            <Link
+              href="/forgot-password"
+              className="text-xs text-brand-500 hover:underline"
+            >
+              Passwort vergessen?
+            </Link>
+          </div>
           <input
             id="password"
             type="password"

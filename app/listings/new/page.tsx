@@ -21,10 +21,19 @@ import {
   AUTOMATION_FIT_LABEL,
   type MachiningOperationId,
 } from "@/lib/kss-automation";
+import { Autocomplete } from "@/components/Autocomplete";
 import { Droplet, Gauge } from "lucide-react";
 
 const chemistries = ["MINERAL", "SYNTHETIC", "SEMI_SYNTHETIC", "ESTER", "PAG", "OTHER"] as const;
 const packagings = ["DRUM", "IBC", "TANK", "CANISTER", "BULK", "OTHER"] as const;
+
+// Vorschlags-Vokabulare für die Echtzeit-Felder
+const ISO_VG_PRESETS = ["5", "7", "10", "15", "22", "32", "46", "68", "100", "150", "220", "320", "460", "680"];
+const REGION_PRESETS = [
+  "DE-BW", "DE-BY", "DE-NW", "DE-HE", "DE-NI", "DE-RP", "DE-SN", "DE-BE", "DE-HH",
+  "DE (ganz)", "AT", "CH", "FR", "IT", "NL", "BE", "PL", "CZ", "EU",
+];
+const UNIT_PRESETS = ["L", "kg", "IBC (1000 L)", "Fass (200 L)", "Kanister (20 L)", "Stück", "t"];
 
 export default function NewListingPage() {
   const router = useRouter();
@@ -48,10 +57,25 @@ export default function NewListingPage() {
   const [mineralOilContent, setMineralOilContent] = useState<string>("");
   const [containsGlycol, setContainsGlycol] = useState<boolean | null>(null);
   const [measurementMethods, setMeasurementMethods] = useState<string[]>([]);
+  const [dbManufacturers, setDbManufacturers] = useState<string[]>([]);
 
   useEffect(() => {
     if (status === "unauthenticated") router.replace("/login?callbackUrl=/listings/new");
   }, [status, router]);
+
+  // Echte Hersteller aus der Datenbank laden und mit den bekannten Familien-
+  // Marken zusammenführen — so deckt die Vorschlagsliste alle möglichen ab.
+  useEffect(() => {
+    fetch("/api/manufacturers/names")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((names: string[]) => setDbManufacturers(names))
+      .catch(() => setDbManufacturers([]));
+  }, []);
+
+  const allManufacturers = useMemo(
+    () => Array.from(new Set([...dbManufacturers, ...KNOWN_MANUFACTURERS])).sort(),
+    [dbManufacturers],
+  );
 
   useEffect(() => {
     const fam = detectFamily(productName);
@@ -88,7 +112,7 @@ export default function NewListingPage() {
   if (status !== "authenticated") return <div className="text-slate-500">Lade …</div>;
 
   const manufacturerSuggestions = (q: string): Suggestion[] =>
-    suggestFrom(KNOWN_MANUFACTURERS, q, 8).map((m) => ({ value: m, label: m }));
+    suggestFrom(allManufacturers, q, 8).map((m) => ({ value: m, label: m }));
   const productTypeSuggestions = (q: string): Suggestion[] =>
     suggestFrom(PRODUCT_TYPES, q, 8).map((p) => ({ value: p, label: p }));
   const applicationSuggestions = (q: string): Suggestion[] =>
@@ -161,7 +185,7 @@ export default function NewListingPage() {
         <div className="mb-1 inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-700">
           ANBIETEN
         </div>
-        <h1 className="text-2xl font-bold text-slate-900">Neues Angebot einstellen</h1>
+        <h1 className="page-title">Neues Angebot einstellen</h1>
         <p className="mt-1 text-sm text-slate-600">
           Du hast einen Restbestand oder Überlager, den du verkaufen möchtest? Stell die
           wesentlichen Daten ein — andere Reseller können dann kontaktieren oder direkt kaufen.
@@ -170,7 +194,7 @@ export default function NewListingPage() {
       <form onSubmit={onSubmit} className="space-y-6">
         {/* 1. PRODUKT */}
         <section className="card space-y-4">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+          <h2 className="eyebrow">
             1. Produkt
           </h2>
           <div className="grid gap-4 md:grid-cols-2">
@@ -212,7 +236,7 @@ export default function NewListingPage() {
                 value={manufacturer}
                 onChange={setManufacturer}
                 suggest={manufacturerSuggestions}
-                validate={knownCheck(KNOWN_MANUFACTURERS)}
+                validate={knownCheck(allManufacturers)}
                 placeholder="Shell, Castrol, Fuchs, Mobil …"
                 required
               />
@@ -237,7 +261,7 @@ export default function NewListingPage() {
             </div>
             <div>
               <label className="label">ISO Viskosität</label>
-              <input name="isoViscosity" className="input" placeholder="46" />
+              <Autocomplete name="isoViscosity" options={ISO_VG_PRESETS} placeholder="46" />
             </div>
             <div>
               <label className="label">Chemie-Basis *</label>
@@ -275,7 +299,7 @@ export default function NewListingPage() {
         {/* 2. FERTIGUNG / EINSATZBEREICHE */}
         <section className="card space-y-4">
           <div>
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+            <h2 className="eyebrow">
               2. Bearbeitungsverfahren
             </h2>
             <p className="mt-1 text-xs text-slate-500">
@@ -289,7 +313,7 @@ export default function NewListingPage() {
         {/* 3. REZEPTUR */}
         <section className="card space-y-4">
           <div>
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+            <h2 className="eyebrow">
               3. Rezeptur-Angaben
             </h2>
             <p className="mt-1 text-xs text-slate-500">
@@ -354,7 +378,7 @@ export default function NewListingPage() {
         {isCoolant && (
           <section className="card space-y-4">
             <div>
-              <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-slate-500">
+              <h2 className="flex items-center gap-2 eyebrow">
                 <Gauge size={14} />
                 4. Automatisierungs-Eignung
               </h2>
@@ -407,7 +431,7 @@ export default function NewListingPage() {
 
         {/* 5. VERFÜGBARKEIT */}
         <section className="card space-y-4">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+          <h2 className="eyebrow">
             {isCoolant ? "5" : "4"}. Verfügbarkeit
           </h2>
           <div className="grid gap-4 md:grid-cols-2">
@@ -417,7 +441,7 @@ export default function NewListingPage() {
             </div>
             <div>
               <label className="label">Einheit</label>
-              <input name="quantityUnit" defaultValue="L" className="input" />
+              <Autocomplete name="quantityUnit" options={UNIT_PRESETS} defaultValue="L" placeholder="L" />
             </div>
             <div>
               <label className="label">Mindestabnahme</label>
@@ -435,7 +459,7 @@ export default function NewListingPage() {
             </div>
             <div>
               <label className="label">Lagerregion *</label>
-              <input name="locationRegion" required className="input" placeholder="DE-BW" />
+              <Autocomplete name="locationRegion" options={REGION_PRESETS} required placeholder="DE-BW" />
             </div>
             <div>
               <label className="label">Preis (€, optional)</label>
@@ -454,7 +478,7 @@ export default function NewListingPage() {
 
         {/* 6. ZERTIFIKATE */}
         <section className="card space-y-3">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+          <h2 className="eyebrow">
             {isCoolant ? "6" : "5"}. Zertifikate &amp; Freigaben
           </h2>
           <CertInput
@@ -466,7 +490,7 @@ export default function NewListingPage() {
 
         {/* 7. BESCHREIBUNG */}
         <section className="card space-y-3">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+          <h2 className="eyebrow">
             {isCoolant ? "7" : "6"}. Beschreibung
           </h2>
           <textarea

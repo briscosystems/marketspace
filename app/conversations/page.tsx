@@ -26,7 +26,7 @@ export default async function ConversationsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Nachrichten</h1>
+      <h1 className="page-title">Nachrichten</h1>
       {conversations.length === 0 ? (
         <div className="card text-slate-500">
           Noch keine Konversationen. Öffne ein Listing und klicke auf{" "}

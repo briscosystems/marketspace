@@ -4,6 +4,7 @@ import { ListingCard } from "@/components/ListingCard";
 import { LiveFilterForm } from "@/components/LiveFilterForm";
 import { Collapsible } from "@/components/Collapsible";
 import { SearchSection } from "@/components/SearchSection";
+import { AlternativeSearchPanel } from "@/components/AlternativeSearchPanel";
 import { Filter, Tag, Plus } from "lucide-react";
 
 type SearchParams = Promise<{
@@ -68,8 +69,11 @@ export default async function ListingsPage({
 
   const listings = await prisma.listing.findMany({
     where,
+    // searchBoost wird BEWUSST nicht ins select aufgenommen — er steuert nur
+    // die Reihenfolge und bleibt für normale Nutzer unsichtbar.
     include: { seller: { select: { id: true, pseudonym: true, trustTier: true } } },
-    orderBy: { createdAt: "desc" },
+    // Versteckter Eigentümer-Boost zuerst, dann neueste Angebote.
+    orderBy: [{ seller: { searchBoost: "desc" } }, { createdAt: "desc" }],
     take: 50,
   });
 
@@ -120,7 +124,7 @@ export default async function ListingsPage({
             <div className="mb-1 inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-700">
               <Tag size={12} /> ANBIETEN
             </div>
-            <h1 className="text-2xl font-bold text-slate-900">Was Reseller anbieten</h1>
+            <h1 className="page-title">Was Reseller anbieten</h1>
             <p className="mt-1 text-sm text-slate-600">
               Bestände zum Verkauf — durchsuchen, vergleichen, Anbieter kontaktieren.{" "}
               {listings.length} Angebot{listings.length === 1 ? "" : "e"}.
@@ -134,6 +138,9 @@ export default async function ListingsPage({
           </Link>
         </div>
       </div>
+
+      {/* Alternativprodukt-Suche (KI + Web) */}
+      <AlternativeSearchPanel />
 
       {/* Schnellfilter — Produkttyp-Chips */}
       <div className="rounded-xl border border-slate-200 bg-white p-4">
@@ -227,7 +234,7 @@ export default async function ListingsPage({
           rightSlot={
             (manufacturer || isoViscosity || region) && (
               <span className="text-[11px]">
-                <Link href="/listings" className="font-medium text-rose-600 hover:underline">
+                <Link href="/listings" className="font-medium text-red-600 hover:underline">
                   zurücksetzen
                 </Link>
               </span>

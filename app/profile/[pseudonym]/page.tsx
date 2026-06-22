@@ -80,7 +80,7 @@ export default async function ProfilePage({
       <div className="card space-y-4">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-semibold">{user.pseudonym}</h1>
+            <h1 className="page-title">{user.pseudonym}</h1>
             <div className="mt-1 flex items-center gap-2 text-sm text-slate-600">
               <span>{user.role}</span>
               <TrustBadge tier={user.trustTier} />
@@ -113,7 +113,7 @@ export default async function ProfilePage({
 
       {activeListings.length > 0 && (
         <section>
-          <h2 className="mb-3 text-lg font-semibold">Aktive Listings</h2>
+          <h2 className="mb-3 section-title">Aktive Listings</h2>
           <div className="card divide-y divide-slate-200">
             {activeListings.map((l) => (
               <Link
@@ -137,7 +137,7 @@ export default async function ProfilePage({
       )}
 
       <section>
-        <h2 className="mb-3 text-lg font-semibold">Letzte Bewertungen</h2>
+        <h2 className="mb-3 section-title">Letzte Bewertungen</h2>
         {reviews.length === 0 ? (
           <div className="card text-sm text-slate-500">
             Noch keine Bewertungen.

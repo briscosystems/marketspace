@@ -111,7 +111,7 @@ export function KssWizardDialog({ onClose }: { onClose: () => void }) {
         <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-slate-200 bg-white px-5 py-3">
           <div className="flex items-center gap-2">
             <Sparkles size={18} className="text-purple-600" />
-            <h2 className="text-lg font-semibold">KSS-Berater (KI-Wizard)</h2>
+            <h2 className="section-title">KSS-Berater (KI-Wizard)</h2>
           </div>
           <button onClick={onClose} className="rounded-md p-1.5 hover:bg-slate-100">
             <X size={18} />
@@ -197,7 +197,7 @@ export function KssWizardDialog({ onClose }: { onClose: () => void }) {
             >
               <ChevronLeft size={14} /> Zurück
             </button>
-            {error && <div className="text-xs text-rose-600">{error}</div>}
+            {error && <div className="text-xs text-red-600">{error}</div>}
             {step < TOTAL_STEPS ? (
               <button
                 type="button"
@@ -390,7 +390,7 @@ function Step2Problem({ value, onChange }: { value: string; onChange: (v: string
           type="button"
           onClick={toggleMic}
           className={`absolute right-2 top-2 inline-flex items-center justify-center rounded-full p-2 ${
-            listening ? "bg-rose-500 text-white animate-pulse" : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+            listening ? "bg-red-500 text-white animate-pulse" : "bg-slate-100 text-slate-700 hover:bg-slate-200"
           }`}
           title={listening ? "Aufnahme stoppen" : "Sprach-Eingabe starten"}
         >
@@ -530,7 +530,7 @@ function Step6Issues({
                 type="button"
                 onClick={() => toggleArr("criticalIssues", c)}
                 className={`rounded-full border px-2.5 py-1 text-xs font-medium ${
-                  sel ? "border-rose-500 bg-rose-50 text-rose-700" : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                  sel ? "border-red-500 bg-red-50 text-red-700" : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
                 }`}
               >
                 {sel && "✓ "}

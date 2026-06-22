@@ -41,7 +41,7 @@ export function AiAnalysisPanel({
         <div>
           <div className="flex items-center gap-2">
             <Sparkles size={18} className="text-violet-600" />
-            <h2 className="text-lg font-semibold text-slate-900">KI-Bewertung</h2>
+            <h2 className="section-title">KI-Bewertung</h2>
             {result?.source === "anthropic-claude" ? (
               <span className="rounded bg-violet-100 px-1.5 py-0.5 text-[10px] font-medium text-violet-700">
                 Claude · {result.model ?? ""}
@@ -96,7 +96,7 @@ export function AiAnalysisPanel({
       ) : null}
 
       {error ? (
-        <div className="mt-4 rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
+        <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
           {error}
         </div>
       ) : null}
@@ -142,7 +142,7 @@ export function AiAnalysisPanel({
                   {item.weaknesses.length > 0 ? (
                     <ul className="mt-1.5 space-y-1">
                       {item.weaknesses.map((w, i) => (
-                        <li key={i} className="flex items-start gap-1.5 text-xs text-rose-700">
+                        <li key={i} className="flex items-start gap-1.5 text-xs text-red-700">
                           <ThumbsDown size={12} className="mt-0.5 shrink-0" />
                           <span>{w}</span>
                         </li>

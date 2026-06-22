@@ -5,9 +5,19 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { CertInput } from "@/components/CertInput";
 import { KssIssueSelect } from "@/components/KssIssueSelect";
+import { Autocomplete } from "@/components/Autocomplete";
+import { APPLICATION_AREAS, MATERIALS } from "@/lib/kss-knowledge";
 import type { KssIssueId } from "@/lib/kss-issues";
 
 const chemistries = ["MINERAL", "SYNTHETIC", "SEMI_SYNTHETIC", "ESTER", "PAG", "OTHER"] as const;
+
+// Vorschlags-Vokabulare für die Echtzeit-Felder
+const ISO_VG_PRESETS = ["5", "7", "10", "15", "22", "32", "46", "68", "100", "150", "220", "320", "460", "680"];
+const REGION_PRESETS = [
+  "DE-BW", "DE-BY", "DE-NW", "DE-HE", "DE-NI", "DE-RP", "DE-SN", "DE-BE", "DE-HH",
+  "DE (ganz)", "AT", "CH", "FR", "IT", "NL", "BE", "PL", "CZ", "EU",
+];
+const UNIT_PRESETS = ["L", "kg", "IBC (1000 L)", "Fass (200 L)", "Kanister (20 L)", "Stück", "t"];
 
 const PRODUCT_TYPE_PRESETS = [
   { value: "Hydrauliköl", scope: "neat" as const },
@@ -30,10 +40,19 @@ export default function NewRfqPage() {
   const [requiredCerts, setRequiredCerts] = useState<string[]>([]);
   const [issues, setIssues] = useState<KssIssueId[]>([]);
   const [productType, setProductType] = useState("Hydrauliköl");
+  const [manufacturerOptions, setManufacturerOptions] = useState<string[]>([]);
 
   useEffect(() => {
     if (status === "unauthenticated") router.replace("/login?callbackUrl=/rfqs/new");
   }, [status, router]);
+
+  // Hersteller-Liste einmal laden — Vorschläge bauen sich dann beim Tippen auf.
+  useEffect(() => {
+    fetch("/api/manufacturers/names")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((names: string[]) => setManufacturerOptions(names))
+      .catch(() => setManufacturerOptions([]));
+  }, []);
 
   if (status !== "authenticated") {
     return <div className="text-slate-500">Lade …</div>;
@@ -96,7 +115,7 @@ export default function NewRfqPage() {
         <div className="mb-1 inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-800">
           SUCHEN
         </div>
-        <h1 className="text-2xl font-bold text-slate-900">Bedarf einstellen — was suchst du?</h1>
+        <h1 className="page-title">Bedarf einstellen — was suchst du?</h1>
         <p className="mt-1 text-sm text-slate-600">
           Beschreibe was du brauchst. Anbieter sehen deinen Bedarf und melden sich mit
           Preis und Lieferzeit. Pflicht-Zertifikate und Pain Points helfen ihnen,
@@ -106,7 +125,7 @@ export default function NewRfqPage() {
       <form onSubmit={onSubmit} className="space-y-6">
         {/* GRUNDDATEN */}
         <section className="card space-y-4">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+          <h2 className="eyebrow">
             1. Was suchst du?
           </h2>
           <div className="grid gap-4 md:grid-cols-2">
@@ -126,11 +145,15 @@ export default function NewRfqPage() {
             </div>
             <div>
               <label className="label">Hersteller (optional)</label>
-              <input name="manufacturer" className="input" placeholder="Shell, Fuchs, OEM-Eigenmarke …" />
+              <Autocomplete
+                name="manufacturer"
+                options={manufacturerOptions}
+                placeholder="Shell, Fuchs, OEM-Eigenmarke …"
+              />
             </div>
             <div>
               <label className="label">ISO Viskosität</label>
-              <input name="isoViscosity" className="input" placeholder="46" />
+              <Autocomplete name="isoViscosity" options={ISO_VG_PRESETS} placeholder="46" />
             </div>
             <div>
               <label className="label">Chemie</label>
@@ -143,19 +166,28 @@ export default function NewRfqPage() {
             </div>
             <div>
               <label className="label">Anwendungsbereich</label>
-              <input name="applicationArea" className="input" placeholder="Hydraulik / CNC-Drehen / Schleifen" />
+              <Autocomplete
+                name="applicationArea"
+                options={[...APPLICATION_AREAS]}
+                placeholder="Hydraulik / CNC-Drehen / Schleifen"
+              />
             </div>
             <div>
               <label className="label">Werkstoff (für KSS wichtig)</label>
-              <input
+              <Autocomplete
                 name="workpieceMaterial"
-                className="input"
+                options={[...MATERIALS]}
                 placeholder="Stahl 1.2379 / Aluminium AlMg3 / Buntmetall …"
               />
             </div>
             <div>
               <label className="label">Lieferregion *</label>
-              <input name="locationRegion" required className="input" placeholder="DE-BW" />
+              <Autocomplete
+                name="locationRegion"
+                options={REGION_PRESETS}
+                required
+                placeholder="DE-BW"
+              />
             </div>
             <div>
               <label className="label">Benötigte Menge *</label>
@@ -163,7 +195,7 @@ export default function NewRfqPage() {
             </div>
             <div>
               <label className="label">Einheit</label>
-              <input name="quantityUnit" defaultValue="L" className="input" />
+              <Autocomplete name="quantityUnit" options={UNIT_PRESETS} defaultValue="L" placeholder="L" />
             </div>
             <div>
               <label className="label">Frist *</label>
@@ -190,7 +222,7 @@ export default function NewRfqPage() {
         {/* ZERTIFIKATE */}
         <section className="card space-y-3">
           <div>
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+            <h2 className="eyebrow">
               2. Pflicht-Zertifikate &amp; Freigaben
             </h2>
             <p className="mt-1 text-xs text-slate-500">
@@ -218,7 +250,7 @@ export default function NewRfqPage() {
 
         {/* NOTIZEN */}
         <section className="card space-y-3">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+          <h2 className="eyebrow">
             4. Freitext (optional)
           </h2>
           <textarea

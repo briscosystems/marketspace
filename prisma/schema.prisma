@@ -10,6 +10,7 @@ datasource db {
 enum UserRole {
   RESELLER
   OEM
+  ENDKUNDE
   ADMIN
 }
 
@@ -450,6 +451,11 @@ model User {
   pseudonym    String        @unique
   role         UserRole      @default(RESELLER)
   trustTier    UserTrustTier @default(UNVERIFIED)
+  // INTERN / NUR SUPERADMIN — bezahlter Sichtbarkeits-Boost.
+  // Höherer Wert ⇒ Angebote dieses Resellers erscheinen weiter oben in
+  // Suchergebnissen und Vorschlägen. Wird NIE an die normale UI/API
+  // ausgegeben und ist nur über /admin durch den Eigentümer steuerbar.
+  searchBoost  Int           @default(0)
   // KYC light — internal only
   companyName  String?
   vatId        String?
@@ -472,6 +478,27 @@ model User {
 
   submittedIssues ProductIssue[]     @relation("ProductIssueSubmitted")
   verifiedIssues  ProductIssue[]     @relation("ProductIssueVerified")
+
+  passwordResetTokens PasswordResetToken[]
+}
+
+// ============================================================
+// Passwort-Reset — "Passwort vergessen"-Flow
+// ============================================================
+//
+// State of the art: Der eigentliche Token wird dem Nutzer per Link
+// zugestellt; in der DB liegt nur sein sha256-Hash. Tokens laufen nach
+// kurzer Zeit ab und sind genau einmal verwendbar (usedAt).
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
 }
 
 // ============================================================

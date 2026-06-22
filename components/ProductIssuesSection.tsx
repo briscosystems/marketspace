@@ -57,7 +57,7 @@ const SOURCE_TYPE_LABEL: Record<string, string> = {
 
 const SEVERITY_STYLE: Record<string, { badge: string; icon: typeof AlertTriangle; label: string }> = {
   HIGH: {
-    badge: "bg-rose-100 text-rose-800 ring-1 ring-rose-300",
+    badge: "bg-red-100 text-red-800 ring-1 ring-red-300",
     icon: AlertOctagon,
     label: "Hoch",
   },
@@ -105,7 +105,7 @@ export function ProductIssuesSection({ issues }: { issues: Issue[] }) {
         </div>
         <div className="flex flex-wrap items-center gap-1.5 text-xs">
           {counts.high > 0 && (
-            <span className="rounded-full bg-rose-100 px-2 py-0.5 font-medium text-rose-800 ring-1 ring-rose-300">
+            <span className="rounded-full bg-red-100 px-2 py-0.5 font-medium text-red-800 ring-1 ring-red-300">
               {counts.high} Hoch
             </span>
           )}
@@ -147,7 +147,7 @@ function IssueCard({ issue }: { issue: Issue }) {
           size={16}
           className={
             issue.severity === "HIGH"
-              ? "text-rose-600 shrink-0 mt-0.5"
+              ? "text-red-600 shrink-0 mt-0.5"
               : issue.severity === "MEDIUM"
                 ? "text-amber-600 shrink-0 mt-0.5"
                 : "text-slate-400 shrink-0 mt-0.5"
@@ -193,7 +193,7 @@ function IssueCard({ issue }: { issue: Issue }) {
             <span className="text-xs">
               {issue.symptoms.map((s, i) => (
                 <span key={s}>
-                  <span className="rounded bg-rose-50 px-1.5 py-0.5 text-rose-700">{s}</span>
+                  <span className="rounded bg-red-50 px-1.5 py-0.5 text-red-700">{s}</span>
                   {i < issue.symptoms.length - 1 && " "}
                 </span>
               ))}
@@ -213,8 +213,8 @@ function IssueCard({ issue }: { issue: Issue }) {
         )}
 
         {issue.rootCause && (
-          <div className="mb-2 rounded border-l-4 border-rose-300 bg-rose-50/50 px-2 py-1.5">
-            <div className="text-xs font-medium text-rose-700">Ursache</div>
+          <div className="mb-2 rounded border-l-4 border-red-300 bg-red-50/50 px-2 py-1.5">
+            <div className="text-xs font-medium text-red-700">Ursache</div>
             <div className="text-xs text-slate-800">{issue.rootCause}</div>
           </div>
         )}

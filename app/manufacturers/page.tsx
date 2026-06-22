@@ -29,7 +29,7 @@ export default async function ManufacturersPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-2xl font-bold text-slate-900">Hersteller & Lieferanten</h1>
+        <h1 className="page-title">Hersteller & Lieferanten</h1>
         <p className="mt-1 text-sm text-slate-600">
           {manufacturers.length} Hersteller im Katalog —{" "}
           {manufacturers.reduce((s, m) => s + m._count.products, 0)} Produkte hinterlegt.

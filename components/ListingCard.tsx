@@ -148,7 +148,7 @@ function CompactCard({
         </div>
         <div
           className="shrink-0 rounded-full px-3 py-1.5 text-sm font-bold text-white shadow-sm"
-          style={{ backgroundColor: listing.priceEur ? colors.primary : "#475569" }}
+          style={{ backgroundColor: listing.priceEur ? colors.primary : "#0f172a" }}
         >
           {listing.priceEur ? `${listing.priceEur.toFixed(2)} €` : "auf Anfrage"}
         </div>
@@ -335,7 +335,7 @@ function ExtendedCard({
         </div>
         <div
           className="rounded-full px-3 py-1.5 text-sm font-bold text-white shadow-sm"
-          style={{ backgroundColor: listing.priceEur ? colors.primary : "#475569" }}
+          style={{ backgroundColor: listing.priceEur ? colors.primary : "#0f172a" }}
         >
           {listing.priceEur ? `${listing.priceEur.toFixed(2)} €` : "auf Anfrage"}
         </div>

@@ -126,7 +126,7 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border-l-4 border-blue-500 bg-blue-50 px-4 py-2.5 shadow-sm">
         <div className="flex items-center gap-2">
           <Droplets size={20} className="text-blue-600" />
-          <h1 className="text-lg font-bold text-slate-900">KSS-Finder</h1>
+          <h1 className="page-title">KSS-Finder</h1>
           <span className="text-xs text-slate-600">
             {totalCount} KSS · {manufacturersAll.length} Hersteller
           </span>
@@ -165,7 +165,7 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
                 </span>
               )}
               {activeTotal > 0 && (
-                <Link href="/kss-finder" className="font-medium text-rose-600 hover:underline">
+                <Link href="/kss-finder" className="font-medium text-red-600 hover:underline">
                   zurücksetzen
                 </Link>
               )}

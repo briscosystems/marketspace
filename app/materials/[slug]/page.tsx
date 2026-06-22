@@ -84,7 +84,7 @@ export default async function MaterialDetailPage({ params }: { params: Params })
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="flex items-baseline gap-2">
-              <h1 className="text-2xl font-semibold">{material.shortName}</h1>
+              <h1 className="page-title">{material.shortName}</h1>
               <span className="text-sm text-slate-500">— {material.name}</span>
             </div>
             <div className="mt-1 flex flex-wrap gap-2 text-xs">
@@ -135,7 +135,7 @@ export default async function MaterialDetailPage({ params }: { params: Params })
             title="Ungeeignete Inhaltsstoffe"
             subtitle="Diese Stoffe greifen das Material an oder zerstören es"
             icon={AlertOctagon}
-            iconColor="text-rose-600"
+            iconColor="text-red-600"
             items={grouped.UNSUITABLE}
           />
         )}
@@ -153,7 +153,7 @@ export default async function MaterialDetailPage({ params }: { params: Params })
             title="Verträglich"
             subtitle="Materialwirkung im normalen Einsatzbereich unkritisch"
             icon={CheckCircle2}
-            iconColor="text-green-600"
+            iconColor="text-emerald-600"
             items={grouped.COMPATIBLE}
           />
         )}
@@ -210,7 +210,7 @@ function CompatGroup({
   return (
     <div className="card space-y-3">
       <div>
-        <h2 className="flex items-center gap-2 text-base font-semibold">
+        <h2 className="flex items-center gap-2 section-title">
           <Icon size={18} className={iconColor} />
           {title} <span className="text-slate-400">({items.length})</span>
         </h2>

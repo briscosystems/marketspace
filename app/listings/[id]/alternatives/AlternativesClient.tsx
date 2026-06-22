@@ -52,7 +52,7 @@ const fitStyles: Record<
     label: "Sehr gut passend",
     classes: "bg-emerald-100 text-emerald-800 ring-emerald-300",
   },
-  good: { label: "Gut passend", classes: "bg-green-100 text-green-800 ring-green-300" },
+  good: { label: "Gut passend", classes: "bg-emerald-100 text-emerald-800 ring-emerald-300" },
   fair: { label: "Eingeschränkt passend", classes: "bg-amber-100 text-amber-800 ring-amber-300" },
   weak: { label: "Wenig passend", classes: "bg-red-100 text-red-800 ring-red-300" },
 };
@@ -148,7 +148,7 @@ export function AlternativesClient(props: {
             <Sparkles size={14} className="text-violet-500" />
             <span>KI-Alternativsuche</span>
           </div>
-          <h1 className="mt-1 text-2xl font-semibold">
+          <h1 className="mt-1 page-title">
             Alternative finden zu{" "}
             <span style={{ color: readableOnLight(colors) }}>
               {props.sourceManufacturer}
@@ -367,7 +367,7 @@ export function AlternativesClient(props: {
       {result && (
         <div className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold">
+            <h2 className="section-title">
               {enriched.length} Alternative(n) gefunden
             </h2>
             <span
@@ -494,7 +494,7 @@ function AlternativeCard({ alt }: { alt: Alternative }) {
           )}
         </div>
         <div>
-          <div className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-rose-700">
+          <div className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-red-700">
             <XCircle size={14} />
             Risiken / Abweichungen
           </div>

@@ -5,17 +5,32 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Brisco-Markenfarbe: offizielles Lime-Grün #abd91a (Signatur = 400),
+        // dunklere Grüntöne ab 500 für lesbare Buttons/Links mit weißer Schrift.
         brand: {
-          50: "#f0f6ff",
-          100: "#dbeaff",
-          200: "#b8d4ff",
-          300: "#8bb6ff",
-          400: "#5b91f5",
-          500: "#2d6dd9",
-          600: "#1f56b8",
-          700: "#1a4392",
-          800: "#15336e",
-          900: "#0f2247",
+          50: "#f6fbe9",
+          100: "#e9f6c9",
+          200: "#d3ec93",
+          300: "#bfe45c",
+          400: "#abd91a",
+          500: "#93c113",
+          600: "#74980f",
+          700: "#587209",
+          800: "#45580b",
+          900: "#3a4a0e",
+        },
+        // Brisco-Grau (aus dem Logo, #4f4c4d) — neutrale Sekundärfarbe.
+        graphite: {
+          50: "#f5f5f5",
+          100: "#e7e7e7",
+          200: "#cfcecf",
+          300: "#aaa9aa",
+          400: "#7d7b7c",
+          500: "#5f5d5e",
+          600: "#4f4c4d",
+          700: "#403e3f",
+          800: "#333132",
+          900: "#262425",
         },
         accent: {
           50: "#fef7ec",
@@ -29,8 +44,8 @@ const config: Config = {
         },
       },
       boxShadow: {
-        soft: "0 1px 2px rgba(15, 34, 71, 0.04), 0 4px 12px rgba(15, 34, 71, 0.06)",
-        lift: "0 4px 16px rgba(15, 34, 71, 0.08), 0 12px 32px rgba(15, 34, 71, 0.08)",
+        soft: "0 1px 2px rgba(38, 36, 37, 0.05), 0 4px 12px rgba(38, 36, 37, 0.07)",
+        lift: "0 4px 16px rgba(38, 36, 37, 0.09), 0 12px 32px rgba(38, 36, 37, 0.09)",
       },
     },
   },

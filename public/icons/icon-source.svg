@@ -2,26 +2,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1f56b8"/>
-      <stop offset="100%" stop-color="#15336e"/>
-    </linearGradient>
-    <linearGradient id="drop" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#f6a738"/>
-      <stop offset="100%" stop-color="#e88a14"/>
+      <stop offset="0%" stop-color="#abd91a"/>
+      <stop offset="100%" stop-color="#6f960e"/>
     </linearGradient>
   </defs>
   <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  <!-- Weißer Tropfen — passend zu Brisco "Fluid Management" -->
   <path
-    d="M256 96 Q 256 96, 184 232 a 92 92 0 1 0 144 0 Q 256 96, 256 96 Z"
-    fill="url(#drop)"
-  />
-  <text
-    x="256" y="450"
-    text-anchor="middle"
-    font-family="ui-sans-serif, system-ui, sans-serif"
-    font-size="56"
-    font-weight="800"
+    d="M256 104 Q 256 104, 176 248 a 96 96 0 1 0 160 0 Q 256 104, 256 104 Z"
     fill="#ffffff"
-    letter-spacing="4"
-  >BRISCO</text>
+  />
+  <!-- Grüner Glanzpunkt im Tropfen -->
+  <circle cx="226" cy="324" r="28" fill="#abd91a" opacity="0.55"/>
 </svg>

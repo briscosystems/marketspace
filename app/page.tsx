@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ListingCard } from "@/components/ListingCard";
+import { OilBarrels } from "@/components/OilBarrels";
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
@@ -23,12 +24,17 @@ async function PublicLanding() {
   return (
     <div className="space-y-10">
       <section className="rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 p-10 text-white shadow-lg">
+        <div className="mb-3 text-xs font-semibold uppercase tracking-wide text-brand-50/80">
+          Für Reseller, Endkunden &amp; Hersteller
+        </div>
         <h1 className="mb-3 text-3xl font-semibold">
-          B2B-Marktplatz für Industrieöl &amp; Schmierstoffe
+          Lieferengpässe? Händler helfen Händlern.
         </h1>
         <p className="max-w-2xl text-brand-50/90">
-          Über- und Unterbestände zwischen Resellern direkt ausgleichen. Pseudonyme
-          Identitäten, AI-gestütztes Matching, sichere Stripe-Abwicklung.
+          Knappe Rohstoffe und unsichere Lieferketten machen die Beschaffung schwer.
+          Auf Brisco gleichen Öl-Händler Überschuss und Engpässe direkt untereinander
+          aus: Was dem einen fehlt, hat der andere im Lager. Reseller, Endkunden und
+          Hersteller finden hier zueinander — anonym, geprüft und sicher bezahlt.
         </p>
         <div className="mt-6">
           <Link
@@ -49,7 +55,7 @@ async function PublicLanding() {
           <div className="absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-blue-600 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
             Anbieten
           </div>
-          <div className="text-3xl">📦</div>
+          <OilBarrels className="h-11 w-auto" />
           <h2 className="mt-2 text-xl font-bold text-slate-900 group-hover:text-blue-700">
             Ich habe Bestand zu verkaufen
           </h2>
@@ -83,7 +89,7 @@ async function PublicLanding() {
         </Link>
       </section>
 
-      <section className="grid gap-6 md:grid-cols-4">
+      <section className="grid gap-6 md:grid-cols-3">
         <div className="card">
           <div className="text-3xl font-semibold text-brand-500">{listingCount}</div>
           <div className="text-sm text-slate-600">aktive Angebote</div>
@@ -96,14 +102,10 @@ async function PublicLanding() {
           <div className="text-3xl font-semibold text-brand-500">{sdsCount}</div>
           <div className="text-sm text-slate-600">Sicherheitsdatenblätter</div>
         </Link>
-        <div className="card">
-          <div className="text-3xl font-semibold text-brand-500">10 %</div>
-          <div className="text-sm text-slate-600">Plattform-Provision</div>
-        </div>
       </section>
 
       <section className="card">
-        <h2 className="mb-3 text-lg font-semibold">Aktueller Stand (Prototyp v0.2)</h2>
+        <h2 className="mb-3 section-title">Aktueller Stand (Prototyp v0.2)</h2>
         <ul className="list-inside list-disc space-y-1 text-sm text-slate-700">
           <li>Self-Service-Registrierung mit Pseudonym</li>
           <li>Produkt-Listings mit FDS-Datenmodell</li>
@@ -148,7 +150,8 @@ async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudo
     prisma.listing.findMany({
       where: { status: "ACTIVE", NOT: { sellerId: userId } },
       include: { seller: { select: { id: true, pseudonym: true, trustTier: true } } },
-      orderBy: { createdAt: "desc" },
+      // Versteckter Eigentümer-Boost zuerst, dann neueste Angebote (siehe /admin).
+      orderBy: [{ seller: { searchBoost: "desc" } }, { createdAt: "desc" }],
       take: 4,
     }),
     prisma.rfqOffer.count({
@@ -159,7 +162,7 @@ async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudo
   return (
     <div className="space-y-8">
       <section>
-        <h1 className="text-2xl font-semibold">
+        <h1 className="page-title">
           Willkommen zurück, {pseudonym}
         </h1>
         <p className="text-sm text-slate-500">
@@ -191,7 +194,7 @@ async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudo
       {openRfqsForMe.length > 0 && (
         <section>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">
+            <h2 className="section-title">
               Offene Anfragen — vielleicht hast du das auf Lager
             </h2>
             <Link href="/rfqs" className="text-xs text-brand-500 hover:underline">
@@ -203,7 +206,7 @@ async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudo
               <Link
                 key={r.id}
                 href={`/rfqs/${r.id}`}
-                className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0 hover:text-brand-500"
+                className="group flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0 hover:text-brand-500"
               >
                 <div className="min-w-0">
                   <div className="font-medium truncate">
@@ -216,8 +219,8 @@ async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudo
                     {r.deadline.toLocaleDateString("de-DE")} · {r._count.offers} Angebot(e)
                   </div>
                 </div>
-                <span className="rounded-full bg-brand-50 px-3 py-1 text-xs text-brand-700">
-                  Angebot abgeben
+                <span className="shrink-0 rounded-full bg-amber-500 px-4 py-1.5 text-xs font-semibold text-white shadow-soft transition-colors group-hover:bg-amber-600">
+                  Angebot abgeben →
                 </span>
               </Link>
             ))}
@@ -228,7 +231,7 @@ async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudo
       {unreadConversations.length > 0 && (
         <section>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Letzte Nachrichten</h2>
+            <h2 className="section-title">Letzte Nachrichten</h2>
             <Link href="/conversations" className="text-xs text-brand-500 hover:underline">
               alle →
             </Link>
@@ -275,7 +278,7 @@ async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudo
       {freshListings.length > 0 && (
         <section>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Neu im Markt</h2>
+            <h2 className="section-title">Neu im Markt</h2>
             <Link href="/listings" className="text-xs text-brand-500 hover:underline">
               alle →
             </Link>
@@ -304,9 +307,9 @@ function QuickStat({
 }) {
   return (
     <Link href={href} className="card block hover:border-brand-500">
-      <div className="text-xs uppercase tracking-wide text-slate-500">{label}</div>
-      <div className="mt-1 text-2xl font-semibold text-brand-500">{value}</div>
-      <div className="text-xs text-slate-500">{hint}</div>
+      <div className="eyebrow">{label}</div>
+      <div className="mt-1 stat-value">{value}</div>
+      <div className="mt-0.5 text-xs text-slate-500">{hint}</div>
     </Link>
   );
 }

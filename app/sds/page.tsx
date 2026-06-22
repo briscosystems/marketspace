@@ -106,7 +106,7 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border-l-4 border-blue-500 bg-blue-50 px-4 py-2.5 shadow-sm">
         <div className="flex items-center gap-2">
           <FileText size={20} className="text-blue-600" />
-          <h1 className="text-lg font-bold text-slate-900">Sicherheitsdatenblätter</h1>
+          <h1 className="page-title">Sicherheitsdatenblätter</h1>
           <span className="text-xs text-slate-600">
             {totalCount} Dokumente · REACH/Inhaltsstoff-Filter
           </span>
@@ -144,7 +144,7 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
                 </span>
               )}
               {filterCount > 0 && (
-                <Link href="/sds" className="font-medium text-rose-600 hover:underline">
+                <Link href="/sds" className="font-medium text-red-600 hover:underline">
                   zurücksetzen
                 </Link>
               )}
@@ -329,7 +329,7 @@ function TriSelect({
 function Pill({ color, children }: { color: string; children: React.ReactNode }) {
   const palette: Record<string, string> = {
     emerald: "bg-emerald-50 text-emerald-700 border border-emerald-200",
-    rose: "bg-rose-50 text-rose-700 border border-rose-200",
+    rose: "bg-red-50 text-red-700 border border-red-200",
     amber: "bg-amber-50 text-amber-700 border border-amber-200",
     indigo: "bg-indigo-50 text-indigo-700 border border-indigo-200",
     slate: "bg-slate-100 text-slate-600 border border-slate-200",

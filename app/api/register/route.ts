@@ -2,12 +2,13 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { findPseudonymLeak } from "@/lib/pseudonym";
 
 const registerSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
   pseudonym: z.string().min(3).max(40).regex(/^[A-Za-z0-9_-]+$/),
-  role: z.enum(["RESELLER", "OEM"]).default("RESELLER"),
+  role: z.enum(["RESELLER", "OEM", "ENDKUNDE"]).default("RESELLER"),
   companyName: z.string().min(2),
   vatId: z.string().optional(),
   country: z.string().length(2),
@@ -23,6 +24,21 @@ export async function POST(req: Request) {
     );
   }
   const { email, password, pseudonym, role, companyName, vatId, country } = parsed.data;
+
+  // Schutz: Pseudonym darf die Identität nicht verraten (Firma, E-Mail,
+  // USt-ID, bekannter Hersteller) — sonst kann die Plattform umgangen werden.
+  const manufacturers = await prisma.manufacturer.findMany({
+    select: { name: true },
+  });
+  const leak = findPseudonymLeak(pseudonym, {
+    companyName,
+    email,
+    vatId,
+    manufacturerNames: manufacturers.map((m) => m.name),
+  });
+  if (leak) {
+    return NextResponse.json({ error: leak }, { status: 422 });
+  }
 
   const exists = await prisma.user.findFirst({
     where: { OR: [{ email: email.toLowerCase() }, { pseudonym }] },

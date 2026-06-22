@@ -103,7 +103,7 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border-l-4 border-blue-500 bg-blue-50 px-4 py-2.5 shadow-sm">
         <div className="flex items-center gap-2">
           <TrendingUp size={20} className="text-blue-600" />
-          <h1 className="text-lg font-bold text-slate-900">Marktpreise</h1>
+          <h1 className="page-title">Marktpreise</h1>
           <span className="text-xs text-slate-600">
             {productIdsWithPrices.length} Produkte mit verifizierten Preisen
           </span>
@@ -189,7 +189,7 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
         subtitle={`${total} ${total === 1 ? "Produkt" : "Produkte"} mit Marktpreis`}
         rightSlot={
           (sp.q || sp.category || sp.minPrice || sp.maxPrice) && (
-            <Link href="/prices" className="text-xs font-medium text-rose-600 hover:underline">
+            <Link href="/prices" className="text-xs font-medium text-red-600 hover:underline">
               Filter zurücksetzen
             </Link>
           )
@@ -246,7 +246,7 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
                             ? "bg-emerald-100 text-emerald-800"
                             : r.price!.confidence === "medium"
                               ? "bg-amber-100 text-amber-800"
-                              : "bg-rose-100 text-rose-800"
+                              : "bg-red-100 text-red-800"
                         }`}
                       >
                         {r.price!.confidence}

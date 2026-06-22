@@ -6,7 +6,7 @@ import { TrustBadge } from "@/components/TrustBadge";
 import { Search, Plus } from "lucide-react";
 
 const statusStyle: Record<string, string> = {
-  OPEN: "bg-green-100 text-green-800",
+  OPEN: "bg-emerald-100 text-emerald-800",
   ACCEPTED: "bg-blue-100 text-blue-800",
   EXPIRED: "bg-amber-100 text-amber-800",
   CANCELED: "bg-slate-200 text-slate-600",
@@ -43,7 +43,7 @@ export default async function RfqListPage() {
             <div className="mb-1 inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-800">
               <Search size={12} /> SUCHEN
             </div>
-            <h1 className="text-2xl font-bold text-slate-900">Was Reseller suchen</h1>
+            <h1 className="page-title">Was Reseller suchen</h1>
             <p className="mt-1 text-sm text-slate-600">
               Offene Bedarfe — wenn du das gesuchte Produkt verfügbar hast, kannst
               du ein Angebot mit Preis und Lieferzeit abgeben.

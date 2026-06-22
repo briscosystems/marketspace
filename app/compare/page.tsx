@@ -262,7 +262,7 @@ const PRODUCT_ROWS: ProductRow[] = [
       p.unsuitableMaterials.length > 0 ? (
         <div className="flex flex-wrap gap-1">
           {p.unsuitableMaterials.map((m) => (
-            <span key={m} className="rounded bg-rose-50 px-1.5 py-0.5 text-[10px] font-medium text-rose-700">
+            <span key={m} className="rounded bg-red-50 px-1.5 py-0.5 text-[10px] font-medium text-red-700">
               ✗ {m}
             </span>
           ))}
@@ -335,7 +335,7 @@ export default async function ComparePage({
       <header>
         <div className="flex items-center gap-2">
           <GitCompare size={20} className="text-brand-600" />
-          <h1 className="text-2xl font-bold text-slate-900">Vergleich</h1>
+          <h1 className="page-title">Vergleich</h1>
         </div>
       </header>
 
@@ -357,7 +357,7 @@ export default async function ComparePage({
         <section className="space-y-4">
           <div className="mb-1 flex items-center gap-2">
             <ListChecks size={18} className="text-slate-600" />
-            <h2 className="text-lg font-semibold text-slate-900">
+            <h2 className="section-title">
               Listings <span className="text-sm font-normal text-slate-500">({sortedListings.length})</span>
             </h2>
           </div>
@@ -459,7 +459,7 @@ export default async function ComparePage({
         <section>
           <div className="mb-3 flex items-center gap-2">
             <Boxes size={18} className="text-slate-600" />
-            <h2 className="text-lg font-semibold text-slate-900">
+            <h2 className="section-title">
               Produkte (Hersteller-Katalog){" "}
               <span className="text-sm font-normal text-slate-500">({sortedProducts.length})</span>
             </h2>

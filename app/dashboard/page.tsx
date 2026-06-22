@@ -89,7 +89,7 @@ export default async function DashboardPage() {
   const txStatusStyle: Record<string, string> = {
     PENDING: "bg-amber-100 text-amber-800",
     SHIPPED: "bg-blue-100 text-blue-800",
-    COMPLETED: "bg-green-100 text-green-800",
+    COMPLETED: "bg-emerald-100 text-emerald-800",
     CANCELED: "bg-slate-200 text-slate-700",
     DISPUTED: "bg-red-100 text-red-800",
   };
@@ -97,7 +97,7 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold">Dashboard</h1>
+        <h1 className="page-title">Dashboard</h1>
         <p className="flex items-center gap-2 text-sm text-slate-600">
           Eingeloggt als{" "}
           <Link href={`/profile/${user?.pseudonym}`} className="font-medium hover:text-brand-500">
@@ -136,7 +136,7 @@ export default async function DashboardPage() {
 
       {(matchingListings.length > 0 || matchingRfqs.length > 0) && (
         <section className="space-y-4">
-          <h2 className="text-lg font-semibold">Für dich</h2>
+          <h2 className="section-title">Für dich</h2>
           <div className="grid gap-6 md:grid-cols-2">
             {matchingListings.length > 0 && (
               <div>
@@ -199,7 +199,7 @@ export default async function DashboardPage() {
 
       <section>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Ich biete an</h2>
+          <h2 className="section-title">Ich biete an</h2>
           <Link
             href="/listings/new"
             className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-blue-700"
@@ -245,7 +245,7 @@ export default async function DashboardPage() {
 
       <section>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Ich suche</h2>
+          <h2 className="section-title">Ich suche</h2>
           <Link
             href="/rfqs/new"
             className="inline-flex items-center gap-1.5 rounded-lg bg-amber-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-amber-700"
@@ -279,7 +279,7 @@ export default async function DashboardPage() {
       </section>
 
       <section>
-        <h2 className="mb-3 text-lg font-semibold">Transaktionen</h2>
+        <h2 className="mb-3 section-title">Transaktionen</h2>
         {myTxns.length === 0 ? (
           <div className="card text-sm text-slate-500">Noch keine Transaktionen.</div>
         ) : (
@@ -312,7 +312,7 @@ export default async function DashboardPage() {
       </section>
 
       <section>
-        <h2 className="mb-3 text-lg font-semibold">Eigene Angebote</h2>
+        <h2 className="mb-3 section-title">Eigene Angebote</h2>
         {myOffers.length === 0 ? (
           <div className="card text-sm text-slate-500">Du hast noch keine Angebote abgegeben.</div>
         ) : (

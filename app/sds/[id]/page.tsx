@@ -68,14 +68,14 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
           <div className="text-xs uppercase tracking-wide text-slate-500">
             {SDS_CATEGORY_LABEL[sds.category] ?? sds.category}
           </div>
-          <h1 className="text-2xl font-semibold">
+          <h1 className="page-title">
             {sds.manufacturer} {sds.productName}
           </h1>
           {sds.signalWord && (
             <span
               className={`mt-2 inline-block rounded px-2 py-0.5 text-xs font-bold uppercase ${
                 /gefahr|danger/i.test(sds.signalWord)
-                  ? "bg-rose-100 text-rose-800"
+                  ? "bg-red-100 text-red-800"
                   : "bg-amber-100 text-amber-800"
               }`}
             >
@@ -149,7 +149,7 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
             <section className="card space-y-3">
               <div className="flex items-center gap-2">
                 <ShieldAlert size={16} className="text-brand-600" />
-                <h2 className="font-semibold">REACH &amp; Inhaltsstoffe</h2>
+                <h2 className="section-title">REACH &amp; Inhaltsstoffe</h2>
               </div>
 
               {/* REACH-Status */}
@@ -161,7 +161,7 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
                       ✓ konform/registriert
                     </span>
                   ) : (
-                    <span className="rounded-full bg-rose-50 px-2 py-0.5 text-xs font-medium text-rose-700">
+                    <span className="rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700">
                       ✗ nicht konform
                     </span>
                   )}
@@ -172,14 +172,14 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
               {/* SVHC */}
               {sds.svhcSubstances.length > 0 && (
                 <div>
-                  <div className="text-xs font-semibold uppercase text-rose-700">
+                  <div className="text-xs font-semibold uppercase text-red-700">
                     SVHC ({sds.svhcSubstances.length})
                   </div>
                   <div className="mt-1 flex flex-wrap gap-1">
                     {sds.svhcSubstances.map((s, i) => (
                       <span
                         key={i}
-                        className="rounded bg-rose-50 px-2 py-0.5 text-xs text-rose-700 ring-1 ring-rose-200"
+                        className="rounded bg-red-50 px-2 py-0.5 text-xs text-red-700 ring-1 ring-red-200"
                       >
                         {s}
                       </span>
@@ -224,15 +224,15 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
             sds.ghsPictograms.length > 0) && (
             <section className="card space-y-3">
               <div className="flex items-center gap-2">
-                <AlertOctagon size={16} className="text-rose-600" />
-                <h2 className="font-semibold">GHS / CLP — Gefahrenmerkmale</h2>
+                <AlertOctagon size={16} className="text-red-600" />
+                <h2 className="section-title">GHS / CLP — Gefahrenmerkmale</h2>
               </div>
               {sds.ghsPictograms.length > 0 && (
                 <div>
                   <div className="text-xs font-semibold uppercase text-slate-500">Piktogramme</div>
                   <div className="mt-1 flex flex-wrap gap-1">
                     {sds.ghsPictograms.map((p) => (
-                      <span key={p} className="rounded bg-rose-50 px-2 py-0.5 text-xs font-medium text-rose-700 ring-1 ring-rose-200">
+                      <span key={p} className="rounded bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700 ring-1 ring-red-200">
                         {p}
                       </span>
                     ))}
@@ -284,7 +284,7 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
             <section className="card space-y-3">
               <div className="flex items-center gap-2">
                 <FlaskConical size={16} className="text-brand-600" />
-                <h2 className="font-semibold">Physikalisch-chemische Eigenschaften</h2>
+                <h2 className="section-title">Physikalisch-chemische Eigenschaften</h2>
               </div>
               <div className="grid gap-3 md:grid-cols-2">
                 <Meta label="Aggregatzustand" value={sds.physicalState ?? "–"} />
@@ -328,7 +328,7 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
             <section className="card space-y-2">
               <div className="flex items-center gap-2">
                 <Beaker size={16} className="text-brand-600" />
-                <h2 className="font-semibold">CAS-Nummern aus Section 3 ({sds.casNumbers.length})</h2>
+                <h2 className="section-title">CAS-Nummern aus Section 3 ({sds.casNumbers.length})</h2>
               </div>
               <div className="flex flex-wrap gap-1">
                 {sds.casNumbers.map((c) => (
@@ -352,7 +352,7 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
             <section className="card space-y-2">
               <div className="flex items-center gap-2">
                 <Truck size={16} className="text-brand-600" />
-                <h2 className="font-semibold">Transport (ADR)</h2>
+                <h2 className="section-title">Transport (ADR)</h2>
               </div>
               <div className="grid gap-3 md:grid-cols-3">
                 <Meta label="ADR-Klasse" value={sds.adrClass ?? "–"} />
@@ -367,13 +367,13 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
             <section className="card space-y-2">
               <div className="flex items-center gap-2">
                 <Phone size={16} className="text-brand-600" />
-                <h2 className="font-semibold">Lieferant / Notfallkontakt</h2>
+                <h2 className="section-title">Lieferant / Notfallkontakt</h2>
               </div>
               <div className="space-y-1 text-sm">
                 {sds.supplierName && <div className="font-medium">{sds.supplierName}</div>}
                 {sds.supplierAddress && <div className="whitespace-pre-line text-slate-700">{sds.supplierAddress}</div>}
                 {sds.emergencyPhone && (
-                  <div className="text-rose-700">
+                  <div className="text-red-700">
                     Notruf: <a href={`tel:${sds.emergencyPhone}`} className="font-medium hover:underline">{sds.emergencyPhone}</a>
                   </div>
                 )}
@@ -393,7 +393,7 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
 
       {sds.products.length > 0 && (
         <section>
-          <h2 className="mb-3 text-lg font-semibold">
+          <h2 className="mb-3 section-title">
             Produkte aus dem Katalog ({sds.products.length})
           </h2>
           <div className="card divide-y divide-slate-200">
@@ -422,7 +422,7 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
 
       {sds.listings.length > 0 && (
         <section>
-          <h2 className="mb-3 text-lg font-semibold">
+          <h2 className="mb-3 section-title">
             Aktive Listings, die dieses Datenblatt nutzen
           </h2>
           <div className="card divide-y divide-slate-200">
@@ -476,7 +476,7 @@ function IngredientPill({
   if (v === true) {
     const cls = neutralWhenTrue
       ? "bg-amber-50 text-amber-800 ring-amber-200"
-      : "bg-rose-50 text-rose-800 ring-rose-200";
+      : "bg-red-50 text-red-800 ring-red-200";
     const Icon = neutralWhenTrue ? AlertTriangle : AlertOctagon;
     return (
       <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs ring-1 ${cls}`}>

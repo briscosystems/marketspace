@@ -18,7 +18,7 @@ export default async function PriceVerificationPage() {
   if (!allowed) {
     return (
       <div className="card">
-        <h1 className="text-xl font-semibold">Zugriff verweigert</h1>
+        <h1 className="page-title">Zugriff verweigert</h1>
         <p className="mt-2 text-sm text-slate-600">
           Preis-Verifizierung ist Admins und Trade-Assured+ Usern vorbehalten.
         </p>
@@ -53,7 +53,7 @@ export default async function PriceVerificationPage() {
       <div className="flex items-center justify-between gap-3 rounded-lg border-l-4 border-blue-500 bg-blue-50 px-4 py-2.5 shadow-sm">
         <div className="flex items-center gap-2">
           <ShieldCheck size={20} className="text-blue-600" />
-          <h1 className="text-lg font-bold text-slate-900">Preis-Verifizierung</h1>
+          <h1 className="page-title">Preis-Verifizierung</h1>
           <span className="text-xs text-slate-600">
             {pending.length} ausstehend · {verifiedCount} verifiziert · {rejectedCount} abgelehnt
           </span>

@@ -117,7 +117,7 @@ export function CompareRemoveButton({ id, kind }: { id: string; kind: Kind }) {
       type="button"
       onClick={() => remove(id)}
       title="Aus Vergleich entfernen"
-      className="inline-flex h-6 w-6 items-center justify-center rounded-full text-slate-400 hover:bg-rose-50 hover:text-rose-600"
+      className="inline-flex h-6 w-6 items-center justify-center rounded-full text-slate-400 hover:bg-red-50 hover:text-red-600"
     >
       <X size={14} />
     </button>

@@ -10,7 +10,7 @@ import { ReviewForm } from "@/components/ReviewForm";
 const statusStyle: Record<string, string> = {
   PENDING: "bg-amber-100 text-amber-800",
   SHIPPED: "bg-blue-100 text-blue-800",
-  COMPLETED: "bg-green-100 text-green-800",
+  COMPLETED: "bg-emerald-100 text-emerald-800",
   CANCELED: "bg-slate-200 text-slate-700",
   DISPUTED: "bg-red-100 text-red-800",
 };
@@ -67,7 +67,7 @@ export default async function TransactionPage({
             <div className="text-xs uppercase tracking-wide text-slate-500">
               Transaktion #{tx.id.slice(-6)}
             </div>
-            <h1 className="text-2xl font-semibold">
+            <h1 className="page-title">
               {tx.totalEur.toFixed(2)} €
             </h1>
             <div className="mt-1 text-sm text-slate-600">
@@ -155,7 +155,7 @@ export default async function TransactionPage({
       </div>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold">Bewertungen</h2>
+        <h2 className="section-title">Bewertungen</h2>
         {otherReview && (
           <div className="card">
             <div className="mb-1 flex items-center gap-2 text-sm">

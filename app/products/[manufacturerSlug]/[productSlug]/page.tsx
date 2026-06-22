@@ -42,7 +42,7 @@ const COMPAT_STYLE: Record<string, string> = {
   RECOMMENDED: "border-emerald-300 bg-emerald-50 text-emerald-800",
   COMPATIBLE: "border-slate-300 bg-slate-50 text-slate-700",
   CAUTION: "border-amber-300 bg-amber-50 text-amber-800",
-  UNSUITABLE: "border-rose-300 bg-rose-50 text-rose-800",
+  UNSUITABLE: "border-red-300 bg-red-50 text-red-800",
 };
 
 const COMPAT_LABEL: Record<string, string> = {
@@ -140,7 +140,7 @@ export default async function ProductDetailPage({
         <ManufacturerLogo name={m.name} logoPath={m.logoPath} height={64} />
         <div className="flex-1">
           <div className="text-xs uppercase tracking-wide text-slate-500">{m.name}</div>
-          <h1 className="mt-0.5 text-2xl font-bold text-slate-900">{product.name}</h1>
+          <h1 className="mt-0.5 page-title">{product.name}</h1>
           <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
             <span className="rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-medium text-brand-700">
               {CATEGORY_LABEL[product.category] ?? product.category}
@@ -192,7 +192,7 @@ export default async function ProductDetailPage({
             product.suitableMaterials.length > 0 ||
             product.unsuitableMaterials.length > 0) && (
             <section className="rounded-xl border border-slate-200 bg-white p-5">
-              <h2 className="font-semibold text-slate-900">Anwendung & Werkstoffe</h2>
+              <h2 className="section-title">Anwendung & Werkstoffe</h2>
               <div className="mt-3 grid gap-4 sm:grid-cols-2">
                 {product.applicationAreas.length > 0 ? (
                   <div>
@@ -230,14 +230,14 @@ export default async function ProductDetailPage({
                 ) : null}
                 {product.unsuitableMaterials.length > 0 ? (
                   <div className="sm:col-span-2">
-                    <div className="text-xs font-medium uppercase tracking-wide text-rose-600">
+                    <div className="text-xs font-medium uppercase tracking-wide text-red-600">
                       Nicht geeignet für
                     </div>
                     <div className="mt-1 flex flex-wrap gap-1">
                       {product.unsuitableMaterials.map((m) => (
                         <span
                           key={m}
-                          className="rounded bg-rose-50 px-2 py-0.5 text-xs font-medium text-rose-700"
+                          className="rounded bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700"
                         >
                           ✗ {m}
                         </span>
@@ -277,7 +277,7 @@ export default async function ProductDetailPage({
           <section className="rounded-xl border border-slate-200 bg-white p-5">
             <div className="flex items-center gap-2">
               <Beaker size={16} className="text-brand-600" />
-              <h2 className="font-semibold text-slate-900">Technische Daten</h2>
+              <h2 className="section-title">Technische Daten</h2>
             </div>
             <dl className="mt-3 grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
               <DataRow
@@ -362,7 +362,7 @@ export default async function ProductDetailPage({
             <section className="rounded-xl border border-blue-200 bg-blue-50 p-5">
               <div className="flex items-center gap-2">
                 <Droplets size={16} className="text-blue-600" />
-                <h2 className="font-semibold text-slate-900">Ansetzwasser-Anforderung</h2>
+                <h2 className="section-title">Ansetzwasser-Anforderung</h2>
               </div>
               {product.waterHardnessMinDh != null || product.waterHardnessMaxDh != null ? (
                 <div className="mt-2 font-mono text-lg font-bold text-blue-900">
@@ -380,7 +380,7 @@ export default async function ProductDetailPage({
             <section className="rounded-xl border border-slate-200 bg-white p-5">
               <div className="flex items-center gap-2">
                 <AlertTriangle size={16} className="text-amber-600" />
-                <h2 className="font-semibold text-slate-900">
+                <h2 className="section-title">
                   Allgemeine Werkstoff-Hinweise
                 </h2>
               </div>
@@ -538,10 +538,10 @@ const SEAL_RATING_STYLE: Record<
     label: "empfohlen",
   },
   COMPATIBLE: {
-    bg: "bg-green-50",
-    border: "border-green-200",
-    text: "text-green-800",
-    iconColor: "text-green-600",
+    bg: "bg-emerald-50",
+    border: "border-emerald-200",
+    text: "text-emerald-800",
+    iconColor: "text-emerald-600",
     label: "geeignet",
   },
   CAUTION: {
@@ -552,10 +552,10 @@ const SEAL_RATING_STYLE: Record<
     label: "Vorsicht",
   },
   UNSUITABLE: {
-    bg: "bg-rose-50",
-    border: "border-rose-300",
-    text: "text-rose-900",
-    iconColor: "text-rose-600",
+    bg: "bg-red-50",
+    border: "border-red-300",
+    text: "text-red-900",
+    iconColor: "text-red-600",
     label: "nicht geeignet",
   },
 };
@@ -600,7 +600,7 @@ function PriceBanner({
                   ? "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-300"
                   : currentPrice.confidence === "medium"
                     ? "bg-amber-100 text-amber-800 ring-1 ring-amber-300"
-                    : "bg-rose-100 text-rose-800 ring-1 ring-rose-300"
+                    : "bg-red-100 text-red-800 ring-1 ring-red-300"
               }`}
             >
               {currentPrice.confidence}
@@ -684,7 +684,7 @@ function PriceSection({
                   ? "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-300"
                   : currentPrice.confidence === "medium"
                     ? "bg-amber-100 text-amber-800 ring-1 ring-amber-300"
-                    : "bg-rose-100 text-rose-800 ring-1 ring-rose-300"
+                    : "bg-red-100 text-red-800 ring-1 ring-red-300"
               }`}
             >
               Konfidenz: {currentPrice.confidence}
@@ -740,7 +740,7 @@ function LinkedSdsCard({
       <div className="flex items-baseline justify-between gap-3">
         <div className="flex items-center gap-2">
           <FileSearch size={16} className="text-blue-600" />
-          <h2 className="font-semibold text-slate-900">Sicherheitsdatenblatt</h2>
+          <h2 className="section-title">Sicherheitsdatenblatt</h2>
         </div>
         <Link
           href={`/sds/${sds.id}`}
@@ -754,7 +754,7 @@ function LinkedSdsCard({
           <span
             className={`rounded px-2 py-0.5 font-bold uppercase ${
               /gefahr|danger/i.test(sds.signalWord)
-                ? "bg-rose-100 text-rose-800"
+                ? "bg-red-100 text-red-800"
                 : "bg-amber-100 text-amber-800"
             }`}
           >
@@ -770,12 +770,12 @@ function LinkedSdsCard({
           </span>
         )}
         {sds.reachCompliant === false && (
-          <span className="rounded bg-rose-50 px-2 py-0.5 text-rose-700 ring-1 ring-rose-200">
+          <span className="rounded bg-red-50 px-2 py-0.5 text-red-700 ring-1 ring-red-200">
             nicht REACH-konform
           </span>
         )}
         {sds.svhcSubstances.length > 0 && (
-          <span className="rounded bg-rose-100 px-2 py-0.5 text-rose-800 ring-1 ring-rose-300">
+          <span className="rounded bg-red-100 px-2 py-0.5 text-red-800 ring-1 ring-red-300">
             SVHC ({sds.svhcSubstances.length})
           </span>
         )}
@@ -824,7 +824,7 @@ function LinkedSdsCard({
             if (f.v === null) return null;
             if (f.v === true)
               return (
-                <span key={f.label} className="rounded bg-rose-50 px-1.5 py-0.5 text-[10px] text-rose-700 ring-1 ring-rose-200">
+                <span key={f.label} className="rounded bg-red-50 px-1.5 py-0.5 text-[10px] text-red-700 ring-1 ring-red-200">
                   ⚠ {f.label}: enthält
                 </span>
               );
@@ -860,7 +860,7 @@ function SealCompatibilitySection({
       <div className="flex items-baseline justify-between gap-3">
         <div className="flex items-center gap-2">
           <Shield size={16} className="text-brand-600" />
-          <h2 className="font-semibold text-slate-900">Empfohlene Dichtungs- &amp; Kunststoff-Werkstoffe</h2>
+          <h2 className="section-title">Empfohlene Dichtungs- &amp; Kunststoff-Werkstoffe</h2>
         </div>
         <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-600">
           modelliert

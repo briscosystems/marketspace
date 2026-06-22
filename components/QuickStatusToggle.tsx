@@ -13,7 +13,7 @@ const labels: Record<Status, string> = {
 };
 
 const colors: Record<Status, string> = {
-  ACTIVE: "bg-green-100 text-green-800 hover:bg-green-200",
+  ACTIVE: "bg-emerald-100 text-emerald-800 hover:bg-emerald-200",
   PAUSED: "bg-amber-100 text-amber-800 hover:bg-amber-200",
   SOLD: "bg-slate-200 text-slate-700 hover:bg-slate-300",
   ARCHIVED: "bg-slate-100 text-slate-500 hover:bg-slate-200",

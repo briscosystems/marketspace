@@ -81,7 +81,7 @@ export function PriceSubmitDialog({ productId, productName, manufacturer, onClos
       <div className="relative w-full max-w-lg overflow-hidden rounded-xl bg-white shadow-xl">
         <div className="flex items-center justify-between border-b border-slate-200 px-5 py-3">
           <div>
-            <h2 className="text-base font-semibold">Preis melden</h2>
+            <h2 className="section-title">Preis melden</h2>
             <p className="text-xs text-slate-500">
               {manufacturer} · {productName}
             </p>
@@ -196,7 +196,7 @@ export function PriceSubmitDialog({ productId, productName, manufacturer, onClos
           {result && (
             <div
               className={`flex items-start gap-2 rounded px-3 py-2 text-sm ${
-                result.ok ? "bg-emerald-50 text-emerald-800" : "bg-rose-50 text-rose-800"
+                result.ok ? "bg-emerald-50 text-emerald-800" : "bg-red-50 text-red-800"
               }`}
             >
               {result.ok ? <CheckCircle2 size={16} className="mt-0.5 shrink-0" /> : <AlertCircle size={16} className="mt-0.5 shrink-0" />}

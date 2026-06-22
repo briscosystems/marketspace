@@ -22,7 +22,7 @@ export default async function EditListingPage({
 
   return (
     <div className="mx-auto max-w-3xl space-y-4">
-      <h1 className="text-2xl font-semibold">Listing bearbeiten</h1>
+      <h1 className="page-title">Listing bearbeiten</h1>
       <ListingEditForm
         listing={{
           id: listing.id,

@@ -62,7 +62,7 @@ export default async function RfqDetailPage({
             <div className="text-xs uppercase tracking-wide text-slate-500">
               {rfq.productType} {rfq.isoViscosity ? `· ISO VG ${rfq.isoViscosity}` : ""}
             </div>
-            <h1 className="text-2xl font-semibold">
+            <h1 className="page-title">
               {rfq.manufacturer ? `${rfq.manufacturer} · ` : ""}
               {rfq.quantity.toLocaleString("de-DE")} {rfq.quantityUnit}
             </h1>
@@ -79,7 +79,7 @@ export default async function RfqDetailPage({
           <span
             className={`rounded-full px-3 py-1 text-xs font-medium ${
               rfq.status === "OPEN"
-                ? "bg-green-100 text-green-800"
+                ? "bg-emerald-100 text-emerald-800"
                 : rfq.status === "ACCEPTED"
                 ? "bg-blue-100 text-blue-800"
                 : "bg-slate-100 text-slate-600"
@@ -155,7 +155,7 @@ export default async function RfqDetailPage({
       </div>
 
       <div className="space-y-3">
-        <h2 className="text-lg font-semibold">Angebote</h2>
+        <h2 className="section-title">Angebote</h2>
         {rfq.offers.length === 0 ? (
           <div className="card text-sm text-slate-500">Noch keine Angebote.</div>
         ) : (
@@ -167,7 +167,7 @@ export default async function RfqDetailPage({
                 <div
                   key={o.id}
                   className={`card ${
-                    accepted ? "ring-2 ring-green-500" : declined ? "opacity-50" : ""
+                    accepted ? "ring-2 ring-emerald-500" : declined ? "opacity-50" : ""
                   }`}
                 >
                   <div className="flex items-start justify-between">
@@ -176,7 +176,7 @@ export default async function RfqDetailPage({
                         <span className="font-medium">{o.seller.pseudonym}</span>
                         <TrustBadge tier={o.seller.trustTier} size="xs" />
                         {accepted && (
-                          <span className="rounded-full bg-green-100 px-2 py-0.5 text-[10px] text-green-800">
+                          <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] text-emerald-800">
                             angenommen
                           </span>
                         )}
@@ -222,7 +222,7 @@ export default async function RfqDetailPage({
 
       {canOffer && (
         <div className="space-y-3">
-          <h2 className="text-lg font-semibold">
+          <h2 className="section-title">
             {myOffer ? "Dein Angebot aktualisieren" : "Angebot abgeben"}
           </h2>
           <SubmitOfferForm

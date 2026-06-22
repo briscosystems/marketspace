@@ -74,7 +74,7 @@ export function PriceHistoryChart({
         <div className="text-slate-500">
           {data.length} Monate · {data.reduce((s, d) => s + d.count, 0)} Beobachtungen
         </div>
-        <div className={trendPct >= 0 ? "text-rose-600" : "text-emerald-600"}>
+        <div className={trendPct >= 0 ? "text-red-600" : "text-emerald-600"}>
           {trendPct >= 0 ? "↗" : "↘"} {Math.abs(trendPct).toFixed(1)}% über Zeitraum
         </div>
       </div>
@@ -118,7 +118,7 @@ export function PriceHistoryChart({
         {/* Bereichs-Fläche */}
         <path d={areaPath} fill="url(#priceGradient)" opacity="0.4" />
         {/* Linie */}
-        <path d={path} fill="none" stroke="#2d6dd9" strokeWidth="2" />
+        <path d={path} fill="none" stroke="#74980f" strokeWidth="2" />
         {/* Datenpunkte */}
         {data.map((d, i) => (
           <circle
@@ -126,7 +126,7 @@ export function PriceHistoryChart({
             cx={xPos(i)}
             cy={yPos(d.medianEur)}
             r="2.5"
-            fill="#2d6dd9"
+            fill="#74980f"
           >
             <title>
               {d.monthLabel}: {d.medianEur.toFixed(2)} {unitLabel} ({d.count} Beobachtungen)
@@ -135,8 +135,8 @@ export function PriceHistoryChart({
         ))}
         <defs>
           <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#2d6dd9" stopOpacity="0.35" />
-            <stop offset="100%" stopColor="#2d6dd9" stopOpacity="0" />
+            <stop offset="0%" stopColor="#74980f" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="#74980f" stopOpacity="0" />
           </linearGradient>
         </defs>
       </svg>

@@ -6,6 +6,23 @@ const prisma = new PrismaClient();
 async function main() {
   const passwordHash = await bcrypt.hash("test1234", 10);
 
+  // Eigentümer-/Superadmin-Konto. Rolle ADMIN schaltet die interne
+  // Sichtbarkeits-Steuerung unter /admin frei. Passwort wie die Testkonten
+  // (test1234) — nach dem ersten Login bitte ändern.
+  await prisma.user.upsert({
+    where: { email: "jgosch@brisco.ch" },
+    update: { role: "ADMIN" },
+    create: {
+      email: "jgosch@brisco.ch",
+      passwordHash,
+      pseudonym: "Brisco-Eigentümer",
+      role: "ADMIN",
+      trustTier: "PREMIUM",
+      companyName: "Brisco",
+      country: "CH",
+    },
+  });
+
   const alpha = await prisma.user.upsert({
     where: { email: "alpha@example.com" },
     update: { trustTier: "VERIFIED" },

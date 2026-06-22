@@ -40,7 +40,7 @@ export default async function ConversationPage({
       </Link>
       <div className="card">
         <div className="mb-1 flex items-center gap-2">
-          <h1 className="text-xl font-semibold">{counterpart.pseudonym}</h1>
+          <h1 className="page-title">{counterpart.pseudonym}</h1>
           <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">
             {conversation.buyerId === me ? "Verkäufer" : "Käufer"}
           </span>

@@ -56,8 +56,8 @@ const RATING_STYLE: Record<string, { icon: typeof CheckCircle2; bg: string; text
   },
   COMPATIBLE: {
     icon: CheckCircle2,
-    bg: "bg-green-50 text-green-700 ring-green-200",
-    text: "text-green-700",
+    bg: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+    text: "text-emerald-700",
     label: "verträglich",
   },
   CAUTION: {
@@ -68,8 +68,8 @@ const RATING_STYLE: Record<string, { icon: typeof CheckCircle2; bg: string; text
   },
   UNSUITABLE: {
     icon: AlertOctagon,
-    bg: "bg-rose-100 text-rose-800 ring-rose-200",
-    text: "text-rose-800",
+    bg: "bg-red-100 text-red-800 ring-red-200",
+    text: "text-red-800",
     label: "ungeeignet",
   },
 };
@@ -90,7 +90,7 @@ export default async function MaterialsPage({ searchParams }: { searchParams: Se
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="flex items-center gap-2 text-2xl font-semibold">
+        <h1 className="flex items-center gap-2 page-title">
           <Shield size={24} className="text-brand-600" />
           Materialien & Inhaltsstoff-Verträglichkeit
         </h1>
@@ -166,7 +166,7 @@ export default async function MaterialsPage({ searchParams }: { searchParams: Se
                     </span>
                   )}
                   {i.isSvhc && (
-                    <span className="rounded-full bg-rose-100 px-2 py-0.5 text-xs text-rose-700">
+                    <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs text-red-700">
                       SVHC
                     </span>
                   )}
@@ -211,12 +211,12 @@ async function CompatibilityMatrix() {
   return (
     <div className="card space-y-3">
       <div className="flex items-baseline justify-between">
-        <h2 className="text-lg font-semibold">Vollständige Verträglichkeitsmatrix</h2>
+        <h2 className="section-title">Vollständige Verträglichkeitsmatrix</h2>
         <div className="flex gap-2 text-xs">
           <span className="rounded bg-emerald-100 px-1.5 py-0.5 text-emerald-700">empfohlen</span>
-          <span className="rounded bg-green-50 px-1.5 py-0.5 text-green-700">verträglich</span>
+          <span className="rounded bg-emerald-50 px-1.5 py-0.5 text-emerald-700">verträglich</span>
           <span className="rounded bg-amber-100 px-1.5 py-0.5 text-amber-800">Vorsicht</span>
-          <span className="rounded bg-rose-100 px-1.5 py-0.5 text-rose-700">ungeeignet</span>
+          <span className="rounded bg-red-100 px-1.5 py-0.5 text-red-700">ungeeignet</span>
         </div>
       </div>
       <div className="overflow-x-auto">

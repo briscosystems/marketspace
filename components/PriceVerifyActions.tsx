@@ -47,13 +47,13 @@ export function PriceVerifyActions({ observationId }: { observationId: string })
         <button
           onClick={() => act("reject")}
           disabled={loading !== null}
-          className="inline-flex items-center gap-1 rounded-md border border-rose-300 bg-white px-2.5 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-50 disabled:opacity-60"
+          className="inline-flex items-center gap-1 rounded-md border border-red-300 bg-white px-2.5 py-1 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:opacity-60"
         >
           {loading === "reject" ? <Loader2 size={12} className="animate-spin" /> : <X size={12} />}
           Ablehnen
         </button>
       </div>
-      {error && <div className="text-[10px] text-rose-600">{error}</div>}
+      {error && <div className="text-[10px] text-red-600">{error}</div>}
     </div>
   );
 }
