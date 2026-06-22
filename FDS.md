@@ -727,6 +727,25 @@ Ranking ist ausschließlich intern und für Nutzer nicht erkennbar (siehe C.2).
 - **Kontaktdaten-Verbot** in Nachrichten (§ 4 AGB) — technische Erkennung/
   Maskierung geplant (Anbahnung pseudonym halten).
 
+## C.5 Kreditkarten-Zahlung — Jahres-/Zugangsgebühr (Stripe)
+
+- Anbieter **Stripe**; Modell **Jahresgebühr** (gegen Disintermediation, vgl.
+  Geschäftsmodell-Analyse). Betrag über `MEMBERSHIP_PRICE_EUR` (Default 290 €).
+- Datenmodell: `User.stripeCustomerId`, `User.membershipValidUntil`, Modell
+  `Payment` (kind MEMBERSHIP, status PENDING/PAID/FAILED, Stripe-Refs, Periode).
+- Flow: `POST /api/billing/checkout` → Stripe-Checkout-Session (mode `payment`,
+  `price_data` inline) → gehostete Bezahlseite. Freischaltung über
+  `POST /api/billing/webhook` (signaturgeprüft, `checkout.session.completed`) und
+  Fallback `GET /api/billing/confirm?session_id=…` (für Dev ohne Webhook). Beides
+  idempotent über `fulfillCheckoutSession` (verlängert 12 Monate).
+- UI: Seite `/mitgliedschaft` (Status + Bezahl-Button), Nav-Link „Zugang".
+- Helfer: `lib/stripe.ts` (Singleton, null ohne Key), `lib/membership.ts`.
+- **Testmodus:** funktioniert, sobald `STRIPE_SECRET_KEY` (sk_test_…) in `.env`
+  steht (+ optional `STRIPE_WEBHOOK_SECRET`). Vorlage in `.env.example`.
+  Testkarte 4242 4242 4242 4242. **Noch zu tun für Live:** echtes Stripe-Konto,
+  Live-Keys, Webhook-Endpoint registrieren; optional Stripe Connect für
+  Transaktions-Split (3 %) später.
+
 ---
 
 *Dieses Dokument ist die initiale Grundlage. Es wird mit Fortschritt des Projekts weiter verfeinert.*

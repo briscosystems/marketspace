@@ -456,6 +456,11 @@ model User {
   // Suchergebnissen und Vorschlägen. Wird NIE an die normale UI/API
   // ausgegeben und ist nur über /admin durch den Eigentümer steuerbar.
   searchBoost  Int           @default(0)
+  // Bezahlte Jahres-/Zugangsmitgliedschaft (Stripe). Aktiv, solange
+  // membershipValidUntil in der Zukunft liegt.
+  stripeCustomerId    String?
+  membershipValidUntil DateTime?
+  payments            Payment[]
   // KYC light — internal only
   companyName  String?
   vatId        String?
@@ -480,6 +485,44 @@ model User {
   verifiedIssues  ProductIssue[]     @relation("ProductIssueVerified")
 
   passwordResetTokens PasswordResetToken[]
+}
+
+// ============================================================
+// Zahlungen (Stripe) — aktuell: Jahres-/Zugangsgebühr (Mitgliedschaft).
+// ============================================================
+enum PaymentKind {
+  MEMBERSHIP // Jahres-/Zugangsgebühr
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
+model Payment {
+  id        String        @id @default(cuid())
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  kind      PaymentKind   @default(MEMBERSHIP)
+  status    PaymentStatus @default(PENDING)
+  amountEur Float
+  currency  String        @default("eur")
+
+  // Stripe-Referenzen (Checkout-Session / PaymentIntent)
+  stripeSessionId       String? @unique
+  stripePaymentIntentId String?
+
+  // Abgedeckter Zeitraum (bei MEMBERSHIP: 1 Jahr ab Zahlung)
+  periodStart DateTime?
+  periodEnd   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
 }
 
 // ============================================================

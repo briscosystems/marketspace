@@ -13,6 +13,7 @@ import {
   Sparkles,
   TrendingUp,
   Lock,
+  CreditCard,
 } from "lucide-react";
 
 type Accent = "blue" | "amber" | "purple" | "none";
@@ -79,6 +80,18 @@ export function HeaderNav({ user }: { user: { name: string; isAdmin?: boolean } 
           >
             <LayoutDashboard size={15} className={isActive("/dashboard") ? "" : "text-slate-500"} />
             <span className="hidden md:inline">Dashboard</span>
+          </Link>
+          <Link
+            href="/mitgliedschaft"
+            aria-current={isActive("/mitgliedschaft") ? "page" : undefined}
+            className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 font-medium transition-colors ${
+              isActive("/mitgliedschaft")
+                ? "bg-slate-100 font-semibold text-slate-900"
+                : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+            }`}
+          >
+            <CreditCard size={15} className={isActive("/mitgliedschaft") ? "" : "text-slate-500"} />
+            <span className="hidden md:inline">Zugang</span>
           </Link>
           {/* Nur für den Eigentümer (ADMIN) sichtbar — interne Steuerung. */}
           {user.isAdmin && (
