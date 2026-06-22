@@ -24,6 +24,7 @@ type WizardAnswers = {
   criticalIssues?: string[];
   certifications?: string[];
   waterHardness?: number | null;
+  unsureDimensions?: string[];
 };
 
 type Recommendation = {
@@ -299,6 +300,7 @@ Heuristik-Score: ${c.preScore} (${c.heuristicReasons.join("; ")})`,
       kritischePunkte: args.wizardAnswers.criticalIssues,
       zertifizierungen: args.wizardAnswers.certifications,
       wasserhärteDH: args.wizardAnswers.waterHardness,
+      unsichereAngaben: args.wizardAnswers.unsureDimensions,
     },
     null,
     2,
@@ -316,12 +318,17 @@ Berücksichtige dabei:
 - Wenn aktueller KSS bekannt: schlage NICHT denselben vor, sondern echte Alternativen
 - Wenn Problembeschreibung Hinweise enthält (z.B. "stinkt schon nach 2 Wochen"), priorisiere Produkte mit passenden adressierten Problemen
 
+WICHTIG — Freitext "problembeschreibung" KRITISCH analysieren:
+- Zerlege die Schilderung in die wahrscheinlichen technischen Ursachen (z.B. "kippt nach 3 Wochen" → Bakterien-/Pilzbefall, zu niedrige Konzentration, Tramp-Oil-Eintrag).
+- Sei ehrlich: wenn die Beschreibung NICHT eindeutig auf ein KSS-Problem zeigt (z.B. eigentlich ein Anlagen- oder Pflegeproblem), sag das im summary klar — kein Schönreden, die Plattform bleibt neutral.
+- Stehen Dimensionen in "unsichereAngaben" (der Anwender weiß es nicht), gewichte sie schwächer und wähle eher universell einsetzbare Produkte; weise im summary darauf hin, was zu klären wäre.
+
 Antworte AUSSCHLIESSLICH mit gültigem JSON:
 {
   "recommendations": [
     { "productId": "string aus Kandidaten-IDs", "reason": "2-3 Sätze klare Begründung in Deutsch", "matchScore": 0..100 }
   ],
-  "summary": "1-2 Sätze Gesamtfazit der Auswahl"
+  "summary": "2-4 Sätze: zuerst kritische Einschätzung der geschilderten Probleme, dann Fazit der Auswahl"
 }`;
 
   const response = await client.messages.create({

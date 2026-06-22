@@ -659,4 +659,59 @@ Diese Erweiterung gilt als implementiert, wenn:
 
 ---
 
+# Teil C — Erweiterung v0.3 (Stand 2026-06-22)
+
+> Dieser Teil wird **laufend** mit jeder umgesetzten Funktion fortgeschrieben
+> (Dauerauftrag) und zusammen mit dem Code nach GitHub gepusht.
+
+## C.0 Kernfunktionen & Positionierung (verbindlich)
+
+Drei Zielgruppen, die bei jeder Änderung berücksichtigt werden:
+
+1. **Reseller** — verkaufen ↔ kaufen (Angebote/Anfragen, Anbieten/Suchen).
+2. **Hersteller** — vergleichen und Rating durch Beiträge beeinflussen.
+3. **Endkunden** — Alternativen suchen und Preisentwicklung sehen.
+
+**Die Plattform bleibt nutzersichtbar neutral.** Bezahlte Einflussnahme auf das
+Ranking ist ausschließlich intern und für Nutzer nicht erkennbar (siehe C.2).
+
+## C.1 Startseite
+
+- Zielgruppen-Header: „Für Reseller, Endkunden & Hersteller".
+- „Anbieten"-Karte zeigt ein Ölfässer-Bild (`components/OilBarrels.tsx`) statt des
+  früheren 📦-Emojis.
+- Der nutzersichtbare Hinweis „10 % Plattform-Provision" wurde von der Startseite
+  entfernt (Provisionslogik bleibt im Geschäftsmodell, wird aber nicht beworben).
+
+## C.2 Internes Sichtbarkeits-Ranking (NUR Eigentümer/Superadmin)
+
+- Feld `User.searchBoost` (Int 0–100, Default 0). Wird **nie** an öffentliche UI/API
+  ausgegeben.
+- Suche & Vorschläge (`/listings`, Startseiten-Vorschläge) sortieren primär nach
+  `searchBoost` (absteigend), dann nach Datum.
+- Steuerung über `/admin` (nur Rolle `ADMIN`, sonst 404). Admin-Link nur für ADMIN
+  in der Navigation. Eigentümer-Konto: `jgosch@brisco.ch` (Rolle ADMIN).
+- Vorbild: Booking.com (Preferred Partner) / Alibaba (Gold Supplier) — bezahlte Stufe
+  hebt Sichtbarkeit, ohne einzelne Treffer als „Anzeige" zu markieren.
+- **Compliance-Hinweis:** EU-P2B-Verordnung 2019/1150 verlangt Offenlegung, ob
+  Bezahlung das Ranking beeinflusst; CH-UWG zu verdeckter Werbung beachten. Bei
+  Bedarf späterer, unauffälliger AGB-/„So funktioniert die Reihenfolge"-Hinweis.
+
+## C.3 KSS-Finder — Such-Erweiterungen für Endkunden
+
+- **„Weiß nicht"-Option** bei den Multi-Select-Kriterien (Bearbeitungsverfahren,
+  Werkstoffe, Kritische Punkte). Exklusiver Chip; viele Endkunden kennen ihre
+  Bearbeitung/Werkstoffe nicht. Wirkt nicht als Filter, signalisiert der KI aber
+  Unsicherheit (`unsureDimensions`).
+- **Freitext-Feld** bei „Kritische Punkte": eigenes/spezielles Problem in Worten.
+- **KI-Analyse & Alternativen** (`components/KssAiAnalysis.tsx`): wertet Freitext +
+  Filter über `/api/kss-wizard` aus. Die KI analysiert die Schilderung **kritisch**
+  (wahrscheinliche Ursachen, ehrlicher Hinweis wenn es kein KSS-Problem ist) und
+  schlägt Alternativen aus dem Katalog vor; Heuristik-Fallback ohne API-Key.
+- **Marktpreis-Schieber** (`components/PriceRangeSlider.tsx`): kompakter
+  Doppel-Regler statt zweier Zahlenfelder → geringere Höhe. Voller Bereich
+  (0 … 50 €) = kein Preisfilter.
+
+---
+
 *Dieses Dokument ist die initiale Grundlage. Es wird mit Fortschritt des Projekts weiter verfeinert.*

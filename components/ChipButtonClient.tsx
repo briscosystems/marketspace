@@ -11,11 +11,17 @@ export function ChipButtonClient({
   name,
   value,
   isSelected,
+  exclusive = false,
+  dropSibling,
   children,
 }: {
   name: string;
   value: string;
   isSelected: boolean;
+  /** Exklusiv-Chip (z.B. „Weiß nicht"): an = ersetzt alle anderen Werte dieser Gruppe. */
+  exclusive?: boolean;
+  /** Beim Aktivieren eines normalen Chips diesen Wert (den Exklusiv-Chip) entfernen. */
+  dropSibling?: string;
   children: React.ReactNode;
 }) {
   const router = useRouter();
@@ -25,7 +31,15 @@ export function ChipButtonClient({
 
   function toggle() {
     const current = (sp.get(name) ?? "").split("|").filter(Boolean);
-    const next = isSelected ? current.filter((v) => v !== value) : [...current, value];
+    let next: string[];
+    if (exclusive) {
+      // Exklusiv-Chip: an → nur dieser Wert; aus → leer.
+      next = isSelected ? [] : [value];
+    } else {
+      next = isSelected ? current.filter((v) => v !== value) : [...current, value];
+      // Beim Hinzufügen eines echten Werts den Exklusiv-Chip („Weiß nicht") entfernen.
+      if (!isSelected && dropSibling) next = next.filter((v) => v !== dropSibling);
+    }
     const params = new URLSearchParams(sp.toString());
     if (next.length > 0) params.set(name, next.join("|"));
     else params.delete(name);

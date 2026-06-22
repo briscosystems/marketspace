@@ -4,6 +4,8 @@ import { Collapsible } from "@/components/Collapsible";
 import { LiveFilterForm } from "@/components/LiveFilterForm";
 import { KssWizardLauncher } from "@/components/KssWizardLauncher";
 import { SearchSection } from "@/components/SearchSection";
+import { PriceRangeSlider } from "@/components/PriceRangeSlider";
+import { KssAiAnalysis } from "@/components/KssAiAnalysis";
 import { buildSearchWhere } from "@/lib/normalize-search";
 import { getCurrentPricesBatch } from "@/lib/price-aggregation";
 import {
@@ -27,7 +29,15 @@ type SearchParams = Promise<{
   manufacturer?: string;
   minPrice?: string;
   maxPrice?: string;
+  problemText?: string;
 }>;
+
+// Sentinel für „Weiß nicht" — viele Endkunden kennen ihre Bearbeitung/Werkstoffe nicht.
+// Wirkt NICHT als Filter (Dimension wird übersprungen), signalisiert der KI aber Unsicherheit.
+const UNKNOWN = "Weiß nicht";
+
+// Obergrenze des Preis-Schiebers (EUR pro L/kg). Voller Bereich = kein Filter.
+const PRICE_MAX = 50;
 
 export const metadata = {
   title: "KSS-Finder — Brisco Marketplace",
@@ -49,6 +59,18 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
   const mats = parseMulti(sp.materials);
   const issues = parseMulti(sp.criticalIssues);
   const certs = parseMulti(sp.certifications);
+  const problemText = sp.problemText?.trim() ?? "";
+
+  // „Weiß nicht" aus den echten Filterwerten herauslösen — diese Dimension wird
+  // dann nicht gefiltert, aber als Unsicherheit an die KI weitergegeben.
+  const appsReal = apps.filter((x) => x !== UNKNOWN);
+  const matsReal = mats.filter((x) => x !== UNKNOWN);
+  const issuesReal = issues.filter((x) => x !== UNKNOWN);
+  const unsureDimensions = [
+    apps.includes(UNKNOWN) ? "Bearbeitungsverfahren" : null,
+    mats.includes(UNKNOWN) ? "Werkstoffe" : null,
+    issues.includes(UNKNOWN) ? "Kritische Punkte" : null,
+  ].filter(Boolean) as string[];
 
   // Intelligente Multi-Token-Suche gegen den normalisierten searchTokens-Index:
   // "bcool" matcht "B-Cool", "blaser 755" matcht beide Tokens UND-verknüpft.
@@ -67,9 +89,9 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
         | "FULL_SYNTHETIC"
         | "TWO_COMPONENT",
     }),
-    ...(apps.length > 0 && { applicationAreas: { hasSome: apps } }),
-    ...(mats.length > 0 && { suitableMaterials: { hasSome: mats } }),
-    ...(issues.length > 0 && { criticalIssuesAddressed: { hasSome: issues } }),
+    ...(appsReal.length > 0 && { applicationAreas: { hasSome: appsReal } }),
+    ...(matsReal.length > 0 && { suitableMaterials: { hasSome: matsReal } }),
+    ...(issuesReal.length > 0 && { criticalIssuesAddressed: { hasSome: issuesReal } }),
     ...(certs.length > 0 && { certifications: { hasSome: certs } }),
     ...(sp.manufacturer && { manufacturer: { name: { contains: sp.manufacturer, mode: "insensitive" } } }),
   };
@@ -181,7 +203,7 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
               defaultOpen={counts.apps > 0}
             >
               <input type="hidden" name="applicationAreas" value={apps.join("|")} />
-              <ChipMultiSelect name="applicationAreas" options={[...APPLICATION_AREAS]} selected={apps} />
+              <ChipMultiSelect name="applicationAreas" options={[...APPLICATION_AREAS]} selected={apps} withUnknown />
             </Collapsible>
 
             <Collapsible
@@ -200,7 +222,7 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
               defaultOpen={counts.mats > 0}
             >
               <input type="hidden" name="materials" value={mats.join("|")} />
-              <ChipMultiSelect name="materials" options={[...MATERIALS]} selected={mats} />
+              <ChipMultiSelect name="materials" options={[...MATERIALS]} selected={mats} withUnknown />
             </Collapsible>
 
             <Collapsible
@@ -214,12 +236,28 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
 
             <Collapsible
               title="Kritische Punkte"
-              subtitle="Geruch, Schaum, Hautirritation, …"
-              badgeCount={counts.issues}
-              defaultOpen={counts.issues > 0}
+              subtitle="Geruch, Schaum, Hautirritation, … + eigenes Problem"
+              badgeCount={counts.issues + (problemText ? 1 : 0)}
+              defaultOpen={counts.issues > 0 || !!problemText}
             >
               <input type="hidden" name="criticalIssues" value={issues.join("|")} />
-              <ChipMultiSelect name="criticalIssues" options={[...CRITICAL_ISSUES]} selected={issues} />
+              <ChipMultiSelect name="criticalIssues" options={[...CRITICAL_ISSUES]} selected={issues} withUnknown />
+
+              {/* Freitext: eigenes/spezielles Problem beschreiben → KI analysiert es kritisch. */}
+              <div className="mt-3">
+                <label className="label">Dein spezielles Problem (Freitext)</label>
+                <textarea
+                  name="problemText"
+                  defaultValue={problemText}
+                  rows={3}
+                  placeholder="z.B. Emulsion kippt nach 3 Wochen trotz Pflege / Bediener klagen über Hautreizungen / Aluminium läuft an …"
+                  className="input mt-1 font-normal leading-relaxed"
+                />
+                <p className="mt-1 text-[10px] text-slate-500">
+                  Die KI analysiert dies unten unter „KI-Analyse &amp; Alternativen" kritisch
+                  und schlägt passende Produkte vor.
+                </p>
+              </div>
             </Collapsible>
 
             <Collapsible
@@ -238,41 +276,31 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
 
             <Collapsible
               title="Marktpreis"
-              subtitle="Min / Max EUR pro L oder kg"
+              subtitle="Spanne in EUR pro L oder kg"
               badgeCount={counts.price}
               defaultOpen={counts.price > 0}
             >
-              <div className="grid gap-2 sm:grid-cols-2">
-                <div>
-                  <label className="label">Min-Preis</label>
-                  <input
-                    name="minPrice"
-                    type="number"
-                    step="0.1"
-                    defaultValue={sp.minPrice ?? ""}
-                    placeholder="z.B. 5"
-                    className="input"
-                  />
-                </div>
-                <div>
-                  <label className="label">Max-Preis</label>
-                  <input
-                    name="maxPrice"
-                    type="number"
-                    step="0.1"
-                    defaultValue={sp.maxPrice ?? ""}
-                    placeholder="z.B. 12"
-                    className="input"
-                  />
-                </div>
-              </div>
-              <p className="mt-2 text-[10px] text-slate-500">
-                Filter wirkt nur auf Produkte mit verifiziertem Marktpreis. Produkte ohne Preis fallen raus.
-              </p>
+              <PriceRangeSlider
+                max={PRICE_MAX}
+                initialMin={minPrice}
+                initialMax={maxPrice}
+              />
             </Collapsible>
           </div>
         </SearchSection>
       </LiveFilterForm>
+
+      {/* KI-Analyse: wertet Freitext + Filter kritisch aus und schlägt Alternativen vor. */}
+      <KssAiAnalysis
+        problemText={problemText}
+        applicationAreas={appsReal}
+        materials={matsReal}
+        criticalIssues={issuesReal}
+        certifications={certs}
+        productionType={sp.productionType}
+        concentrateForm={sp.concentrateForm}
+        unsureDimensions={unsureDimensions}
+      />
 
       {/* ③ ERGEBNISSE — brand-violett */}
       <SearchSection
@@ -363,50 +391,34 @@ function ChipMultiSelect({
   name,
   options,
   selected,
+  withUnknown = false,
 }: {
   name: string;
   options: string[];
   selected: string[];
+  /** Zusätzlich einen exklusiven „Weiß nicht"-Chip anzeigen (für unsichere Endkunden). */
+  withUnknown?: boolean;
 }) {
   const selectedSet = new Set(selected);
   return (
     <div className="flex flex-wrap gap-1.5">
-      {options.map((o) => {
-        const isSelected = selectedSet.has(o);
-        const next = isSelected ? selected.filter((s) => s !== o) : [...selected, o];
-        const param = new URLSearchParams();
-        param.set(name, next.join("|"));
-        // ChipMultiSelect-Link toggelt per URL — die LiveFilterForm um uns triggert Re-Render
-        // via FormData; aber Chips sind kein Form-Element, daher hier nur visuelles Feedback +
-        // einen versteckten Input. Toggle muss aber funktionieren — daher: wir setzen einen
-        // Link der direkt navigiert (mit Erhalt der anderen Filter via Window-URL).
-        return (
-          <ChipButton key={o} name={name} value={o} isSelected={isSelected} all={options}>
-            {o}
-          </ChipButton>
-        );
-      })}
+      {options.map((o) => (
+        <ChipButtonClient
+          key={o}
+          name={name}
+          value={o}
+          isSelected={selectedSet.has(o)}
+          dropSibling={withUnknown ? UNKNOWN : undefined}
+        >
+          {o}
+        </ChipButtonClient>
+      ))}
+      {withUnknown && (
+        <ChipButtonClient name={name} value={UNKNOWN} isSelected={selectedSet.has(UNKNOWN)} exclusive>
+          🤷 {UNKNOWN}
+        </ChipButtonClient>
+      )}
     </div>
-  );
-}
-
-// Client-Komponente, die per JS den Hidden-Input updated + Form-Change auslöst
-function ChipButton({
-  name,
-  value,
-  isSelected,
-  children,
-}: {
-  name: string;
-  value: string;
-  isSelected: boolean;
-  all: string[];
-  children: React.ReactNode;
-}) {
-  return (
-    <ChipButtonClient name={name} value={value} isSelected={isSelected}>
-      {children}
-    </ChipButtonClient>
   );
 }
 
