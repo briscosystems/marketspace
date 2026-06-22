@@ -746,6 +746,23 @@ Ranking ist ausschließlich intern und für Nutzer nicht erkennbar (siehe C.2).
   Live-Keys, Webhook-Endpoint registrieren; optional Stripe Connect für
   Transaktions-Split (3 %) später.
 
+## C.6 Glaubwürdigkeit / Vertrauen
+
+- **Rechts-/Vertrauensseiten** (im Footer verlinkt): `/impressum` (AT-Pflicht
+  § 5 ECG / § 25 MedienG — Platzhalter ausfüllen), `/datenschutz` (DSGVO-Grundgerüst,
+  nennt Auftragsverarbeiter Stripe/Anthropic/Hosting), `/vertrauen` (zentrale
+  Vertrauensseite).
+- **`/vertrauen`** erklärt: Verifizierungsstufen (aus `TIER_STYLES`,
+  Neuling→Diamant), verifizierte Bewertungen, Pseudonymität + Neutralität +
+  Kontaktdaten-Schutz, sicherer Ablauf + Ausblick Treuhand.
+- **Verifizierte Bewertungen:** bereits an `Transaction.status = COMPLETED`
+  gebunden (API `app/api/transactions/[id]/reviews`); im Profil jetzt als
+  „✓ Verifizierter Kauf" gekennzeichnet.
+- **Reputations-Signale** im Profil vorhanden: TrustBadge, „Mitglied seit",
+  Schnitt + Anzahl Bewertungen, abgeschlossene Transaktionen.
+- **Nächster großer Hebel:** Treuhand/abgesicherte Zahlung (baut auf Stripe auf;
+  für vollen Käuferschutz Stripe Connect / Escrow nötig — eigenes Projekt).
+
 ---
 
 *Dieses Dokument ist die initiale Grundlage. Es wird mit Fortschritt des Projekts weiter verfeinert.*

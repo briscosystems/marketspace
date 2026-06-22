@@ -146,9 +146,15 @@ export default async function ProfilePage({
           <div className="space-y-3">
             {reviews.map((r) => (
               <div key={r.id} className="card">
-                <div className="mb-1 flex items-center gap-2 text-sm">
+                <div className="mb-1 flex flex-wrap items-center gap-2 text-sm">
                   <span className="font-medium">{r.reviewer.pseudonym}</span>
                   <span className="text-amber-500">{"★".repeat(r.rating)}</span>
+                  <span
+                    className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-700 ring-1 ring-emerald-200"
+                    title="Bewertung nur nach einer über Brisco abgeschlossenen Transaktion möglich"
+                  >
+                    ✓ Verifizierter Kauf
+                  </span>
                   <span className="text-slate-400 text-xs">
                     {r.createdAt.toLocaleDateString("de-DE")}
                   </span>
