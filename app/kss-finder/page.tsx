@@ -66,10 +66,15 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
   const appsReal = apps.filter((x) => x !== UNKNOWN);
   const matsReal = mats.filter((x) => x !== UNKNOWN);
   const issuesReal = issues.filter((x) => x !== UNKNOWN);
+  const certsReal = certs.filter((x) => x !== UNKNOWN);
+  // Radios: „Weiß nicht" als echter Wert → nicht als Enum filtern.
+  const productionTypeReal = sp.productionType && sp.productionType !== UNKNOWN ? sp.productionType : undefined;
   const unsureDimensions = [
     apps.includes(UNKNOWN) ? "Bearbeitungsverfahren" : null,
     mats.includes(UNKNOWN) ? "Werkstoffe" : null,
     issues.includes(UNKNOWN) ? "Kritische Punkte" : null,
+    certs.includes(UNKNOWN) ? "Zertifizierungen" : null,
+    sp.productionType === UNKNOWN ? "Produktionsart" : null,
   ].filter(Boolean) as string[];
 
   // Intelligente Multi-Token-Suche gegen den normalisierten searchTokens-Index:
@@ -79,8 +84,8 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
   const where: import("@prisma/client").Prisma.ProductWhereInput = {
     category: { in: ["COOLANT_WATER_MIX", "COOLANT_NEAT", "GRINDING_OIL"] },
     ...(searchWhere && { AND: searchWhere.AND }),
-    ...(sp.productionType && {
-      productionType: sp.productionType as "CONTRACT_MANUFACTURING" | "SERIAL_PRODUCTION" | "MIXED",
+    ...(productionTypeReal && {
+      productionType: productionTypeReal as "CONTRACT_MANUFACTURING" | "SERIAL_PRODUCTION" | "MIXED",
     }),
     ...(sp.concentrateForm && {
       concentrateForm: sp.concentrateForm as
@@ -92,7 +97,7 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
     ...(appsReal.length > 0 && { applicationAreas: { hasSome: appsReal } }),
     ...(matsReal.length > 0 && { suitableMaterials: { hasSome: matsReal } }),
     ...(issuesReal.length > 0 && { criticalIssuesAddressed: { hasSome: issuesReal } }),
-    ...(certs.length > 0 && { certifications: { hasSome: certs } }),
+    ...(certsReal.length > 0 && { certifications: { hasSome: certsReal } }),
     ...(sp.manufacturer && { manufacturer: { name: { contains: sp.manufacturer, mode: "insensitive" } } }),
   };
 
@@ -231,7 +236,7 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
               badgeCount={counts.productionType}
               defaultOpen={counts.productionType > 0}
             >
-              <RadioCards name="productionType" options={[...PRODUCTION_TYPES]} selected={sp.productionType} />
+              <RadioCards name="productionType" options={[...PRODUCTION_TYPES]} selected={sp.productionType} withUnknown />
             </Collapsible>
 
             <Collapsible
@@ -271,6 +276,7 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
                 name="certifications"
                 options={CERTIFICATIONS.map((c) => c.label)}
                 selected={certs}
+                withUnknown
               />
             </Collapsible>
 
@@ -296,8 +302,8 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
         applicationAreas={appsReal}
         materials={matsReal}
         criticalIssues={issuesReal}
-        certifications={certs}
-        productionType={sp.productionType}
+        certifications={certsReal}
+        productionType={productionTypeReal}
         concentrateForm={sp.concentrateForm}
         unsureDimensions={unsureDimensions}
       />
@@ -430,10 +436,13 @@ function RadioCards({
   name,
   options,
   selected,
+  withUnknown = false,
 }: {
   name: string;
   options: { value: string; label: string; description?: string }[];
   selected: string | undefined;
+  /** Zusätzliche „Weiß nicht"-Option für unsichere Endkunden. */
+  withUnknown?: boolean;
 }) {
   return (
     <div className="grid gap-2 sm:grid-cols-2">
@@ -462,6 +471,15 @@ function RadioCards({
           </div>
         </label>
       ))}
+      {withUnknown && (
+        <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-slate-200 p-2 hover:bg-slate-50">
+          <input type="radio" name={name} value={UNKNOWN} defaultChecked={selected === UNKNOWN} className="mt-0.5" />
+          <div>
+            <div className="text-sm font-medium text-slate-900">🤷 Weiß nicht</div>
+            <div className="text-xs text-slate-500">Bin unsicher — KI berücksichtigt das</div>
+          </div>
+        </label>
+      )}
     </div>
   );
 }

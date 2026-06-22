@@ -699,10 +699,10 @@ Ranking ist ausschließlich intern und für Nutzer nicht erkennbar (siehe C.2).
 
 ## C.3 KSS-Finder — Such-Erweiterungen für Endkunden
 
-- **„Weiß nicht"-Option** bei den Multi-Select-Kriterien (Bearbeitungsverfahren,
-  Werkstoffe, Kritische Punkte). Exklusiver Chip; viele Endkunden kennen ihre
-  Bearbeitung/Werkstoffe nicht. Wirkt nicht als Filter, signalisiert der KI aber
-  Unsicherheit (`unsureDimensions`).
+- **„Weiß nicht"-Option** bei Bearbeitungsverfahren, Werkstoffe, Kritische Punkte
+  und Zertifizierungen (exklusiver Chip) sowie bei Produktionsart („Weiß nicht"-Radio).
+  Viele Endkunden kennen ihre Bearbeitung/Werkstoffe/Freigaben nicht. Wirkt nicht als
+  Filter, signalisiert der KI aber Unsicherheit (`unsureDimensions`).
 - **Freitext-Feld** bei „Kritische Punkte": eigenes/spezielles Problem in Worten.
 - **KI-Analyse & Alternativen** (`components/KssAiAnalysis.tsx`): wertet Freitext +
   Filter über `/api/kss-wizard` aus. Die KI analysiert die Schilderung **kritisch**
