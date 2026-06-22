@@ -54,3 +54,7 @@ tsconfig.tsbuildinfo
 
 # Lokale Claude-Code-Einstellungen + Runtime-Locks — nur lokal, nicht ins Repo.
 /.claude/
+
+# GitHub-Token-Datei (Geheimnis) — NIEMALS committen/pushen.
+github token*
+*token*.txt
