@@ -712,6 +712,21 @@ Ranking ist ausschließlich intern und für Nutzer nicht erkennbar (siehe C.2).
   Doppel-Regler statt zweier Zahlenfelder → geringere Höhe. Voller Bereich
   (0 … 50 €) = kein Preisfilter.
 
+## C.4 Recht & Geschäftsmodell
+
+- **AGB** (`app/agb`, im Footer verlinkt): B2B-Vermittlermodell. Kernpunkte:
+  Brisco wird nicht Vertragspartei; Haftungsausschluss für falsche/mangelhafte
+  Angebote der Nutzer und für KI-Fehlempfehlungen (Haftung nur Vorsatz/grobe
+  Fahrlässigkeit; zwingende Haftung bei Personenschäden/PHG bleibt). Österr. Recht
+  + zwingendes EU-Recht, CISG ausgeschlossen, Gerichtsstand Linz. **Entwurf —
+  anwaltlich prüfen lassen.**
+- **Umgehungsverbot** (§ 7 AGB): 12 Monate, Vertragsstrafe — vertraglicher
+  Baustein gegen Disintermediation/Plattform-Leakage.
+- **Provision:** 3 % vom Netto-Kaufpreis je Transaktion (Anbieter schuldet).
+  Alternativmodell Jahresgebühr in Prüfung (siehe Geschäftsmodell-Analyse).
+- **Kontaktdaten-Verbot** in Nachrichten (§ 4 AGB) — technische Erkennung/
+  Maskierung geplant (Anbahnung pseudonym halten).
+
 ---
 
 *Dieses Dokument ist die initiale Grundlage. Es wird mit Fortschritt des Projekts weiter verfeinert.*

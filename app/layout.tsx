@@ -75,6 +75,8 @@ export default async function RootLayout({
           <CompareBar />
           <footer className="mt-12 border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500">
             Brisco Systems GmbH · Prototyp v0.3 · Pseudonyme Reseller-Plattform
+            <span className="mx-1.5 text-slate-300">·</span>
+            <a href="/agb" className="hover:text-slate-700 hover:underline">AGB</a>
           </footer>
         </Providers>
       </body>
