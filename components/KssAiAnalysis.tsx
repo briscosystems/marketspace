@@ -49,8 +49,7 @@ export function KssAiAnalysis({
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ApiResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-
-  const hasInput = problemText.trim().length > 0;
+  const [text, setText] = useState<string>(problemText ?? "");
 
   async function analyze() {
     setLoading(true);
@@ -61,7 +60,7 @@ export function KssAiAnalysis({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           satisfied: null,
-          problemDescription: problemText,
+          problemDescription: text,
           applicationAreas,
           materials,
           criticalIssues,
@@ -82,27 +81,35 @@ export function KssAiAnalysis({
 
   return (
     <div className="rounded-xl border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-white p-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <Brain size={18} className="text-purple-600" />
-          <h3 className="text-base font-semibold text-slate-900">KI-Analyse & Alternativen</h3>
-        </div>
-        <button
-          type="button"
-          onClick={analyze}
-          disabled={loading}
-          className="inline-flex items-center gap-1.5 rounded-md bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-1.5 text-sm font-semibold text-white hover:from-purple-700 hover:to-blue-700 disabled:opacity-60"
-        >
-          {loading ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
-          {loading ? "Analysiere…" : "Kritisch analysieren & Alternativen finden"}
-        </button>
+      <div className="flex items-center gap-2">
+        <Brain size={18} className="text-purple-600" />
+        <h3 className="text-base font-semibold text-slate-900">KI-Analyse & Alternativen</h3>
       </div>
 
       <p className="mt-1 text-xs text-slate-600">
-        {hasInput
-          ? "Die KI prüft deine Problembeschreibung kritisch und sucht passende Alternativen aus dem Katalog."
-          : "Beschreibe dein Problem im Feld „Kritische Punkte“ (Texteingabe) — oder klick direkt, dann wertet die KI die gewählten Filter aus."}
+        Beschreibe dein spezielles Problem in eigenen Worten — die KI prüft es kritisch und
+        schlägt passende Alternativen aus dem Katalog vor. (Leer lassen geht auch: dann
+        wertet die KI nur die oben gewählten Filter aus.)
       </p>
+
+      <label className="label mt-3">Dein Problem (Freitext)</label>
+      <textarea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        rows={3}
+        placeholder="z.B. Emulsion kippt nach 3 Wochen trotz Pflege / Bediener klagen über Hautreizungen / Aluminium läuft an …"
+        className="input mt-1 font-normal leading-relaxed"
+      />
+
+      <button
+        type="button"
+        onClick={analyze}
+        disabled={loading}
+        className="mt-2 inline-flex items-center gap-1.5 rounded-md bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-1.5 text-sm font-semibold text-white hover:from-purple-700 hover:to-blue-700 disabled:opacity-60"
+      >
+        {loading ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
+        {loading ? "Analysiere…" : "Kritisch analysieren & Alternativen finden"}
+      </button>
 
       {error && (
         <div className="mt-3 rounded border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">

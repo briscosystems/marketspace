@@ -241,28 +241,16 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
 
             <Collapsible
               title="Kritische Punkte"
-              subtitle="Geruch, Schaum, Hautirritation, … + eigenes Problem"
-              badgeCount={counts.issues + (problemText ? 1 : 0)}
-              defaultOpen={counts.issues > 0 || !!problemText}
+              subtitle="Geruch, Schaum, Hautirritation, …"
+              badgeCount={counts.issues}
+              defaultOpen={counts.issues > 0}
             >
               <input type="hidden" name="criticalIssues" value={issues.join("|")} />
               <ChipMultiSelect name="criticalIssues" options={[...CRITICAL_ISSUES]} selected={issues} withUnknown />
-
-              {/* Freitext: eigenes/spezielles Problem beschreiben → KI analysiert es kritisch. */}
-              <div className="mt-3">
-                <label className="label">Dein spezielles Problem (Freitext)</label>
-                <textarea
-                  name="problemText"
-                  defaultValue={problemText}
-                  rows={3}
-                  placeholder="z.B. Emulsion kippt nach 3 Wochen trotz Pflege / Bediener klagen über Hautreizungen / Aluminium läuft an …"
-                  className="input mt-1 font-normal leading-relaxed"
-                />
-                <p className="mt-1 text-[10px] text-slate-500">
-                  Die KI analysiert dies unten unter „KI-Analyse &amp; Alternativen" kritisch
-                  und schlägt passende Produkte vor.
-                </p>
-              </div>
+              <p className="mt-2 text-[10px] text-slate-500">
+                Eigenes/spezielles Problem? Beschreibe es unten im Feld „KI-Analyse &amp;
+                Alternativen" — die KI wertet es kritisch aus.
+              </p>
             </Collapsible>
 
             <Collapsible
