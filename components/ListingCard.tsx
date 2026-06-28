@@ -223,19 +223,19 @@ function ExtendedCard({
 
           <div className="mt-2 flex flex-wrap gap-1">
             {listing.isoViscosity && (
-              <span className="chip bg-blue-50 text-blue-700 ring-1 ring-blue-200">
+              <span className="chip bg-slate-100 text-slate-700">
                 ISO VG {listing.isoViscosity}
               </span>
             )}
             {listing.chemistry && (
-              <span className="chip bg-violet-50 text-violet-700 ring-1 ring-violet-200">
+              <span className="chip bg-slate-100 text-slate-700">
                 {chemistryLabel[listing.chemistry] ?? listing.chemistry}
               </span>
             )}
             {applications.map((a) => (
               <span
                 key={a}
-                className="chip bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200"
+                className="chip bg-slate-100 text-slate-700"
                 title="Anwendungsbereich"
               >
                 {a}
@@ -243,7 +243,7 @@ function ExtendedCard({
             ))}
             {typeof listing.mineralOilContent === "number" && (
               <span
-                className="chip bg-amber-50 text-amber-800 ring-1 ring-amber-200"
+                className="chip bg-slate-100 text-slate-700"
                 title="Mineralöl-Anteil im Konzentrat"
               >
                 {listing.mineralOilContent} % Min.öl
@@ -262,7 +262,7 @@ function ExtendedCard({
                 return (
                   <span
                     key={id}
-                    className="chip bg-slate-100 text-slate-700 ring-1 ring-slate-200"
+                    className="chip bg-slate-100 text-slate-700"
                     title={op.hint}
                   >
                     {op.label}
@@ -297,24 +297,23 @@ function ExtendedCard({
         </div>
       </div>
 
-      <div className="mx-4 grid grid-cols-2 gap-x-4 gap-y-2 border-t border-slate-100 py-3 text-sm">
-        <Cell label="Menge">
-          {listing.quantity.toLocaleString("de-DE")} {listing.quantityUnit}
-        </Cell>
-        <Cell label="Gebinde">{PACKAGING_LABEL[packaging] ?? packaging}</Cell>
-        <Cell label="Min. Abnahme">
-          {listing.minOrderQty
-            ? `${listing.minOrderQty.toLocaleString("de-DE")} ${listing.quantityUnit}`
-            : "—"}
-        </Cell>
-        <Cell label="Versand">{listing.shippingTerms ?? "—"}</Cell>
-      </div>
-
-      {showCertificates && listing.certificates && listing.certificates.length > 0 && (
-        <div className="mx-4 border-t border-slate-100 py-3">
-          <CertBadgeList certs={listing.certificates} max={4} size="xs" />
+      <div className="mx-4 space-y-3 border-t border-slate-100 py-3">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+          <Cell label="Menge">
+            {listing.quantity.toLocaleString("de-DE")} {listing.quantityUnit}
+          </Cell>
+          <Cell label="Gebinde">{PACKAGING_LABEL[packaging] ?? packaging}</Cell>
+          <Cell label="Min. Abnahme">
+            {listing.minOrderQty
+              ? `${listing.minOrderQty.toLocaleString("de-DE")} ${listing.quantityUnit}`
+              : "—"}
+          </Cell>
+          <Cell label="Versand">{listing.shippingTerms ?? "—"}</Cell>
         </div>
-      )}
+        {showCertificates && listing.certificates && listing.certificates.length > 0 && (
+          <CertBadgeList certs={listing.certificates} max={4} size="xs" />
+        )}
+      </div>
 
       <div className="flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50/60 px-4 py-3 text-sm">
         <div className="flex min-w-0 flex-col gap-1">

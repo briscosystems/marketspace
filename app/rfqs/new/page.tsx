@@ -7,7 +7,7 @@ import { CertInput } from "@/components/CertInput";
 import { KssIssueSelect } from "@/components/KssIssueSelect";
 import { Autocomplete } from "@/components/Autocomplete";
 import { APPLICATION_AREAS, MATERIALS } from "@/lib/kss-knowledge";
-import type { KssIssueId } from "@/lib/kss-issues";
+import type { KssIssueId, IssueScope } from "@/lib/kss-issues";
 
 const chemistries = ["MINERAL", "SYNTHETIC", "SEMI_SYNTHETIC", "ESTER", "PAG", "OTHER"] as const;
 
@@ -58,14 +58,25 @@ export default function NewRfqPage() {
     return <div className="text-slate-500">Lade …</div>;
   }
 
-  const scope: "water_miscible" | "neat_oil" | "both" =
-    productType.toLowerCase().includes("kühlschmierstoff") ||
-    productType.toLowerCase().includes("emulsion")
+  // Produkttyp → relevanter Problem-Scope, damit pro Kategorie nur die
+  // passenden Pain-Points (+ kategorieübergreifende) angezeigt werden.
+  const lcType = productType.toLowerCase();
+  const scope: IssueScope =
+    lcType.includes("kühlschmierstoff") ||
+    lcType.includes("emulsion") ||
+    lcType.includes("wassermischbar")
       ? "water_miscible"
-      : productType.toLowerCase().includes("öl") ||
-          productType.toLowerCase().includes("fett")
-        ? "neat_oil"
-        : "both";
+      : lcType.includes("fett")
+        ? "grease"
+        : lcType.includes("hydraulik") ||
+            lcType.includes("getriebe") ||
+            lcType.includes("motor") ||
+            lcType.includes("kompressor") ||
+            lcType.includes("umlauf")
+          ? "circulating_oil"
+          : lcType.includes("öl")
+            ? "neat_oil"
+            : "general";
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -242,7 +253,7 @@ export default function NewRfqPage() {
           <KssIssueSelect
             value={issues}
             onChange={setIssues}
-            scope={scope === "both" ? "both" : scope}
+            scope={scope}
             title="3. Welche Probleme MUSS das Produkt vermeiden?"
             hint="Anbieter sehen diese Anforderungen. Wenn du später die KI-Alternativ-Suche nutzt, vergleicht Claude die SDS-Inhalte gegen genau diese Pain Points."
           />

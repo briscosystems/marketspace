@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertTriangle, Check } from "lucide-react";
-import { KSS_ISSUES, type KssIssueId } from "@/lib/kss-issues";
+import { KSS_ISSUES, type KssIssueId, type IssueQueryScope } from "@/lib/kss-issues";
 
 export function KssIssueSelect({
   value,
@@ -12,13 +12,13 @@ export function KssIssueSelect({
 }: {
   value: KssIssueId[];
   onChange: (next: KssIssueId[]) => void;
-  scope?: "water_miscible" | "neat_oil" | "both";
+  scope?: IssueQueryScope;
   title?: string;
   hint?: string;
 }) {
   const list = KSS_ISSUES.filter((i) => {
-    if (scope === "both") return true;
-    return i.scope === scope || i.scope === "both";
+    if (scope === "both") return true; // alle Probleme anzeigen
+    return i.scope.includes("general") || i.scope.includes(scope);
   });
 
   function toggle(id: KssIssueId) {

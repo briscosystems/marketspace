@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { SDS_CATEGORY_LABEL, SDS_LANGUAGE_LABEL } from "@/lib/sds";
-import { LiveFilterForm } from "@/components/LiveFilterForm";
-import { Collapsible } from "@/components/Collapsible";
-import { SearchSection } from "@/components/SearchSection";
+import { FilterBar } from "@/components/FilterBar";
+import { FilterDropdown } from "@/components/FilterDropdown";
+import { SearchInput } from "@/components/SearchInput";
 import { buildSearchWhere } from "@/lib/normalize-search";
 import { FileText } from "lucide-react";
 import type { SdsCategory } from "@prisma/client";
@@ -100,152 +100,78 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
     (sp.bactericide ? 1 : 0) +
     (sp.fungicide ? 1 : 0);
 
+  const manufacturerOptions = [
+    { value: "", label: "Alle Hersteller" },
+    ...manufacturers
+      .slice()
+      .sort((a, b) => b._count._all - a._count._all)
+      .map((m) => ({ value: m.manufacturer, label: m.manufacturer, count: m._count._all })),
+  ];
+  const categoryOptions = [
+    { value: "", label: "Alle Kategorien" },
+    ...categoryCounts.map((c) => ({
+      value: c.category,
+      label: SDS_CATEGORY_LABEL[c.category] ?? c.category,
+      count: c._count._all,
+    })),
+  ];
+  const triOptions = [
+    { value: "", label: "egal" },
+    { value: "yes", label: "enthält" },
+    { value: "no", label: "frei von" },
+    { value: "null", label: "unbekannt" },
+  ];
+  const reachOptions = [
+    { value: "", label: "egal" },
+    { value: "yes", label: "REACH-konform" },
+    { value: "no", label: "nicht konform" },
+    { value: "null", label: "unbekannt" },
+  ];
+  const svhcOptions = [
+    { value: "", label: "egal" },
+    { value: "yes", label: "SVHC vorhanden" },
+    { value: "no", label: "ohne SVHC" },
+  ];
+
   return (
     <div className="space-y-3">
-      {/* 🔵 BRANDING-HEADER */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border-l-4 border-blue-500 bg-blue-50 px-4 py-2.5 shadow-sm">
-        <div className="flex items-center gap-2">
-          <FileText size={20} className="text-blue-600" />
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+          <FileText size={20} />
+        </span>
+        <div>
           <h1 className="page-title">Sicherheitsdatenblätter</h1>
-          <span className="text-xs text-slate-600">
-            {totalCount} Dokumente · REACH/Inhaltsstoff-Filter
-          </span>
+          <p className="text-sm text-slate-500">
+            {totalCount.toLocaleString("de-CH")} Dokumente · REACH- & Inhaltsstoff-Filter
+          </p>
         </div>
       </div>
 
-      <LiveFilterForm pathname="/sds" className="space-y-3">
-        {/* ① SUCHFELD — grün */}
-        <SearchSection
-          step="1"
-          color="emerald"
-          title="Suchfeld"
-          subtitle="Volltextsuche im Produktname, Hersteller und PDF-Inhalt — live beim Tippen"
-        >
-          <input
-            name="q"
-            defaultValue={q}
-            className="input border-emerald-200 bg-white focus:border-emerald-400 focus:ring-emerald-300"
-            placeholder="z.B. bcool755, Hysol, ISO VG 46, Borsäure, Triazin…"
-            autoComplete="off"
-          />
-        </SearchSection>
-
-        {/* ② SUCHKRITERIEN — grau */}
-        <SearchSection
-          step="2"
-          color="slate"
-          title="Suchkriterien"
-          subtitle="Hersteller · Kategorie · REACH/SVHC · Inhaltsstoff-Flags"
-          rightSlot={
-            <span className="flex items-center gap-2 text-[11px]">
-              {filterCount > 0 && (
-                <span className="rounded-full bg-amber-100 px-2 py-0.5 font-semibold text-amber-800 ring-1 ring-amber-300">
-                  {filterCount} aktiv
-                </span>
-              )}
-              {filterCount > 0 && (
-                <Link href="/sds" className="font-medium text-red-600 hover:underline">
-                  zurücksetzen
-                </Link>
-              )}
-            </span>
-          }
-        >
-        <div className="space-y-2">
-        <Collapsible
-          title="Hersteller & Kategorie"
-          subtitle="Eingrenzen auf bestimmte Anbieter oder Produktklasse"
-          badgeCount={(manufacturer ? 1 : 0) + (category ? 1 : 0)}
-          defaultOpen={!!manufacturer || !!category}
-        >
-          <div className="grid gap-3 md:grid-cols-2">
-            <div>
-              <label className="label">Hersteller</label>
-              <select name="manufacturer" defaultValue={manufacturer ?? ""} className="input">
-                <option value="">Alle</option>
-                {manufacturers.map((m) => (
-                  <option key={m.manufacturer} value={m.manufacturer}>
-                    {m.manufacturer} ({m._count._all})
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="label">Kategorie</label>
-              <select name="category" defaultValue={category ?? ""} className="input">
-                <option value="">Alle</option>
-                {categoryCounts.map((c) => (
-                  <option key={c.category} value={c.category}>
-                    {SDS_CATEGORY_LABEL[c.category] ?? c.category} ({c._count._all})
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </Collapsible>
-
-        <Collapsible
-          title="REACH & SVHC"
-          subtitle="Konformität & SVHC-Kandidaten"
-          badgeCount={(sp.reach ? 1 : 0) + (sp.svhc ? 1 : 0)}
-          defaultOpen={!!sp.reach || !!sp.svhc}
-        >
-          <div className="grid gap-3 md:grid-cols-2">
-            <TriSelect name="reach" label="REACH-konform" value={sp.reach} />
-            <TriSelect
-              name="svhc"
-              label="SVHC erkannt"
-              value={sp.svhc}
-              options={[
-                { value: "", label: "egal" },
-                { value: "yes", label: "ja, vorhanden" },
-                { value: "no", label: "nein" },
-              ]}
-            />
-          </div>
-        </Collapsible>
-
-        <Collapsible
-          title="Inhaltsstoff-Flags"
-          subtitle="Bor, Formaldehyd-Donor, Amine, Chlorparaffine, Mineralöl, Biozide"
-          badgeCount={
-            (sp.boron ? 1 : 0) +
-            (sp.formaldehyde ? 1 : 0) +
-            (sp.amines ? 1 : 0) +
-            (sp.chlorParaffins ? 1 : 0) +
-            (sp.mineralOil ? 1 : 0) +
-            (sp.bactericide ? 1 : 0) +
-            (sp.fungicide ? 1 : 0)
-          }
-          defaultOpen={
-            !!(sp.boron || sp.formaldehyde || sp.amines || sp.chlorParaffins || sp.mineralOil || sp.bactericide || sp.fungicide)
-          }
-        >
-          <div className="grid gap-3 md:grid-cols-3 lg:grid-cols-4">
-            <TriSelect name="boron" label="Borhaltig" value={sp.boron} />
-            <TriSelect name="formaldehyde" label="Formaldehyd-Donor" value={sp.formaldehyde} />
-            <TriSelect name="amines" label="Sek. Amine (DEA/Morpholin)" value={sp.amines} />
-            <TriSelect name="chlorParaffins" label="Chlorparaffine" value={sp.chlorParaffins} />
-            <TriSelect name="mineralOil" label="Mineralöl" value={sp.mineralOil} />
-            <TriSelect name="bactericide" label="Bakterizid" value={sp.bactericide} />
-            <TriSelect name="fungicide" label="Fungizid" value={sp.fungicide} />
-          </div>
-          <p className="mt-3 text-xs text-slate-400">
-            <span className="font-medium">Hinweis:</span> Flags stammen aus heuristischer Erkennung
-            der CAS-Nummern (~CLP/SDS-Standard) plus Klartext-Treffern.
-          </p>
-        </Collapsible>
-        </div>
-        </SearchSection>
-      </LiveFilterForm>
-
-      {/* ③ ERGEBNISSE — brand-violett */}
-      <SearchSection
-        step="3"
-        color="brand"
-        title="Ergebnisse"
-        subtitle={`${sheets.length} ${sheets.length === 1 ? "Datenblatt" : "Datenblätter"} aus ${totalCount} gesamt`}
+      <FilterBar
+        count={sheets.length}
+        noun={sheets.length === 1 ? "Datenblatt" : "Datenblätter"}
+        resetHref="/sds"
+        filterCount={filterCount}
+        search={
+          <SearchInput placeholder="z.B. bcool755, Hysol, ISO VG 46, Borsäure, Triazin…" />
+        }
       >
+        <FilterDropdown label="Hersteller" paramKey="manufacturer" options={manufacturerOptions} />
+        <FilterDropdown label="Kategorie" paramKey="category" options={categoryOptions} />
+        <FilterDropdown label="REACH" paramKey="reach" options={reachOptions} />
+        <FilterDropdown label="SVHC" paramKey="svhc" options={svhcOptions} />
+        <FilterDropdown label="Borhaltig" paramKey="boron" options={triOptions} />
+        <FilterDropdown label="Formaldehyd-Donor" paramKey="formaldehyde" options={triOptions} />
+        <FilterDropdown label="Sek. Amine" paramKey="amines" options={triOptions} />
+        <FilterDropdown label="Chlorparaffine" paramKey="chlorParaffins" options={triOptions} />
+        <FilterDropdown label="Mineralöl" paramKey="mineralOil" options={triOptions} />
+        <FilterDropdown label="Bakterizid" paramKey="bactericide" options={triOptions} />
+        <FilterDropdown label="Fungizid" paramKey="fungicide" options={triOptions} />
+      </FilterBar>
+
+      {/* ERGEBNISSE */}
+      <div className="space-y-2">
       {sheets.length === 0 ? (
         <div className="rounded-lg border border-slate-200 bg-white p-4 text-center text-slate-500">
           Keine Datenblätter gefunden — Filter aufweichen oder{" "}
@@ -290,38 +216,7 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
           ))}
         </div>
       )}
-      </SearchSection>
-    </div>
-  );
-}
-
-function TriSelect({
-  name,
-  label,
-  value,
-  options,
-}: {
-  name: string;
-  label: string;
-  value: string | undefined;
-  options?: { value: string; label: string }[];
-}) {
-  const opts = options ?? [
-    { value: "", label: "egal" },
-    { value: "yes", label: "enthält" },
-    { value: "no", label: "frei von" },
-    { value: "null", label: "unbekannt" },
-  ];
-  return (
-    <div>
-      <label className="block text-xs font-medium text-slate-600 mb-1">{label}</label>
-      <select name={name} defaultValue={value ?? ""} className="input text-sm py-1.5">
-        {opts.map((o) => (
-          <option key={o.value} value={o.value}>
-            {o.label}
-          </option>
-        ))}
-      </select>
+      </div>
     </div>
   );
 }

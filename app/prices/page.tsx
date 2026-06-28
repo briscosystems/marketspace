@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getCurrentPricesBatch } from "@/lib/price-aggregation";
-import { LiveFilterForm } from "@/components/LiveFilterForm";
-import { SearchSection } from "@/components/SearchSection";
+import { FilterBar } from "@/components/FilterBar";
+import { FilterDropdown } from "@/components/FilterDropdown";
+import { SearchInput } from "@/components/SearchInput";
 import { buildSearchWhere } from "@/lib/normalize-search";
 import { TrendingUp } from "lucide-react";
 
@@ -10,8 +11,7 @@ type SearchParams = Promise<{
   q?: string;
   category?: string;
   sort?: "price-asc" | "price-desc" | "name" | "manufacturer";
-  minPrice?: string;
-  maxPrice?: string;
+  price?: string;
 }>;
 
 export const metadata = { title: "Marktpreise — Brisco Marketplace" };
@@ -37,8 +37,14 @@ const CATEGORY_LABEL: Record<string, string> = {
 export default async function PricesOverviewPage({ searchParams }: { searchParams: SearchParams }) {
   const sp = await searchParams;
   const sort = sp.sort ?? "price-asc";
-  const minPrice = sp.minPrice ? parseFloat(sp.minPrice) : undefined;
-  const maxPrice = sp.maxPrice ? parseFloat(sp.maxPrice) : undefined;
+  // Preis-Spanne aus Preset-Param "price" (z.B. "5-10", "50-" = ab 50).
+  let minPrice: number | undefined;
+  let maxPrice: number | undefined;
+  if (sp.price) {
+    const [lo, hi] = sp.price.split("-");
+    minPrice = lo ? parseFloat(lo) : undefined;
+    maxPrice = hi ? parseFloat(hi) : undefined;
+  }
 
   const searchWhere = buildSearchWhere("searchTokens", sp.q);
 
@@ -97,104 +103,74 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
 
   const total = rows.length;
 
+  const categoryOptions = [
+    { value: "", label: "Alle Kategorien" },
+    ...categoriesAvailable
+      .slice()
+      .sort((a, b) => b._count._all - a._count._all)
+      .map((c) => ({
+        value: c.category,
+        label: CATEGORY_LABEL[c.category] ?? c.category,
+        count: c._count._all,
+      })),
+  ];
+  const priceOptions = [
+    { value: "", label: "Alle Preise" },
+    { value: "0-5", label: "unter 5 €" },
+    { value: "5-10", label: "5 – 10 €" },
+    { value: "10-20", label: "10 – 20 €" },
+    { value: "20-50", label: "20 – 50 €" },
+    { value: "50-", label: "über 50 €" },
+  ];
+  const sortOptions = [
+    { value: "price-asc", label: "Preis aufsteigend" },
+    { value: "price-desc", label: "Preis absteigend" },
+    { value: "name", label: "Produktname A–Z" },
+    { value: "manufacturer", label: "Hersteller A–Z" },
+  ];
+  const filterCount = (sp.q ? 1 : 0) + (sp.category ? 1 : 0) + (sp.price ? 1 : 0);
+
   return (
     <div className="space-y-3">
-      {/* 🔵 BRANDING-HEADER */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border-l-4 border-blue-500 bg-blue-50 px-4 py-2.5 shadow-sm">
-        <div className="flex items-center gap-2">
-          <TrendingUp size={20} className="text-blue-600" />
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+          <TrendingUp size={20} />
+        </span>
+        <div>
           <h1 className="page-title">Marktpreise</h1>
-          <span className="text-xs text-slate-600">
-            {productIdsWithPrices.length} Produkte mit verifizierten Preisen
-          </span>
+          <p className="text-sm text-slate-500">
+            {productIdsWithPrices.length.toLocaleString("de-CH")} Produkte mit verifizierten Preisen
+          </p>
         </div>
       </div>
 
-      <LiveFilterForm pathname="/prices" className="space-y-3">
-        {/* ① SUCHFELD */}
-        <SearchSection
-          step="1"
-          color="emerald"
-          title="Suchfeld"
-          subtitle="Volltextsuche im Produktname & Hersteller — live beim Tippen"
-        >
-          <input
-            name="q"
-            defaultValue={sp.q ?? ""}
-            placeholder="z.B. bcool, tellus, mobilgear…"
-            className="input border-emerald-200 bg-white focus:border-emerald-400 focus:ring-emerald-300"
-            autoComplete="off"
-          />
-        </SearchSection>
-
-        {/* ② SUCHKRITERIEN */}
-        <SearchSection
-          step="2"
-          color="slate"
-          title="Filter & Sortierung"
-          subtitle="Kategorie · Preis-Spanne · Sortier-Reihenfolge"
-        >
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <div>
-              <label className="label">Kategorie</label>
-              <select name="category" defaultValue={sp.category ?? ""} className="input">
-                <option value="">Alle</option>
-                {categoriesAvailable.map((c) => (
-                  <option key={c.category} value={c.category}>
-                    {CATEGORY_LABEL[c.category] ?? c.category} ({c._count._all})
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="label">Min-Preis (EUR/L oder kg)</label>
-              <input
-                name="minPrice"
-                type="number"
-                step="0.1"
-                defaultValue={sp.minPrice ?? ""}
-                placeholder="z.B. 4"
-                className="input"
-              />
-            </div>
-            <div>
-              <label className="label">Max-Preis (EUR/L oder kg)</label>
-              <input
-                name="maxPrice"
-                type="number"
-                step="0.1"
-                defaultValue={sp.maxPrice ?? ""}
-                placeholder="z.B. 15"
-                className="input"
-              />
-            </div>
-            <div>
-              <label className="label">Sortieren</label>
-              <select name="sort" defaultValue={sort} className="input">
-                <option value="price-asc">Preis aufsteigend</option>
-                <option value="price-desc">Preis absteigend</option>
-                <option value="name">Produktname A-Z</option>
-                <option value="manufacturer">Hersteller A-Z</option>
-              </select>
-            </div>
-          </div>
-        </SearchSection>
-      </LiveFilterForm>
-
-      {/* ③ ERGEBNISSE — Tabelle */}
-      <SearchSection
-        step="3"
-        color="brand"
-        title="Ergebnisse"
-        subtitle={`${total} ${total === 1 ? "Produkt" : "Produkte"} mit Marktpreis`}
-        rightSlot={
-          (sp.q || sp.category || sp.minPrice || sp.maxPrice) && (
-            <Link href="/prices" className="text-xs font-medium text-red-600 hover:underline">
-              Filter zurücksetzen
-            </Link>
-          )
+      <FilterBar
+        count={total}
+        noun={total === 1 ? "Produkt" : "Produkte"}
+        resetHref="/prices"
+        filterCount={filterCount}
+        search={<SearchInput placeholder="z.B. bcool, tellus, mobilgear…" />}
+        toolbar={
+          <>
+            <FilterDropdown
+              label="Sortieren"
+              paramKey="sort"
+              options={sortOptions}
+              widthClass="w-56"
+            />
+            <span className="text-xs text-slate-500">
+              {total} {total === 1 ? "Produkt" : "Produkte"} mit Marktpreis
+            </span>
+          </>
         }
       >
+        <FilterDropdown label="Kategorie" paramKey="category" options={categoryOptions} />
+        <FilterDropdown label="Preis" paramKey="price" options={priceOptions} />
+      </FilterBar>
+
+      {/* ERGEBNISSE — Tabelle */}
+      <div className="space-y-2">
         {rows.length === 0 ? (
           <div className="rounded-lg border border-slate-200 bg-white p-4 text-center text-sm text-slate-500">
             Keine Produkte mit Preis gefunden — Filter aufweichen oder{" "}
@@ -263,7 +239,7 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
             )}
           </div>
         )}
-      </SearchSection>
+      </div>
     </div>
   );
 }

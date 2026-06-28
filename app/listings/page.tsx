@@ -1,11 +1,10 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { ListingCard } from "@/components/ListingCard";
-import { LiveFilterForm } from "@/components/LiveFilterForm";
-import { Collapsible } from "@/components/Collapsible";
-import { SearchSection } from "@/components/SearchSection";
-import { AlternativeSearchPanel } from "@/components/AlternativeSearchPanel";
-import { Filter, Tag, Plus } from "lucide-react";
+import { FilterBar } from "@/components/FilterBar";
+import { FilterDropdown } from "@/components/FilterDropdown";
+import { SearchInput } from "@/components/SearchInput";
+import { Tag, Plus } from "lucide-react";
 
 type SearchParams = Promise<{
   q?: string;
@@ -14,7 +13,6 @@ type SearchParams = Promise<{
   chemistry?: string;
   isoViscosity?: string;
   region?: string;
-  certs?: string;
   view?: string;
 }>;
 
@@ -33,9 +31,8 @@ export default async function ListingsPage({
   searchParams: SearchParams;
 }) {
   const params = await searchParams;
-  const { q, manufacturer, productType, chemistry, isoViscosity, region, certs, view } = params;
-  const showCertificates = certs !== "0";
-  const variant: "compact" | "extended" = view === "compact" ? "compact" : "extended";
+  const { q, manufacturer, productType, chemistry, isoViscosity, region, view } = params;
+  const variant: "compact" | "extended" = view === "extended" ? "extended" : "compact";
 
   const where: import("@prisma/client").Prisma.ListingWhereInput = {
     status: "ACTIVE",
@@ -66,6 +63,11 @@ export default async function ListingsPage({
     where: { status: "ACTIVE" },
     _count: { _all: true },
   });
+  const [manufacturerGroups, isoGroups, regionGroups] = await Promise.all([
+    prisma.listing.groupBy({ by: ["manufacturer"], where: { status: "ACTIVE" }, _count: { _all: true } }),
+    prisma.listing.groupBy({ by: ["isoViscosity"], where: { status: "ACTIVE" }, _count: { _all: true } }),
+    prisma.listing.groupBy({ by: ["locationRegion"], where: { status: "ACTIVE" }, _count: { _all: true } }),
+  ]);
 
   const listings = await prisma.listing.findMany({
     where,
@@ -108,276 +110,120 @@ export default async function ListingsPage({
     if (chemistry) p.set("chemistry", chemistry);
     if (isoViscosity) p.set("isoViscosity", isoViscosity);
     if (region) p.set("region", region);
-    if (!showCertificates) p.set("certs", "0");
-    if (variant === "compact") p.set("view", "compact");
+    if (variant === "extended") p.set("view", "extended");
     if (value == null) p.delete(name);
     else p.set(name, value);
     return `/listings?${p.toString()}`;
   }
 
+  const productTypeFilterOptions = [
+    { value: "", label: "Alle Typen" },
+    ...productTypeOptions
+      .filter((o) => o.productType)
+      .map((o) => ({ value: o.productType, label: o.productType, count: o._count._all })),
+  ];
+  const chemistryFilterOptions = [
+    { value: "", label: "Alle Chemien" },
+    ...chemistryOptions
+      .filter((o) => o.chemistry)
+      .map((o) => ({
+        value: o.chemistry as string,
+        label: CHEMISTRY_LABEL[o.chemistry as string] ?? (o.chemistry as string),
+        count: o._count._all,
+      })),
+  ];
+  const manufacturerFilterOptions = [
+    { value: "", label: "Alle Hersteller" },
+    ...manufacturerGroups
+      .filter((o) => o.manufacturer)
+      .sort((a, b) => b._count._all - a._count._all)
+      .map((o) => ({ value: o.manufacturer, label: o.manufacturer, count: o._count._all })),
+  ];
+  const isoFilterOptions = [
+    { value: "", label: "Alle ISO VG" },
+    ...isoGroups
+      .filter((o) => o.isoViscosity)
+      .sort((a, b) => b._count._all - a._count._all)
+      .map((o) => ({ value: o.isoViscosity as string, label: o.isoViscosity as string, count: o._count._all })),
+  ];
+  const regionFilterOptions = [
+    { value: "", label: "Alle Regionen" },
+    ...regionGroups
+      .filter((o) => o.locationRegion)
+      .sort((a, b) => b._count._all - a._count._all)
+      .map((o) => ({ value: o.locationRegion as string, label: o.locationRegion as string, count: o._count._all })),
+  ];
+  const filterCount =
+    (q ? 1 : 0) +
+    (productType ? 1 : 0) +
+    (chemistry ? 1 : 0) +
+    (manufacturer ? 1 : 0) +
+    (isoViscosity ? 1 : 0) +
+    (region ? 1 : 0);
+
   return (
     <div className="space-y-6">
-      {/* Banner: klar dass das die "Anbieten"-Seite ist */}
-      <div className="rounded-xl border border-blue-200 bg-gradient-to-r from-blue-50 to-white p-5">
-        <div className="flex items-start justify-between gap-4">
+      {/* Header: „Ich biete an" — klarer Startpunkt (Anbieten = blau) */}
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-blue-200 bg-blue-50 p-5">
+        <div className="flex items-center gap-3">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white">
+            <Tag size={24} />
+          </span>
           <div>
-            <div className="mb-1 inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-700">
-              <Tag size={12} /> ANBIETEN
-            </div>
-            <h1 className="page-title">Was Reseller anbieten</h1>
-            <p className="mt-1 text-sm text-slate-600">
-              Bestände zum Verkauf — durchsuchen, vergleichen, Anbieter kontaktieren.{" "}
-              {listings.length} Angebot{listings.length === 1 ? "" : "e"}.
+            <h1 className="page-title text-blue-900">Ich biete an</h1>
+            <p className="mt-0.5 text-sm text-slate-600">
+              Bestände übrig? Hier startest du — Angebot einstellen und für Käufer sichtbar werden.
             </p>
           </div>
-          <Link
-            href="/listings/new"
-            className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-soft hover:bg-blue-700"
-          >
-            <Plus size={16} /> Eigenes Angebot einstellen
-          </Link>
-        </div>
-      </div>
-
-      {/* Alternativprodukt-Suche (KI + Web) */}
-      <AlternativeSearchPanel />
-
-      {/* Schnellfilter — Produkttyp-Chips */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4">
-        <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
-          <Filter size={12} /> Produkttyp
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          <Link
-            href={urlWithParam("productType", null)}
-            className={`rounded-full px-3 py-1 text-xs font-medium transition ${
-              !productType
-                ? "bg-brand-600 text-white"
-                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-            }`}
-          >
-            Alle
-          </Link>
-          {productTypeOptions.map((opt) => (
-            <Link
-              key={opt.productType}
-              href={urlWithParam("productType", opt.productType)}
-              className={`rounded-full px-3 py-1 text-xs font-medium transition ${
-                productType === opt.productType
-                  ? "bg-brand-600 text-white"
-                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-              }`}
-            >
-              {opt.productType} <span className="opacity-60">({opt._count._all})</span>
-            </Link>
-          ))}
-        </div>
-
-        {chemistryOptions.length > 1 ? (
-          <>
-            <div className="mb-2 mt-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
-              <Filter size={12} /> Chemie
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              <Link
-                href={urlWithParam("chemistry", null)}
-                className={`rounded-full px-3 py-1 text-xs font-medium transition ${
-                  !chemistry
-                    ? "bg-brand-600 text-white"
-                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                }`}
-              >
-                Alle
-              </Link>
-              {chemistryOptions.map((opt) => (
-                <Link
-                  key={opt.chemistry}
-                  href={urlWithParam("chemistry", opt.chemistry)}
-                  className={`rounded-full px-3 py-1 text-xs font-medium transition ${
-                    chemistry === opt.chemistry
-                      ? "bg-brand-600 text-white"
-                      : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                  }`}
-                >
-                  {CHEMISTRY_LABEL[opt.chemistry] ?? opt.chemistry}{" "}
-                  <span className="opacity-60">({opt._count._all})</span>
-                </Link>
-              ))}
-            </div>
-          </>
-        ) : null}
-      </div>
-
-      <LiveFilterForm pathname="/listings" className="space-y-3">
-        {/* ① SUCHFELD — grün */}
-        <SearchSection
-          step="1"
-          color="emerald"
-          title="Suchfeld"
-          subtitle="Volltextsuche nach Produktname, Hersteller oder Beschreibung"
-        >
-          <input
-            name="q"
-            defaultValue={q}
-            className="input border-emerald-200 bg-white focus:border-emerald-400 focus:ring-emerald-300"
-            placeholder="z.B. Tellus, Hydraulik, ISO 46…"
-            autoComplete="off"
-          />
-        </SearchSection>
-
-        {/* ② SUCHKRITERIEN — grau */}
-        <SearchSection
-          step="2"
-          color="slate"
-          title="Suchkriterien"
-          subtitle="Hersteller · ISO VG · Region (zusätzlich zu den Schnellfilter-Chips oben)"
-          rightSlot={
-            (manufacturer || isoViscosity || region) && (
-              <span className="text-[11px]">
-                <Link href="/listings" className="font-medium text-red-600 hover:underline">
-                  zurücksetzen
-                </Link>
-              </span>
-            )
-          }
-        >
-        <Collapsible
-          title="Hersteller / ISO VG / Region"
-          subtitle="Genauere Eingrenzung"
-          badgeCount={(manufacturer ? 1 : 0) + (isoViscosity ? 1 : 0) + (region ? 1 : 0)}
-          defaultOpen={!!(manufacturer || isoViscosity || region)}
-        >
-          <div className="grid gap-3 md:grid-cols-3">
-            <div>
-              <label className="label">Hersteller</label>
-              <input
-                name="manufacturer"
-                defaultValue={manufacturer}
-                className="input"
-                placeholder="Shell"
-              />
-            </div>
-            <div>
-              <label className="label">ISO VG</label>
-              <input
-                name="isoViscosity"
-                defaultValue={isoViscosity}
-                className="input"
-                placeholder="46"
-              />
-            </div>
-            <div>
-              <label className="label">Region</label>
-              <input name="region" defaultValue={region} className="input" placeholder="DE" />
-            </div>
-          </div>
-        </Collapsible>
-
-        {/* Schnellfilter-Werte als hidden inputs ans Form weitergeben */}
-        {productType && <input type="hidden" name="productType" value={productType} />}
-        {chemistry && <input type="hidden" name="chemistry" value={chemistry} />}
-        {showCertificates && <input type="hidden" name="certs" value="1" />}
-        {!showCertificates && <input type="hidden" name="certs" value="0" />}
-        {variant === "compact" && <input type="hidden" name="view" value="compact" />}
-        </SearchSection>
-      </LiveFilterForm>
-
-      {/* Darstellungs-Optionen */}
-      <div className="flex items-center justify-end gap-2 text-xs text-slate-500">
-        <div className="inline-flex overflow-hidden rounded-md ring-1 ring-slate-200">
-          <Link
-            href={urlWithParam("view", "compact")}
-            className={`px-3 py-1.5 font-medium transition-colors ${
-              variant === "compact" ? "bg-brand-500 text-white" : "bg-white text-slate-600 hover:bg-slate-50"
-            }`}
-            title="Kompakte Liste"
-          >
-            ≡ Kompakt
-          </Link>
-          <Link
-            href={urlWithParam("view", null)}
-            className={`px-3 py-1.5 font-medium transition-colors ${
-              variant === "extended" ? "bg-brand-500 text-white" : "bg-white text-slate-600 hover:bg-slate-50"
-            }`}
-            title="Detaillierte Karten"
-          >
-            ▦ Erweitert
-          </Link>
         </div>
         <Link
-          href={urlWithParam("certs", showCertificates ? "0" : null)}
-          className={`chip ${
-            showCertificates
-              ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200"
-              : "bg-slate-100 text-slate-600 ring-1 ring-slate-200"
-          }`}
+          href="/listings/new"
+          className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-base font-semibold text-white shadow-soft transition hover:bg-blue-700 hover:shadow-lift"
         >
-          <span>Zertifikate {showCertificates ? "an" : "aus"}</span>
+          <Plus size={20} /> Eigenes Angebot einstellen
         </Link>
       </div>
 
-      {/* Aktive Filter als Chips zum Abwählen */}
-      {(productType || chemistry || manufacturer || isoViscosity || region || q) && (
-        <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600">
-          <span className="font-medium">Aktive Filter:</span>
-          {productType && (
+      <FilterBar
+        count={listings.length}
+        title="Aktuelle Angebote"
+        noun={listings.length === 1 ? "Angebot" : "Angebote"}
+        resetHref="/listings"
+        filterCount={filterCount}
+        collapsible
+        search={<SearchInput placeholder="z.B. Tellus, Hydraulik, ISO 46…" />}
+        toolbar={
+          <div className="inline-flex overflow-hidden rounded-full ring-1 ring-slate-200">
             <Link
-              href={urlWithParam("productType", null)}
-              className="inline-flex items-center gap-1 rounded-full bg-brand-100 px-2 py-0.5 text-brand-700 hover:bg-brand-200"
+              href={urlWithParam("view", null)}
+              className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                variant === "compact" ? "bg-brand-500 text-white" : "bg-white text-slate-600 hover:bg-slate-50"
+              }`}
+              title="Kompakte Liste"
             >
-              Typ: {productType} <span className="text-brand-500">×</span>
+              ≡ Kompakt
             </Link>
-          )}
-          {chemistry && (
             <Link
-              href={urlWithParam("chemistry", null)}
-              className="inline-flex items-center gap-1 rounded-full bg-brand-100 px-2 py-0.5 text-brand-700 hover:bg-brand-200"
+              href={urlWithParam("view", "extended")}
+              className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                variant === "extended" ? "bg-brand-500 text-white" : "bg-white text-slate-600 hover:bg-slate-50"
+              }`}
+              title="Detaillierte Karten"
             >
-              Chemie: {CHEMISTRY_LABEL[chemistry] ?? chemistry} <span className="text-brand-500">×</span>
+              ▦ Erweitert
             </Link>
-          )}
-          {manufacturer && (
-            <Link
-              href={urlWithParam("manufacturer", null)}
-              className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 hover:bg-slate-200"
-            >
-              Hersteller: {manufacturer} <span className="text-slate-500">×</span>
-            </Link>
-          )}
-          {isoViscosity && (
-            <Link
-              href={urlWithParam("isoViscosity", null)}
-              className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 hover:bg-slate-200"
-            >
-              ISO VG: {isoViscosity} <span className="text-slate-500">×</span>
-            </Link>
-          )}
-          {region && (
-            <Link
-              href={urlWithParam("region", null)}
-              className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 hover:bg-slate-200"
-            >
-              Region: {region} <span className="text-slate-500">×</span>
-            </Link>
-          )}
-          {q && (
-            <Link
-              href={urlWithParam("q", null)}
-              className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 hover:bg-slate-200"
-            >
-              „{q}" <span className="text-slate-500">×</span>
-            </Link>
-          )}
-        </div>
-      )}
-
-      {/* ③ ERGEBNISSE — brand-violett */}
-      <SearchSection
-        step="3"
-        color="brand"
-        title="Ergebnisse"
-        subtitle={`${listings.length} ${listings.length === 1 ? "Angebot" : "Angebote"} sichtbar`}
+          </div>
+        }
       >
+        <FilterDropdown label="Produkttyp" paramKey="productType" options={productTypeFilterOptions} />
+        <FilterDropdown label="Chemie" paramKey="chemistry" options={chemistryFilterOptions} />
+        <FilterDropdown label="Hersteller" paramKey="manufacturer" options={manufacturerFilterOptions} />
+        <FilterDropdown label="ISO VG" paramKey="isoViscosity" options={isoFilterOptions} />
+        <FilterDropdown label="Region" paramKey="region" options={regionFilterOptions} />
+      </FilterBar>
+
+      {/* ERGEBNISSE */}
+      <div className="space-y-2">
       {listings.length === 0 ? (
         <div className="rounded-lg border border-slate-200 bg-white p-4 text-center text-slate-500">
           Keine Listings gefunden.{" "}
@@ -397,7 +243,6 @@ export default async function ListingsPage({
               key={l.id}
               listing={l}
               hideStatus
-              showCertificates={showCertificates}
               variant="compact"
             />
           ))}
@@ -409,13 +254,12 @@ export default async function ListingsPage({
               key={l.id}
               listing={l}
               hideStatus
-              showCertificates={showCertificates}
               variant="extended"
             />
           ))}
         </div>
       )}
-      </SearchSection>
+      </div>
     </div>
   );
 }
