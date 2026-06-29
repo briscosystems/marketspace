@@ -5,6 +5,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 > Hinweis: Diese Datei ist bewusst auf Deutsch gehalten — Repo, Docs, Schema-Kommentare
 > und UI sind durchgängig deutsch. Nur der obige Standard-Header bleibt englisch.
 
+## Schnellbefehle für den Nutzer (natürliche Sprache)
+
+Wenn der Nutzer **„starte server"** schreibt (oder sinngemäß: „server starten",
+„starte den server", „starte webserver", „start server") → **sofort
+`bash scripts/start.sh` im Hintergrund ausführen** und anschließend bestätigen, dass
+die Seite auf http://localhost:3000 läuft. Nicht nachfragen, einfach starten.
+
 ## Projektkontext
 
 Brisco Marketplace — ein B2B-Marktplatz-Prototyp für Reseller und OEM-Hersteller von
