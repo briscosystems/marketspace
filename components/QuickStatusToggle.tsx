@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { withBasePath } from "@/lib/base-path";
 
 type Status = "ACTIVE" | "PAUSED" | "SOLD" | "ARCHIVED";
 
@@ -33,7 +34,7 @@ export function QuickStatusToggle({
   async function setStatus(next: Status) {
     if (next === current || saving) return;
     setSaving(true);
-    const res = await fetch(`/api/listings/${listingId}`, {
+    const res = await fetch(withBasePath(`/api/listings/${listingId}`), {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status: next }),

@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { withBasePath } from "@/lib/base-path";
 
 const TAGS = [
   { id: "FAST_RESPONSE", label: "Schnelle Antwort" },
@@ -41,7 +42,7 @@ export function ReviewForm({
     }
     setSaving(true);
     setError(null);
-    const res = await fetch(`/api/transactions/${transactionId}/reviews`, {
+    const res = await fetch(withBasePath(`/api/transactions/${transactionId}/reviews`), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ rating, comment: comment || undefined, tags }),

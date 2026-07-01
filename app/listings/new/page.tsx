@@ -23,6 +23,7 @@ import {
 } from "@/lib/kss-automation";
 import { Autocomplete } from "@/components/Autocomplete";
 import { Droplet, Gauge } from "lucide-react";
+import { withBasePath } from "@/lib/base-path";
 
 const chemistries = ["MINERAL", "SYNTHETIC", "SEMI_SYNTHETIC", "ESTER", "PAG", "OTHER"] as const;
 const packagings = ["DRUM", "IBC", "TANK", "CANISTER", "BULK", "OTHER"] as const;
@@ -66,7 +67,7 @@ export default function NewListingPage() {
   // Echte Hersteller aus der Datenbank laden und mit den bekannten Familien-
   // Marken zusammenführen — so deckt die Vorschlagsliste alle möglichen ab.
   useEffect(() => {
-    fetch("/api/manufacturers/names")
+    fetch(withBasePath("/api/manufacturers/names"))
       .then((r) => (r.ok ? r.json() : []))
       .then((names: string[]) => setDbManufacturers(names))
       .catch(() => setDbManufacturers([]));
@@ -161,7 +162,7 @@ export default function NewListingPage() {
       automationSuitability: automation.score,
       measurementMethods,
     };
-    const res = await fetch("/api/listings", {
+    const res = await fetch(withBasePath("/api/listings"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

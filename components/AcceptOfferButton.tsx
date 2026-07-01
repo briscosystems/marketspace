@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { withBasePath } from "@/lib/base-path";
 
 export function AcceptOfferButton({
   rfqId,
@@ -18,7 +19,7 @@ export function AcceptOfferButton({
     if (!confirm("Angebot annehmen und Chat mit dem Anbieter öffnen?")) return;
     setLoading(true);
     setError(null);
-    const res = await fetch(`/api/rfqs/${rfqId}/offers/${offerId}/accept`, {
+    const res = await fetch(withBasePath(`/api/rfqs/${rfqId}/offers/${offerId}/accept`), {
       method: "POST",
     });
     if (!res.ok) {

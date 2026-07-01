@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { withBasePath } from "@/lib/base-path";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -27,7 +28,7 @@ export default function ResetPasswordPage() {
       return;
     }
     setLoading(true);
-    const res = await fetch("/api/auth/reset-password", {
+    const res = await fetch(withBasePath("/api/auth/reset-password"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token, password }),

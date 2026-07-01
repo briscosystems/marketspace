@@ -11,6 +11,7 @@ import {
   PRODUCTION_TYPES,
   COOLANT_FORMS,
 } from "@/lib/kss-knowledge";
+import { withBasePath } from "@/lib/base-path";
 
 type ProductLite = { id: string; name: string; manufacturer: string };
 
@@ -80,7 +81,7 @@ export function KssWizardDialog({ onClose }: { onClose: () => void }) {
     setLoading(true);
     setError(null);
     try {
-      const resp = await fetch("/api/kss-wizard", {
+      const resp = await fetch(withBasePath("/api/kss-wizard"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(state),
@@ -246,7 +247,7 @@ function Step1Satisfaction({
     const ctrl = new AbortController();
     const t = setTimeout(async () => {
       try {
-        const resp = await fetch(`/api/kss-wizard/search?q=${encodeURIComponent(searchQ)}`, { signal: ctrl.signal });
+        const resp = await fetch(withBasePath(`/api/kss-wizard/search?q=${encodeURIComponent(searchQ)}`), { signal: ctrl.signal });
         if (!resp.ok) return;
         const data = await resp.json();
         setResults(data.products ?? []);

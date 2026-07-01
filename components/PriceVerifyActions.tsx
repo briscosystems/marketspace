@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Check, X, Loader2 } from "lucide-react";
+import { withBasePath } from "@/lib/base-path";
 
 export function PriceVerifyActions({ observationId }: { observationId: string }) {
   const router = useRouter();
@@ -17,7 +18,7 @@ export function PriceVerifyActions({ observationId }: { observationId: string })
     }
     setLoading(action);
     try {
-      const resp = await fetch("/api/prices/verify", {
+      const resp = await fetch(withBasePath("/api/prices/verify"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ observationId, action, rejectionReason }),

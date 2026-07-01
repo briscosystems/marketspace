@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { withBasePath } from "@/lib/base-path";
 
 type Initial = {
   priceEur: number;
@@ -40,7 +41,7 @@ export function SubmitOfferForm({
       alternativeProduct: (fd.get("alternativeProduct") as string) || undefined,
       alternativeReason: (fd.get("alternativeReason") as string) || undefined,
     };
-    const res = await fetch(`/api/rfqs/${rfqId}/offers`, {
+    const res = await fetch(withBasePath(`/api/rfqs/${rfqId}/offers`), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

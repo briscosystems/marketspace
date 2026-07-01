@@ -1,4 +1,5 @@
 import { AlertTriangle } from "lucide-react";
+import { withBasePath } from "@/lib/base-path";
 
 export const metadata = { title: "Impressum — Brisco Marketplace" };
 
@@ -55,7 +56,7 @@ export default function ImpressumPage() {
         <p>
           Brisco ist eine reine Vermittlungsplattform und wird nicht Vertragspartei der
           zwischen den Nutzern geschlossenen Verträge (siehe{" "}
-          <a className="text-brand-600 hover:underline" href="/agb">AGB</a>). Die Plattform
+          <a className="text-brand-600 hover:underline" href={withBasePath("/agb")}>AGB</a>). Die Plattform
           richtet sich ausschließlich an Unternehmer (B2B).
         </p>
       </section>

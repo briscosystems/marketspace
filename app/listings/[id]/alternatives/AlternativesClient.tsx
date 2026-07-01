@@ -7,6 +7,7 @@ import { brandColors, readableOnLight } from "@/lib/branding";
 import { KssIssueSelect } from "@/components/KssIssueSelect";
 import { CertInput } from "@/components/CertInput";
 import type { KssIssueId } from "@/lib/kss-issues";
+import { withBasePath } from "@/lib/base-path";
 
 type AlternativeRanking = {
   listingId: string;
@@ -90,7 +91,7 @@ export function AlternativesClient(props: {
     setError(null);
     setResult(null);
     try {
-      const res = await fetch(`/api/listings/${props.sourceId}/alternatives`, {
+      const res = await fetch(withBasePath(`/api/listings/${props.sourceId}/alternatives`), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -112,7 +113,7 @@ export function AlternativesClient(props: {
       if (data.alternatives.length > 0) {
         const ids = data.alternatives.map((a) => a.listingId);
         const lookup = await fetch(
-          `/api/listings/lookup?ids=${encodeURIComponent(ids.join(","))}`,
+          withBasePath(`/api/listings/lookup?ids=${encodeURIComponent(ids.join(","))}`),
         );
         if (lookup.ok) {
           const { listings } = (await lookup.json()) as {

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Sparkles, Globe, CheckCircle2, BookOpen, Loader2, ArrowLeftRight, RotateCcw } from "lucide-react";
+import { withBasePath } from "@/lib/base-path";
 
 type Availability = {
   available: boolean;
@@ -113,7 +114,7 @@ export function AlternativeSearchPanel() {
     debounceRef.current = setTimeout(async () => {
       setLoading(true);
       try {
-        const res = await fetch("/api/listings/alternatives-search", {
+        const res = await fetch(withBasePath("/api/listings/alternatives-search"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(buildBody(false)),
@@ -143,7 +144,7 @@ export function AlternativeSearchPanel() {
     if (!hasInput) return;
     setWebLoading(true);
     try {
-      const res = await fetch("/api/listings/alternatives-search", {
+      const res = await fetch(withBasePath("/api/listings/alternatives-search"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(buildBody(true)),

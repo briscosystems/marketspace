@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { withBasePath } from "@/lib/base-path";
 
 const chemistries = ["MINERAL", "SYNTHETIC", "SEMI_SYNTHETIC", "ESTER", "PAG", "OTHER"] as const;
 const packagings = ["DRUM", "IBC", "TANK", "CANISTER", "BULK", "OTHER"] as const;
@@ -60,7 +61,7 @@ export function ListingEditForm({ listing }: { listing: EditableListing }) {
       description: ((fd.get("description") as string) || "") || null,
       status: fd.get("status"),
     };
-    const res = await fetch(`/api/listings/${listing.id}`, {
+    const res = await fetch(withBasePath(`/api/listings/${listing.id}`), {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -78,7 +79,7 @@ export function ListingEditForm({ listing }: { listing: EditableListing }) {
   async function onDelete() {
     if (!confirm("Listing archivieren? Es ist danach nicht mehr sichtbar.")) return;
     setDeleting(true);
-    const res = await fetch(`/api/listings/${listing.id}`, { method: "DELETE" });
+    const res = await fetch(withBasePath(`/api/listings/${listing.id}`), { method: "DELETE" });
     setDeleting(false);
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));

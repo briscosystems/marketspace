@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Sparkles, Loader2, CheckCircle2, AlertTriangle, Brain } from "lucide-react";
+import { withBasePath } from "@/lib/base-path";
 
 type Recommendation = {
   productId: string;
@@ -55,7 +56,7 @@ export function KssAiAnalysis({
     setLoading(true);
     setError(null);
     try {
-      const resp = await fetch("/api/kss-wizard", {
+      const resp = await fetch(withBasePath("/api/kss-wizard"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

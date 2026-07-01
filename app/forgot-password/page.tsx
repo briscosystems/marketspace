@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { withBasePath } from "@/lib/base-path";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -13,7 +14,7 @@ export default function ForgotPasswordPage() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    const res = await fetch("/api/auth/forgot-password", {
+    const res = await fetch(withBasePath("/api/auth/forgot-password"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, CreditCard, CheckCircle2, XCircle } from "lucide-react";
+import { withBasePath } from "@/lib/base-path";
 
 /**
  * Bezahl-Button + Erfolgs-/Abbruch-Handling für die Jahres-Zugangsgebühr.
@@ -28,16 +29,16 @@ export function MembershipActions({
     const sessionId = params.get("session_id");
     if (status === "cancel") {
       setNotice("cancel");
-      window.history.replaceState({}, "", "/mitgliedschaft");
+      window.history.replaceState({}, "", withBasePath("/mitgliedschaft"));
     } else if (status === "success" && sessionId) {
       (async () => {
         try {
-          await fetch(`/api/billing/confirm?session_id=${encodeURIComponent(sessionId)}`);
+          await fetch(withBasePath(`/api/billing/confirm?session_id=${encodeURIComponent(sessionId)}`));
         } catch {
           /* Webhook übernimmt sonst */
         }
         setNotice("success");
-        window.history.replaceState({}, "", "/mitgliedschaft");
+        window.history.replaceState({}, "", withBasePath("/mitgliedschaft"));
         router.refresh();
       })();
     }
@@ -47,7 +48,7 @@ export function MembershipActions({
     setLoading(true);
     setError(null);
     try {
-      const resp = await fetch("/api/billing/checkout", { method: "POST" });
+      const resp = await fetch(withBasePath("/api/billing/checkout"), { method: "POST" });
       const data = await resp.json();
       if (!resp.ok) throw new Error(data.error ?? `HTTP ${resp.status}`);
       if (data.url) window.location.href = data.url;

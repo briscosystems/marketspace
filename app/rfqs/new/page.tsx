@@ -8,6 +8,7 @@ import { KssIssueSelect } from "@/components/KssIssueSelect";
 import { Autocomplete } from "@/components/Autocomplete";
 import { APPLICATION_AREAS, MATERIALS } from "@/lib/kss-knowledge";
 import type { KssIssueId, IssueScope } from "@/lib/kss-issues";
+import { withBasePath } from "@/lib/base-path";
 
 const chemistries = ["MINERAL", "SYNTHETIC", "SEMI_SYNTHETIC", "ESTER", "PAG", "OTHER"] as const;
 
@@ -48,7 +49,7 @@ export default function NewRfqPage() {
 
   // Hersteller-Liste einmal laden — Vorschläge bauen sich dann beim Tippen auf.
   useEffect(() => {
-    fetch("/api/manufacturers/names")
+    fetch(withBasePath("/api/manufacturers/names"))
       .then((r) => (r.ok ? r.json() : []))
       .then((names: string[]) => setManufacturerOptions(names))
       .catch(() => setManufacturerOptions([]));
@@ -102,7 +103,7 @@ export default function NewRfqPage() {
       requiredCertifications: requiredCerts,
       avoidIssues: issues,
     };
-    const res = await fetch("/api/rfqs", {
+    const res = await fetch(withBasePath("/api/rfqs"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

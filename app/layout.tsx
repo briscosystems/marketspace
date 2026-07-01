@@ -1,11 +1,15 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { HeaderNav } from "@/components/HeaderNav";
 import { Providers } from "./providers";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
+import { GateLogin } from "@/components/GateLogin";
+import { GATE_COOKIE, gateEnabled, isGateTokenValid } from "@/lib/gate";
+import { withBasePath } from "@/lib/base-path";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -43,6 +47,22 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Vorgeschaltete Zugangssperre: solange kein gültiges Gate-Cookie vorliegt, nur die
+  // weiße Login-Seite zeigen (nur in Produktion aktiv, siehe gateEnabled()).
+  if (gateEnabled()) {
+    const store = await cookies();
+    const ok = await isGateTokenValid(store.get(GATE_COOKIE)?.value);
+    if (!ok) {
+      return (
+        <html lang="de">
+          <body>
+            <GateLogin />
+          </body>
+        </html>
+      );
+    }
+  }
+
   const session = await getServerSession(authOptions);
   return (
     <html lang="de">
@@ -54,7 +74,7 @@ export default async function RootLayout({
               <Link href="/" className="flex shrink-0 items-center gap-2">
                 {/* Offizielles Brisco-Systems-Logo (Vektor, public/brisco-systems-logo.svg) */}
                 <img
-                  src="/brisco-systems-logo.svg"
+                  src={withBasePath("/brisco-systems-logo.svg")}
                   alt="Brisco Systems"
                   className="h-8 w-auto sm:h-10"
                 />
@@ -76,13 +96,13 @@ export default async function RootLayout({
           <footer className="mt-12 border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500">
             <div>Brisco Systems GmbH · Prototyp v0.3 · Pseudonyme Reseller-Plattform</div>
             <div className="mt-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
-              <a href="/vertrauen" className="hover:text-slate-700 hover:underline">Vertrauen</a>
+              <a href={withBasePath("/vertrauen")} className="hover:text-slate-700 hover:underline">Vertrauen</a>
               <span className="text-slate-300">·</span>
-              <a href="/agb" className="hover:text-slate-700 hover:underline">AGB</a>
+              <a href={withBasePath("/agb")} className="hover:text-slate-700 hover:underline">AGB</a>
               <span className="text-slate-300">·</span>
-              <a href="/impressum" className="hover:text-slate-700 hover:underline">Impressum</a>
+              <a href={withBasePath("/impressum")} className="hover:text-slate-700 hover:underline">Impressum</a>
               <span className="text-slate-300">·</span>
-              <a href="/datenschutz" className="hover:text-slate-700 hover:underline">Datenschutz</a>
+              <a href={withBasePath("/datenschutz")} className="hover:text-slate-700 hover:underline">Datenschutz</a>
             </div>
           </footer>
         </Providers>

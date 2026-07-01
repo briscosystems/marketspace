@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { withBasePath } from "@/lib/base-path";
 
 type Message = {
   id: string;
@@ -24,7 +25,7 @@ export function MessageThread({
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
   async function load() {
-    const res = await fetch(`/api/conversations/${conversationId}/messages`, {
+    const res = await fetch(withBasePath(`/api/conversations/${conversationId}/messages`), {
       cache: "no-store",
     });
     if (res.ok) {
@@ -49,7 +50,7 @@ export function MessageThread({
     if (!input.trim()) return;
     setSending(true);
     setError(null);
-    const res = await fetch(`/api/conversations/${conversationId}/messages`, {
+    const res = await fetch(withBasePath(`/api/conversations/${conversationId}/messages`), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ body: input.trim() }),

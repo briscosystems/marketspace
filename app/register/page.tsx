@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { generatePseudonym, findPseudonymLeak } from "@/lib/pseudonym";
 import { EUROPE_COUNTRIES } from "@/lib/europe-countries";
+import { withBasePath } from "@/lib/base-path";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -75,7 +76,7 @@ export default function RegisterPage() {
       return;
     }
     setLoading(true);
-    const res = await fetch("/api/register", {
+    const res = await fetch(withBasePath("/api/register"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),

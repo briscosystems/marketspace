@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { withBasePath } from "@/lib/base-path";
 
 type Status = "PENDING" | "SHIPPED" | "COMPLETED" | "CANCELED" | "DISPUTED";
 
@@ -22,7 +23,7 @@ export function TransactionActions({
     if (confirmText && !confirm(confirmText)) return;
     setLoading(action);
     setError(null);
-    const res = await fetch(`/api/transactions/${transactionId}`, {
+    const res = await fetch(withBasePath(`/api/transactions/${transactionId}`), {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action }),

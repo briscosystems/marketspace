@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { X, Send, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { withBasePath } from "@/lib/base-path";
 
 type Props = {
   productId: string;
@@ -50,7 +51,7 @@ export function PriceSubmitDialog({ productId, productName, manufacturer, onClos
     setLoading(true);
     setResult(null);
     try {
-      const resp = await fetch("/api/prices/submit", {
+      const resp = await fetch(withBasePath("/api/prices/submit"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

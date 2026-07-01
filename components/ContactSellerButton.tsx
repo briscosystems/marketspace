@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { withBasePath } from "@/lib/base-path";
 
 export function ContactSellerButton({
   sellerId,
@@ -17,7 +18,7 @@ export function ContactSellerButton({
   async function onClick() {
     setLoading(true);
     setError(null);
-    const res = await fetch("/api/conversations", {
+    const res = await fetch(withBasePath("/api/conversations"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ sellerId, listingId }),
