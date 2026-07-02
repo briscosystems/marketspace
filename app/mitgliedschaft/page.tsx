@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { isMembershipActive, membershipPriceEur } from "@/lib/membership";
 import { isStripeConfigured } from "@/lib/stripe";
 import { MembershipActions } from "@/components/MembershipActions";
-import { CreditCard } from "lucide-react";
+import { CreditCard, ShieldCheck, Lock } from "lucide-react";
 
 export const metadata = { title: "Mitgliedschaft — Brisco Marketplace" };
 
@@ -68,6 +68,33 @@ export default async function MembershipPage() {
 
       <div className="card">
         <MembershipActions active={active} priceEur={priceEur} />
+      </div>
+
+      {/* Sichtbare Vertrauenssignale zur Zahlung */}
+      <div className="card space-y-3">
+        <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+          <ShieldCheck size={18} className="text-emerald-600" />
+          Sichere Bezahlung über Stripe
+        </div>
+        <p className="text-sm text-slate-600">
+          Die Zahlung läuft über <strong>Stripe</strong>, einen weltweit führenden
+          Zahlungsdienstleister. Ihre Kartendaten werden verschlüsselt direkt bei Stripe
+          verarbeitet und <strong>niemals auf dieser Plattform gespeichert</strong>
+          {" "}(Sicherheitsstandard PCI-DSS Level 1).
+        </p>
+        <div className="flex flex-wrap items-center gap-2">
+          {["Visa", "Mastercard", "American Express"].map((brand) => (
+            <span
+              key={brand}
+              className="inline-flex items-center rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700"
+            >
+              {brand}
+            </span>
+          ))}
+          <span className="inline-flex items-center gap-1 text-xs text-slate-500">
+            <Lock size={12} /> SSL-verschlüsselt
+          </span>
+        </div>
       </div>
     </div>
   );
