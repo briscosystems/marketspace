@@ -46,19 +46,78 @@ function TierBadge({ tier }: { tier: string }) {
   return null;
 }
 
+const VERIFIED_TIERS = ["VERIFIED", "TRADE_ASSURED", "PREMIUM", "DIAMOND"];
+
 export function ConceptBrowseGrid({ listings }: { listings: BrowseListing[] }) {
   const [selected, setSelected] = useState<BrowseListing | null>(null);
   const [favs, setFavs] = useState<Record<string, boolean>>({});
+  const [verifiedOnly, setVerifiedOnly] = useState(false);
+  const [sort, setSort] = useState("rel");
 
   function toggleFav(e: React.MouseEvent, id: string) {
     e.stopPropagation();
     setFavs((f) => ({ ...f, [id]: !f[id] }));
   }
 
+  const displayed = [...listings]
+    .filter((l) => !verifiedOnly || VERIFIED_TIERS.includes(l.seller.tier))
+    .sort((a, b) => {
+      if (sort === "price-asc") return (a.price ?? 1e12) - (b.price ?? 1e12);
+      if (sort === "price-desc") return (b.price ?? -1) - (a.price ?? -1);
+      if (sort === "qty-desc") return b.quantity - a.quantity;
+      return 0;
+    });
+
   return (
     <>
+      {/* Werkzeugleiste — Anzahl · Nur verifizierte · Sortieren (wie im Konzept) */}
+      <div className="mb-4 flex flex-wrap items-center gap-3">
+        <div className="text-sm text-slate-500">
+          <span className="font-bold text-slate-900">{displayed.length}</span> Angebote
+        </div>
+        <div className="flex-1" />
+        <button
+          type="button"
+          onClick={() => setVerifiedOnly((v) => !v)}
+          aria-pressed={verifiedOnly}
+          className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm transition ${
+            verifiedOnly
+              ? "border-emerald-500 bg-emerald-50 text-emerald-700"
+              : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+          }`}
+        >
+          <span
+            className={`grid h-4 w-4 place-items-center rounded border ${
+              verifiedOnly ? "border-emerald-500 bg-emerald-500 text-white" : "border-slate-300"
+            }`}
+          >
+            {verifiedOnly && <Check size={11} />}
+          </span>
+          Nur verifizierte Anbieter
+        </button>
+        <label className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-sm text-slate-700">
+          <span className="text-slate-500">Sortieren</span>
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+            className="cursor-pointer border-0 bg-transparent font-medium text-slate-900 outline-none"
+          >
+            <option value="rel">Empfohlen</option>
+            <option value="price-asc">Preis aufsteigend</option>
+            <option value="price-desc">Preis absteigend</option>
+            <option value="qty-desc">Größte Menge</option>
+          </select>
+        </label>
+      </div>
+
+      {displayed.length === 0 && (
+        <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-500">
+          Keine Angebote gefunden.
+        </div>
+      )}
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {listings.map((l) => (
+        {displayed.map((l) => (
           <button
             key={l.id}
             type="button"

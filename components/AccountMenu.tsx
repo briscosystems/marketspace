@@ -11,8 +11,24 @@ import {
   Lock,
   LogOut,
   UserRound,
+  Search,
+  Sparkles,
+  TrendingUp,
+  Building2,
+  FileText,
+  Shield,
 } from "lucide-react";
 import { useLocale } from "./LocaleProvider";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+
+const NAV_LINKS: { href: string; label: string; icon: typeof Search }[] = [
+  { href: "/rfqs", label: "Suchen (Anfragen)", icon: Search },
+  { href: "/kss-finder", label: "KSS-Finder", icon: Sparkles },
+  { href: "/prices", label: "Preise", icon: TrendingUp },
+  { href: "/manufacturers", label: "Hersteller", icon: Building2 },
+  { href: "/sds", label: "Sicherheitsdatenblätter", icon: FileText },
+  { href: "/materials", label: "Materialien", icon: Shield },
+];
 
 /**
  * Konto-Dropdown im Stil etablierter Portale (Amazon „Hallo, …/Konto"):
@@ -104,6 +120,21 @@ export function AccountMenu({ user }: { user: { name: string; isAdmin?: boolean 
                 {t("account.admin")}
               </Link>
             )}
+          </div>
+
+          <div className="border-t border-slate-100 py-1">
+            {NAV_LINKS.map((it) => {
+              const Icon = it.icon;
+              return (
+                <Link key={it.href} href={it.href} className={itemClass}>
+                  <Icon size={16} className="text-slate-400" />
+                  {it.label}
+                </Link>
+              );
+            })}
+            <div className="px-3 py-1.5">
+              <LanguageSwitcher />
+            </div>
           </div>
 
           <div className="border-t border-slate-100 py-1">
