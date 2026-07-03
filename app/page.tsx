@@ -4,7 +4,16 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ListingCard } from "@/components/ListingCard";
 import { OilBarrels } from "@/components/OilBarrels";
-import { FlaskConical, Building2, TrendingUp, ArrowRight } from "lucide-react";
+import {
+  FlaskConical,
+  Building2,
+  TrendingUp,
+  ArrowRight,
+  LayoutDashboard,
+  MessageSquare,
+  Inbox,
+  Plus,
+} from "lucide-react";
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
@@ -235,33 +244,54 @@ async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudo
 
   return (
     <div className="space-y-8">
-      <section>
-        <h1 className="page-title">
-          Willkommen zurück, {pseudonym}
-        </h1>
-        <p className="text-sm text-slate-500">
-          {new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}
-        </p>
+      <section className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="page-title">Willkommen zurück, {pseudonym}</h1>
+          <p className="text-sm text-slate-500">
+            {new Date().toLocaleDateString("de-DE", {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+            })}
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href="/listings/new"
+            className="btn bg-blue-600 font-semibold text-white shadow-soft hover:bg-blue-700"
+          >
+            <Plus size={16} className="mr-1" /> Anbieten
+          </Link>
+          <Link
+            href="/rfqs/new"
+            className="btn bg-amber-500 font-semibold text-white shadow-soft hover:bg-amber-600"
+          >
+            <Plus size={16} className="mr-1" /> Suchen
+          </Link>
+        </div>
       </section>
 
       <section className="grid gap-4 md:grid-cols-3">
         <QuickStat
           href="/dashboard"
+          icon={<LayoutDashboard className="h-5 w-5" />}
           label="Dein Dashboard"
           value="öffnen"
-          hint="Listings, RFQs, Transaktionen"
+          hint="Angebote, Anfragen, Transaktionen"
         />
         <QuickStat
           href="/conversations"
+          icon={<MessageSquare className="h-5 w-5" />}
           label="Konversationen"
           value={String(unreadConversations.length)}
           hint="aktive Threads"
         />
         <QuickStat
           href="/rfqs"
+          icon={<Inbox className="h-5 w-5" />}
           label="Eingegangene Angebote"
           value={String(openOffersToMe)}
-          hint="auf deine RFQs, offen"
+          hint="auf deine Anfragen, offen"
         />
       </section>
 
@@ -370,20 +400,30 @@ async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudo
 
 function QuickStat({
   href,
+  icon,
   label,
   value,
   hint,
 }: {
   href: string;
+  icon: React.ReactNode;
   label: string;
   value: string;
   hint: string;
 }) {
   return (
-    <Link href={href} className="card block hover:border-brand-500">
-      <div className="eyebrow">{label}</div>
-      <div className="mt-1 stat-value">{value}</div>
-      <div className="mt-0.5 text-xs text-slate-500">{hint}</div>
+    <Link
+      href={href}
+      className="group flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-soft transition hover:border-brand-400 hover:shadow-lift"
+    >
+      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-700">
+        {icon}
+      </span>
+      <div className="min-w-0">
+        <div className="eyebrow">{label}</div>
+        <div className="mt-0.5 stat-value leading-none">{value}</div>
+        <div className="mt-1 text-xs text-slate-500">{hint}</div>
+      </div>
     </Link>
   );
 }
