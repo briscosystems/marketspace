@@ -10,6 +10,7 @@ import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistratio
 import { GateLogin } from "@/components/GateLogin";
 import { GATE_COOKIE, gateEnabled, isGateTokenValid } from "@/lib/gate";
 import { withBasePath } from "@/lib/base-path";
+import { Search, ShieldCheck, FileText, Check } from "lucide-react";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -70,7 +71,7 @@ export default async function RootLayout({
         <ServiceWorkerRegistration />
         <Providers>
           <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
-            <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3 md:px-6">
+            <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 md:px-6">
               <Link href="/" className="flex shrink-0 items-center gap-2">
                 {/* Offizielles Brisco-Systems-Logo (Vektor, public/brisco-systems-logo.svg) */}
                 <img
@@ -82,15 +83,56 @@ export default async function RootLayout({
                   Marketplace
                 </span>
               </Link>
-              <HeaderNav
-                user={
-                  session?.user
-                    ? { name: session.user.name ?? "", isAdmin: session.user.role === "ADMIN" }
-                    : null
-                }
-              />
+
+              {/* Suchzentrierte Bedienerführung: große Suche direkt im Kopf */}
+              <form
+                action={withBasePath("/listings")}
+                method="get"
+                role="search"
+                className="order-3 flex w-full items-center gap-2 rounded-full border border-slate-300 bg-white pl-4 pr-1.5 transition-colors focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-100 md:order-none md:w-auto md:flex-1 md:max-w-xl"
+              >
+                <Search className="h-4 w-4 shrink-0 text-slate-400" aria-hidden />
+                <input
+                  name="q"
+                  type="search"
+                  placeholder="Öl, Fett, Marke oder ISO VG suchen …"
+                  aria-label="Angebote durchsuchen"
+                  className="min-w-0 flex-1 border-0 bg-transparent py-2 text-sm text-slate-900 outline-none placeholder:text-slate-400"
+                />
+                <button
+                  type="submit"
+                  className="shrink-0 rounded-full bg-brand-400 px-4 py-1.5 text-sm font-semibold text-slate-900 transition-colors hover:bg-brand-500"
+                >
+                  Suchen
+                </button>
+              </form>
+
+              <div className="shrink-0">
+                <HeaderNav
+                  user={
+                    session?.user
+                      ? { name: session.user.name ?? "", isAdmin: session.user.role === "ADMIN" }
+                      : null
+                  }
+                />
+              </div>
             </div>
           </header>
+
+          {/* Schlanke Vertrauens-Leiste — auf jeder Seite sichtbar */}
+          <div className="border-b border-slate-200 bg-white">
+            <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-1 px-4 py-2 text-xs text-slate-500 md:px-6">
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-brand-600" aria-hidden /> Geprüfte, verifizierte Anbieter
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <ShieldCheck className="h-3.5 w-3.5 text-brand-600" aria-hidden /> Sichere Abwicklung über Brisco
+              </span>
+              <span className="hidden items-center gap-1.5 sm:inline-flex">
+                <FileText className="h-3.5 w-3.5 text-brand-600" aria-hidden /> Marktpreise &amp; Sicherheitsdatenblätter inklusive
+              </span>
+            </div>
+          </div>
           <main className="mx-auto max-w-6xl px-4 py-6 md:px-6 md:py-8">{children}</main>
           <CompareBar />
           <footer className="mt-12 border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500">

@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ListingCard } from "@/components/ListingCard";
 import { OilBarrels } from "@/components/OilBarrels";
+import { FlaskConical, Building2, TrendingUp, ArrowRight } from "lucide-react";
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
@@ -15,42 +16,50 @@ export default async function HomePage() {
 }
 
 async function PublicLanding() {
-  const [listingCount, userCount, sdsCount] = await Promise.all([
-    prisma.listing.count({ where: { status: "ACTIVE" } }),
-    prisma.user.count(),
-    prisma.safetyDataSheet.count(),
-  ]);
+  const [listingCount, userCount, sdsCount, manufacturerCount, freshListings] =
+    await Promise.all([
+      prisma.listing.count({ where: { status: "ACTIVE" } }),
+      prisma.user.count(),
+      prisma.safetyDataSheet.count(),
+      prisma.manufacturer.count(),
+      prisma.listing.findMany({
+        where: { status: "ACTIVE" },
+        include: { seller: { select: { id: true, pseudonym: true, trustTier: true } } },
+        orderBy: { createdAt: "desc" },
+        take: 4,
+      }),
+    ]);
 
   return (
     <div className="space-y-10">
-      <section className="rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 p-10 text-white shadow-lg">
-        <div className="mb-3 text-xs font-semibold uppercase tracking-wide text-brand-50/80">
-          Für Reseller, Endkunden &amp; Hersteller
-        </div>
-        <h1 className="mb-3 text-3xl font-semibold">
-          Lieferengpässe? Händler helfen Händlern.
+      {/* Hero — ruhig, weiß, Lime nur als Akzent */}
+      <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-8 shadow-soft md:p-10">
+        <div className="eyebrow text-brand-700">Für Reseller, Endkunden &amp; Hersteller</div>
+        <h1 className="mt-2 max-w-2xl text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
+          Der B2B-Marktplatz für Industrieöle, KSS &amp; Schmierstoffe
         </h1>
-        <p className="max-w-2xl text-brand-50/90">
-          Knappe Rohstoffe und unsichere Lieferketten machen die Beschaffung schwer.
-          Auf Brisco gleichen Öl-Händler Überschuss und Engpässe direkt untereinander
-          aus: Was dem einen fehlt, hat der andere im Lager. Reseller, Endkunden und
-          Hersteller finden hier zueinander — anonym, geprüft und sicher bezahlt.
+        <p className="mt-3 max-w-2xl text-slate-600">
+          Was dem einen fehlt, hat der andere im Lager. Öl-Händler gleichen Überschuss und
+          Engpässe direkt untereinander aus — anonym, geprüft und sicher bezahlt.
         </p>
-        <div className="mt-6">
+        <div className="mt-6 flex flex-wrap gap-3">
           <Link
-            href="/register"
-            className="btn border border-white/40 text-white hover:bg-white/10"
+            href="/listings"
+            className="btn bg-slate-900 font-semibold text-white shadow-soft hover:bg-slate-800"
           >
+            Angebote entdecken
+          </Link>
+          <Link href="/register" className="btn-secondary">
             Reseller-Konto anlegen
           </Link>
         </div>
       </section>
 
-      {/* Zwei klar getrennte Rollen-Einstiege */}
+      {/* Anbieten / Suchen — feste Konvention: Anbieten blau, Suchen amber */}
       <section className="grid gap-4 md:grid-cols-2">
         <Link
           href="/listings"
-          className="group relative overflow-hidden rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-white p-6 transition hover:border-blue-400 hover:shadow-lift"
+          className="group relative overflow-hidden rounded-2xl border border-blue-200 bg-white p-6 shadow-soft transition hover:border-blue-400 hover:shadow-lift"
         >
           <div className="absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-blue-600 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
             Anbieten
@@ -63,14 +72,14 @@ async function PublicLanding() {
             Stell dein Lager als Angebot ein oder durchstöbere, was andere Anbieter
             verfügbar haben. {listingCount} aktive Angebot{listingCount === 1 ? "" : "e"}.
           </p>
-          <div className="mt-3 text-sm font-semibold text-blue-700">
-            → Angebote durchsuchen
+          <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-blue-700">
+            Angebote durchsuchen <ArrowRight className="h-4 w-4" />
           </div>
         </Link>
 
         <Link
           href="/rfqs"
-          className="group relative overflow-hidden rounded-xl border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-white p-6 transition hover:border-amber-400 hover:shadow-lift"
+          className="group relative overflow-hidden rounded-2xl border border-amber-200 bg-white p-6 shadow-soft transition hover:border-amber-400 hover:shadow-lift"
         >
           <div className="absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-amber-600 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
             Suchen
@@ -83,40 +92,105 @@ async function PublicLanding() {
             Stell deinen Bedarf öffentlich ein und lass Anbieter dir Preise nennen.
             Oder schau dir an, was andere Käufer gerade suchen.
           </p>
-          <div className="mt-3 text-sm font-semibold text-amber-700">
-            → Bedarfe durchsuchen
+          <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-amber-700">
+            Bedarfe durchsuchen <ArrowRight className="h-4 w-4" />
           </div>
         </Link>
       </section>
 
-      <section className="grid gap-6 md:grid-cols-3">
-        <div className="card">
-          <div className="text-3xl font-semibold text-brand-500">{listingCount}</div>
-          <div className="text-sm text-slate-600">aktive Angebote</div>
-        </div>
-        <div className="card">
-          <div className="text-3xl font-semibold text-brand-500">{userCount}</div>
-          <div className="text-sm text-slate-600">registrierte Reseller</div>
-        </div>
-        <Link href="/sds" className="card hover:border-brand-500">
-          <div className="text-3xl font-semibold text-brand-500">{sdsCount}</div>
-          <div className="text-sm text-slate-600">Sicherheitsdatenblätter</div>
-        </Link>
+      {/* Entdecken — Wissensbasis */}
+      <section className="grid gap-4 sm:grid-cols-3">
+        <DiscoverTile
+          href="/sds"
+          icon={<FlaskConical className="h-5 w-5" />}
+          value={sdsCount.toLocaleString("de-CH")}
+          title="Sicherheitsdatenblätter"
+          hint="geparste GHS-/REACH-Daten"
+        />
+        <DiscoverTile
+          href="/manufacturers"
+          icon={<Building2 className="h-5 w-5" />}
+          value={String(manufacturerCount)}
+          title="Hersteller"
+          hint="Marken im Produktkatalog"
+        />
+        <DiscoverTile
+          href="/prices"
+          icon={<TrendingUp className="h-5 w-5" />}
+          value="Marktpreise"
+          title="Preistransparenz"
+          hint="aus Meldungen und Transaktionen"
+        />
       </section>
 
-      <section className="card">
-        <h2 className="mb-3 section-title">Aktueller Stand (Prototyp v0.2)</h2>
-        <ul className="list-inside list-disc space-y-1 text-sm text-slate-700">
-          <li>Self-Service-Registrierung mit Pseudonym</li>
-          <li>Produkt-Listings mit FDS-Datenmodell</li>
-          <li>RFQ-Modul mit Trust-Tier-System</li>
-          <li>Anonyme Bewertungen nach Transaktion</li>
-          <li>SDS-Bibliothek mit Auto-Match auf Listings</li>
-          <li className="text-slate-400">Stripe Split-Payment — folgt</li>
-          <li className="text-slate-400">AI-Match &amp; Chat-Filter — folgt</li>
-        </ul>
+      {/* Neu im Markt */}
+      {freshListings.length > 0 && (
+        <section>
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="section-title">Neu im Markt</h2>
+            <Link
+              href="/listings"
+              className="inline-flex items-center gap-1 text-sm font-medium text-brand-700 hover:underline"
+            >
+              alle Angebote <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            {freshListings.map((l) => (
+              <ListingCard key={l.id} listing={l} hideStatus />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Kennzahlen */}
+      <section className="grid gap-4 sm:grid-cols-3">
+        <div className="card">
+          <div className="stat-value text-brand-600">{listingCount}</div>
+          <div className="mt-0.5 text-sm text-slate-600">aktive Angebote</div>
+        </div>
+        <div className="card">
+          <div className="stat-value text-brand-600">{userCount}</div>
+          <div className="mt-0.5 text-sm text-slate-600">registrierte Reseller</div>
+        </div>
+        <div className="card">
+          <div className="stat-value text-brand-600">
+            {sdsCount.toLocaleString("de-CH")}
+          </div>
+          <div className="mt-0.5 text-sm text-slate-600">Sicherheitsdatenblätter</div>
+        </div>
       </section>
     </div>
+  );
+}
+
+function DiscoverTile({
+  href,
+  icon,
+  value,
+  title,
+  hint,
+}: {
+  href: string;
+  icon: React.ReactNode;
+  value: string;
+  title: string;
+  hint: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-soft transition hover:border-brand-400 hover:shadow-lift"
+    >
+      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-700">
+        {icon}
+      </span>
+      <div className="min-w-0">
+        <div className="text-lg font-bold text-slate-900">{value}</div>
+        <div className="text-sm font-medium text-slate-700">{title}</div>
+        <div className="text-xs text-slate-500">{hint}</div>
+      </div>
+    </Link>
   );
 }
 
