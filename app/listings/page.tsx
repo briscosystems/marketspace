@@ -4,6 +4,8 @@ import { ListingCard } from "@/components/ListingCard";
 import { FilterBar } from "@/components/FilterBar";
 import { FilterDropdown } from "@/components/FilterDropdown";
 import { SearchInput } from "@/components/SearchInput";
+import { ConceptBrowseGrid, type BrowseListing } from "@/components/ConceptBrowseGrid";
+import { PACKAGING_LABEL } from "@/lib/branding";
 import { Tag, Plus } from "lucide-react";
 
 type SearchParams = Promise<{
@@ -99,6 +101,28 @@ export default async function ListingsPage({
       ...l.seller,
       avgRating: ratingsBySeller.get(l.seller.id)?.avg ?? null,
       ratingCount: ratingsBySeller.get(l.seller.id)?.count ?? 0,
+    },
+  }));
+
+  // Serialisierbare Daten für das Konzept-Raster (Client-Komponente mit Slide-over)
+  const browseListings: BrowseListing[] = listingsWithRating.map((l) => ({
+    id: l.id,
+    productName: l.productName,
+    productType: l.productType,
+    manufacturer: l.manufacturer,
+    iso: l.isoViscosity ? `ISO VG ${l.isoViscosity}` : null,
+    chem: CHEMISTRY_LABEL[l.chemistry as string] ?? null,
+    quantity: l.quantity,
+    unit: l.quantityUnit,
+    packaging: (PACKAGING_LABEL as Record<string, string>)[l.packaging] ?? l.packaging,
+    minOrder: l.minOrderQty,
+    region: l.locationRegion,
+    price: l.priceEur,
+    seller: {
+      name: l.seller.pseudonym,
+      tier: l.seller.trustTier,
+      ratingAvg: l.seller.avgRating,
+      ratingCount: l.seller.ratingCount,
     },
   }));
 
@@ -272,16 +296,7 @@ export default async function ListingsPage({
           ))}
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {listingsWithRating.map((l) => (
-            <ListingCard
-              key={l.id}
-              listing={l}
-              hideStatus
-              variant="extended"
-            />
-          ))}
-        </div>
+        <ConceptBrowseGrid listings={browseListings} />
       )}
       </div>
     </div>

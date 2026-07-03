@@ -3,6 +3,7 @@ import { TrustBadge } from "./TrustBadge";
 import { ProductImage } from "./ProductImage";
 import { BrandLogo } from "./BrandLogo";
 import { CompareToggle } from "./compare/CompareToggle";
+import { CategoryGlyph } from "./CategoryGlyph";
 import { brandColors } from "@/lib/branding";
 import { Tag, MapPin } from "lucide-react";
 
@@ -148,9 +149,6 @@ function CompactCard({ listing, hideStatus }: { listing: ListingCardData; hideSt
 // Merkmale, Anbieter + Vertrauen, klarer Preis.
 // ============================================================================
 function ExtendedCard({ listing, hideStatus }: { listing: ListingCardData; hideStatus: boolean }) {
-  const packaging = (listing.packaging as Packaging) ?? "DRUM";
-  const colors = brandColors(listing.manufacturer);
-
   const chips: string[] = [];
   if (listing.isoViscosity) chips.push(`ISO VG ${listing.isoViscosity}`);
   if (listing.chemistry) chips.push(chemistryLabel[listing.chemistry] ?? listing.chemistry);
@@ -168,18 +166,10 @@ function ExtendedCard({ listing, hideStatus }: { listing: ListingCardData; hideS
         href={`/listings/${listing.id}`}
         className="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft transition-all hover:-translate-y-1 hover:border-slate-300 hover:shadow-lift"
       >
-        {/* Bildbereich — ruhig, ein zarter Farbverlauf, Marke unten links */}
-        <div className="relative flex items-center justify-center border-b border-slate-100 bg-gradient-to-br from-brand-50 to-white py-6">
-          <ProductImage
-            manufacturer={listing.manufacturer}
-            productName={listing.productName}
-            packaging={packaging}
-            size="md"
-          />
-          <span
-            className="absolute bottom-2.5 left-2.5 rounded-full border border-slate-200 bg-white/90 px-2.5 py-0.5 text-[11px] font-semibold"
-            style={{ color: colors.primary }}
-          >
+        {/* Bildbereich — grüner Verlauf + Kategorie-Symbol (Konzept-Look) */}
+        <div className="relative flex items-center justify-center border-b border-slate-100 bg-gradient-to-br from-brand-50 to-white py-9">
+          <CategoryGlyph productType={listing.productType} className="h-12 w-12 text-brand-600" />
+          <span className="absolute bottom-2.5 left-2.5 rounded-full border border-slate-200 bg-white/90 px-2.5 py-0.5 text-[11px] font-semibold text-slate-700">
             {listing.manufacturer}
           </span>
         </div>
@@ -187,7 +177,7 @@ function ExtendedCard({ listing, hideStatus }: { listing: ListingCardData; hideS
         {/* Inhalt */}
         <div className="flex flex-1 flex-col gap-1.5 p-4">
           <div className="flex items-center gap-2">
-            <span className="inline-flex w-fit items-center gap-1 rounded-md bg-blue-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-blue-800">
+            <span className="inline-flex w-fit items-center gap-1 rounded-md bg-brand-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-800">
               <Tag size={10} /> Bietet an
             </span>
             {showStatusChip && (
