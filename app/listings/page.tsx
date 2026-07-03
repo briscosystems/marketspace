@@ -32,7 +32,8 @@ export default async function ListingsPage({
 }) {
   const params = await searchParams;
   const { q, manufacturer, productType, chemistry, isoViscosity, region, view } = params;
-  const variant: "compact" | "extended" = view === "extended" ? "extended" : "compact";
+  // Standard: das ruhige Karten-Raster (Konzept-Look); „Kompakt" ist optional.
+  const variant: "compact" | "extended" = view === "compact" ? "compact" : "extended";
 
   const where: import("@prisma/client").Prisma.ListingWhereInput = {
     status: "ACTIVE",
@@ -110,7 +111,7 @@ export default async function ListingsPage({
     if (chemistry) p.set("chemistry", chemistry);
     if (isoViscosity) p.set("isoViscosity", isoViscosity);
     if (region) p.set("region", region);
-    if (variant === "extended") p.set("view", "extended");
+    if (variant === "compact") p.set("view", "compact");
     if (value == null) p.delete(name);
     else p.set(name, value);
     return `/listings?${p.toString()}`;
@@ -161,6 +162,13 @@ export default async function ListingsPage({
     (isoViscosity ? 1 : 0) +
     (region ? 1 : 0);
 
+  // Kategorie-Kacheln (Produkttyp) — der Konzept-Einstieg zum schnellen Filtern.
+  const totalActive = productTypeOptions.reduce((s, o) => s + o._count._all, 0);
+  const categoryChips = productTypeOptions
+    .filter((o) => o.productType)
+    .slice(0, 12)
+    .map((o) => ({ label: o.productType, count: o._count._all }));
+
   return (
     <div className="space-y-6">
       {/* Header: „Ich biete an" — klarer Startpunkt (Anbieten = blau) */}
@@ -184,6 +192,22 @@ export default async function ListingsPage({
         </Link>
       </div>
 
+      {/* Kategorie-Kacheln — schneller Einstieg wie im Konzept */}
+      {categoryChips.length > 0 && (
+        <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+          <CatChip href={urlWithParam("productType", null)} active={!productType} label="Alle" count={totalActive} />
+          {categoryChips.map((c) => (
+            <CatChip
+              key={c.label}
+              href={urlWithParam("productType", c.label)}
+              active={productType === c.label}
+              label={c.label}
+              count={c.count}
+            />
+          ))}
+        </div>
+      )}
+
       <FilterBar
         count={listings.length}
         title="Aktuelle Angebote"
@@ -197,20 +221,20 @@ export default async function ListingsPage({
             <Link
               href={urlWithParam("view", null)}
               className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                variant === "extended" ? "bg-brand-500 text-white" : "bg-white text-slate-600 hover:bg-slate-50"
+              }`}
+              title="Karten-Raster"
+            >
+              ▦ Raster
+            </Link>
+            <Link
+              href={urlWithParam("view", "compact")}
+              className={`px-3 py-1.5 text-xs font-medium transition-colors ${
                 variant === "compact" ? "bg-brand-500 text-white" : "bg-white text-slate-600 hover:bg-slate-50"
               }`}
               title="Kompakte Liste"
             >
               ≡ Kompakt
-            </Link>
-            <Link
-              href={urlWithParam("view", "extended")}
-              className={`px-3 py-1.5 text-xs font-medium transition-colors ${
-                variant === "extended" ? "bg-brand-500 text-white" : "bg-white text-slate-600 hover:bg-slate-50"
-              }`}
-              title="Detaillierte Karten"
-            >
-              ▦ Erweitert
             </Link>
           </div>
         }
@@ -248,7 +272,7 @@ export default async function ListingsPage({
           ))}
         </div>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {listingsWithRating.map((l) => (
             <ListingCard
               key={l.id}
@@ -261,5 +285,31 @@ export default async function ListingsPage({
       )}
       </div>
     </div>
+  );
+}
+
+function CatChip({
+  href,
+  active,
+  label,
+  count,
+}: {
+  href: string;
+  active: boolean;
+  label: string;
+  count: number;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`inline-flex shrink-0 items-center gap-2 rounded-xl border px-4 py-2 text-sm font-medium transition-colors ${
+        active
+          ? "border-brand-500 bg-brand-50 text-brand-800"
+          : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
+      }`}
+    >
+      <span className="whitespace-nowrap">{label}</span>
+      <span className={`text-xs ${active ? "text-brand-600" : "text-slate-400"}`}>{count}</span>
+    </Link>
   );
 }
