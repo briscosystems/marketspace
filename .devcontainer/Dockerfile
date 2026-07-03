@@ -10,3 +10,5 @@ USER node
 WORKDIR /workspace
 
 EXPOSE 3000 5432 8081 19000 19001 19002
+
+RUN sudo npm install -g @anthropic-ai/claude-code

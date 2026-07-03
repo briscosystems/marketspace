@@ -58,3 +58,5 @@ tsconfig.tsbuildinfo
 # GitHub-Token-Datei (Geheimnis) — NIEMALS committen/pushen.
 github token*
 *token*.txt
+.claude-state/
+.claude/settings.local.json
