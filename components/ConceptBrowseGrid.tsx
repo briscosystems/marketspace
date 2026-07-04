@@ -3,7 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Heart, MapPin, Tag, Check, Star, ShieldCheck, X } from "lucide-react";
-import { CategoryGlyph } from "./CategoryGlyph";
+import { ProductImage } from "./ProductImage";
+
+type PkgForm = "DRUM" | "IBC" | "TANK" | "CANISTER" | "BULK" | "OTHER";
 
 export type BrowseListing = {
   id: string;
@@ -15,6 +17,7 @@ export type BrowseListing = {
   quantity: number;
   unit: string;
   packaging: string;
+  packagingForm: string;
   minOrder: number | null;
   region: string;
   price: number | null;
@@ -124,9 +127,14 @@ export function ConceptBrowseGrid({ listings }: { listings: BrowseListing[] }) {
             onClick={() => setSelected(l)}
             className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white text-left shadow-soft transition-all hover:-translate-y-1 hover:border-slate-300 hover:shadow-lift"
           >
-            {/* Bildbereich — grüner Verlauf + Kategorie-Symbol */}
-            <div className="relative flex items-center justify-center border-b border-slate-100 bg-gradient-to-br from-brand-50 to-white py-9">
-              <CategoryGlyph productType={l.productType} className="h-12 w-12 text-brand-600" />
+            {/* Bildbereich — realistisches Fass/IBC/Kanister + Marke unten links */}
+            <div className="relative flex items-center justify-center border-b border-slate-100 bg-gradient-to-br from-brand-50 to-white py-4">
+              <ProductImage
+                manufacturer={l.manufacturer}
+                productName={l.productName}
+                packaging={l.packagingForm as PkgForm}
+                size="md"
+              />
               <span className="absolute bottom-2.5 left-2.5 rounded-full border border-slate-200 bg-white/90 px-2.5 py-0.5 text-[11px] font-semibold text-slate-700">
                 {l.manufacturer}
               </span>
@@ -210,7 +218,12 @@ export function ConceptBrowseGrid({ listings }: { listings: BrowseListing[] }) {
 
             <div className="flex-1 space-y-4 overflow-y-auto p-5">
               <div className="flex aspect-[16/9] items-center justify-center rounded-xl border border-slate-100 bg-gradient-to-br from-brand-50 to-white">
-                <CategoryGlyph productType={selected.productType} className="h-16 w-16 text-brand-600" />
+                <ProductImage
+                  manufacturer={selected.manufacturer}
+                  productName={selected.productName}
+                  packaging={selected.packagingForm as PkgForm}
+                  size="lg"
+                />
               </div>
 
               <div>

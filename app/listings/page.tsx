@@ -74,6 +74,7 @@ export default async function ListingsPage({ searchParams }: { searchParams: Sea
     quantity: l.quantity,
     unit: l.quantityUnit,
     packaging: (PACKAGING_LABEL as Record<string, string>)[l.packaging] ?? l.packaging,
+    packagingForm: l.packaging,
     minOrder: l.minOrderQty,
     region: l.locationRegion,
     price: l.priceEur,

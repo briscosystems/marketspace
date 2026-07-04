@@ -1,5 +1,6 @@
 import { brandColors } from "@/lib/branding";
 import { getLogoPath } from "@/lib/brand-logo-registry";
+import { withBasePath } from "@/lib/base-path";
 
 type Packaging = "DRUM" | "IBC" | "TANK" | "CANISTER" | "BULK" | "OTHER";
 
@@ -27,7 +28,8 @@ export function ProductImage({
   const colors = brandColors(manufacturer);
   const wrap = `relative shrink-0 aspect-square ${sizeMap[size]} ${className}`;
   const gid = `pi-${packaging}-${Math.abs(hash(`${manufacturer}-${productName}-${packaging}`))}`;
-  const logoPath = getLogoPath(manufacturer);
+  const rawLogo = getLogoPath(manufacturer);
+  const logoPath = rawLogo ? withBasePath(rawLogo) : null;
   return (
     <div className={wrap} aria-label={`${manufacturer} ${productName} (${packaging})`}>
       <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" className="h-full w-full">
