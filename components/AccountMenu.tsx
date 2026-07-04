@@ -17,14 +17,16 @@ import {
   Building2,
   FileText,
   Shield,
+  Lightbulb,
 } from "lucide-react";
 import { useLocale } from "./LocaleProvider";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
 const NAV_LINKS: { href: string; label: string; icon: typeof Search }[] = [
   { href: "/rfqs", label: "Suchen (Anfragen)", icon: Search },
+  { href: "/prices", label: "Marktpreise", icon: TrendingUp },
+  { href: "/wissen", label: "Praxis-Wissen", icon: Lightbulb },
   { href: "/kss-finder", label: "KSS-Finder", icon: Sparkles },
-  { href: "/prices", label: "Preise", icon: TrendingUp },
   { href: "/manufacturers", label: "Hersteller", icon: Building2 },
   { href: "/sds", label: "Sicherheitsdatenblätter", icon: FileText },
   { href: "/materials", label: "Materialien", icon: Shield },
