@@ -144,7 +144,7 @@ async function PublicLanding() {
               alle Angebote <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {freshListings.map((l) => (
               <ListingCard key={l.id} listing={l} hideStatus />
             ))}
@@ -387,7 +387,7 @@ async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudo
               alle →
             </Link>
           </div>
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {freshListings.map((l) => (
               <ListingCard key={l.id} listing={l} hideStatus />
             ))}

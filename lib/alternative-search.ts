@@ -54,8 +54,12 @@ export type AltMatch = {
   pros: string[];
   cons: string[];
   warnings: string[];
+  /** Dokumentierte Praxis-Probleme dieses Kandidaten (aus ProductIssue). */
+  knownIssues: IssueLite[];
   availability: AltAvailability;
 };
+
+export type IssueLite = { category: string; title: string; severity: string };
 
 export type AltSource = {
   productId: string | null;
@@ -63,6 +67,8 @@ export type AltSource = {
   manufacturer: string | null;
   category: string | null;
   chemistry: string | null;
+  /** Praxis-Probleme des Ausgangsprodukts — die Alternative soll sie möglichst vermeiden. */
+  knownIssues: IssueLite[];
 };
 
 export type AltSearchResult = {
@@ -77,6 +83,43 @@ export type AltSearchResult = {
 
 const CANDIDATE_LIMIT = 60;
 const RESULT_LIMIT = 12;
+
+// Deutsche Labels der Praxis-Problem-Kategorien (für Warnungen/Prompt).
+const ISSUE_CATEGORY_LABEL: Record<string, string> = {
+  WORKPIECE_STAINS: "Werkstück-Flecken",
+  CORROSION: "Korrosion",
+  BIOLOGY: "Bakterien/Verkeimung",
+  FOAM: "Schaumbildung",
+  OPERATOR_HEALTH: "Bediener-Gesundheit",
+  SEAL_DAMAGE: "Dichtungen/Lackangriff",
+  RESIDUES: "Klebrige Rückstände",
+  TOOL_WEAR: "Werkzeugverschleiß",
+  FILTRATION: "Filtration/Tramp-Oil",
+  STABILITY: "Stabilität/Lagerung",
+  PERFORMANCE: "Leistung",
+  COMPATIBILITY: "Kompatibilität",
+  REGULATORY: "REACH/TRGS",
+  SHELF_LIFE: "Lager-/Standzeit",
+  OTHER: "Sonstiges",
+};
+const issueCatLabel = (c: string) => ISSUE_CATEGORY_LABEL[c] ?? c;
+
+/** Lädt dokumentierte Praxis-Probleme (ProductIssue) zu einer Menge von Produkten. */
+async function loadIssuesForProducts(ids: string[]): Promise<Map<string, IssueLite[]>> {
+  const map = new Map<string, IssueLite[]>();
+  if (ids.length === 0) return map;
+  const issues = await prisma.productIssue.findMany({
+    where: { productId: { in: ids }, status: { not: "REJECTED" } },
+    select: { productId: true, category: true, title: true, severity: true },
+    orderBy: { severity: "desc" },
+  });
+  for (const i of issues) {
+    const arr = map.get(i.productId) ?? [];
+    arr.push({ category: i.category, title: i.title, severity: i.severity });
+    map.set(i.productId, arr);
+  }
+  return map;
+}
 
 type CandidateProduct = Prisma.ProductGetPayload<{
   include: { manufacturer: { select: { name: true; slug: true } } };
@@ -170,6 +213,8 @@ function scoreCandidate(
   },
   availability: AltAvailability,
   soldNames: Set<string>,
+  candidateIssues: IssueLite[],
+  sourceIssueCategories: Set<string>,
 ): AltMatch {
   const pros: string[] = [];
   const cons: string[] = [];
@@ -234,6 +279,32 @@ function scoreCandidate(
     }
   }
 
+  // Praxis-Probleme (ProductIssue): vermeidet der Kandidat die bekannten Probleme
+  // des Ausgangsprodukts — oder bringt er dieselben mit?
+  const candidateCats = new Set(candidateIssues.map((i) => i.category));
+  const avoided: string[] = [];
+  for (const cat of sourceIssueCategories) {
+    if (candidateCats.has(cat)) {
+      warnings.push(`Hat ebenfalls das bekannte Problem „${issueCatLabel(cat)}"`);
+      score -= 10;
+    } else {
+      avoided.push(issueCatLabel(cat));
+    }
+  }
+  if (avoided.length > 0) {
+    pros.push(
+      `Vermeidet bekannte Probleme des Ausgangsprodukts: ${avoided.slice(0, 4).join(", ")}${avoided.length > 4 ? " u. a." : ""}`,
+    );
+    score += Math.min(15, avoided.length * 4);
+  }
+  // Eigene kritische Praxis-Probleme des Kandidaten als Hinweis (mildere Abwertung).
+  for (const iss of candidateIssues) {
+    if (iss.severity === "HIGH" && !sourceIssueCategories.has(iss.category)) {
+      warnings.push(`Bekanntes Problem: ${iss.title}`);
+      score -= 4;
+    }
+  }
+
   if (availability.available) {
     pros.push("Aktuell als Angebot verfügbar");
     score += 15;
@@ -264,6 +335,7 @@ function scoreCandidate(
     pros,
     cons,
     warnings,
+    knownIssues: candidateIssues,
     availability,
   };
 }
@@ -306,8 +378,25 @@ export async function searchAlternatives(input: AltSearchInput): Promise<AltSear
 
   const { listings, soldNames } = await loadAvailabilityIndex();
 
+  // Praxis-Probleme (ProductIssue) für Quell-Produkt + alle Kandidaten laden.
+  const issuesByProduct = await loadIssuesForProducts([
+    ...candidates.map((c) => c.id),
+    ...(source ? [source.id] : []),
+  ]);
+  const sourceIssues = source ? issuesByProduct.get(source.id) ?? [] : [];
+  const sourceIssueCategories = new Set(sourceIssues.map((i) => i.category));
+
   const ranked = candidates
-    .map((c) => scoreCandidate(c, target, matchListing(c, listings), soldNames))
+    .map((c) =>
+      scoreCandidate(
+        c,
+        target,
+        matchListing(c, listings),
+        soldNames,
+        issuesByProduct.get(c.id) ?? [],
+        sourceIssueCategories,
+      ),
+    )
     .sort((a, b) => {
       // Verfügbare zuerst bei Gleichstand, sonst nach Score.
       if (b.score !== a.score) return b.score - a.score;
@@ -323,6 +412,7 @@ export async function searchAlternatives(input: AltSearchInput): Promise<AltSear
           manufacturer: source.manufacturer.name,
           category: source.category,
           chemistry: source.chemistry,
+          knownIssues: sourceIssues,
         }
       : null,
     alternatives: ranked,
@@ -393,9 +483,23 @@ export async function searchAlternativesWeb(input: AltSearchInput): Promise<AltS
     const candidateList =
       base.alternatives.length > 0
         ? base.alternatives
-            .map((a, i) => `${i + 1}. ${a.manufacturer} ${a.name} (Chemie: ${a.chemistry ?? "?"}, ISO VG: ${a.viscosityIso ?? "-"})`)
+            .map(
+              (a, i) =>
+                `${i + 1}. ${a.manufacturer} ${a.name} (Chemie: ${a.chemistry ?? "?"}, ISO VG: ${a.viscosityIso ?? "-"})` +
+                (a.knownIssues.length
+                  ? ` — dokumentierte Praxis-Probleme: ${a.knownIssues.map((k) => `${issueCatLabel(k.category)}: ${k.title}`).join("; ")}`
+                  : ""),
+            )
             .join("\n")
         : "(keine Katalog-Kandidaten gefunden)";
+
+    // Praxis-Probleme des Quell-Produkts (aus unserer Wissensbasis) — die Alternative soll sie möglichst vermeiden.
+    const sourceIssuesText =
+      base.source && base.source.knownIssues.length
+        ? `\nBekannte Praxis-Probleme des Quell-Produkts (Alternative sollte sie vermeiden): ${base.source.knownIssues
+            .map((k) => `${issueCatLabel(k.category)} – ${k.title}`)
+            .join("; ")}`
+        : "";
 
     const systemPrompt =
       "Du bist Substitutions-Berater für Industrieöle und Kühlschmierstoffe. " +
@@ -404,11 +508,14 @@ export async function searchAlternativesWeb(input: AltSearchInput): Promise<AltS
       "Erfahrungen und gib eine ehrliche, knappe deutsche Einschätzung. Erfinde nichts.";
 
     const userPrompt = [
-      targetDesc,
+      targetDesc + sourceIssuesText,
       "",
       "Kandidaten aus unserem Katalog (per Nummer referenzieren):",
       candidateList,
       "",
+      "WICHTIG: Bewerte die Kandidaten auch anhand der oben genannten dokumentierten",
+      "Praxis-Probleme. Bevorzuge Alternativen, die die bekannten Probleme des Quell-Produkts",
+      "VERMEIDEN, und warne, wenn ein Kandidat dieselben oder eigene kritische Probleme mitbringt.",
       "Aufgabe: Suche im Web nach Erfahrungen/Berichten zur Eignung dieser Produkte als",
       "Alternative. Falls oben '(keine Katalog-Kandidaten gefunden)' steht, ordne das gesuchte",
       "Produkt anhand der Web-Recherche ein und nenne in der summary, welche Produktarten,",
