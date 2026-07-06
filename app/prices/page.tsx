@@ -19,18 +19,19 @@ type SearchParams = Promise<{
   similar?: string; // Komma-getrennte Produkt-IDs (Vergleichsauswahl) als Referenz
 }>;
 
-// Genormte ISO-VG-Klassen — nur diese Zahlen im Produktnamen zählen als
-// Viskositätsangabe (verhindert Fehltreffer wie "2000" in "Blasocut 2000").
+// Genormte ISO-VG-Klassen — nur diese Zahlen zählen als Viskositätsangabe.
 const ISO_VG_CLASSES = new Set([2, 3, 5, 7, 10, 15, 22, 32, 46, 68, 100, 150, 220, 320, 460, 680, 1000, 1500]);
 
-/** Extrahiert ISO-VG-Klassen aus viscosityIso-Feld und Produktname. */
-function extractVgClasses(viscosityIso: string | null, name: string): number[] {
+/**
+ * Extrahiert ISO-VG-Klassen NUR aus dem Produkteigenschafts-Feld viscosityIso
+ * (z. B. "ISO VG 46" oder "22/32/46"). Der Produktname wird bewusst NICHT
+ * herangezogen — Ähnlichkeit basiert auf Eigenschaften, nicht auf Namen.
+ */
+function extractVgClasses(viscosityIso: string | null): number[] {
   const found = new Set<number>();
-  for (const src of [viscosityIso ?? "", name]) {
-    for (const m of src.matchAll(/\d{1,4}/g)) {
-      const n = parseInt(m[0], 10);
-      if (ISO_VG_CLASSES.has(n)) found.add(n);
-    }
+  for (const m of (viscosityIso ?? "").matchAll(/\d{1,4}/g)) {
+    const n = parseInt(m[0], 10);
+    if (ISO_VG_CLASSES.has(n)) found.add(n);
   }
   return [...found];
 }
@@ -109,26 +110,34 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
     .filter((r) => (maxPrice === undefined || r.price!.median <= maxPrice));
 
   // "Nur ähnliche Produkte": angehakte Vergleichsprodukte als Referenz.
-  // Ähnlich = gleiche Kategorie; hat die Referenz ISO-VG-Klassen, fliegen
-  // Produkte mit NACHWEISLICH anderer VG raus (unbekannte VG bleibt sichtbar).
+  // Ähnlichkeit GANZ GROB über Kategorie + Produkteigenschaften (KEIN Namens-
+  // Vergleich): gleiche Kategorie ist Pflicht; bei den Eigenschaften ISO VG und
+  // Chemie-Basis wird nur ausgeschlossen, was NACHWEISLICH abweicht — Produkte
+  // ohne gepflegte Angabe bleiben sichtbar (Datenlage ist lückenhaft).
   const similarIds = (sp.similar ?? "").split(",").filter(Boolean);
   const similarRefs =
     similarIds.length > 0
       ? await prisma.product.findMany({
           where: { id: { in: similarIds } },
-          select: { id: true, name: true, category: true, viscosityIso: true, manufacturer: { select: { name: true } } },
+          select: { id: true, name: true, category: true, viscosityIso: true, chemistry: true, manufacturer: { select: { name: true } } },
         })
       : [];
   if (similarRefs.length > 0) {
     const refCategories = new Set(similarRefs.map((r) => r.category));
-    const refVgs = new Set(similarRefs.flatMap((r) => extractVgClasses(r.viscosityIso, r.name)));
+    const refVgs = new Set(similarRefs.flatMap((r) => extractVgClasses(r.viscosityIso)));
+    const refChemistries = new Set(similarRefs.map((r) => r.chemistry).filter(Boolean));
     rows = rows.filter((r) => {
       if (similarIds.includes(r.id)) return true; // Referenzen selbst immer zeigen
+      // Eigenschaft 1 (Pflicht): gleiche Kategorie
       if (!refCategories.has(r.category)) return false;
-      if (refVgs.size === 0) return true;
-      const rowVgs = extractVgClasses(r.viscosityIso, r.name);
-      if (rowVgs.length === 0) return true; // VG unbekannt → nicht ausschließen
-      return rowVgs.some((v) => refVgs.has(v));
+      // Eigenschaft 2: ISO-VG-Klasse — nur bekannte Abweichung schließt aus
+      if (refVgs.size > 0) {
+        const rowVgs = extractVgClasses(r.viscosityIso);
+        if (rowVgs.length > 0 && !rowVgs.some((v) => refVgs.has(v))) return false;
+      }
+      // Eigenschaft 3: Chemie-Basis (mineralisch/synthetisch/…) — dito
+      if (refChemistries.size > 0 && r.chemistry && !refChemistries.has(r.chemistry)) return false;
+      return true;
     });
   }
 
@@ -233,7 +242,7 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
             </span>
           ))}
           <span className="text-slate-500">
-            → gleiche Kategorie{similarRefs.some((r) => extractVgClasses(r.viscosityIso, r.name).length > 0) ? " + passende ISO VG" : ""}, {total} Treffer
+            → gleiche Kategorie + grob passende Eigenschaften (ISO VG, Chemie), {total} Treffer
           </span>
           <Link
             href={(() => {
