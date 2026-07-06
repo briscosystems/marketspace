@@ -17,6 +17,7 @@ type SearchParams = Promise<{
   region?: string;
   status?: string;
   view?: string;
+  alt?: string; // Produktname → Alternativsuche vorbefüllt öffnen
 }>;
 
 const STATUS_LABEL: Record<string, string> = {
@@ -160,8 +161,9 @@ export default async function RfqListPage({ searchParams }: { searchParams: Sear
         )}
       </div>
 
-      {/* Alternativprodukt-Suche (KI + Web) — gehört in die Such-Abfrage */}
-      <AlternativeSearchPanel />
+      {/* Alternativprodukt-Suche (KI + Web) — gehört in die Such-Abfrage.
+          Per ?alt=<Produktname> (Knopf auf der Produktseite) vorbefüllt. */}
+      <AlternativeSearchPanel initialQuery={sp.alt} />
 
       <FilterBar
         count={cards.length}

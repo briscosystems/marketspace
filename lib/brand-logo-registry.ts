@@ -32,6 +32,7 @@ export const KNOWN_LOGO_SLUGS = new Set<string>([
   "lubrizol",
   "ml-lubrication",
   "master-fluid-solutions",
+  "mobil",
   "motul",
   "oks",
   "oelheld",
@@ -62,9 +63,6 @@ export function slugifyManufacturer(name: string): string {
 }
 
 const ALIAS: Record<string, string> = {
-  mobil: "esso", // ExxonMobil-Marken — wir haben kein Mobil-Logo, Esso als Fallback wäre falsch
-  // ↑ Bewusst KEIN Fallback: Mobil bleibt ohne Logo, damit Wordmark erscheint.
-  // ALIAS bleibt für echte Aliase reserviert.
   bantleon: "avia-bantleon",
   "carl-bechem": "bechem",
   "chemische-werke-kluthe": "kluthe",
@@ -84,10 +82,6 @@ const ALIAS: Record<string, string> = {
   "fuchs-schmierstoffe": "fuchs",
   "fuchs-petrolub": "fuchs",
 };
-
-// Bewusst Mobil aus ALIAS entfernen — wir wollen für Mobil das Wordmark zeigen,
-// nicht fälschlich das Esso-Logo.
-delete ALIAS.mobil;
 
 /**
  * Gibt den Pfad zum Logo zurück, oder null wenn keins hinterlegt ist.

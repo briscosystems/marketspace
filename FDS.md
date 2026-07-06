@@ -763,6 +763,43 @@ Ranking ist ausschließlich intern und für Nutzer nicht erkennbar (siehe C.2).
 - **Nächster großer Hebel:** Treuhand/abgesicherte Zahlung (baut auf Stripe auf;
   für vollen Käuferschutz Stripe Connect / Escrow nötig — eigenes Projekt).
 
+## C.7 Einkäufer-Funktionen (Zielgruppe: Einkauf von CNC-Fertigern) — umgesetzt
+
+Abgeleitet aus der Bedarfsanalyse „Was Einkäufer konkret suchen" (Juli 2026).
+Die zwei größten ungedeckten Bedürfnisse — Äquivalenz-Vergleich und
+Gesamtkostenbetrachtung — sind jetzt abgedeckt:
+
+- **Gesamtkostenrechner (TCO)** `components/TcoCalculator.tsx`: übersetzt
+  Konzentratpreis × Konzentration × Verbrauch × Standzeit in **€/Jahr pro
+  Maschine** und **€/L fertige Emulsion** (inkl. Entsorgung bei Tankwechsel).
+  Auf jeder Produktseite (wassermischbare KSS, Marktpreis vorbefüllt) und als
+  Vergleichstabelle auf `/compare` (gleiche Betriebsdaten, günstigstes Produkt
+  markiert). Fehlende Herstellerangaben → Standardwerte, mit `*` gekennzeichnet.
+- **Äquivalenz-Suche prominent:** Knopf „Alternative zu diesem Produkt finden"
+  auf jeder Produktseite → öffnet die KI-Alternativsuche (`/rfqs?alt=…`)
+  vorbefüllt und sucht sofort (häufigster Fall: Lieferantenwechsel).
+- **Preisverläufe mehrerer Produkte in einem Chart**
+  (`components/MultiPriceHistoryChart.tsx`) auf `/compare`; Produkte werden per
+  Häkchen in der Marktpreis-Tabelle (`/prices`) eingesammelt.
+- **KSS-Finder-Filter „Inhaltsstoffe & Wasser":** borfrei (TRGS 611),
+  formaldehydfrei, eigene Wasserhärte (°dH). Ausgeschlossen wird nur, was laut
+  Datenlage NICHT passt — Produkte ohne Angabe bleiben sichtbar.
+- **GHS-/CLP-Gefahrenpiktogramme** als eigene SVG-Komponente
+  (`components/GhsPictogram.tsx`) auf Produktseiten und SDS-Detail; erklärende
+  Übersichtsseite `/wissen/gefahrensymbole` mit Bestandszahlen.
+- **Gebinde-Bilder überall:** realistisches 200-L-Fass (Sicken) / IBC (weiße
+  HDPE-Blase im Gitterkäfig auf Palette) / Kanister mit echtem Hersteller-Logo
+  als Etikett — auf allen produktzeigenden Seiten (`lib/product-packaging.ts`
+  wählt das Gebinde stabil je Kategorie/ID). Mobil-Logo ergänzt (41 Marken).
+- **Schema-Erweiterung (Compliance/TCO-Grundlage):** `SafetyDataSheet.wgkClass`
+  (Wassergefährdungsklasse) + `avvCode` (Abfallschlüssel),
+  `Product.typicalSumpLifeWeeks` (Emulsions-Standzeit). Felder noch unbefüllt.
+
+**Offen (nächste Schritte):** Maschinen-/Kunden-Freigaben strukturieren
+(DMG Mori/Index, Boeing/Airbus-Specs); SDS-Parser um WGK/AVV erweitern;
+Konzentrations-/Standzeit-Daten nachpflegen (aktuell 3 von 139 KSS mit
+Konzentrationsangabe); Rahmenverträge/Preisbindung (V2).
+
 ---
 
 *Dieses Dokument ist die initiale Grundlage. Es wird mit Fortschritt des Projekts weiter verfeinert.*

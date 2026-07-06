@@ -218,6 +218,10 @@ model Product {
   recommendedConcentrationMin Float?  // % v/v
   recommendedConcentrationMax Float?  // % v/v
 
+  // Typische Emulsions-Standzeit im Tank (Wochen) — Herstellerangabe/Praxiswert,
+  // fließt in die Gesamtkostenrechnung (Wechsel = Stillstand + Entsorgung)
+  typicalSumpLifeWeeks        Int?
+
   // pH
   phConcentrate Float?
   phEmulsionMin Float?           // bei Soll-Konzentration
@@ -901,6 +905,10 @@ model SafetyDataSheet {
   hasBactericide            Boolean?    // MIT, BIT, CMIT, OIT, Formaldehyd-Donatoren
   hasFungicide              Boolean?    // IPBC, Pyrithion-Natrium etc.
   biocidalActives           String[]  @default([])  // konkrete Wirkstoffe als Strings
+
+  // Entsorgung / Gewässerschutz (Section 12/13/15) — Einkäufer-Compliance
+  wgkClass         String?                  // Wassergefährdungsklasse: "nwg", "1", "2", "3"
+  avvCode          String?                  // Abfallschlüssel nach AVV, z.B. "12 01 09*"
 
   // Transport (Section 14)
   adrClass         String?                  // "9", "3", "kein Gefahrgut"

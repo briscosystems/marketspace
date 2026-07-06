@@ -3,6 +3,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { SDS_CATEGORY_LABEL, SDS_LANGUAGE_LABEL } from "@/lib/sds";
 import { ProductImage } from "@/components/ProductImage";
+import { GhsPictogram, GHS_NAMES } from "@/components/GhsPictogram";
 import {
   AlertOctagon,
   AlertTriangle,
@@ -230,11 +231,14 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
               {sds.ghsPictograms.length > 0 && (
                 <div>
                   <div className="text-xs font-semibold uppercase text-slate-500">Piktogramme</div>
-                  <div className="mt-1 flex flex-wrap gap-1">
+                  <div className="mt-1.5 flex flex-wrap items-start gap-3">
                     {sds.ghsPictograms.map((p) => (
-                      <span key={p} className="rounded bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700 ring-1 ring-red-200">
-                        {p}
-                      </span>
+                      <div key={p} className="flex flex-col items-center gap-0.5" style={{ width: 76 }}>
+                        <GhsPictogram code={p} size={52} />
+                        <span className="text-center text-[10px] leading-tight text-slate-600">
+                          {GHS_NAMES[p] ?? p}
+                        </span>
+                      </div>
                     ))}
                   </div>
                 </div>

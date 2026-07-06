@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { ManufacturerLogo } from "@/components/ManufacturerLogo";
+import { ProductImage } from "@/components/ProductImage";
+import { packagingForProduct } from "@/lib/product-packaging";
 import { CompareToggle } from "@/components/compare/CompareToggle";
 import { getCurrentPricesBatch } from "@/lib/price-aggregation";
 import { ExternalLink, Globe } from "lucide-react";
@@ -165,13 +167,21 @@ export default async function ManufacturerDetailPage({
                       key={p.id}
                       className="group relative flex items-start gap-3 rounded-lg border border-slate-200 bg-white p-3 transition hover:border-brand-400 hover:shadow-soft"
                     >
-                      <Link href={`/products/${m.slug}/${p.slug}`} className="min-w-0 flex-1">
-                        <div className="text-sm font-semibold text-slate-900 group-hover:text-brand-700">
-                          {p.name}
-                        </div>
-                        <div className="mt-0.5 text-xs text-slate-500">
-                          {CATEGORY_LABEL[p.category] ?? p.category}
-                          {p.chemistry ? ` · ${p.chemistry.replace("_", "-").toLowerCase()}` : ""}
+                      <Link href={`/products/${m.slug}/${p.slug}`} className="flex min-w-0 flex-1 items-center gap-2.5">
+                        <ProductImage
+                          manufacturer={m.name}
+                          productName={p.name}
+                          packaging={packagingForProduct(p.category, p.id)}
+                          size="xs"
+                        />
+                        <div className="min-w-0">
+                          <div className="text-sm font-semibold text-slate-900 group-hover:text-brand-700">
+                            {p.name}
+                          </div>
+                          <div className="mt-0.5 text-xs text-slate-500">
+                            {CATEGORY_LABEL[p.category] ?? p.category}
+                            {p.chemistry ? ` · ${p.chemistry.replace("_", "-").toLowerCase()}` : ""}
+                          </div>
                         </div>
                       </Link>
                       <div className="flex shrink-0 items-center gap-2">

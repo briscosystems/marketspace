@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { ManufacturerLogo } from "@/components/ManufacturerLogo";
 import { RefractometerCalculator } from "@/components/RefractometerCalculator";
 import { CompareToggle } from "@/components/compare/CompareToggle";
 import { recommendMaterialsForProduct } from "@/lib/seal-recommendations";
@@ -9,7 +8,11 @@ import { getMonthlyMedianHistory, getCurrentMarketPrice } from "@/lib/price-aggr
 import { PriceHistoryChart } from "@/components/PriceHistoryChart";
 import { PriceSubmitLauncher } from "@/components/PriceSubmitLauncher";
 import { ProductIssuesSection } from "@/components/ProductIssuesSection";
-import { Droplets, Beaker, FileText, ExternalLink, AlertTriangle, Shield, AlertOctagon, CheckCircle2, FileSearch, TrendingUp } from "lucide-react";
+import { GhsPictogramRow, GHS_NAMES } from "@/components/GhsPictogram";
+import { ProductImage } from "@/components/ProductImage";
+import { packagingForProduct } from "@/lib/product-packaging";
+import { TcoCalculator } from "@/components/TcoCalculator";
+import { Droplets, Beaker, FileText, ExternalLink, AlertTriangle, Shield, AlertOctagon, CheckCircle2, FileSearch, TrendingUp, Sparkles } from "lucide-react";
 
 const CATEGORY_LABEL: Record<string, string> = {
   COOLANT_WATER_MIX: "KSS (wassermischbar)",
@@ -72,6 +75,7 @@ export default async function ProductDetailPage({
           pageCount: true,
           signalWord: true,
           hStatements: true,
+          ghsPictograms: true,
           reachCompliant: true,
           svhcSubstances: true,
           containsBoron: true,
@@ -137,7 +141,13 @@ export default async function ProductDetailPage({
       </nav>
 
       <header className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-6 sm:flex-row sm:items-center">
-        <ManufacturerLogo name={m.name} logoPath={m.logoPath} height={64} />
+        {/* Gebinde-Bild mit Hersteller-Logo als Etikett */}
+        <ProductImage
+          manufacturer={m.name}
+          productName={product.name}
+          packaging={packagingForProduct(product.category, product.id)}
+          size="lg"
+        />
         <div className="flex-1">
           <div className="text-xs uppercase tracking-wide text-slate-500">{m.name}</div>
           <h1 className="mt-0.5 page-title">{product.name}</h1>
@@ -170,8 +180,16 @@ export default async function ProductDetailPage({
           {product.description ? (
             <p className="mt-3 text-sm text-slate-700">{product.description}</p>
           ) : null}
-          <div className="mt-3">
+          <div className="mt-3 flex flex-wrap items-center gap-2">
             <CompareToggle id={product.id} kind="products" />
+            {/* Häufigster Einkäufer-Anwendungsfall: Äquivalent bei Lieferantenwechsel */}
+            <Link
+              href={`/rfqs?alt=${encodeURIComponent(`${m.name} ${product.name}`)}#alternativen`}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-purple-300 bg-purple-50 px-3 py-1.5 text-xs font-medium text-purple-700 transition hover:bg-purple-100"
+            >
+              <Sparkles size={14} />
+              Alternative zu diesem Produkt finden
+            </Link>
           </div>
         </div>
       </header>
@@ -183,6 +201,26 @@ export default async function ProductDetailPage({
         manufacturer={m.name}
         currentPrice={currentPrice}
       />
+
+      {/* GESAMTKOSTENRECHNER — nur für wassermischbare KSS sinnvoll
+          (€/Jahr aus Konzentration × Verbrauch × Standzeit) */}
+      {product.category === "COOLANT_WATER_MIX" && (
+        <TcoCalculator
+          product={{
+            id: product.id,
+            name: product.name,
+            manufacturer: m.name,
+            priceEurPerL:
+              currentPrice && currentPrice.unitLabel === "EUR/L" ? currentPrice.median : null,
+            concentrationPct:
+              product.recommendedConcentrationMin != null &&
+              product.recommendedConcentrationMax != null
+                ? (product.recommendedConcentrationMin + product.recommendedConcentrationMax) / 2
+                : null,
+            sumpLifeWeeks: product.typicalSumpLifeWeeks,
+          }}
+        />
+      )}
 
       <div className="grid gap-6 lg:grid-cols-3">
         {/* LINKE SPALTE: Technische Daten + Werkstoffe */}
@@ -718,6 +756,7 @@ function LinkedSdsCard({
     pageCount: number | null;
     signalWord: string | null;
     hStatements: string[];
+    ghsPictograms: string[];
     reachCompliant: boolean | null;
     svhcSubstances: string[];
     containsBoron: boolean | null;
@@ -780,6 +819,25 @@ function LinkedSdsCard({
           </span>
         )}
       </div>
+
+      {/* GHS-/REACH-Gefahrenpiktogramme */}
+      {sds.ghsPictograms.length > 0 && (
+        <div className="mt-3">
+          <div className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+            Gefahrenpiktogramme (CLP/REACH)
+          </div>
+          <div className="mt-1.5 flex flex-wrap items-start gap-3">
+            {sds.ghsPictograms.map((code) => (
+              <div key={code} className="flex flex-col items-center gap-0.5" style={{ width: 68 }}>
+                <GhsPictogramRow codes={[code]} size={44} />
+                <span className="text-center text-[9px] leading-tight text-slate-500">
+                  {GHS_NAMES[code] ?? code}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Physiko-Werte aus SDS, falls vorhanden */}
       {(sds.phValue !== null || sds.flashpointC !== null || sds.densityGcm3 !== null) && (

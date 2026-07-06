@@ -70,11 +70,13 @@ const FIT_BADGE: Record<AltMatch["fit"], { label: string; cls: string }> = {
   weak: { label: "Schwach", cls: "bg-slate-100 text-slate-600" },
 };
 
-export function AlternativeSearchPanel() {
-  const [enabled, setEnabled] = useState(false);
+export function AlternativeSearchPanel({ initialQuery }: { initialQuery?: string }) {
+  // Mit vorbefülltem Produkt (z.B. Knopf "Alternative finden" auf der
+  // Produktseite) startet das Panel sofort geöffnet und sucht los.
+  const [enabled, setEnabled] = useState(!!initialQuery);
   const [mode, setMode] = useState<"product" | "requirements">("product");
 
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery ?? "");
   const [category, setCategory] = useState("");
   const [chemistry, setChemistry] = useState("");
   const [isoViscosity, setIsoViscosity] = useState("");
@@ -158,7 +160,7 @@ export function AlternativeSearchPanel() {
   }
 
   return (
-    <div className="rounded-xl border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-white p-4">
+    <div id="alternativen" className="rounded-xl border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-white p-4">
       <button
         type="button"
         onClick={() => setEnabled((v) => !v)}

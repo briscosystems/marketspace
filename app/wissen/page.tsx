@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { ProductImage } from "@/components/ProductImage";
+import { packagingForProduct } from "@/lib/product-packaging";
 import {
   AlertOctagon,
   AlertTriangle,
@@ -57,7 +59,7 @@ export default async function WissenPage({ searchParams }: { searchParams: Searc
       where,
       include: {
         product: {
-          select: { name: true, slug: true, manufacturer: { select: { name: true, slug: true } } },
+          select: { id: true, name: true, slug: true, category: true, manufacturer: { select: { name: true, slug: true } } },
         },
       },
       orderBy: [{ severity: "desc" }, { reportCount: "desc" }, { createdAt: "desc" }],
@@ -98,8 +100,17 @@ export default async function WissenPage({ searchParams }: { searchParams: Searc
           Herstellern — Fleckenbildung auf Werkstücken, Schaum, Korrosion, Verkeimung,
           Hautverträglichkeit u. v. m. Durchsuchbar und je Produkt verknüpft.
         </p>
-        <div className="mt-3 text-sm font-semibold text-slate-500">
-          {total} dokumentierte Praxis-Fälle
+        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <span className="text-sm font-semibold text-slate-500">
+            {total} dokumentierte Praxis-Fälle
+          </span>
+          <Link
+            href="/wissen/gefahrensymbole"
+            className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-semibold text-red-700 hover:bg-red-100"
+          >
+            <AlertOctagon size={13} />
+            Gefahrensymbole (GHS) erklärt →
+          </Link>
         </div>
       </section>
 
@@ -154,8 +165,14 @@ export default async function WissenPage({ searchParams }: { searchParams: Searc
                   {it.product?.manufacturer && (
                     <Link
                       href={`/products/${it.product.manufacturer.slug}/${it.product.slug}`}
-                      className="text-sm text-brand-700 hover:underline"
+                      className="mt-1 inline-flex items-center gap-2 text-sm text-brand-700 hover:underline"
                     >
+                      <ProductImage
+                        manufacturer={it.product.manufacturer.name}
+                        productName={it.product.name}
+                        packaging={packagingForProduct(it.product.category, it.product.id)}
+                        size="xs"
+                      />
                       {it.product.manufacturer.name} · {it.product.name}
                     </Link>
                   )}

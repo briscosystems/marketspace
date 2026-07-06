@@ -214,12 +214,11 @@ function renderDrum(
   const ryLid = 4.2;
   const bodyH = bottom - top;
 
-  // Drei Stahlring-Y-Positionen
-  const r1y = top + bodyH * 0.18;
-  const r2y = top + bodyH * 0.5;
-  const r3y = top + bodyH * 0.82;
+  // Zwei Sicken (gerollte Rippen) — wie beim echten 200-L-Fass bei ~1/3 und ~2/3
+  const r1y = top + bodyH * 0.3;
+  const r3y = top + bodyH * 0.7;
 
-  // Label-Band-Bereich
+  // Label-Band-Bereich zwischen den Sicken
   const labelTop = r1y + 3;
   const labelBot = r3y - 3;
 
@@ -257,10 +256,9 @@ function renderDrum(
       {/* Vertikaler Glanzstreifen leicht links der Mitte */}
       <rect x={cx - rx + 4} y={top + 2} width="5" height={bodyH - 4} fill={`url(#${gid}-shine)`} />
 
-      {/* Drei Stahlringe — realistischer mit Highlight + Schatten */}
-      <SteelRing cx={cx} rx={rx} y={r1y} h={3.2} gid={gid} />
-      <SteelRing cx={cx} rx={rx} y={r2y} h={3.2} gid={gid} />
-      <SteelRing cx={cx} rx={rx} y={r3y} h={3.2} gid={gid} />
+      {/* Zwei Sicken (Rippen) in Fassfarbe — wie beim Original gerollt */}
+      <BodyRib cx={cx} rx={rx} y={r1y} gid={gid} color={colors.primary} />
+      <BodyRib cx={cx} rx={rx} y={r3y} gid={gid} color={colors.primary} />
 
       {/* Etikett — großes weißes Mittelband mit Logo oder Wordmark.
           Produktname steht ohnehin neben dem Bild, deshalb keine doppelte
@@ -308,50 +306,42 @@ function renderDrum(
   );
 }
 
-function SteelRing({
+/**
+ * Sicke — gerollte Rippe in Fassfarbe, wie beim echten 200-L-Stahlfass.
+ * Wirkt über schmale Licht-/Schattenkanten plastisch, ohne Fremdfarbe.
+ */
+function BodyRib({
   cx,
   rx,
   y,
-  h,
   gid,
+  color,
 }: {
   cx: number;
   rx: number;
   y: number;
-  h: number;
   gid: string;
+  color: string;
 }) {
   return (
     <g>
-      {/* Dunkler Schatten oberhalb */}
-      <rect x={cx - rx - 0.4} y={y - h / 2 - 0.6} width={rx * 2 + 0.8} height="0.8" fill="#000" opacity="0.55" />
-      {/* Stahlring-Korpus */}
-      <rect
-        x={cx - rx - 0.5}
-        y={y - h / 2}
-        width={rx * 2 + 1}
-        height={h}
-        fill={`url(#${gid}-steel)`}
-      />
-      {/* Helle Highlight-Linie auf der Oberseite */}
-      <rect x={cx - rx - 0.5} y={y - h / 2} width={rx * 2 + 1} height="0.5" fill="#fff" opacity="0.7" />
-      {/* Tiefer Schatten unten */}
-      <rect x={cx - rx - 0.5} y={y + h / 2 - 0.5} width={rx * 2 + 1} height="0.5" fill="#000" opacity="0.5" />
-      {/* Zylinder-Wölbung über den Ring (subtle, damit der Ring rund wirkt) */}
-      <rect
-        x={cx - rx - 0.5}
-        y={y - h / 2}
-        width={rx * 2 + 1}
-        height={h}
-        fill={`url(#${gid}-cyl)`}
-        opacity="0.6"
-      />
+      {/* Rippen-Korpus: minimal über die Fasskante hinaus */}
+      <rect x={cx - rx - 0.7} y={y - 1.6} width={rx * 2 + 1.4} height="3.2" rx="1.4" fill={color} />
+      {/* Lichtkante oben */}
+      <rect x={cx - rx - 0.7} y={y - 1.6} width={rx * 2 + 1.4} height="0.9" rx="0.45" fill="#fff" opacity="0.35" />
+      {/* Schattenkante unten */}
+      <rect x={cx - rx - 0.7} y={y + 0.8} width={rx * 2 + 1.4} height="0.8" rx="0.4" fill="#000" opacity="0.35" />
+      {/* Schattenwurf unterhalb der Sicke auf dem Korpus */}
+      <rect x={cx - rx} y={y + 1.7} width={rx * 2} height="0.7" fill="#000" opacity="0.18" />
+      {/* Zylinder-Wölbung über die Rippe */}
+      <rect x={cx - rx - 0.7} y={y - 1.6} width={rx * 2 + 1.4} height="3.2" rx="1.4" fill={`url(#${gid}-cyl)`} opacity="0.8" />
     </g>
   );
 }
 
 // ============================================================================
-// IBC — isometrische 3D-Box mit Gitterkäfig (realistischer als vorher)
+// IBC — originalgetreu: weiße HDPE-Blase im verzinkten Rohr-Gitterkäfig auf
+// Palette, Deckel-Stutzen oben, Auslaufventil unten, Etikett als Schild vorn.
 // ============================================================================
 function renderIbc(
   colors: ReturnType<typeof brandColors>,
@@ -359,12 +349,14 @@ function renderIbc(
   gid: string,
   logoPath: string | null,
 ) {
-  const fx = 14,
-    fy = 28,
-    fw = 60,
-    fh = 60;
-  const dx = 14,
-    dy = -10;
+  // Frontfläche des Käfigs
+  const fx = 15,
+    fy = 26,
+    fw = 62,
+    fh = 56;
+  // Isometrische Tiefe nach rechts-oben
+  const dx = 12,
+    dy = -9;
 
   const topPoly = [
     [fx, fy],
@@ -383,91 +375,113 @@ function renderIbc(
     .map((p) => p.join(","))
     .join(" ");
 
+  // Gitter: 6 Spalten × 4 Reihen (wie beim Original-Käfig)
+  const cols = 6,
+    rowsN = 4;
+  const colXs = Array.from({ length: cols - 1 }, (_, i) => fx + ((i + 1) * fw) / cols);
+  const rowYs = Array.from({ length: rowsN - 1 }, (_, i) => fy + ((i + 1) * fh) / rowsN);
+
+  const palletTop = fy + fh; // 82
+
   return (
     <>
       <CommonDefs gid={gid} primary={colors.primary} />
+      <defs>
+        {/* Naturweißes HDPE mit leichter Transluzenz-Schattierung */}
+        <linearGradient id={`${gid}-hdpe`} x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#cfd6dd" />
+          <stop offset="18%" stopColor="#eef1f4" />
+          <stop offset="45%" stopColor="#fafbfc" />
+          <stop offset="75%" stopColor="#e4e8ec" />
+          <stop offset="100%" stopColor="#b9c2cb" />
+        </linearGradient>
+        {/* Verzinktes Rohr */}
+        <linearGradient id={`${gid}-zinc`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#f1f5f9" />
+          <stop offset="45%" stopColor="#cbd5e1" />
+          <stop offset="100%" stopColor="#8fa0b3" />
+        </linearGradient>
+      </defs>
 
       {/* Weicher Boden-Schatten */}
-      <GroundShadow cx={50} cy={96} rx={46} ry={5} gid={gid} />
+      <GroundShadow cx={50} cy={95} rx={45} ry={4.5} gid={gid} />
 
-      {/* Holzpalette (Vorderkante) */}
-      <rect x={fx - 2} y="89" width={fw + dx + 4} height="5" fill="#a78b6e" />
-      <rect x={fx - 2} y="89" width={fw + dx + 4} height="1.5" fill="#000" opacity="0.25" />
-      <rect x={fx + 2} y="89" width="3" height="5" fill="#000" opacity="0.5" />
-      <rect x={fx + fw / 2 - 1.5} y="89" width="3" height="5" fill="#000" opacity="0.5" />
-      <rect x={fx + fw - 5} y="89" width="3" height="5" fill="#000" opacity="0.5" />
-      {/* Palette Tiefe (rechts) */}
+      {/* ---------- Palette (Kunststoff/Holz-Mix wie beim Original) ---------- */}
+      {/* Deckbrett */}
+      <rect x={fx - 3} y={palletTop} width={fw + 6} height="3.2" fill="#ab8763" />
+      <rect x={fx - 3} y={palletTop} width={fw + 6} height="0.9" fill="#fff" opacity="0.25" />
+      {/* Tiefe des Deckbretts */}
       <polygon
-        points={`${fx + fw + 2},89 ${fx + fw + dx + 2},${89 + dy * 0.3} ${fx + fw + dx + 2},${94 + dy * 0.3} ${fx + fw + 2},94`}
-        fill="#7c6650"
+        points={`${fx + fw + 3},${palletTop} ${fx + fw + dx + 3},${palletTop + dy * 0.35} ${fx + fw + dx + 3},${palletTop + dy * 0.35 + 3.2} ${fx + fw + 3},${palletTop + 3.2}`}
+        fill="#8a6c4e"
       />
+      {/* Klötze + Bodenbrett */}
+      {[fx - 2, fx + fw / 2 - 3.5, fx + fw - 4].map((bx, i) => (
+        <rect key={i} x={bx} y={palletTop + 3.2} width="7" height="5.4" fill="#7d6247" />
+      ))}
+      {[fx - 2, fx + fw / 2 - 3.5, fx + fw - 4].map((bx, i) => (
+        <rect key={i} x={bx} y={palletTop + 3.2} width="7" height="1" fill="#000" opacity="0.25" />
+      ))}
+      <rect x={fx - 3} y={palletTop + 8.6} width={fw + 6} height="2.4" fill="#93714f" />
 
-      {/* Rechte Seitenfläche (dunkler) */}
-      <polygon points={rightPoly} fill={colors.primary} />
-      <polygon points={rightPoly} fill="#000" opacity="0.35" />
+      {/* ---------- HDPE-Blase (hinter dem Gitter sichtbar) ---------- */}
+      {/* Oberseite der Blase */}
+      <polygon points={topPoly} fill="#dfe4e9" />
+      <polygon points={topPoly} fill="#fff" opacity="0.35" />
+      {/* rechte Seite der Blase */}
+      <polygon points={rightPoly} fill={`url(#${gid}-hdpe)`} />
+      <polygon points={rightPoly} fill="#000" opacity="0.22" />
+      {/* Front der Blase — leicht hinter den Käfig zurückgesetzt */}
+      <rect x={fx + 0.8} y={fy + 0.8} width={fw - 1.6} height={fh - 1.6} rx="2.5" fill={`url(#${gid}-hdpe)`} />
+      {/* Füllstand-Andeutung: Öl schimmert unten leicht durch */}
+      <rect x={fx + 0.8} y={fy + fh * 0.55} width={fw - 1.6} height={fh * 0.45 - 0.8} rx="2.5" fill={colors.primary} opacity="0.10" />
 
-      {/* Oberfläche */}
-      <polygon points={topPoly} fill={colors.primary} />
-      <polygon points={topPoly} fill="#000" opacity="0.18" />
-      {/* Einfüllstutzen oben */}
-      <ellipse
-        cx={fx + fw / 2 + dx / 2}
-        cy={fy + dy / 2}
-        rx="6"
-        ry="2.2"
-        fill="#475569"
-      />
-      <ellipse
-        cx={fx + fw / 2 + dx / 2}
-        cy={fy + dy / 2}
-        rx="6"
-        ry="2.2"
-        fill={`url(#${gid}-steel)`}
-        opacity="0.7"
-      />
-      <ellipse
-        cx={fx + fw / 2 + dx / 2}
-        cy={fy + dy / 2 + 0.5}
-        rx="3.8"
-        ry="1.2"
-        fill="#1e293b"
-      />
+      {/* Einfüll-Deckel oben (schwarzer Schraubdeckel) */}
+      <ellipse cx={fx + fw / 2 + dx / 2} cy={fy + dy / 2} rx="6.5" ry="2.4" fill="#0f172a" />
+      <ellipse cx={fx + fw / 2 + dx / 2} cy={fy + dy / 2 - 0.7} rx="6.5" ry="2.4" fill="#1e293b" />
+      <ellipse cx={fx + fw / 2 + dx / 2} cy={fy + dy / 2 - 0.7} rx="4.2" ry="1.5" fill="#475569" />
 
-      {/* Vorderfläche */}
-      <rect x={fx} y={fy} width={fw} height={fh} fill={colors.primary} />
-      <rect x={fx} y={fy} width={fw} height={fh} fill={`url(#${gid}-cyl)`} opacity="0.7" />
-      <rect x={fx} y={fy} width={fw} height={fh} fill={`url(#${gid}-vert)`} opacity="0.6" />
-
-      {/* Käfig-Gitter (Front) */}
-      <g stroke="#334155" strokeWidth="0.8" opacity="0.9" fill="none">
-        <rect x={fx} y={fy} width={fw} height={fh} />
-        <line x1={fx} y1={fy + fh / 4} x2={fx + fw} y2={fy + fh / 4} />
-        <line x1={fx} y1={fy + fh / 2} x2={fx + fw} y2={fy + fh / 2} />
-        <line x1={fx} y1={fy + (fh * 3) / 4} x2={fx + fw} y2={fy + (fh * 3) / 4} />
-        <line x1={fx + fw / 4} y1={fy} x2={fx + fw / 4} y2={fy + fh} />
-        <line x1={fx + fw / 2} y1={fy} x2={fx + fw / 2} y2={fy + fh} />
-        <line x1={fx + (fw * 3) / 4} y1={fy} x2={fx + (fw * 3) / 4} y2={fy + fh} />
-      </g>
-      {/* Käfig auf der Seitenfläche */}
-      <g stroke="#334155" strokeWidth="0.6" opacity="0.85" fill="none">
-        <line x1={fx + fw} y1={fy + fh / 4} x2={fx + fw + dx} y2={fy + fh / 4 + dy} />
-        <line x1={fx + fw} y1={fy + fh / 2} x2={fx + fw + dx} y2={fy + fh / 2 + dy} />
-        <line x1={fx + fw} y1={fy + (fh * 3) / 4} x2={fx + fw + dx} y2={fy + (fh * 3) / 4 + dy} />
+      {/* ---------- Verzinkter Rohr-Gitterkäfig ---------- */}
+      {/* horizontale Rohre (Front) */}
+      {[fy, ...rowYs, fy + fh].map((y, i) => (
+        <g key={`h${i}`}>
+          <rect x={fx - 1} y={y - 1.1} width={fw + 2} height="2.2" rx="1.1" fill={`url(#${gid}-zinc)`} />
+          <rect x={fx - 1} y={y - 1.1} width={fw + 2} height="0.7" rx="0.35" fill="#fff" opacity="0.55" />
+        </g>
+      ))}
+      {/* vertikale Rohre (Front) */}
+      {[fx, ...colXs, fx + fw].map((x, i) => (
+        <g key={`v${i}`}>
+          <rect x={x - 1.1} y={fy - 1} width="2.2" height={fh + 2} rx="1.1" fill={`url(#${gid}-zinc)`} />
+          <rect x={x - 1.1} y={fy - 1} width="0.7" height={fh + 2} rx="0.35" fill="#fff" opacity="0.45" />
+        </g>
+      ))}
+      {/* Käfig-Tiefe: obere + seitliche Kanten */}
+      <g stroke="#aab6c2" strokeWidth="1.6" strokeLinecap="round">
+        <line x1={fx} y1={fy} x2={fx + dx} y2={fy + dy} />
         <line x1={fx + fw} y1={fy} x2={fx + fw + dx} y2={fy + dy} />
-        <line x1={fx + fw} y1={fy + fh} x2={fx + fw + dx} y2={fy + fh + dy} />
+        <line x1={fx + dx} y1={fy + dy} x2={fx + fw + dx} y2={fy + dy} />
+        <line x1={fx + fw + dx} y1={fy + dy} x2={fx + fw + dx} y2={fy + fh + dy} />
+        <line x1={fx + fw + dx} y1={fy + fh + dy} x2={fx + fw} y2={fy + fh} />
+      </g>
+      {/* seitliche Gitterrohre (angedeutet) */}
+      <g stroke="#aab6c2" strokeWidth="1" opacity="0.9" strokeLinecap="round">
+        {rowYs.map((y, i) => (
+          <line key={i} x1={fx + fw} y1={y} x2={fx + fw + dx} y2={y + dy} />
+        ))}
       </g>
 
-      {/* Ablassventil unten Mitte */}
-      <rect x={fx + fw / 2 - 4} y={fy + fh - 1.5} width="8" height="4" fill="#475569" rx="0.5" />
-      <circle cx={fx + fw / 2} cy={fy + fh + 0.5} r="1.5" fill="#1e293b" />
-      <rect x={fx + fw / 2 - 1} y={fy + fh + 2.5} width="2" height="4" fill="#334155" />
+      {/* ---------- Auslaufventil unten Mitte ---------- */}
+      <rect x={fx + fw / 2 - 4.5} y={fy + fh - 4} width="9" height="5" rx="1" fill="#dc2626" />
+      <rect x={fx + fw / 2 - 4.5} y={fy + fh - 4} width="9" height="1.4" rx="0.7" fill="#fff" opacity="0.3" />
+      <rect x={fx + fw / 2 - 1.6} y={fy + fh + 1} width="3.2" height="2.6" fill="#1e293b" />
 
-      {/* Etikett vorne — Logo oder Wordmark */}
-      <g transform={`translate(${fx + 5}, ${fy + fh / 2 - 10})`}>
-        <rect x="0" y="0" width={fw - 10} height="20" fill="#ffffff" rx="1" />
+      {/* ---------- Etikett als Schild am Käfig (oben links, wie Original) ---------- */}
+      <g transform={`translate(${fx + 4.5}, ${fy + 4.5})`}>
+        <rect x="0" y="0" width="26" height="15" rx="1" fill="#ffffff" stroke="#cbd5e1" strokeWidth="0.5" />
         <LabelContent
-          width={fw - 10}
-          height={20}
+          width={26}
+          height={15}
           brand={brand}
           logoPath={logoPath}
           primary={colors.primary}

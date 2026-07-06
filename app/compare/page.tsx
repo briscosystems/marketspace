@@ -1,12 +1,16 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { ManufacturerLogo } from "@/components/ManufacturerLogo";
+import { ProductImage } from "@/components/ProductImage";
+import { packagingForProduct } from "@/lib/product-packaging";
 import { CompareRemoveButton } from "@/components/compare/CompareToggle";
 import { AiAnalysisPanel } from "@/components/compare/AiAnalysisPanel";
 import { BrandLogo } from "@/components/BrandLogo";
 import { PACKAGING_LABEL } from "@/lib/branding";
 import { getCachedAnalysis } from "@/lib/comparison-analysis";
-import { GitCompare, AlertCircle, AlertTriangle, ListChecks, Boxes } from "lucide-react";
+import { getMonthlyMedianHistory, getCurrentPricesBatch } from "@/lib/price-aggregation";
+import { MultiPriceHistoryChart, type PriceSeries } from "@/components/MultiPriceHistoryChart";
+import { TcoComparePanel } from "@/components/TcoCalculator";
+import { GitCompare, AlertCircle, AlertTriangle, ListChecks, Boxes, TrendingUp } from "lucide-react";
 
 export const metadata = {
   title: "Vergleich — Brisco Marketplace",
@@ -318,6 +322,37 @@ export default async function ComparePage({
     .map((id) => products.find((p) => p.id === id))
     .filter((p): p is NonNullable<typeof p> => p != null);
 
+  // Preisverlauf je Produkt (für den gemeinsamen Mehr-Produkt-Chart) laden.
+  const priceSeries: PriceSeries[] = (
+    await Promise.all(
+      sortedProducts.map(async (p) => ({
+        productId: p.id,
+        name: p.name,
+        manufacturer: p.manufacturer.name,
+        data: await getMonthlyMedianHistory(p.id),
+      })),
+    )
+  );
+  const hasAnyPriceData = priceSeries.some((s) => s.data.length > 0);
+
+  // Gesamtkosten-Vergleich: nur für wassermischbare KSS im Vergleich sinnvoll
+  const tcoProducts = sortedProducts.filter((p) => p.category === "COOLANT_WATER_MIX");
+  const tcoPrices = await getCurrentPricesBatch(tcoProducts.map((p) => p.id));
+  const tcoInputs = tcoProducts.map((p) => {
+    const price = tcoPrices.get(p.id);
+    return {
+      id: p.id,
+      name: p.name,
+      manufacturer: p.manufacturer.name,
+      priceEurPerL: price && price.unitLabel === "EUR/L" ? price.median : null,
+      concentrationPct:
+        p.recommendedConcentrationMin != null && p.recommendedConcentrationMax != null
+          ? (p.recommendedConcentrationMin + p.recommendedConcentrationMax) / 2
+          : null,
+      sumpLifeWeeks: p.typicalSumpLifeWeeks,
+    };
+  });
+
   const total = sortedListings.length + sortedProducts.length;
 
   // KI-Bewertung: Cache vor-laden (synchron mit Page-Render), Mixed-Type-Check
@@ -464,6 +499,30 @@ export default async function ComparePage({
               <span className="text-sm font-normal text-slate-500">({sortedProducts.length})</span>
             </h2>
           </div>
+
+          {/* Preisverlauf-Vergleich — mehrere Produkte in einem Chart */}
+          {sortedProducts.length >= 1 ? (
+            <div className="rounded-xl border border-slate-200 bg-white p-4">
+              <div className="mb-3 flex items-center gap-2">
+                <TrendingUp size={16} className="text-amber-600" />
+                <h3 className="text-sm font-semibold text-slate-700">
+                  Preisverlauf-Vergleich
+                </h3>
+              </div>
+              {hasAnyPriceData ? (
+                <MultiPriceHistoryChart series={priceSeries} />
+              ) : (
+                <p className="rounded-lg border border-dashed border-slate-300 bg-slate-50/40 p-6 text-center text-sm text-slate-500">
+                  Für die ausgewählten Produkte liegen noch keine verifizierten Preisdaten
+                  vor.
+                </p>
+              )}
+            </div>
+          ) : null}
+
+          {/* Gesamtkosten-Vergleich (€/Jahr) — der Einkäufer-Blick */}
+          {tcoInputs.length >= 2 ? <TcoComparePanel products={tcoInputs} /> : null}
+
           <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
             <table className="w-full text-sm">
               <thead>
@@ -478,10 +537,11 @@ export default async function ComparePage({
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex flex-col gap-2">
-                          <ManufacturerLogo
-                            name={p.manufacturer.name}
-                            logoPath={p.manufacturer.logoPath}
-                            height={36}
+                          <ProductImage
+                            manufacturer={p.manufacturer.name}
+                            productName={p.name}
+                            packaging={packagingForProduct(p.category, p.id)}
+                            size="sm"
                           />
                           <Link
                             href={`/products/${p.manufacturer.slug}/${p.slug}`}

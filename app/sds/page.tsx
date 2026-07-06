@@ -5,6 +5,8 @@ import { FilterBar } from "@/components/FilterBar";
 import { FilterDropdown } from "@/components/FilterDropdown";
 import { SearchInput } from "@/components/SearchInput";
 import { buildSearchWhere } from "@/lib/normalize-search";
+import { ProductImage } from "@/components/ProductImage";
+import { packagingForProduct } from "@/lib/product-packaging";
 import { FileText } from "lucide-react";
 import type { SdsCategory } from "@prisma/client";
 
@@ -185,7 +187,14 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
               href={`/sds/${s.id}`}
               className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0 hover:text-brand-500"
             >
-              <div className="min-w-0 flex-1">
+              <div className="flex min-w-0 flex-1 items-center gap-2.5">
+                <ProductImage
+                  manufacturer={s.manufacturer}
+                  productName={s.productName}
+                  packaging={packagingForProduct(s.category, s.id)}
+                  size="xs"
+                />
+                <div className="min-w-0">
                 <div className="font-medium">
                   {s.manufacturer} · {s.productName}
                 </div>
@@ -207,6 +216,7 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
                   {s.containsPrimaryAromaticAmines === true && <Pill color="rose">PAA</Pill>}
                   {s.hasBactericide === true && <Pill color="indigo">Bakterizid</Pill>}
                   {s.hasFungicide === true && <Pill color="indigo">Fungizid</Pill>}
+                </div>
                 </div>
               </div>
               <span className="shrink-0 rounded-full bg-brand-50 px-2.5 py-0.5 text-xs text-brand-700">

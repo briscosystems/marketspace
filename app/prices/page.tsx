@@ -5,6 +5,9 @@ import { FilterBar } from "@/components/FilterBar";
 import { FilterDropdown } from "@/components/FilterDropdown";
 import { SearchInput } from "@/components/SearchInput";
 import { buildSearchWhere } from "@/lib/normalize-search";
+import { CompareToggle } from "@/components/compare/CompareToggle";
+import { ProductImage } from "@/components/ProductImage";
+import { packagingForProduct } from "@/lib/product-packaging";
 import { TrendingUp } from "lucide-react";
 
 type SearchParams = Promise<{
@@ -142,6 +145,11 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
           <p className="text-sm text-slate-500">
             {productIdsWithPrices.length.toLocaleString("de-CH")} Produkte mit verifizierten Preisen
           </p>
+          <p className="mt-0.5 text-xs text-slate-400">
+            Tipp: In der Spalte <span className="font-medium text-slate-500">Vergleich</span>{" "}
+            mehrere Produkte anhaken → unten erscheint „Vergleich ansehen" mit den
+            Preisverläufen in einem Chart.
+          </p>
         </div>
       </div>
 
@@ -186,21 +194,32 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
                   <th className="px-3 py-2 text-right">Spanne</th>
                   <th className="px-3 py-2 text-center">Beob.</th>
                   <th className="px-3 py-2 text-center">Konfidenz</th>
+                  <th className="px-3 py-2 text-center">Vergleich</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {rows.slice(0, 200).map((r) => (
                   <tr key={r.id} className="hover:bg-slate-50">
                     <td className="px-3 py-2">
-                      <Link
-                        href={`/products/${r.manufacturer.slug}/${r.slug}`}
-                        className="font-medium hover:text-brand-600"
-                      >
-                        {r.manufacturer.name} · {r.name}
-                      </Link>
-                      <div className="text-[10px] text-slate-500">
-                        {CATEGORY_LABEL[r.category] ?? r.category}
-                        {r.chemistry ? ` · ${r.chemistry}` : ""}
+                      <div className="flex items-center gap-2.5">
+                        <ProductImage
+                          manufacturer={r.manufacturer.name}
+                          productName={r.name}
+                          packaging={packagingForProduct(r.category, r.id)}
+                          size="xs"
+                        />
+                        <div>
+                          <Link
+                            href={`/products/${r.manufacturer.slug}/${r.slug}`}
+                            className="font-medium hover:text-brand-600"
+                          >
+                            {r.manufacturer.name} · {r.name}
+                          </Link>
+                          <div className="text-[10px] text-slate-500">
+                            {CATEGORY_LABEL[r.category] ?? r.category}
+                            {r.chemistry ? ` · ${r.chemistry}` : ""}
+                          </div>
+                        </div>
                       </div>
                     </td>
                     <td className="px-3 py-2 text-right whitespace-nowrap font-bold">
@@ -227,6 +246,9 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
                       >
                         {r.price!.confidence}
                       </span>
+                    </td>
+                    <td className="px-3 py-2 text-center">
+                      <CompareToggle id={r.id} kind="products" variant="checkbox" />
                     </td>
                   </tr>
                 ))}

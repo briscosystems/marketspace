@@ -8,6 +8,8 @@ import { PriceRangeSlider } from "@/components/PriceRangeSlider";
 import { KssAiAnalysis } from "@/components/KssAiAnalysis";
 import { buildSearchWhere } from "@/lib/normalize-search";
 import { getCurrentPricesBatch } from "@/lib/price-aggregation";
+import { ProductImage } from "@/components/ProductImage";
+import { packagingForProduct } from "@/lib/product-packaging";
 import {
   APPLICATION_AREAS,
   MATERIALS,
@@ -30,6 +32,9 @@ type SearchParams = Promise<{
   minPrice?: string;
   maxPrice?: string;
   problemText?: string;
+  borFree?: string; // "1" → borhaltige Produkte ausschließen
+  formaldehydeFree?: string; // "1" → Produkte mit Formaldehyd-Depot ausschließen
+  waterHardness?: string; // °dH der eigenen Wasserqualität
 }>;
 
 // Sentinel für „Weiß nicht" — viele Endkunden kennen ihre Bearbeitung/Werkstoffe nicht.
@@ -101,6 +106,30 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
     ...(sp.manufacturer && { manufacturer: { name: { contains: sp.manufacturer, mode: "insensitive" } } }),
   };
 
+  // Inhaltsstoff-/Wasserhärte-Filter: Produkte mit BEKANNT unpassenden Werten
+  // ausschließen; Produkte ohne Angabe bleiben sichtbar (Datenlage lückenhaft).
+  // Nachträglich ins AND gemerged, damit das AND der Textsuche erhalten bleibt.
+  const extraConditions: import("@prisma/client").Prisma.ProductWhereInput[] = [];
+  if (sp.borFree === "1") {
+    extraConditions.push({ OR: [{ containsBor: false }, { containsBor: null }] });
+  }
+  if (sp.formaldehydeFree === "1") {
+    extraConditions.push({
+      OR: [{ containsFormaldehydeDepot: false }, { containsFormaldehydeDepot: null }],
+    });
+  }
+  const waterHardnessDh = sp.waterHardness ? parseFloat(sp.waterHardness) : undefined;
+  if (waterHardnessDh !== undefined && !Number.isNaN(waterHardnessDh)) {
+    extraConditions.push(
+      { OR: [{ waterHardnessMinDh: null }, { waterHardnessMinDh: { lte: waterHardnessDh } }] },
+      { OR: [{ waterHardnessMaxDh: null }, { waterHardnessMaxDh: { gte: waterHardnessDh } }] },
+    );
+  }
+  if (extraConditions.length > 0) {
+    const prevAnd = Array.isArray(where.AND) ? where.AND : where.AND ? [where.AND] : [];
+    where.AND = [...prevAnd, ...extraConditions];
+  }
+
   const productsRaw = await prisma.product.findMany({
     where,
     include: {
@@ -144,6 +173,10 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
     issues: issues.length,
     certs: certs.length,
     price: (minPrice !== undefined ? 1 : 0) + (maxPrice !== undefined ? 1 : 0),
+    ingredients:
+      (sp.borFree === "1" ? 1 : 0) +
+      (sp.formaldehydeFree === "1" ? 1 : 0) +
+      (waterHardnessDh !== undefined && !Number.isNaN(waterHardnessDh) ? 1 : 0),
   };
   const activeTotal = Object.values(counts).reduce((a, b) => a + b, 0) + (q ? 1 : 0);
 
@@ -269,6 +302,56 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
             </Collapsible>
 
             <Collapsible
+              title="Inhaltsstoffe & Wasser"
+              subtitle="borfrei, formaldehydfrei, Wasserhärte"
+              badgeCount={counts.ingredients}
+              defaultOpen={counts.ingredients > 0}
+            >
+              <div className="space-y-2">
+                <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
+                  <input
+                    type="checkbox"
+                    name="borFree"
+                    value="1"
+                    defaultChecked={sp.borFree === "1"}
+                    className="h-4 w-4 rounded border-slate-300 accent-brand-600"
+                  />
+                  borfrei <span className="text-[10px] text-slate-400">(TRGS 611 / Hautschutz)</span>
+                </label>
+                <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
+                  <input
+                    type="checkbox"
+                    name="formaldehydeFree"
+                    value="1"
+                    defaultChecked={sp.formaldehydeFree === "1"}
+                    className="h-4 w-4 rounded border-slate-300 accent-brand-600"
+                  />
+                  formaldehydfrei <span className="text-[10px] text-slate-400">(keine Depot-Stoffe)</span>
+                </label>
+                <label className="block text-sm text-slate-700">
+                  <span className="flex items-center gap-1">
+                    Meine Wasserhärte
+                    <span className="text-[10px] text-slate-400">(°dH — steht auf der Wasserrechnung)</span>
+                  </span>
+                  <input
+                    type="number"
+                    name="waterHardness"
+                    min={0}
+                    max={40}
+                    step={1}
+                    defaultValue={sp.waterHardness ?? ""}
+                    placeholder="z.B. 14"
+                    className="mt-1 w-28 rounded-md border border-slate-300 px-2 py-1.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-200"
+                  />
+                </label>
+                <p className="text-[10px] text-slate-500">
+                  Ausgeschlossen wird nur, was laut Datenlage NICHT passt — Produkte ohne
+                  Angabe bleiben sichtbar.
+                </p>
+              </div>
+            </Collapsible>
+
+            <Collapsible
               title="Marktpreis"
               subtitle="Spanne in EUR pro L oder kg"
               badgeCount={counts.price}
@@ -326,12 +409,20 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
               href={`/products/${p.manufacturer.slug}/${p.slug}`}
               className="card transition hover:-translate-y-0.5 hover:shadow-lift"
             >
-              <div className="flex items-baseline justify-between gap-2">
-                <div className="min-w-0 flex-1">
-                  <div className="text-xs uppercase tracking-wide text-slate-500">
-                    {p.manufacturer.name}
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex min-w-0 flex-1 items-center gap-2.5">
+                  <ProductImage
+                    manufacturer={p.manufacturer.name}
+                    productName={p.name}
+                    packaging={packagingForProduct(p.category, p.id)}
+                    size="sm"
+                  />
+                  <div className="min-w-0">
+                    <div className="text-xs uppercase tracking-wide text-slate-500">
+                      {p.manufacturer.name}
+                    </div>
+                    <div className="text-base font-semibold">{p.name}</div>
                   </div>
-                  <div className="text-base font-semibold">{p.name}</div>
                 </div>
                 <div className="flex shrink-0 flex-col items-end gap-1">
                   {p.price && (
