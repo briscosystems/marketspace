@@ -83,7 +83,7 @@ async function main() {
   await prisma.listing.create({
     data: {
       sellerId: alpha.id,
-      productType: "Kühlschmierstoff (KSS-Emulsion)",
+      productType: "Kühlschmierstoff (Emulsion, wassermischbar)",
       manufacturer: "Fuchs",
       productName: "Renolin MR 520",
       isoViscosity: "46",
@@ -165,7 +165,7 @@ async function main() {
   await prisma.rfq.create({
     data: {
       buyerId: beta.id,
-      productType: "Kühlschmierstoff (KSS-Emulsion)",
+      productType: "Kühlschmierstoff (Emulsion, wassermischbar)",
       isoViscosity: "46",
       chemistry: "SEMI_SYNTHETIC",
       applicationArea: "CNC-Schleifen / Wire-Drawing",

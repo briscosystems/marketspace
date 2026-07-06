@@ -13,7 +13,7 @@ const CAT_LABEL: Record<string, string> = {
   HYDRAULIC_OIL: "Hydrauliköl",
   GEAR_OIL: "Getriebeöl",
   GREASE: "Fett",
-  COOLANT_WATER_MIX: "KSS-Emulsion",
+  COOLANT_WATER_MIX: "Kühlschmierstoff (Emulsion, wassermischbar)",
   COOLANT_NEAT: "Schneidöl",
   GRINDING_OIL: "Schleiföl",
   COMPRESSOR_OIL: "Kompressoröl",
