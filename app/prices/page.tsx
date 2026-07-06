@@ -8,14 +8,32 @@ import { buildSearchWhere } from "@/lib/normalize-search";
 import { CompareToggle } from "@/components/compare/CompareToggle";
 import { ProductImage } from "@/components/ProductImage";
 import { packagingForProduct } from "@/lib/product-packaging";
-import { TrendingUp } from "lucide-react";
+import { SimilarToggle } from "@/components/SimilarToggle";
+import { TrendingUp, Sparkles } from "lucide-react";
 
 type SearchParams = Promise<{
   q?: string;
   category?: string;
   sort?: "price-asc" | "price-desc" | "name" | "manufacturer";
   price?: string;
+  similar?: string; // Komma-getrennte Produkt-IDs (Vergleichsauswahl) als Referenz
 }>;
+
+// Genormte ISO-VG-Klassen — nur diese Zahlen im Produktnamen zählen als
+// Viskositätsangabe (verhindert Fehltreffer wie "2000" in "Blasocut 2000").
+const ISO_VG_CLASSES = new Set([2, 3, 5, 7, 10, 15, 22, 32, 46, 68, 100, 150, 220, 320, 460, 680, 1000, 1500]);
+
+/** Extrahiert ISO-VG-Klassen aus viscosityIso-Feld und Produktname. */
+function extractVgClasses(viscosityIso: string | null, name: string): number[] {
+  const found = new Set<number>();
+  for (const src of [viscosityIso ?? "", name]) {
+    for (const m of src.matchAll(/\d{1,4}/g)) {
+      const n = parseInt(m[0], 10);
+      if (ISO_VG_CLASSES.has(n)) found.add(n);
+    }
+  }
+  return [...found];
+}
 
 export const metadata = { title: "Marktpreise — Brisco Marketplace" };
 
@@ -72,6 +90,7 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
       slug: true,
       category: true,
       chemistry: true,
+      viscosityIso: true,
       manufacturer: { select: { name: true, slug: true } },
     },
   });
@@ -88,6 +107,30 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
     .filter((r) => r.price !== null)
     .filter((r) => (minPrice === undefined || r.price!.median >= minPrice))
     .filter((r) => (maxPrice === undefined || r.price!.median <= maxPrice));
+
+  // "Nur ähnliche Produkte": angehakte Vergleichsprodukte als Referenz.
+  // Ähnlich = gleiche Kategorie; hat die Referenz ISO-VG-Klassen, fliegen
+  // Produkte mit NACHWEISLICH anderer VG raus (unbekannte VG bleibt sichtbar).
+  const similarIds = (sp.similar ?? "").split(",").filter(Boolean);
+  const similarRefs =
+    similarIds.length > 0
+      ? await prisma.product.findMany({
+          where: { id: { in: similarIds } },
+          select: { id: true, name: true, category: true, viscosityIso: true, manufacturer: { select: { name: true } } },
+        })
+      : [];
+  if (similarRefs.length > 0) {
+    const refCategories = new Set(similarRefs.map((r) => r.category));
+    const refVgs = new Set(similarRefs.flatMap((r) => extractVgClasses(r.viscosityIso, r.name)));
+    rows = rows.filter((r) => {
+      if (similarIds.includes(r.id)) return true; // Referenzen selbst immer zeigen
+      if (!refCategories.has(r.category)) return false;
+      if (refVgs.size === 0) return true;
+      const rowVgs = extractVgClasses(r.viscosityIso, r.name);
+      if (rowVgs.length === 0) return true; // VG unbekannt → nicht ausschließen
+      return rowVgs.some((v) => refVgs.has(v));
+    });
+  }
 
   // Sortieren
   rows.sort((a, b) => {
@@ -131,7 +174,8 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
     { value: "name", label: "Produktname A–Z" },
     { value: "manufacturer", label: "Hersteller A–Z" },
   ];
-  const filterCount = (sp.q ? 1 : 0) + (sp.category ? 1 : 0) + (sp.price ? 1 : 0);
+  const filterCount =
+    (sp.q ? 1 : 0) + (sp.category ? 1 : 0) + (sp.price ? 1 : 0) + (similarRefs.length > 0 ? 1 : 0);
 
   return (
     <div className="space-y-3">
@@ -167,6 +211,7 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
               options={sortOptions}
               widthClass="w-56"
             />
+            <SimilarToggle />
             <span className="text-xs text-slate-500">
               {total} {total === 1 ? "Produkt" : "Produkte"} mit Marktpreis
             </span>
@@ -176,6 +221,36 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
         <FilterDropdown label="Kategorie" paramKey="category" options={categoryOptions} />
         <FilterDropdown label="Preis" paramKey="price" options={priceOptions} />
       </FilterBar>
+
+      {/* Aktiver Ähnlichkeits-Filter: Referenzen anzeigen */}
+      {similarRefs.length > 0 ? (
+        <div className="flex flex-wrap items-center gap-2 rounded-lg border border-brand-200 bg-brand-50/50 px-3 py-2 text-xs text-slate-700">
+          <Sparkles size={14} className="shrink-0 text-brand-600" />
+          <span className="font-medium">Ähnlich zu:</span>
+          {similarRefs.map((r) => (
+            <span key={r.id} className="rounded-full bg-white px-2 py-0.5 ring-1 ring-brand-200">
+              {r.manufacturer.name} · {r.name}
+            </span>
+          ))}
+          <span className="text-slate-500">
+            → gleiche Kategorie{similarRefs.some((r) => extractVgClasses(r.viscosityIso, r.name).length > 0) ? " + passende ISO VG" : ""}, {total} Treffer
+          </span>
+          <Link
+            href={(() => {
+              const p = new URLSearchParams();
+              if (sp.q) p.set("q", sp.q);
+              if (sp.category) p.set("category", sp.category);
+              if (sp.sort) p.set("sort", sp.sort);
+              if (sp.price) p.set("price", sp.price);
+              const qs = p.toString();
+              return qs ? `/prices?${qs}` : "/prices";
+            })()}
+            className="ml-auto font-medium text-brand-700 hover:underline"
+          >
+            Filter aus
+          </Link>
+        </div>
+      ) : null}
 
       {/* ERGEBNISSE — Tabelle */}
       <div className="space-y-2">
