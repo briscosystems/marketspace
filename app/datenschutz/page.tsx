@@ -19,7 +19,10 @@ export default function DatenschutzPage() {
       </div>
 
       <Block title="1. Verantwortlicher">
-        <p>Brisco Systems GmbH, [ Adresse ], Linz, Österreich. Kontakt: [ datenschutz@… ].</p>
+        <p>
+          Brisco Systems GmbH, Huebacherweg 27, CH-8335 Hittnau, Schweiz. Kontakt:{" "}
+          <a className="text-brand-600 hover:underline" href="mailto:jgosch@brisco.ch">jgosch@brisco.ch</a>.
+        </p>
         <p>Datenschutz-Anfragen richten Sie bitte an die obige Adresse.</p>
       </Block>
 
@@ -45,27 +48,29 @@ export default function DatenschutzPage() {
         <ul className="ml-5 list-disc space-y-1">
           <li><strong>Stripe</strong> (Zahlungsabwicklung Kreditkarte).</li>
           <li><strong>Anthropic</strong> (KI-gestützte Produktempfehlungen / KSS-Finder).</li>
-          <li><strong>[ Hosting-/Server-Anbieter ]</strong> (Betrieb der Plattform & Datenbank).</li>
+          <li><strong>Railway</strong> (Hosting — Betrieb der Plattform & Datenbank).</li>
         </ul>
         <p>Mit allen Auftragsverarbeitern bestehen entsprechende Verträge (Art. 28 DSGVO).</p>
       </Block>
 
       <Block title="5. Speicherdauer">
         <p>Wir speichern personenbezogene Daten nur so lange, wie es für die genannten Zwecke
-          erforderlich ist bzw. gesetzliche Aufbewahrungsfristen (z. B. [ 7 Jahre ] für
-          Buchhaltungsdaten) es verlangen.</p>
+          erforderlich ist bzw. gesetzliche Aufbewahrungsfristen (z. B. 10 Jahre für
+          Geschäftsbücher nach Art. 958f OR) es verlangen.</p>
       </Block>
 
       <Block title="6. Ihre Rechte">
         <p>Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der
-          Verarbeitung, Datenübertragbarkeit und Widerspruch. Zudem besteht ein Beschwerderecht
-          bei der <strong>österreichischen Datenschutzbehörde</strong>{" "}
-          (<a className="text-brand-600 hover:underline" href="https://www.dsb.gv.at" target="_blank" rel="noopener noreferrer">www.dsb.gv.at</a>).</p>
+          Verarbeitung, Datenübertragbarkeit und Widerspruch. Aufsichtsstelle in der Schweiz ist
+          der <strong>Eidgenössische Datenschutz- und Öffentlichkeitsbeauftragte (EDÖB)</strong>{" "}
+          (<a className="text-brand-600 hover:underline" href="https://www.edoeb.admin.ch" target="_blank" rel="noopener noreferrer">www.edoeb.admin.ch</a>);
+          für EU-Nutzer besteht zudem ein Beschwerderecht bei der jeweils zuständigen
+          EU-Datenschutzbehörde.</p>
       </Block>
 
       <Block title="7. Cookies">
         <p>Wir verwenden nur technisch notwendige Cookies (z. B. für die Anmeldesitzung). Es
-          findet [ kein / ggf. anpassen ] Tracking zu Werbezwecken statt.</p>
+          findet kein Tracking zu Werbezwecken statt.</p>
       </Block>
     </div>
   );

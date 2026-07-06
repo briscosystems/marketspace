@@ -5,9 +5,9 @@ export const metadata = {
 };
 
 // Allgemeine Geschäftsbedingungen (Entwurf). B2B-Plattform, Vermittlermodell.
-// WICHTIG: kein Rechtsrat — muss vor Live-Gang von einer/einem österreichischen
-// Anwält:in geprüft werden (insb. AGB-Kontrolle nach § 879 ABGB, zwingende
-// Haftung, DSGVO, ggf. KSchG falls Verbraucher zugelassen werden).
+// WICHTIG: kein Rechtsrat — muss vor Live-Gang von einer/einem schweizerischen
+// Anwält:in geprüft werden (insb. AGB-Kontrolle nach Art. 8 UWG, zwingende
+// Haftung, DSG/DSGVO, Abgrenzung B2B).
 export default function AgbPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -21,8 +21,8 @@ export default function AgbPage() {
         <p>
           <strong>Hinweis (kein Rechtsrat):</strong> Dieser Text ist ein sorgfältig erstellter
           Entwurf, ersetzt aber keine anwaltliche Beratung. Vor dem Live-Betrieb muss er von einer
-          bzw. einem in Österreich zugelassenen Rechtsanwält:in geprüft werden — insbesondere die
-          Haftungs- und Gewährleistungsklauseln, die AGB-Inhaltskontrolle (§ 879 ABGB) und die
+          bzw. einem in der Schweiz zugelassenen Rechtsanwält:in geprüft werden — insbesondere die
+          Haftungs- und Gewährleistungsklauseln, die AGB-Inhaltskontrolle (Art. 8 UWG) und die
           Frage, ob ausschließlich Unternehmer (B2B) oder auch Verbraucher zugelassen sind.
         </p>
       </div>
@@ -30,9 +30,10 @@ export default function AgbPage() {
       <Section n="1" title="Geltungsbereich & Plattformbetreiber">
         <p>
           Diese AGB regeln die Nutzung des Online-Marktplatzes „Brisco" (nachfolgend „Plattform"),
-          betrieben von der <strong>Brisco Systems GmbH</strong>, Linz, Österreich (nachfolgend
-          „Brisco"). Die Plattform richtet sich <strong>ausschließlich an Unternehmer</strong> im
-          Sinne des § 1 KSchG bzw. § 1 UGB (Reseller, Hersteller, gewerbliche Endabnehmer). Eine
+          betrieben von der <strong>Brisco Systems GmbH</strong>, Huebacherweg 27, CH-8335 Hittnau,
+          Schweiz (nachfolgend
+          „Brisco"). Die Plattform richtet sich <strong>ausschließlich an Unternehmer</strong>
+          (Reseller, Hersteller, gewerbliche Endabnehmer). Eine
           Nutzung durch Verbraucher ist nicht vorgesehen.
         </p>
         <p>
@@ -172,8 +173,8 @@ export default function AgbPage() {
 
       <Section n="11" title="Datenschutz">
         <p>
-          Brisco verarbeitet personenbezogene Daten nach der Datenschutz-Grundverordnung (DSGVO) und
-          dem österreichischen Datenschutzgesetz. Einzelheiten regelt die gesonderte
+          Brisco verarbeitet personenbezogene Daten nach dem schweizerischen Datenschutzgesetz
+          (DSG) und — soweit anwendbar — der europäischen DSGVO. Einzelheiten regelt die gesonderte
           Datenschutzerklärung.
         </p>
       </Section>
@@ -188,14 +189,13 @@ export default function AgbPage() {
 
       <Section n="13" title="Anwendbares Recht & Gerichtsstand">
         <p>
-          Es gilt <strong>österreichisches Recht</strong> unter Einbeziehung der zwingenden Vorgaben
-          des <strong>Rechts der Europäischen Union</strong>. Die Anwendung des UN-Kaufrechts (CISG)
+          Es gilt <strong>schweizerisches Recht</strong>. Die Anwendung des UN-Kaufrechts (CISG)
           wird ausgeschlossen.
         </p>
         <p>
           Als ausschließlicher <strong>Gerichtsstand</strong> für alle Streitigkeiten aus oder im
           Zusammenhang mit der Nutzung der Plattform wird — soweit gesetzlich zulässig und im
-          unternehmerischen Verkehr — <strong>Linz, Österreich</strong> vereinbart.
+          unternehmerischen Verkehr — <strong>Zürich, Schweiz</strong> vereinbart.
         </p>
         <p>
           Sollte eine Bestimmung dieser AGB unwirksam sein, bleibt die Wirksamkeit der übrigen
