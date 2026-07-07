@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ContactSellerButton } from "@/components/ContactSellerButton";
+import { InquiryButtons } from "@/components/InquiryButtons";
 import { TrustBadge } from "@/components/TrustBadge";
 import { ProductImage } from "@/components/ProductImage";
 import { BrandLogo } from "@/components/BrandLogo";
@@ -121,10 +122,19 @@ export default async function ListingDetailPage({
                   Bearbeiten
                 </Link>
               ) : session?.user ? (
-                <ContactSellerButton
-                  sellerId={listing.seller.id}
-                  listingId={listing.id}
-                />
+                <>
+                  <ContactSellerButton
+                    sellerId={listing.seller.id}
+                    listingId={listing.id}
+                  />
+                  <InquiryButtons
+                    sellerId={listing.seller.id}
+                    listingId={listing.id}
+                    productLabel={`${listing.manufacturer} ${listing.productName}`}
+                    quantityUnit={listing.quantityUnit}
+                    minOrderQty={listing.minOrderQty}
+                  />
+                </>
               ) : (
                 <Link
                   href={`/login?callbackUrl=/listings/${listing.id}`}

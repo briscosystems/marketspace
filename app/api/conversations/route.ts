@@ -7,6 +7,9 @@ import { prisma } from "@/lib/prisma";
 const startSchema = z.object({
   sellerId: z.string().min(1),
   listingId: z.string().optional(),
+  // Optionale Erstnachricht — genutzt von "Muster anfordern" / "Angebot anfragen",
+  // damit der Thread direkt mit der strukturierten Anfrage beginnt.
+  initialMessage: z.string().trim().min(1).max(2000).optional(),
 });
 
 export async function POST(req: Request) {
@@ -19,7 +22,7 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid input" }, { status: 400 });
   }
-  const { sellerId, listingId } = parsed.data;
+  const { sellerId, listingId, initialMessage } = parsed.data;
   const buyerId = session.user.id;
   if (sellerId === buyerId) {
     return NextResponse.json(
@@ -31,7 +34,14 @@ export async function POST(req: Request) {
   const existing = await prisma.conversation.findFirst({
     where: { buyerId, sellerId, listingId: listingId ?? null },
   });
-  if (existing) return NextResponse.json(existing);
+  if (existing) {
+    if (initialMessage) {
+      await prisma.message.create({
+        data: { conversationId: existing.id, senderId: buyerId, body: initialMessage },
+      });
+    }
+    return NextResponse.json(existing);
+  }
 
   const seller = await prisma.user.findUnique({ where: { id: sellerId } });
   if (!seller) {
@@ -41,5 +51,10 @@ export async function POST(req: Request) {
   const conversation = await prisma.conversation.create({
     data: { buyerId, sellerId, listingId: listingId ?? null },
   });
+  if (initialMessage) {
+    await prisma.message.create({
+      data: { conversationId: conversation.id, senderId: buyerId, body: initialMessage },
+    });
+  }
   return NextResponse.json(conversation, { status: 201 });
 }
