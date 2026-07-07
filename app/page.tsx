@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ListingCard } from "@/components/ListingCard";
 import { OilBarrels } from "@/components/OilBarrels";
+import { ApplicationEntry } from "@/components/ApplicationEntry";
 import {
   FlaskConical,
   Building2,
@@ -106,6 +107,9 @@ async function PublicLanding() {
           </div>
         </Link>
       </section>
+
+      {/* Einstieg über die Aufgabe statt über den Produktnamen */}
+      <ApplicationEntry />
 
       {/* Entdecken — Wissensbasis */}
       <section className="grid gap-4 sm:grid-cols-3">
@@ -394,6 +398,9 @@ async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudo
           </div>
         </section>
       )}
+
+      {/* Einstieg über die Aufgabe statt über den Produktnamen */}
+      <ApplicationEntry />
     </div>
   );
 }
