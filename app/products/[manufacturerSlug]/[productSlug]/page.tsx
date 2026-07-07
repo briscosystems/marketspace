@@ -12,6 +12,7 @@ import { GhsPictogramRow, GHS_NAMES } from "@/components/GhsPictogram";
 import { ProductImage } from "@/components/ProductImage";
 import { packagingForProduct } from "@/lib/product-packaging";
 import { TcoCalculator } from "@/components/TcoCalculator";
+import { ComplianceBadges } from "@/components/ComplianceBadges";
 import { Droplets, Beaker, FileText, ExternalLink, AlertTriangle, Shield, AlertOctagon, CheckCircle2, FileSearch, TrendingUp, Sparkles } from "lucide-react";
 
 const CATEGORY_LABEL: Record<string, string> = {
@@ -176,6 +177,7 @@ export default async function ProductDetailPage({
             >
               {product.sourceConfidence}
             </span>
+            <ComplianceBadges product={product} />
           </div>
           {product.description ? (
             <p className="mt-3 text-sm text-slate-700">{product.description}</p>

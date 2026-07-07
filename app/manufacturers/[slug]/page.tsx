@@ -6,6 +6,7 @@ import { ProductImage } from "@/components/ProductImage";
 import { packagingForProduct } from "@/lib/product-packaging";
 import { CompareToggle } from "@/components/compare/CompareToggle";
 import { getCurrentPricesBatch } from "@/lib/price-aggregation";
+import { ComplianceBadges } from "@/components/ComplianceBadges";
 import { ExternalLink, Globe } from "lucide-react";
 
 const FOCUS_LABEL: Record<string, string> = {
@@ -185,6 +186,7 @@ export default async function ManufacturerDetailPage({
                         </div>
                       </Link>
                       <div className="flex shrink-0 items-center gap-2">
+                        <ComplianceBadges product={p} size="xs" max={2} />
                         {pricesMap.get(p.id) && (
                           <span
                             className="rounded-md bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold text-amber-900 ring-1 ring-amber-300"

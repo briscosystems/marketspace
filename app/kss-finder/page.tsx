@@ -18,6 +18,7 @@ import {
   PRODUCTION_TYPES,
   COOLANT_FORMS,
 } from "@/lib/kss-knowledge";
+import { ComplianceBadges } from "@/components/ComplianceBadges";
 import { Droplets, Sparkles, Tag } from "lucide-react";
 
 type SearchParams = Promise<{
@@ -444,6 +445,7 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
                 <p className="mt-2 line-clamp-2 text-sm text-slate-600">{p.description}</p>
               )}
               <div className="mt-3 flex flex-wrap gap-1 text-[10px]">
+                <ComplianceBadges product={p} size="xs" max={4} />
                 {p.applicationAreas.slice(0, 4).map((a) => (
                   <span key={a} className="rounded bg-slate-100 px-1.5 py-0.5 text-slate-700">
                     {a}
