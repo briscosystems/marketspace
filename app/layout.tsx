@@ -6,6 +6,7 @@ import { authOptions } from "@/lib/auth";
 import { HeaderNav } from "@/components/HeaderNav";
 import { Providers } from "./providers";
 import { CompareBar } from "@/components/compare/CompareBar";
+import { ConciergeWidget } from "@/components/ConciergeWidget";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 import { GateLogin } from "@/components/GateLogin";
 import { GATE_COOKIE, gateEnabled, isGateTokenValid } from "@/lib/gate";
@@ -135,6 +136,8 @@ export default async function RootLayout({
           </div>
           <main className="mx-auto max-w-6xl px-4 py-6 md:px-6 md:py-8">{children}</main>
           <CompareBar />
+          {/* KI-Concierge — schwebender Fachberater auf jeder Seite */}
+          <ConciergeWidget />
           <footer className="mt-12 border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500">
             <div>Brisco Systems GmbH · Prototyp v0.3 · Pseudonyme Reseller-Plattform</div>
             <div className="mt-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
