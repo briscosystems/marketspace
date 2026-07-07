@@ -19,9 +19,16 @@ export default function RegisterPage() {
     companyName: "",
     vatId: "",
     country: "DE",
+    referralCode: "",
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // Empfehlungs-Code aus dem Link übernehmen (/register?ref=Pseudonym)
+  useEffect(() => {
+    const ref = new URLSearchParams(window.location.search).get("ref");
+    if (ref) setForm((f) => ({ ...f, referralCode: ref }));
+  }, []);
   // Hinweis, wenn das eingegebene Pseudonym nicht zulässig war und wir es
   // selbständig durch einen neutralen Vorschlag ersetzt haben.
   const [pseudonymNote, setPseudonymNote] = useState<string | null>(null);
@@ -241,6 +248,21 @@ export default function RegisterPage() {
             onChange={(e) => update("vatId", e.target.value)}
             className="input"
           />
+        </div>
+
+        <div>
+          <label className="label">Empfehlungs-Code (optional)</label>
+          <input
+            type="text"
+            value={form.referralCode}
+            onChange={(e) => update("referralCode", e.target.value)}
+            placeholder="Pseudonym des Werbers"
+            className="input"
+          />
+          <p className="mt-1 text-xs text-slate-500">
+            Wurdest du von einem Brisco-Mitglied geworben? Dann erhält der Werber
+            eine Credit-Prämie.
+          </p>
         </div>
 
         {error && <div className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>}

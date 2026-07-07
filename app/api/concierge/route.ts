@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { buildSearchWhere } from "@/lib/normalize-search";
+import { chargeForAiAction, refundAiAction } from "@/lib/credits";
 
 // KI-Concierge — der digitale Fachberater (Mehrwerte-Baustein H).
 // Der Nutzer beschreibt sein Problem in normalen Worten; die Route sucht
@@ -236,14 +239,39 @@ export async function POST(req: Request) {
 
   const ctx = await gatherContext(lastUser.content);
 
-  if (process.env.ANTHROPIC_API_KEY) {
-    try {
-      const reply = await askClaude(messages, ctx);
-      return NextResponse.json({ reply, source: "anthropic-claude" });
-    } catch (err) {
-      console.error("Concierge: Claude-Aufruf fehlgeschlagen, nutze Fallback:", err);
+  // KI-Antwort kostet 1 Credit — ohne Anmeldung/Credits antwortet der
+  // regelbasierte Fallback mit denselben Daten plus Hinweis.
+  const session = await getServerSession(authOptions);
+  let notice = "";
+
+  if (process.env.ANTHROPIC_API_KEY && session?.user?.id) {
+    const charge = await chargeForAiAction(session.user.id, "concierge");
+    if (charge.ok) {
+      try {
+        const reply = await askClaude(messages, ctx);
+        return NextResponse.json({
+          reply,
+          source: "anthropic-claude",
+          creditBalance: charge.balance,
+        });
+      } catch (err) {
+        console.error("Concierge: Claude-Aufruf fehlgeschlagen, nutze Fallback:", err);
+        await refundAiAction(session.user.id, "concierge");
+        notice = "\n\n_KI gerade nicht erreichbar — dein Credit wurde erstattet._";
+      }
+    } else if (charge.reason === "no_credits") {
+      notice =
+        "\n\n_Dein Credit-Guthaben ist aufgebraucht — dies ist die einfache Suchantwort. Credits gibt es unter [Mitgliedschaft](/mitgliedschaft)._";
+    } else {
+      notice =
+        "\n\n_Kennenlernphase abgelaufen — für KI-Antworten bitte ein [Abo lösen](/mitgliedschaft)._";
     }
+  } else if (!session?.user?.id) {
+    notice = "\n\n_Melde dich an, um KI-Antworten zu erhalten — dies ist die einfache Suchantwort._";
   }
 
-  return NextResponse.json({ reply: heuristicReply(ctx), source: "heuristic-fallback" });
+  return NextResponse.json({
+    reply: heuristicReply(ctx) + notice,
+    source: "heuristic-fallback",
+  });
 }

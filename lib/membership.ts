@@ -1,5 +1,8 @@
 import type Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
+// Hinweis: credits.ts importiert umgekehrt isMembershipActive von hier — der
+// Zyklus ist unkritisch, weil beide Seiten nur hoistete Funktionen nutzen.
+import { grantCredits } from "@/lib/credits";
 
 // Jahres-Zugangsgebühr in Euro (ganzzahlig), aus der Umgebung; Default 290 €.
 export function membershipPriceEur(): number {
@@ -27,9 +30,10 @@ export async function extendMembership(userId: string, months = 12): Promise<Dat
 }
 
 /**
- * Erfüllt eine bezahlte Checkout-Session: markiert die Payment-Zeile als PAID
- * und verlängert die Mitgliedschaft — genau EINMAL (idempotent), egal ob der
- * Aufruf vom Webhook oder vom Erfolgs-Redirect kommt.
+ * Erfüllt eine bezahlte Checkout-Session — genau EINMAL (idempotent), egal ob
+ * der Aufruf vom Webhook oder vom Erfolgs-Redirect kommt:
+ *   - kind MEMBERSHIP → Mitgliedschaft um 12 Monate verlängern
+ *   - kind CREDITS    → gekaufte Credits gutschreiben (metadata.credits)
  */
 export async function fulfillCheckoutSession(session: Stripe.Checkout.Session): Promise<void> {
   const userId = session.metadata?.userId;
@@ -39,17 +43,27 @@ export async function fulfillCheckoutSession(session: Stripe.Checkout.Session): 
   const existing = await prisma.payment.findUnique({ where: { stripeSessionId: session.id } });
   if (existing?.status === "PAID") return; // bereits erfüllt
 
-  const until = await extendMembership(userId, 12);
+  const kind = session.metadata?.kind === "CREDITS" ? "CREDITS" : "MEMBERSHIP";
   const intentId =
     typeof session.payment_intent === "string"
       ? session.payment_intent
       : session.payment_intent?.id;
 
+  let periodEnd: Date | null = null;
+  if (kind === "MEMBERSHIP") {
+    periodEnd = await extendMembership(userId, 12);
+  } else {
+    const credits = parseInt(session.metadata?.credits ?? "0", 10);
+    if (credits > 0) {
+      await grantCredits(userId, credits, "PURCHASE", `Credit-Paket (${credits} Credits)`);
+    }
+  }
+
   const data = {
     status: "PAID" as const,
     stripePaymentIntentId: intentId,
     periodStart: new Date(),
-    periodEnd: until,
+    periodEnd,
   };
 
   if (existing) {
@@ -59,7 +73,7 @@ export async function fulfillCheckoutSession(session: Stripe.Checkout.Session): 
     await prisma.payment.create({
       data: {
         userId,
-        kind: "MEMBERSHIP",
+        kind,
         amountEur: (session.amount_total ?? 0) / 100,
         currency: session.currency ?? "eur",
         stripeSessionId: session.id,

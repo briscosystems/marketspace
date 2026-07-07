@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { findPseudonymLeak } from "@/lib/pseudonym";
+import { getAllSettings, grantCredits } from "@/lib/credits";
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -12,6 +13,8 @@ const registerSchema = z.object({
   companyName: z.string().min(2),
   vatId: z.string().optional(),
   country: z.string().length(2),
+  // Empfehlungs-Code = Pseudonym des Werbers (optional, aus ?ref=…)
+  referralCode: z.string().max(40).optional(),
 });
 
 export async function POST(req: Request) {
@@ -23,7 +26,8 @@ export async function POST(req: Request) {
       { status: 400 }
     );
   }
-  const { email, password, pseudonym, role, companyName, vatId, country } = parsed.data;
+  const { email, password, pseudonym, role, companyName, vatId, country, referralCode } =
+    parsed.data;
 
   // Schutz: Pseudonym darf die Identität nicht verraten (Firma, E-Mail,
   // USt-ID, bekannter Hersteller) — sonst kann die Plattform umgangen werden.
@@ -50,6 +54,18 @@ export async function POST(req: Request) {
     );
   }
 
+  // Monetarisierungs-Einstellungen (Superadmin) → Trial + Startguthaben
+  const settings = await getAllSettings();
+  const trialEndsAt = new Date(Date.now() + settings.trialDays * 24 * 60 * 60 * 1000);
+
+  // Referral: Empfehlungs-Code ist das Pseudonym des Werbers
+  const referrer = referralCode
+    ? await prisma.user.findUnique({
+        where: { pseudonym: referralCode },
+        select: { id: true, pseudonym: true },
+      })
+    : null;
+
   const passwordHash = await bcrypt.hash(password, 10);
   const user = await prisma.user.create({
     data: {
@@ -60,9 +76,30 @@ export async function POST(req: Request) {
       companyName,
       vatId,
       country: country.toUpperCase(),
+      trialEndsAt,
+      referredById: referrer?.id,
     },
     select: { id: true, pseudonym: true, role: true },
   });
+
+  // Startguthaben für die Kennenlernphase
+  if (settings.welcomeCredits > 0) {
+    await grantCredits(
+      user.id,
+      settings.welcomeCredits,
+      "WELCOME",
+      "Startguthaben Kennenlernphase",
+    );
+  }
+  // Referral-Prämie für den Werber
+  if (referrer && settings.referralCredits > 0) {
+    await grantCredits(
+      referrer.id,
+      settings.referralCredits,
+      "REFERRAL",
+      `Neukunde geworben: ${user.pseudonym}`,
+    );
+  }
 
   return NextResponse.json(user, { status: 201 });
 }

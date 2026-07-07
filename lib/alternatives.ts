@@ -26,8 +26,11 @@ export type MustHave = {
 
 export type AlternativeRanking = {
   listingId: string;
+  /** Match-Index 0–100 % — wie gut die Alternative zum Ausgangsprodukt passt */
   score: number;
   fit: "excellent" | "good" | "fair" | "weak";
+  /** Ein-Satz-Begründung, warum die Alternative (nicht) passt */
+  summary: string;
   pros: string[];
   cons: string[];
   warnings: string[];
@@ -51,39 +54,74 @@ function trim(text: string | null, n: number): string {
 export async function findAlternatives(
   sourceListingId: string,
   mustHave: MustHave,
+  opts: { allowAi?: boolean } = {},
 ): Promise<AlternativeResponse> {
+  const allowAi = opts.allowAi ?? true;
   const source = await prisma.listing.findUnique({
     where: { id: sourceListingId },
     include: { seller: { select: { pseudonym: true, trustTier: true } } },
   });
   if (!source) throw new Error("Source listing not found");
 
-  const where: import("@prisma/client").Prisma.ListingWhereInput = {
+  // Must-haves sind PRÄFERENZEN, keine harten Filter: Es werden immer
+  // Alternativen angezeigt — Kandidaten, die Kriterien verletzen, bekommen
+  // Punktabzug und einen niedrigen Match-Index statt auszuscheiden.
+  // Stufe 1: Kandidaten, die alle Kriterien erfüllen (beste Startpunkte).
+  const strictWhere: import("@prisma/client").Prisma.ListingWhereInput = {
     status: "ACTIVE",
     NOT: { id: source.id },
   };
-  if (mustHave.sameProductType) where.productType = source.productType;
-  if (mustHave.sameChemistry) where.chemistry = source.chemistry;
+  if (mustHave.sameProductType) strictWhere.productType = source.productType;
+  if (mustHave.sameChemistry) strictWhere.chemistry = source.chemistry;
   if (mustHave.sameViscosity && source.isoViscosity) {
-    where.isoViscosity = source.isoViscosity;
+    strictWhere.isoViscosity = source.isoViscosity;
   }
   if (mustHave.sameApplicationArea) {
-    where.applicationArea = {
+    strictWhere.applicationArea = {
       contains: source.applicationArea,
       mode: "insensitive",
     };
   }
-  if (mustHave.samePackaging) where.packaging = source.packaging;
+  if (mustHave.samePackaging) strictWhere.packaging = source.packaging;
   if (mustHave.requiredCertifications.length > 0) {
-    where.certificates = { hasEvery: mustHave.requiredCertifications };
+    strictWhere.certificates = { hasEvery: mustHave.requiredCertifications };
   }
 
+  const MAX_CANDIDATES = 12;
+  const include = { seller: { select: { pseudonym: true, trustTier: true } } } as const;
+
   const candidates = await prisma.listing.findMany({
-    where,
-    include: { seller: { select: { pseudonym: true, trustTier: true } } },
+    where: strictWhere,
+    include,
     orderBy: { createdAt: "desc" },
-    take: 12,
+    take: MAX_CANDIDATES,
   });
+
+  // Stufe 2: mit gleichem Produkttyp auffüllen, Stufe 3: alle übrigen aktiven.
+  if (candidates.length < MAX_CANDIDATES) {
+    const excluded = () => [source.id, ...candidates.map((c) => c.id)];
+    const sameType = await prisma.listing.findMany({
+      where: {
+        status: "ACTIVE",
+        id: { notIn: excluded() },
+        productType: source.productType,
+      },
+      include,
+      orderBy: { createdAt: "desc" },
+      take: MAX_CANDIDATES - candidates.length,
+    });
+    candidates.push(...sameType);
+
+    if (candidates.length < MAX_CANDIDATES) {
+      const rest = await prisma.listing.findMany({
+        where: { status: "ACTIVE", id: { notIn: excluded() } },
+        include,
+        orderBy: { createdAt: "desc" },
+        take: MAX_CANDIDATES - candidates.length,
+      });
+      candidates.push(...rest);
+    }
+  }
 
   if (candidates.length === 0) {
     return {
@@ -96,7 +134,7 @@ export async function findAlternatives(
       alternatives: [],
       modelUsed: "rule-based",
       reasoning:
-        "Kein aktives Listing erfüllt alle Must-have-Kriterien. Versuche es mit weniger strikten Kriterien.",
+        "Es gibt aktuell keine anderen aktiven Angebote auf dem Marktplatz.",
     };
   }
 
@@ -105,7 +143,7 @@ export async function findAlternatives(
     candidates.map((c) => findMatchingSds(c, 1).then((arr) => arr[0] ?? null)),
   );
 
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!allowAi || !process.env.ANTHROPIC_API_KEY) {
     return ruleBasedRanking(source, candidates, candidateSds, mustHave);
   }
 
@@ -121,6 +159,35 @@ export async function findAlternatives(
     console.error("Claude call failed, falling back:", e);
     return ruleBasedRanking(source, candidates, candidateSds, mustHave);
   }
+}
+
+/** Verletzt der Kandidat ein angekreuztes Must-have-Kriterium? → Liste der Verstöße */
+function mustHaveViolations(c: Listing, source: Listing, mh: MustHave): string[] {
+  const v: string[] = [];
+  if (mh.sameProductType && c.productType !== source.productType) {
+    v.push(`anderer Produkttyp (${c.productType})`);
+  }
+  if (mh.sameChemistry && c.chemistry !== source.chemistry) {
+    v.push(`andere Chemie-Basis (${c.chemistry})`);
+  }
+  if (mh.sameViscosity && source.isoViscosity && c.isoViscosity !== source.isoViscosity) {
+    v.push(`abweichende Viskosität (${c.isoViscosity ?? "ohne Angabe"})`);
+  }
+  if (
+    mh.sameApplicationArea &&
+    !c.applicationArea.toLowerCase().includes(source.applicationArea.toLowerCase())
+  ) {
+    v.push(`anderer Anwendungsbereich (${c.applicationArea})`);
+  }
+  if (mh.samePackaging && c.packaging !== source.packaging) {
+    v.push(`andere Verpackung (${c.packaging})`);
+  }
+  for (const req of mh.requiredCertifications) {
+    if (!c.certificates.some((x) => x.toLowerCase().includes(req.toLowerCase()))) {
+      v.push(`Pflicht-Freigabe fehlt: ${req}`);
+    }
+  }
+  return v;
 }
 
 function ruleBasedRanking(
@@ -166,12 +233,6 @@ function ruleBasedRanking(
     if (certMatches.length > 0) {
       pros.push(`Gemeinsame Freigaben: ${certMatches.join(", ")}`);
       score += certMatches.length * 5;
-    }
-    for (const req of mustHave.requiredCertifications) {
-      if (!c.certificates.some((x) => x.toLowerCase().includes(req.toLowerCase()))) {
-        cons.push(`Fehlende Pflicht-Freigabe: ${req}`);
-        score -= 20;
-      }
     }
     if (c.priceEur && source.priceEur) {
       const pct = ((c.priceEur - source.priceEur) / source.priceEur) * 100;
@@ -241,13 +302,36 @@ function ruleBasedRanking(
       }
     }
 
+    // Must-have-Verstöße: Punktabzug + Deckel bei 49 % — Kandidat bleibt
+    // sichtbar, wird aber klar als "erfüllt nicht alles" ausgewiesen.
+    const violations = mustHaveViolations(c, source, mustHave);
+    for (const v of violations) {
+      cons.push(`Must-have nicht erfüllt: ${v}`);
+      score -= 12;
+    }
+
+    let pct = Math.max(0, Math.min(100, score));
+    if (violations.length > 0) pct = Math.min(pct, 49);
+
     const fit: AlternativeRanking["fit"] =
-      score >= 60 ? "excellent" : score >= 40 ? "good" : score >= 20 ? "fair" : "weak";
+      pct >= 70 ? "excellent" : pct >= 50 ? "good" : pct >= 30 ? "fair" : "weak";
+
+    const summary =
+      violations.length > 0
+        ? `Nur bedingt geeignet: ${violations[0]}${violations.length > 1 ? ` (+${violations.length - 1} weitere Abweichung${violations.length > 2 ? "en" : ""})` : ""}.`
+        : pros.length > 0
+          ? `Passt in den Kernpunkten: ${pros
+              .slice(0, 2)
+              .map((p) => p.replace(/\s*\(.*?\)\s*$/, ""))
+              .join(", ")
+              .toLowerCase()}.`
+          : "Wenige Übereinstimmungen mit dem Ausgangsprodukt.";
 
     return {
       listingId: c.id,
-      score,
+      score: pct,
       fit,
+      summary,
       pros,
       cons,
       warnings,
@@ -266,7 +350,7 @@ function ruleBasedRanking(
     alternatives: ranked,
     modelUsed: "rule-based",
     reasoning:
-      "Regelbasierte Bewertung (kein KI-Schlüssel gesetzt oder KI-Aufruf fehlgeschlagen). Score nach gleicher Chemie/Viskosität/Produkttyp/Verpackung/Freigaben.",
+      "Regelbasierte Bewertung. Der Match-Index (0–100 %) misst die Übereinstimmung mit dem Ausgangsprodukt; Kandidaten, die Must-have-Kriterien verletzen, bleiben sichtbar, sind aber bei maximal 49 % gedeckelt.",
   };
 }
 
@@ -293,6 +377,8 @@ async function claudeRanking(
     "Bewerte für ein gegebenes Quell-Produkt, welche von mehreren Kandidaten als technische Alternative geeignet sind.",
     "Beziehe Viskosität, Chemie-Basis, Anwendungsbereich, Freigaben, Verpackung und – falls vorhanden – Sicherheitsdatenblatt-Inhalte ein.",
     "Sei ehrlich: wenn ein Kandidat nicht passt, sag das deutlich.",
+    "Kandidaten können die Must-have-Kriterien des Käufers verletzen — sie werden trotzdem bewertet:",
+    "Bei verletzten Must-haves darf der Score maximal 49 sein, und die Verletzung muss in cons klar benannt werden.",
     "Antworte ausschließlich als JSON-Objekt mit dem Schlüssel 'alternatives'.",
   ].join(" ");
 
@@ -313,7 +399,9 @@ async function claudeRanking(
     "",
     "## AUFGABE",
     "Bewerte jeden Kandidat (KANDIDAT_1, KANDIDAT_2 …) gegen das Quell-Produkt.",
-    "Score 0-100 (100 = perfekte Substitution). fit = excellent (>=80), good (60-79), fair (40-59), weak (<40).",
+    "score = Match-Index 0-100 (100 = perfekte Substitution). fit = excellent (>=70), good (50-69), fair (30-49), weak (<30).",
+    "Verletzt ein Kandidat ein Must-have-Kriterium: score maximal 49 und Verletzung in cons benennen.",
+    "summary: EIN deutscher Satz, der für einen Einkäufer begründet, warum die Alternative passt oder nicht passt.",
     "pros: 2-4 prägnante deutsche Stichpunkte (technische Übereinstimmung, geprüft gegen SDS-Inhalte).",
     "cons: 0-4 prägnante deutsche Stichpunkte (Risiken / Abweichungen).",
     "warnings: 0-3 Stichpunkte. Falls der Käufer Probleme genannt hat (z. B. Schaumbildung,",
@@ -321,7 +409,7 @@ async function claudeRanking(
     "Warnungen geben, sobald der Kandidat hinweisartig betroffen sein könnte (z. B.",
     "Borate/Amine bei Hautreizung, niedriger Flammpunkt bei Rauchbildung, Aluminium-",
     "Unverträglichkeit bei AlMg-Werkstoff). Wenn keine Hinweise gefunden werden, sag das.",
-    'Antwort als JSON: {"alternatives":[{"key":"KANDIDAT_1","score":0,"fit":"...","pros":[],"cons":[],"warnings":[]}]}',
+    'Antwort als JSON: {"alternatives":[{"key":"KANDIDAT_1","score":0,"fit":"...","summary":"...","pros":[],"cons":[],"warnings":[]}]}',
     "Nur JSON, kein Markdown, keine Erklärung außerhalb.",
   ]
     .filter(Boolean)
@@ -349,7 +437,7 @@ async function claudeRanking(
     ? raw.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/, "")
     : raw;
   const parsed = JSON.parse(jsonText) as {
-    alternatives: { key: string; score: number; fit: string; pros: string[]; cons: string[]; warnings?: string[] }[];
+    alternatives: { key: string; score: number; fit: string; summary?: string; pros: string[]; cons: string[]; warnings?: string[] }[];
   };
 
   const alternatives: AlternativeRanking[] = parsed.alternatives.map((a) => {
@@ -357,10 +445,11 @@ async function claudeRanking(
     const candidate = candidates[idx];
     return {
       listingId: candidate?.id ?? a.key,
-      score: a.score,
+      score: Math.max(0, Math.min(100, Math.round(a.score))),
       fit: (["excellent", "good", "fair", "weak"].includes(a.fit)
         ? a.fit
         : "fair") as AlternativeRanking["fit"],
+      summary: a.summary?.trim() || "Bewertung durch KI-Vergleich der Produktdaten und SDS-Inhalte.",
       pros: a.pros ?? [],
       cons: a.cons ?? [],
       warnings: a.warnings ?? [],

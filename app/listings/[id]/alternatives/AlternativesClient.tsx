@@ -1,8 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Sparkles, AlertTriangle, CheckCircle2, XCircle, Bot } from "lucide-react";
+import {
+  Sparkles,
+  AlertTriangle,
+  CheckCircle2,
+  XCircle,
+  Bot,
+  X,
+  ChevronRight,
+  Coins,
+} from "lucide-react";
 import { brandColors, readableOnLight } from "@/lib/branding";
 import { KssIssueSelect } from "@/components/KssIssueSelect";
 import { CertInput } from "@/components/CertInput";
@@ -11,11 +20,20 @@ import { withBasePath } from "@/lib/base-path";
 
 type AlternativeRanking = {
   listingId: string;
+  /** Match-Index 0–100 % */
   score: number;
   fit: "excellent" | "good" | "fair" | "weak";
+  /** Ein-Satz-Begründung */
+  summary: string;
   pros: string[];
   cons: string[];
   warnings: string[];
+};
+
+type CreditInfo = {
+  charged: number;
+  balance: number | null;
+  notice: string | null;
 };
 
 type Alternative = AlternativeRanking & {
@@ -43,6 +61,7 @@ type ApiResponse = {
   alternatives: AlternativeRanking[];
   modelUsed: "claude" | "rule-based";
   reasoning?: string;
+  credits?: CreditInfo;
 };
 
 const fitStyles: Record<
@@ -85,6 +104,17 @@ export function AlternativesClient(props: {
   const [result, setResult] = useState<ApiResponse | null>(null);
   const [enriched, setEnriched] = useState<Alternative[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [selected, setSelected] = useState<Alternative | null>(null);
+
+  // ESC schließt das Detail-Panel
+  useEffect(() => {
+    if (!selected) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setSelected(null);
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [selected]);
 
   async function search() {
     setLoading(true);
@@ -157,8 +187,10 @@ export function AlternativesClient(props: {
             {props.sourceProductName}
           </h1>
           <p className="mt-1 text-sm text-slate-600">
-            Wähle deine Must-have-Kriterien. Claude vergleicht die passenden aktiven Listings
-            anhand der Sicherheitsdatenblätter und liefert eine Empfehlung.
+            Wähle deine Must-have-Kriterien. Claude vergleicht die aktiven Angebote anhand
+            der Sicherheitsdatenblätter und bewertet jede Alternative mit einem
+            Match-Index von 0–100&nbsp;%. Es werden immer Alternativen angezeigt —
+            Kandidaten, die Kriterien verletzen, sind entsprechend niedriger bewertet.
           </p>
         </div>
 
@@ -251,8 +283,8 @@ export function AlternativesClient(props: {
               </div>
             )}
             <p className="mt-2 text-xs text-slate-500">
-              Tipp: nur ankreuzen, was wirklich Pflicht ist. Strikte Filter ergeben
-              schnell 0 Treffer.
+              Tipp: Kriterien wirken als Präferenz — Angebote, die abweichen, fallen
+              nicht raus, sondern bekommen einen niedrigeren Match-Index (max. 49&nbsp;%).
             </p>
           </div>
         </div>
@@ -371,27 +403,59 @@ export function AlternativesClient(props: {
             <h2 className="section-title">
               {enriched.length} Alternative(n) gefunden
             </h2>
-            <span
-              className={`chip ${
-                result.modelUsed === "claude"
-                  ? "bg-violet-50 text-violet-700 ring-1 ring-violet-200"
-                  : "bg-slate-100 text-slate-600 ring-1 ring-slate-200"
-              }`}
-            >
-              {result.modelUsed === "claude" ? "✨ KI-Bewertung" : "Regelbasiert"}
-            </span>
+            <div className="flex items-center gap-2">
+              {result.credits && result.credits.charged > 0 && (
+                <span className="chip bg-amber-50 text-amber-800 ring-1 ring-amber-200">
+                  <Coins size={12} className="mr-1 inline" />
+                  {result.credits.charged} Credit
+                  {result.credits.balance !== null
+                    ? ` · Rest: ${result.credits.balance}`
+                    : ""}
+                </span>
+              )}
+              <span
+                className={`chip ${
+                  result.modelUsed === "claude"
+                    ? "bg-violet-50 text-violet-700 ring-1 ring-violet-200"
+                    : "bg-slate-100 text-slate-600 ring-1 ring-slate-200"
+                }`}
+              >
+                {result.modelUsed === "claude" ? "✨ KI-Bewertung" : "Regelbasiert"}
+              </span>
+            </div>
           </div>
+          {result.credits?.notice && (
+            <p className="rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-900 ring-1 ring-amber-200">
+              {result.credits.notice}{" "}
+              <Link href="/mitgliedschaft" className="font-medium underline">
+                Zu Mitgliedschaft &amp; Credits
+              </Link>
+            </p>
+          )}
           {result.reasoning && (
             <p className="rounded-lg bg-slate-50 px-4 py-3 text-sm text-slate-600 ring-1 ring-slate-200">
               {result.reasoning}
             </p>
           )}
-          <div className="space-y-3">
-            {enriched.map((alt) => (
-              <AlternativeCard key={alt.listingId} alt={alt} />
+          <div className="overflow-hidden rounded-xl bg-white shadow-soft ring-1 ring-slate-200">
+            {enriched.map((alt, i) => (
+              <AlternativeRow
+                key={alt.listingId}
+                alt={alt}
+                rank={i + 1}
+                onOpen={() => setSelected(alt)}
+              />
             ))}
           </div>
+          <p className="text-xs text-slate-500">
+            Zeile anklicken für Details, Begründung und Angebot — das Detail-Panel
+            öffnet sich rechts.
+          </p>
         </div>
+      )}
+
+      {selected && (
+        <DetailSlideOver alt={selected} onClose={() => setSelected(null)} />
       )}
     </div>
   );
@@ -431,99 +495,228 @@ function Toggle({
   );
 }
 
-function AlternativeCard({ alt }: { alt: Alternative }) {
+/** Farbklassen des Match-Index — grün ≥70, limette ≥50, amber ≥30, rot darunter */
+function matchTone(score: number): { text: string; bar: string } {
+  if (score >= 70) return { text: "text-emerald-700", bar: "bg-emerald-500" };
+  if (score >= 50) return { text: "text-lime-700", bar: "bg-lime-500" };
+  if (score >= 30) return { text: "text-amber-700", bar: "bg-amber-500" };
+  return { text: "text-red-700", bar: "bg-red-500" };
+}
+
+/** Match-Index als Prozentzahl mit Balken */
+function MatchMeter({ score, size = "sm" }: { score: number; size?: "sm" | "lg" }) {
+  const tone = matchTone(score);
+  return (
+    <div className={size === "lg" ? "w-full" : "w-24 shrink-0"}>
+      <div className={`font-bold ${tone.text} ${size === "lg" ? "text-3xl" : "text-base"}`}>
+        {score} %
+      </div>
+      <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-slate-200">
+        <div className={`h-full rounded-full ${tone.bar}`} style={{ width: `${score}%` }} />
+      </div>
+    </div>
+  );
+}
+
+/** Kompakte Ergebnis-Zeile — Klick öffnet das Detail-Panel rechts */
+function AlternativeRow({
+  alt,
+  rank,
+  onOpen,
+}: {
+  alt: Alternative;
+  rank: number;
+  onOpen: () => void;
+}) {
   const fit = fitStyles[alt.fit];
   const l = alt.listing;
   const colors = l ? brandColors(l.manufacturer) : null;
   return (
-    <div
-      className="overflow-hidden rounded-xl bg-white shadow-soft ring-1 ring-slate-200"
-      style={colors ? { borderLeft: `5px solid ${colors.primary}` } : undefined}
+    <button
+      type="button"
+      onClick={onOpen}
+      className="flex w-full items-center gap-4 border-b border-slate-100 p-4 text-left transition last:border-0 hover:bg-slate-50"
+      style={colors ? { boxShadow: `inset 4px 0 0 ${colors.primary}` } : undefined}
     >
-      <div className="flex flex-wrap items-start justify-between gap-3 p-4">
-        <div className="min-w-0">
-          {l && colors ? (
-            <Link
-              href={`/listings/${l.id}`}
-              className="text-lg font-semibold hover:underline"
-              style={{ color: readableOnLight(colors) }}
-            >
-              {l.manufacturer} {l.productName}
-            </Link>
-          ) : l ? (
-            <Link
-              href={`/listings/${l.id}`}
-              className="text-lg font-semibold hover:underline"
-            >
-              {l.manufacturer} {l.productName}
-            </Link>
-          ) : (
-            <span className="text-lg font-semibold">Listing #{alt.listingId}</span>
-          )}
-          {l && (
-            <div className="text-xs text-slate-500">
-              {l.productType} · ISO VG {l.isoViscosity ?? "–"} · {l.chemistry} ·{" "}
-              {l.locationRegion}
-              {l.priceEur ? ` · ${l.priceEur.toFixed(2)} €` : ""}
-            </div>
-          )}
-        </div>
-        <div className="flex flex-col items-end gap-1">
-          <span
-            className={`chip ring-1 ${fit.classes} text-sm`}
-          >
-            {fit.label}
+      <span className="hidden w-6 shrink-0 text-center text-sm font-bold text-slate-400 sm:block">
+        {rank}
+      </span>
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="font-semibold text-slate-900">
+            {l ? `${l.manufacturer} ${l.productName}` : `Angebot #${alt.listingId.slice(-6)}`}
           </span>
-          <span className="text-xs text-slate-500">Score: {alt.score} / 100</span>
+          <span className={`chip ring-1 ${fit.classes} text-[11px]`}>{fit.label}</span>
         </div>
+        {l && (
+          <div className="mt-0.5 text-xs text-slate-500">
+            {l.productType} · ISO VG {l.isoViscosity ?? "–"} · {l.locationRegion}
+            {l.priceEur ? ` · ${l.priceEur.toFixed(2)} €` : " · Preis auf Anfrage"}
+          </div>
+        )}
+        <p className="mt-1 line-clamp-2 text-sm text-slate-600">{alt.summary}</p>
       </div>
+      <MatchMeter score={alt.score} />
+      <ChevronRight size={18} className="shrink-0 text-slate-300" />
+    </button>
+  );
+}
 
-      <div className="grid gap-4 border-t border-slate-200 bg-slate-50/40 p-4 md:grid-cols-2">
-        <div>
-          <div className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-emerald-700">
-            <CheckCircle2 size={14} />
-            Spricht dafür
-          </div>
-          {alt.pros.length === 0 ? (
-            <div className="text-sm italic text-slate-400">—</div>
-          ) : (
-            <ul className="space-y-1 text-sm text-slate-700">
-              {alt.pros.map((p, i) => (
-                <li key={i}>• {p}</li>
-              ))}
-            </ul>
-          )}
-        </div>
-        <div>
-          <div className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-red-700">
-            <XCircle size={14} />
-            Risiken / Abweichungen
-          </div>
-          {alt.cons.length === 0 ? (
-            <div className="text-sm italic text-slate-400">—</div>
-          ) : (
-            <ul className="space-y-1 text-sm text-slate-700">
-              {alt.cons.map((c, i) => (
-                <li key={i}>• {c}</li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
+/** Detail-Panel — schiebt sich von rechts über die Seite (wie im Browse-Konzept) */
+function DetailSlideOver({ alt, onClose }: { alt: Alternative; onClose: () => void }) {
+  const fit = fitStyles[alt.fit];
+  const l = alt.listing;
+  const colors = l ? brandColors(l.manufacturer) : null;
+  return (
+    <div className="fixed inset-0 z-50" role="dialog" aria-modal="true">
+      {/* Abdunkelung — Klick schließt */}
+      <div
+        className="absolute inset-0 bg-slate-900/40 backdrop-blur-[1px]"
+        onClick={onClose}
+      />
+      {/* Panel rechts */}
+      <aside className="absolute inset-y-0 right-0 flex w-full max-w-md translate-x-0 animate-[slideIn_.25s_ease-out] flex-col overflow-y-auto bg-white shadow-lift">
+        <style>{`@keyframes slideIn { from { transform: translateX(100%);} to { transform: translateX(0);} }`}</style>
 
-      {alt.warnings.length > 0 && (
-        <div className="flex items-start gap-2 border-t border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-          <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-600" />
-          <div>
-            <div className="mb-1 font-medium">Sicherheits- und Anwendungshinweise</div>
-            <ul className="space-y-1">
-              {alt.warnings.map((w, i) => (
-                <li key={i}>• {w}</li>
-              ))}
-            </ul>
+        {/* Kopf */}
+        <div
+          className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 p-5 backdrop-blur"
+          style={colors ? { borderTop: `5px solid ${colors.primary}` } : undefined}
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <div className="text-xs uppercase tracking-wide text-slate-500">
+                Alternative im Detail
+              </div>
+              <h3 className="mt-0.5 truncate text-lg font-bold text-slate-900">
+                {l ? `${l.manufacturer} ${l.productName}` : `Angebot #${alt.listingId.slice(-6)}`}
+              </h3>
+              <span className={`chip mt-1 ring-1 ${fit.classes} text-xs`}>{fit.label}</span>
+            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+              aria-label="Schließen"
+            >
+              <X size={20} />
+            </button>
           </div>
         </div>
-      )}
+
+        <div className="space-y-5 p-5">
+          {/* Match-Index groß */}
+          <section className="rounded-xl border border-slate-200 p-4">
+            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-500">
+              Match-Index zum Ausgangsprodukt
+            </div>
+            <MatchMeter score={alt.score} size="lg" />
+            <p className="mt-3 text-sm leading-relaxed text-slate-700">{alt.summary}</p>
+          </section>
+
+          {/* Angebots-Eckdaten */}
+          {l && (
+            <section className="rounded-xl border border-slate-200 p-4">
+              <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Angebots-Daten
+              </div>
+              <dl className="space-y-1.5 text-sm">
+                <DetailRow label="Produkttyp" value={l.productType} />
+                <DetailRow label="Chemie" value={l.chemistry} />
+                <DetailRow label="Viskosität" value={l.isoViscosity ? `ISO VG ${l.isoViscosity}` : "–"} />
+                <DetailRow label="Anwendung" value={l.applicationArea} />
+                <DetailRow label="Menge" value={`${l.quantity.toLocaleString("de-CH")} ${l.quantityUnit}`} />
+                <DetailRow label="Verpackung" value={l.packaging} />
+                <DetailRow label="Region" value={l.locationRegion} />
+                <DetailRow
+                  label="Preis"
+                  value={l.priceEur ? `${l.priceEur.toFixed(2)} € / ${l.quantityUnit}` : "auf Anfrage"}
+                />
+                <DetailRow label="Anbieter" value={l.seller.pseudonym} />
+              </dl>
+              {l.certificates.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-1">
+                  {l.certificates.map((c) => (
+                    <span key={c} className="rounded bg-slate-100 px-1.5 py-0.5 text-[11px] text-slate-700">
+                      {c}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </section>
+          )}
+
+          {/* Begründung im Detail */}
+          <section className="space-y-4">
+            <div>
+              <div className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                <CheckCircle2 size={14} /> Spricht dafür
+              </div>
+              {alt.pros.length === 0 ? (
+                <div className="text-sm italic text-slate-400">—</div>
+              ) : (
+                <ul className="space-y-1 text-sm text-slate-700">
+                  {alt.pros.map((p, i) => (
+                    <li key={i}>• {p}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <div>
+              <div className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-red-700">
+                <XCircle size={14} /> Risiken / Abweichungen
+              </div>
+              {alt.cons.length === 0 ? (
+                <div className="text-sm italic text-slate-400">—</div>
+              ) : (
+                <ul className="space-y-1 text-sm text-slate-700">
+                  {alt.cons.map((c, i) => (
+                    <li key={i}>• {c}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            {alt.warnings.length > 0 && (
+              <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+                <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-600" />
+                <ul className="space-y-1">
+                  {alt.warnings.map((w, i) => (
+                    <li key={i}>• {w}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </section>
+        </div>
+
+        {/* Aktionen */}
+        {l && (
+          <div className="sticky bottom-0 mt-auto flex gap-2 border-t border-slate-200 bg-white p-4">
+            <Link
+              href={`/listings/${l.id}`}
+              className="btn-primary flex-1 text-center"
+              style={colors ? { color: undefined } : undefined}
+            >
+              Zum Angebot
+            </Link>
+            <Link
+              href={`/listings/${l.id}`}
+              className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-center text-sm font-medium text-slate-700 hover:bg-slate-50"
+            >
+              Muster / Angebot anfragen
+            </Link>
+          </div>
+        )}
+      </aside>
+    </div>
+  );
+}
+
+function DetailRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex justify-between gap-4">
+      <dt className="shrink-0 text-slate-500">{label}</dt>
+      <dd className="text-right font-medium text-slate-900">{value}</dd>
     </div>
   );
 }

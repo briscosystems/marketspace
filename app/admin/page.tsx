@@ -2,7 +2,14 @@ import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { updateSearchBoost } from "./actions";
+import {
+  updateSearchBoost,
+  updateMonetizationSettings,
+  adjustCredits,
+  setTrialDays,
+} from "./actions";
+import { getAllSettings, AI_ACTION_COSTS, packagePriceChf } from "@/lib/credits";
+import { isMembershipActive } from "@/lib/membership";
 
 // Interne Eigentümer-Konsole. Für alle außer ADMIN existiert die Seite "nicht"
 // (404), damit ihre Existenz nicht verraten wird.
@@ -12,25 +19,110 @@ export default async function AdminPage() {
     notFound();
   }
 
-  const users = await prisma.user.findMany({
-    where: { role: { in: ["RESELLER", "OEM"] } },
-    select: {
-      id: true,
-      pseudonym: true,
-      email: true,
-      companyName: true,
-      trustTier: true,
-      searchBoost: true,
-      _count: { select: { listings: true } },
-    },
-    orderBy: [{ searchBoost: "desc" }, { pseudonym: "asc" }],
-  });
+  const [users, settings, usageAgg, purchaseAgg] = await Promise.all([
+    prisma.user.findMany({
+      where: { role: { in: ["RESELLER", "OEM"] } },
+      select: {
+        id: true,
+        pseudonym: true,
+        email: true,
+        companyName: true,
+        trustTier: true,
+        searchBoost: true,
+        creditBalance: true,
+        trialEndsAt: true,
+        membershipValidUntil: true,
+        _count: { select: { listings: true, referrals: true } },
+      },
+      orderBy: [{ searchBoost: "desc" }, { pseudonym: "asc" }],
+    }),
+    getAllSettings(),
+    prisma.creditTransaction.aggregate({
+      where: { kind: "USAGE", amount: { lt: 0 } },
+      _sum: { amount: true },
+      _count: { _all: true },
+    }),
+    prisma.creditTransaction.aggregate({
+      where: { kind: "PURCHASE" },
+      _sum: { amount: true },
+    }),
+  ]);
+
+  const usedCredits = Math.abs(usageAgg._sum.amount ?? 0);
+  const purchasedCredits = purchaseAgg._sum.amount ?? 0;
 
   return (
     <div className="space-y-8">
+      {/* ============ Monetarisierung: Credits, Trial, Referral ============ */}
       <section>
         <div className="eyebrow text-rose-600">Intern · nur Eigentümer</div>
-        <h1 className="page-title">Sichtbarkeits-Steuerung</h1>
+        <h1 className="page-title">Monetarisierung</h1>
+        <p className="max-w-2xl text-sm text-slate-600">
+          KI-Funktionen kosten Credits. Hier stellst du Startguthaben, Trial-Dauer,
+          Referral-Prämie und den Verkaufspreis pro Credit ein. Kalkulationsbasis:
+          teuerste KI-Aktion (Web-Recherche) kostet dich ≈ 7 Rp — bei
+          Verkaufspreis {settings.creditPriceRp} Rp/Credit und{" "}
+          {AI_ACTION_COSTS.alternativesWeb} Credits pro Web-Recherche bleibt ≥ 100 %
+          Marge (Details in FDS C.9).
+        </p>
+      </section>
+
+      <section className="card">
+        <form
+          action={updateMonetizationSettings}
+          className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        >
+          <SettingField
+            name="welcomeCredits"
+            label="Start-Credits Neukunde"
+            hint="Guthaben für die Kennenlernphase"
+            defaultValue={settings.welcomeCredits}
+          />
+          <SettingField
+            name="trialDays"
+            label="Trial-Dauer (Tage)"
+            hint="Kennenlernphase ohne Abo"
+            defaultValue={settings.trialDays}
+          />
+          <SettingField
+            name="referralCredits"
+            label="Referral-Prämie (Credits)"
+            hint="pro geworbenem Neukunden"
+            defaultValue={settings.referralCredits}
+          />
+          <SettingField
+            name="creditPriceRp"
+            label="Credit-Preis (Rp)"
+            hint={`Paket M (200) = CHF ${packagePriceChf(200, settings.creditPriceRp).toFixed(2)}`}
+            defaultValue={settings.creditPriceRp}
+          />
+          <div className="sm:col-span-2 lg:col-span-4">
+            <button
+              type="submit"
+              className="rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700"
+            >
+              Einstellungen speichern
+            </button>
+          </div>
+        </form>
+        <div className="mt-4 grid gap-3 border-t border-slate-100 pt-4 text-sm sm:grid-cols-3">
+          <div>
+            <div className="text-lg font-bold text-slate-900">{usageAgg._count._all}</div>
+            <div className="text-xs text-slate-500">KI-Aufrufe gesamt</div>
+          </div>
+          <div>
+            <div className="text-lg font-bold text-slate-900">{usedCredits}</div>
+            <div className="text-xs text-slate-500">Credits verbraucht</div>
+          </div>
+          <div>
+            <div className="text-lg font-bold text-slate-900">{purchasedCredits}</div>
+            <div className="text-xs text-slate-500">Credits verkauft</div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="page-title">Sichtbarkeits-Steuerung &amp; Kunden</h2>
         <p className="max-w-2xl text-sm text-slate-600">
           Hier legst du fest, welche Reseller in Suche und Vorschlägen weiter oben
           erscheinen. Ein höherer Wert (0–100) schiebt deren Angebote nach vorne.
@@ -46,9 +138,10 @@ export default async function AdminPage() {
             <tr className="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500">
               <th className="px-4 py-3">Reseller</th>
               <th className="px-4 py-3">Vertrauensstufe</th>
-              <th className="px-4 py-3">Aktive Angebote</th>
+              <th className="px-4 py-3">Angebote</th>
               <th className="px-4 py-3">Boost (0–100)</th>
-              <th className="px-4 py-3"></th>
+              <th className="px-4 py-3">Credits</th>
+              <th className="px-4 py-3">Trial / Abo</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -82,14 +175,68 @@ export default async function AdminPage() {
                     </button>
                   </form>
                 </td>
-                <td className="px-4 py-3 text-xs text-slate-400">
-                  {u.searchBoost > 0 ? "wird bevorzugt" : "neutral"}
+                <td className="px-4 py-3">
+                  <div className="mb-1 font-semibold text-slate-900">
+                    {u.creditBalance}
+                    <span className="ml-1 text-xs font-normal text-slate-500">
+                      {u._count.referrals > 0 ? `· ${u._count.referrals} geworben` : ""}
+                    </span>
+                  </div>
+                  <form action={adjustCredits} className="flex items-center gap-1">
+                    <input type="hidden" name="userId" value={u.id} />
+                    <input
+                      type="number"
+                      name="amount"
+                      placeholder="±"
+                      className="w-16 rounded-md border border-slate-300 px-2 py-1 text-xs"
+                    />
+                    <button
+                      type="submit"
+                      className="rounded-md bg-slate-900 px-2 py-1 text-xs font-semibold text-white hover:bg-slate-700"
+                      title="Credits gutschreiben (+) oder abziehen (−)"
+                    >
+                      ±
+                    </button>
+                  </form>
+                </td>
+                <td className="px-4 py-3">
+                  <div className="mb-1 text-xs">
+                    {isMembershipActive(u.membershipValidUntil) ? (
+                      <span className="font-medium text-emerald-700">
+                        Abo bis {u.membershipValidUntil!.toLocaleDateString("de-CH")}
+                      </span>
+                    ) : u.trialEndsAt && u.trialEndsAt.getTime() > Date.now() ? (
+                      <span className="text-blue-700">
+                        Trial bis {u.trialEndsAt.toLocaleDateString("de-CH")}
+                      </span>
+                    ) : (
+                      <span className="text-slate-400">abgelaufen / kein Abo</span>
+                    )}
+                  </div>
+                  <form action={setTrialDays} className="flex items-center gap-1">
+                    <input type="hidden" name="userId" value={u.id} />
+                    <input
+                      type="number"
+                      name="days"
+                      min={0}
+                      max={365}
+                      placeholder="Tage"
+                      className="w-16 rounded-md border border-slate-300 px-2 py-1 text-xs"
+                    />
+                    <button
+                      type="submit"
+                      className="rounded-md bg-slate-900 px-2 py-1 text-xs font-semibold text-white hover:bg-slate-700"
+                      title="Trial ab heute auf X Tage setzen (0 = beenden)"
+                    >
+                      Set
+                    </button>
+                  </form>
                 </td>
               </tr>
             ))}
             {users.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-6 text-center text-slate-500">
+                <td colSpan={6} className="px-4 py-6 text-center text-slate-500">
                   Noch keine Reseller vorhanden.
                 </td>
               </tr>
@@ -98,5 +245,31 @@ export default async function AdminPage() {
         </table>
       </section>
     </div>
+  );
+}
+
+function SettingField({
+  name,
+  label,
+  hint,
+  defaultValue,
+}: {
+  name: string;
+  label: string;
+  hint: string;
+  defaultValue: number;
+}) {
+  return (
+    <label className="block text-sm">
+      <span className="mb-1 block font-medium text-slate-700">{label}</span>
+      <input
+        type="number"
+        name={name}
+        min={0}
+        defaultValue={defaultValue}
+        className="w-full rounded-md border border-slate-300 px-3 py-2"
+      />
+      <span className="mt-1 block text-xs text-slate-500">{hint}</span>
+    </label>
   );
 }

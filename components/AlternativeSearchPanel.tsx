@@ -33,6 +33,8 @@ type AltResult = {
   alternatives: AltMatch[];
   candidatesConsidered: number;
   modelUsed: "rule-based" | "claude-web";
+  creditNotice?: string | null;
+  creditsCharged?: number;
   reasoning?: string;
   webSources?: { title: string; url: string }[];
   webSummary?: string;
@@ -303,6 +305,11 @@ export function AlternativeSearchPanel({ initialQuery }: { initialQuery?: string
                 <div className="rounded-lg border border-purple-200 bg-purple-50/60 p-3 text-sm text-slate-700">
                   <Sparkles size={14} className="mr-1 inline text-purple-600" />
                   {result.webSummary}
+                </div>
+              )}
+              {result.creditNotice && (
+                <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+                  {result.creditNotice}
                 </div>
               )}
 

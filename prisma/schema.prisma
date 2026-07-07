@@ -472,6 +472,20 @@ model User {
   // Öffentlicher Schaufenster-Text ("Über uns") auf der Profilseite —
   // pseudonym bleibt, aber der Anbieter kann sich fachlich vorstellen.
   about        String?
+
+  // ---- Monetarisierung: KI-Credits, Trial, Referral ----
+  // KI-Funktionen (Alternativsuche, KSS-Wizard, Concierge) kosten Credits.
+  // Guthaben wird zusätzlich als CreditTransaction-Historie geführt.
+  creditBalance Int       @default(0)
+  // Kennenlernphase: bis zu diesem Datum ist die Plattform ohne Abo nutzbar.
+  // Dauer stellt der Superadmin in /admin ein (AppSetting trialDays).
+  trialEndsAt   DateTime?
+  // Referral: Wer hat diesen Nutzer geworben? (Empfehlungs-Code = Pseudonym)
+  referredById  String?
+  referredBy    User?     @relation("Referrals", fields: [referredById], references: [id], onDelete: SetNull)
+  referrals     User[]    @relation("Referrals")
+
+  creditTransactions CreditTransaction[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 
@@ -499,6 +513,7 @@ model User {
 // ============================================================
 enum PaymentKind {
   MEMBERSHIP // Jahres-/Zugangsgebühr
+  CREDITS    // KI-Credits-Paket
 }
 
 enum PaymentStatus {
@@ -530,6 +545,40 @@ model Payment {
 
   @@index([userId])
   @@index([status])
+}
+
+// ============================================================
+// KI-Credits — Guthaben-Historie (Gutschriften + Verbrauch)
+// ============================================================
+enum CreditTxKind {
+  WELCOME      // Startguthaben bei Registrierung (Kennenlernphase)
+  PURCHASE     // Gekauftes Paket (Stripe)
+  REFERRAL     // Prämie fürs Werben eines Neukunden
+  USAGE        // Verbrauch durch eine KI-Funktion (negativ)
+  ADMIN_ADJUST // Manuelle Korrektur durch den Superadmin
+}
+
+model CreditTransaction {
+  id        String       @id @default(cuid())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount    Int          // positiv = Gutschrift, negativ = Verbrauch
+  kind      CreditTxKind
+  note      String?      // z.B. "KI-Alternativsuche" oder "Paket M (200 Credits)"
+  createdAt DateTime     @default(now())
+
+  @@index([userId, createdAt])
+  @@index([kind])
+}
+
+// ============================================================
+// Globale Einstellungen — vom Superadmin in /admin steuerbar
+// (z.B. welcomeCredits, trialDays, referralCredits, creditPriceRp)
+// ============================================================
+model AppSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
 }
 
 // ============================================================

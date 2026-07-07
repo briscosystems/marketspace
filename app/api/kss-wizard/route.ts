@@ -10,8 +10,11 @@
 // Antwort: { recommendations: [...], summary: "...", source: "..." }
 
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { recommendMaterialsForProduct } from "@/lib/seal-recommendations";
+import { chargeForAiAction, refundAiAction } from "@/lib/credits";
 
 type WizardAnswers = {
   satisfied?: boolean | null;
@@ -118,13 +121,34 @@ export async function POST(req: Request) {
   scored.sort((a, b) => b.score - a.score);
   const topCandidates = scored.slice(0, 12); // begrenzte Auswahl
 
-  // 4) Mit oder ohne Anthropic strukturieren
+  // 4) Mit oder ohne Anthropic strukturieren.
+  // KI-Analyse kostet 1 Credit — ohne Credits/Zugang läuft die Heuristik.
   const hasKey = !!process.env.ANTHROPIC_API_KEY;
   let recommendations: Recommendation[];
   let summary: string;
   let source: "anthropic-claude" | "heuristic-fallback";
+  let creditNotice: string | null = null;
+  let aiAllowed = false;
+  const session = await getServerSession(authOptions);
 
   if (hasKey && topCandidates.length > 0) {
+    if (session?.user?.id) {
+      const charge = await chargeForAiAction(session.user.id, "kssWizard");
+      if (charge.ok) {
+        aiAllowed = true;
+      } else if (charge.reason === "no_credits") {
+        creditNotice =
+          "Credit-Guthaben aufgebraucht — heuristische Auswahl gezeigt. Credits gibt es unter „Mitgliedschaft“.";
+      } else {
+        creditNotice =
+          "Kennenlernphase abgelaufen und kein aktives Abo — heuristische Auswahl gezeigt.";
+      }
+    } else {
+      creditNotice = "Für die KI-Begründung bitte anmelden — heuristische Auswahl gezeigt.";
+    }
+  }
+
+  if (hasKey && topCandidates.length > 0 && aiAllowed) {
     try {
       const claude = await callAnthropic({
         wizardAnswers: body,
@@ -168,6 +192,10 @@ export async function POST(req: Request) {
       source = "anthropic-claude";
     } catch (e) {
       console.warn("Anthropic-Call failed, fallback:", e);
+      if (session?.user?.id) {
+        await refundAiAction(session.user.id, "kssWizard");
+        creditNotice = "KI vorübergehend nicht verfügbar — dein Credit wurde erstattet.";
+      }
       ({ recommendations, summary } = await heuristicFallback(topCandidates));
       source = "heuristic-fallback";
     }
@@ -180,6 +208,7 @@ export async function POST(req: Request) {
     recommendations,
     summary,
     source,
+    creditNotice,
     candidatePoolSize: candidatePool.length,
     consideredTop: topCandidates.length,
   });

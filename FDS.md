@@ -840,6 +840,68 @@ wertvoller als ein reines Anzeigen-Brett? Acht Bausteine, alle live:
   formulieren; ohne `ANTHROPIC_API_KEY` oder bei Fehlern antwortet ein
   regelbasierter Fallback mit denselben Daten (Muster wie KSS-Wizard).
 
+## C.9 Monetarisierung: Abo + KI-Credits, Trial, Referral (2026-07-07)
+
+**Geschäftsmodell (zweistufig):**
+1. **Abo** (Jahres-Zugang, aktuell 290 €/Jahr, `MEMBERSHIP_PRICE_EUR`) = Zugang
+   zur Plattform. Neukunden brauchen KEIN Abo: die **Kennenlernphase (Trial)**
+   schaltet alles frei (Dauer vom Superadmin einstellbar, Standard 30 Tage).
+2. **KI-Credits** = Bezahlung der KI-Funktionen (Prepaid). KI läuft nur mit
+   aktivem Abo ODER laufendem Trial UND ausreichend Credits; sonst antwortet
+   überall der kostenlose regelbasierte Fallback mit Hinweis.
+
+**Eingesetzte KI-Modelle & Kosten pro Aktion** (Anthropic-Preise: Haiku 4.5
+$1/M Input + $5/M Output; Sonnet $3/$15; Websuche $10/1000 Suchen; USD≈CHF):
+
+| KI-Aktion | Modell | Selbstkosten/Aufruf | Credits | Erlös (10 Rp/Credit) | Marge |
+|---|---|---|---|---|---|
+| Concierge-Frage | claude-haiku-4-5 | ≈ CHF 0.005 | 1 | CHF 0.10 | ~1900 % |
+| KSS-Wizard | claude-haiku-4-5 | ≈ CHF 0.015 | 1 | CHF 0.10 | ~570 % |
+| KI-Alternativen (SDS-Vergleich) | claude-haiku-4-5 | ≈ CHF 0.035–0.05 | 1 | CHF 0.10 | ~100–185 % |
+| Web-Recherche-Alternativsuche | claude-sonnet-4-6 + Websuche | ≈ CHF 0.07 | 2 | CHF 0.20 | ~185 % |
+
+**Credit-Wert:** 1 Credit = 10 Rappen Verkaufspreis (Superadmin-Einstellung
+`creditPriceRp`). Kalkulationsregel: Die teuerste Aktion kostet so viele
+Credits, dass ihr Erlös ≥ 2× Selbstkosten ist → **jede Aktion hat ≥100 % Marge**.
+Wird `creditPriceRp` gesenkt, muss die Credit-Anzahl teurer Aktionen steigen
+(Konstanten `AI_ACTION_COSTS` in `lib/credits.ts`).
+
+**Business-Case-Absicherung (kein Verlustrisiko):**
+- Credits sind **Prepaid**: Einnahme (Stripe) kommt VOR der KI-Ausgabe.
+- Abbuchung ist atomar, kein negativer Saldo möglich; bei KI-Ausfall wird
+  automatisch erstattet.
+- Einzige „Gratis"-Kosten: Willkommens-Credits (Standard 20 → max. ≈ CHF 1.00
+  KI-Selbstkosten pro Neukunde) und Referral-Prämie (Standard 10 → ≈ CHF 0.50
+  pro geworbenem Kunden) — bewusstes, gedeckeltes Marketing-Budget, vom
+  Superadmin steuerbar. Regelbasierte Fallbacks kosten CHF 0.
+- Kontrolle in /admin: KI-Aufrufe gesamt, Credits verbraucht vs. verkauft.
+
+**Verrechnung der KI-Kosten mit dem Betreiber:** Die Anthropic-API rechnet pro
+Token über das Konto auf console.anthropic.com ab (hinterlegte Kreditkarte;
+Prepaid-Guthaben oder monatliche Abrechnung nach Verbrauch). Der API-Schlüssel
+steckt in `ANTHROPIC_API_KEY` (Railway-ENV/.env).
+
+**Umsetzung:**
+- Schema: `User.creditBalance/trialEndsAt/referredById`, `CreditTransaction`
+  (WELCOME/PURCHASE/REFERRAL/USAGE/ADMIN_ADJUST), `AppSetting` (Key-Value),
+  `PaymentKind.CREDITS`.
+- `lib/credits.ts`: Einstellungen, atomare Abbuchung/Gutschrift/Erstattung,
+  Zugangs-Check (Abo ODER Trial), Pakete (S 50 / M 200 / L 500 Credits).
+- Registrierung: Trial + Willkommens-Credits automatisch; Empfehlungs-Code
+  (= Pseudonym des Werbers, Link `/register?ref=…`) → Prämie für den Werber.
+- Kauf: `/api/billing/checkout-credits` (Stripe, CHF), Gutschrift idempotent
+  über `fulfillCheckoutSession` (Webhook UND Success-Confirm).
+- Superadmin (/admin): Startguthaben, Trial-Tage, Referral-Prämie, Credit-Preis;
+  pro Kunde Credits ± und Trial setzen; Nutzungs-Kennzahlen.
+- /mitgliedschaft: Guthaben, Preisliste, Pakete, Buchungshistorie, Trial-Status,
+  Referral-Link zum Kopieren.
+
+**KI-Alternativsuche (Redesign, gleiche Session):** Must-haves wirken als
+Präferenz statt hartem Filter → es werden IMMER Alternativen angezeigt, mit
+**Match-Index 0–100 %**, Ein-Satz-Begründung, Pro/Contra/Warnungen; Verstöße
+gegen Must-haves deckeln den Index bei 49 %. Ergebnis als kompakte Liste,
+Details im **Slide-over-Panel von rechts** (Muster der Browse-Seite).
+
 ---
 
 *Dieses Dokument ist die initiale Grundlage. Es wird mit Fortschritt des Projekts weiter verfeinert.*
