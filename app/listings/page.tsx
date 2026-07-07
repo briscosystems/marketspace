@@ -2,13 +2,30 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { ConceptBrowseGrid, type BrowseListing } from "@/components/ConceptBrowseGrid";
 import { CategoryGlyph } from "@/components/CategoryGlyph";
+import { FilterDropdown, type FilterOption } from "@/components/FilterDropdown";
 import { PACKAGING_LABEL } from "@/lib/branding";
+import {
+  APPLICATION_FACETS,
+  getApplicationFacet,
+  listingMatchesApplication,
+} from "@/lib/application-facets";
 import { LayoutGrid } from "lucide-react";
 
 type SearchParams = Promise<{
   q?: string;
   productType?: string;
+  manufacturer?: string;
+  application?: string;
+  chemistry?: string;
+  packaging?: string;
+  region?: string;
+  cert?: string;
 }>;
+
+/** Pipe-separierte Mehrfachwerte aus der URL (Konvention von FilterDropdown). */
+function multi(v?: string): string[] {
+  return v ? v.split("|").filter(Boolean) : [];
+}
 
 const CHEMISTRY_LABEL: Record<string, string> = {
   MINERAL: "Mineralöl",
@@ -20,7 +37,20 @@ const CHEMISTRY_LABEL: Record<string, string> = {
 };
 
 export default async function ListingsPage({ searchParams }: { searchParams: SearchParams }) {
-  const { q, productType } = await searchParams;
+  const params = await searchParams;
+  const { q, productType } = params;
+
+  const facetSel = {
+    manufacturer: multi(params.manufacturer),
+    application: multi(params.application),
+    chemistry: multi(params.chemistry),
+    packaging: multi(params.packaging),
+    region: multi(params.region),
+    cert: multi(params.cert),
+  };
+  type FacetDim = keyof typeof facetSel;
+  const facetDims = Object.keys(facetSel) as FacetDim[];
+  const activeDims = facetDims.filter((d) => facetSel[d].length > 0);
 
   const where: import("@prisma/client").Prisma.ListingWhereInput = {
     status: "ACTIVE",
@@ -43,8 +73,82 @@ export default async function ListingsPage({ searchParams }: { searchParams: Sea
     orderBy: { _count: { id: "desc" } },
   });
 
-  const listings = await prisma.listing.findMany({
+  // Alle Treffer (vor Facetten) einmal schlank laden — daraus entstehen sowohl
+  // die Facetten-Optionen mit Zählern als auch die ID-Liste für die Hauptabfrage.
+  const facetRows = await prisma.listing.findMany({
     where,
+    select: {
+      id: true,
+      manufacturer: true,
+      chemistry: true,
+      packaging: true,
+      locationRegion: true,
+      certificates: true,
+      applicationArea: true,
+      machiningOperations: true,
+    },
+  });
+  type FacetRow = (typeof facetRows)[number];
+
+  const rowMatches: Record<FacetDim, (r: FacetRow) => boolean> = {
+    manufacturer: (r) => facetSel.manufacturer.includes(r.manufacturer),
+    chemistry: (r) => facetSel.chemistry.includes(r.chemistry as string),
+    packaging: (r) => facetSel.packaging.includes(r.packaging as string),
+    region: (r) => facetSel.region.includes(r.locationRegion),
+    cert: (r) => r.certificates.some((c) => facetSel.cert.includes(c)),
+    application: (r) =>
+      facetSel.application.some((id) => {
+        const f = getApplicationFacet(id);
+        return f ? listingMatchesApplication(f, r.applicationArea, r.machiningOperations) : false;
+      }),
+  };
+
+  /** Zeilen, die alle aktiven Facetten außer `skip` erfüllen (für korrekte Zähler). */
+  function rowsExcept(skip?: FacetDim): FacetRow[] {
+    return facetRows.filter((r) =>
+      activeDims.every((d) => (d === skip ? true : rowMatches[d](r))),
+    );
+  }
+
+  const allowedIds = rowsExcept().map((r) => r.id);
+
+  function tally(rows: FacetRow[], value: (r: FacetRow) => string[]): Map<string, number> {
+    const m = new Map<string, number>();
+    for (const r of rows) {
+      for (const v of value(r)) {
+        if (v) m.set(v, (m.get(v) ?? 0) + 1);
+      }
+    }
+    return m;
+  }
+  function toOptions(m: Map<string, number>, label?: (v: string) => string): FilterOption[] {
+    return [...m.entries()]
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "de"))
+      .map(([value, count]) => ({ value, label: label ? label(value) : value, count }));
+  }
+
+  const manufacturerOptions = toOptions(tally(rowsExcept("manufacturer"), (r) => [r.manufacturer]));
+  const chemistryOptions = toOptions(
+    tally(rowsExcept("chemistry"), (r) => [r.chemistry as string]),
+    (v) => CHEMISTRY_LABEL[v] ?? v,
+  );
+  const packagingOptions = toOptions(
+    tally(rowsExcept("packaging"), (r) => [r.packaging as string]),
+    (v) => (PACKAGING_LABEL as Record<string, string>)[v] ?? v,
+  );
+  const regionOptions = toOptions(tally(rowsExcept("region"), (r) => [r.locationRegion]));
+  const certOptions = toOptions(tally(rowsExcept("cert"), (r) => r.certificates));
+  const applicationRows = rowsExcept("application");
+  const applicationOptions: FilterOption[] = APPLICATION_FACETS.map((f) => ({
+    value: f.id,
+    label: f.label,
+    count: applicationRows.filter((r) =>
+      listingMatchesApplication(f, r.applicationArea, r.machiningOperations),
+    ).length,
+  })).filter((o) => (o.count ?? 0) > 0);
+
+  const listings = await prisma.listing.findMany({
+    where: activeDims.length > 0 ? { id: { in: allowedIds } } : where,
     include: { seller: { select: { id: true, pseudonym: true, trustTier: true } } },
     orderBy: [{ seller: { searchBoost: "desc" } }, { createdAt: "desc" }],
     take: 60,
@@ -96,9 +200,17 @@ export default async function ListingsPage({ searchParams }: { searchParams: Sea
     const p = new URLSearchParams();
     if (q) p.set("q", q);
     if (pt) p.set("productType", pt);
+    // Aktive Facetten beim Kategorie-Wechsel beibehalten
+    for (const d of activeDims) p.set(d, facetSel[d].join("|"));
     const s = p.toString();
     return s ? `/listings?${s}` : "/listings";
   }
+
+  // "Filter zurücksetzen" behält Suche + Kategorie, leert nur die Facetten
+  const resetParams = new URLSearchParams();
+  if (q) resetParams.set("q", q);
+  if (productType) resetParams.set("productType", productType);
+  const resetHref = resetParams.toString() ? `/listings?${resetParams}` : "/listings";
 
   return (
     <div className="space-y-5">
@@ -124,6 +236,28 @@ export default async function ListingsPage({ searchParams }: { searchParams: Sea
           ))}
         </div>
       )}
+
+      {/* Facetten-Filter — nach Eigenschaften eingrenzen statt nur Volltext */}
+      <div className="card space-y-2 p-3">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+          <FilterDropdown label="Hersteller" paramKey="manufacturer" options={manufacturerOptions} multiple />
+          <FilterDropdown label="Anwendung" paramKey="application" options={applicationOptions} multiple />
+          <FilterDropdown label="Chemie" paramKey="chemistry" options={chemistryOptions} multiple />
+          <FilterDropdown label="Gebinde" paramKey="packaging" options={packagingOptions} multiple />
+          <FilterDropdown label="Region" paramKey="region" options={regionOptions} multiple />
+          <FilterDropdown label="Freigaben" paramKey="cert" options={certOptions} multiple />
+        </div>
+        {activeDims.length > 0 && (
+          <div className="flex justify-end">
+            <Link
+              href={resetHref}
+              className="text-sm font-medium text-brand-700 hover:text-brand-800 hover:underline"
+            >
+              {activeDims.length} Filter zurücksetzen
+            </Link>
+          </div>
+        )}
+      </div>
 
       <ConceptBrowseGrid listings={browseListings} />
     </div>
