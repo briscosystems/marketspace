@@ -800,6 +800,46 @@ Gesamtkostenbetrachtung — sind jetzt abgedeckt:
 Konzentrations-/Standzeit-Daten nachpflegen (aktuell 3 von 139 KSS mit
 Konzentrationsangabe); Rahmenverträge/Preisbindung (V2).
 
+## C.8 Mehrwerte-Fahrplan A–H (knowde-Vergleich) — komplett umgesetzt (2026-07-07)
+
+Ausgangspunkt war der Vergleich mit knowde.com (Juli 2026): Was macht Brisco
+wertvoller als ein reines Anzeigen-Brett? Acht Bausteine, alle live:
+
+- **A — Praxis-Wissen-Hub** `/wissen` (2026-07-04): 96 dokumentierte
+  Praxis-Probleme durchsuchbar; fließen zusätzlich als Regel-Bonus/-Warnung in
+  die KI-Alternativsuche ein.
+- **B — Facetten-Filter** auf `/listings`: serverseitige URL-Facetten
+  Hersteller · Anwendung · Chemie · Gebinde · Region · Freigaben mit korrekten
+  Zählern (jede Dimension zählt unter den übrigen aktiven Filtern).
+  `lib/application-facets.ts` verbindet `applicationArea`-Freitext mit
+  `machiningOperations`-IDs.
+- **C — Anbieter-Schaufenster:** öffentliche Profilseite `/profile/[pseudonym]`
+  als Storefront — Kennzahlen (Bietet an/Sucht/Transaktionen), editierbarer
+  „Über uns"-Text (`User.about` + `/api/profile/about`), alle aktiven Angebote
+  als kompakte 4er-Karten, offene öffentliche Suchen, Kontakt-Knopf ohne
+  konkretes Angebot.
+- **D — Muster & Angebot anfragen:** Knöpfe „Muster anfordern" /
+  „Angebot anfragen" auf der Angebots-Detailseite (`components/InquiryButtons.tsx`);
+  Dialog (Menge + Nachricht) startet den pseudonymen Chat mit strukturierter
+  Erstnachricht (`/api/conversations` mit `initialMessage`).
+- **E — Technisches Datenblatt (TDS):** druckfreundliche Dokument-Ansicht
+  `/products/[hersteller]/[produkt]/tds`, automatisch aus den strukturierten
+  Produktfeldern erzeugt (Kennwerte, Anwendung, Ansetzwasser, Kennzeichnung,
+  Freigaben); verlinkt aus „Quellen & Doku"; `components/PrintButton.tsx`.
+- **F — Compliance-Badges:** `lib/compliance.ts` leitet Siegel ab (borfrei,
+  formaldehydfrei, chlorfrei, mineralölfrei, NSF/FDA H1, TRGS 611 — „frei von"
+  nur bei explizit `false`); Chips mit Tooltip auf Produktseite, KSS-Finder
+  und Hersteller-Produktlisten (`components/ComplianceBadges.tsx`).
+- **G — Anwendungs-Einstieg:** Kachel-Sektion „Nach Anwendung einsteigen"
+  (Fräsen, Drehen, Schleifen, Hydraulik, …) mit Live-Zählern auf Startseite
+  und Dashboard → `/listings?application=…` (`components/ApplicationEntry.tsx`).
+- **H — KI-Concierge:** schwebender Fachberater-Chat auf jeder Seite
+  (`components/ConciergeWidget.tsx`). `/api/concierge` sammelt zu jeder Frage
+  passende Produkte, Angebote und Praxis-Probleme aus der Datenbank und lässt
+  Claude (`claude-haiku-4-5-20251001`) eine kurze, verlinkte Antwort
+  formulieren; ohne `ANTHROPIC_API_KEY` oder bei Fehlern antwortet ein
+  regelbasierter Fallback mit denselben Daten (Muster wie KSS-Wizard).
+
 ---
 
 *Dieses Dokument ist die initiale Grundlage. Es wird mit Fortschritt des Projekts weiter verfeinert.*
