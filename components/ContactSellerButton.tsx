@@ -7,9 +7,12 @@ import { withBasePath } from "@/lib/base-path";
 export function ContactSellerButton({
   sellerId,
   listingId,
+  label = "Verkäufer kontaktieren",
 }: {
   sellerId: string;
-  listingId: string;
+  /** Optional — ohne Angebot (z. B. vom Schaufenster aus) wird ein allgemeiner Thread geöffnet. */
+  listingId?: string;
+  label?: string;
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -21,10 +24,10 @@ export function ContactSellerButton({
     const res = await fetch(withBasePath("/api/conversations"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ sellerId, listingId }),
+      body: JSON.stringify({ sellerId, ...(listingId ? { listingId } : {}) }),
     });
     if (res.status === 401) {
-      router.push(`/login?callbackUrl=/listings/${listingId}`);
+      router.push(`/login?callbackUrl=${listingId ? `/listings/${listingId}` : "/"}`);
       return;
     }
     if (!res.ok) {
@@ -40,7 +43,7 @@ export function ContactSellerButton({
   return (
     <div>
       <button onClick={onClick} disabled={loading} className="btn-primary">
-        {loading ? "Öffne Chat …" : "Verkäufer kontaktieren"}
+        {loading ? "Öffne Chat …" : label}
       </button>
       {error && <div className="mt-2 text-sm text-red-600">{error}</div>}
     </div>
