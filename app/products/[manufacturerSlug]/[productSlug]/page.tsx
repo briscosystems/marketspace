@@ -479,13 +479,20 @@ export default async function ProductDetailPage({
             recommendedMax={product.recommendedConcentrationMax}
           />
 
-          {(product.sourceUrl || product.dataSheetUrl || product.sdsUrl) && (
-            <section className="rounded-xl border border-slate-200 bg-white p-4">
+          <section className="rounded-xl border border-slate-200 bg-white p-4">
               <div className="flex items-center gap-2">
                 <FileText size={16} className="text-slate-600" />
                 <h3 className="font-semibold text-slate-900">Quellen & Doku</h3>
               </div>
               <ul className="mt-2 space-y-1.5 text-sm">
+                <li>
+                  <Link
+                    href={`/products/${manufacturerSlug}/${productSlug}/tds`}
+                    className="inline-flex items-center gap-1 font-medium text-brand-600 hover:underline"
+                  >
+                    Technisches Datenblatt (TDS) — Brisco-Ansicht
+                  </Link>
+                </li>
                 {product.sourceUrl ? (
                   <li>
                     <a
@@ -524,7 +531,6 @@ export default async function ProductDetailPage({
                 ) : null}
               </ul>
             </section>
-          )}
         </aside>
       </div>
     </div>
