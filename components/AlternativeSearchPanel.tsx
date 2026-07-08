@@ -2,7 +2,20 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Sparkles, Globe, CheckCircle2, BookOpen, Loader2, ArrowLeftRight, RotateCcw } from "lucide-react";
+import {
+  Sparkles,
+  Globe,
+  CheckCircle2,
+  BookOpen,
+  Loader2,
+  ArrowLeftRight,
+  RotateCcw,
+  ChevronRight,
+  X,
+  ThumbsUp,
+  ThumbsDown,
+  AlertTriangle,
+} from "lucide-react";
 import { withBasePath } from "@/lib/base-path";
 
 type Availability = {
@@ -87,7 +100,18 @@ export function AlternativeSearchPanel({ initialQuery }: { initialQuery?: string
   const [result, setResult] = useState<AltResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [webLoading, setWebLoading] = useState(false);
+  const [selected, setSelected] = useState<AltMatch | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // ESC schließt das Detail-Panel
+  useEffect(() => {
+    if (!selected) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setSelected(null);
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [selected]);
 
   const buildBody = useCallback(
     (useWeb: boolean) => ({
@@ -337,60 +361,16 @@ export function AlternativeSearchPanel({ initialQuery }: { initialQuery?: string
                 </div>
               )}
 
-              <div className="grid gap-3 md:grid-cols-2">
-                {result.alternatives.map((a) => (
-                  <div key={a.productId} className="rounded-lg border border-slate-200 bg-white p-3">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <Link
-                          href={`/products/${a.manufacturerSlug}/${a.slug}`}
-                          className="font-semibold text-slate-900 hover:text-purple-700"
-                        >
-                          {a.name}
-                        </Link>
-                        <div className="text-xs text-slate-500">
-                          {a.manufacturer}
-                          {a.chemistry ? ` · ${CHEMISTRY_LABEL[a.chemistry] ?? a.chemistry}` : ""}
-                          {a.viscosityIso ? ` · ISO VG ${a.viscosityIso}` : ""}
-                        </div>
-                      </div>
-                      <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ${FIT_BADGE[a.fit].cls}`}>
-                        {FIT_BADGE[a.fit].label}
-                      </span>
-                    </div>
-
-                    <div className="mt-2">
-                      {a.availability.available ? (
-                        <Link
-                          href={`/listings/${a.availability.listingId}`}
-                          className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-0.5 text-[11px] font-semibold text-blue-800 hover:bg-blue-200"
-                        >
-                          <CheckCircle2 size={12} /> Jetzt als Angebot verfügbar
-                          {typeof a.availability.priceEur === "number" ? ` · ${a.availability.priceEur.toFixed(0)} €` : ""}
-                        </Link>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-500">
-                          <BookOpen size={12} /> nur im Katalog (aktuell kein Angebot)
-                        </span>
-                      )}
-                    </div>
-
-                    {(a.pros.length > 0 || a.cons.length > 0 || a.warnings.length > 0) && (
-                      <ul className="mt-2 space-y-0.5 text-xs">
-                        {a.pros.slice(0, 4).map((p, i) => (
-                          <li key={`p${i}`} className="text-emerald-700">+ {p}</li>
-                        ))}
-                        {a.cons.slice(0, 3).map((c, i) => (
-                          <li key={`c${i}`} className="text-slate-500">– {c}</li>
-                        ))}
-                        {a.warnings.slice(0, 2).map((w, i) => (
-                          <li key={`w${i}`} className="text-amber-700">⚠ {w}</li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
+              <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+                {result.alternatives.map((a, i) => (
+                  <AltRow key={a.productId} alt={a} rank={i + 1} onOpen={() => setSelected(a)} />
                 ))}
               </div>
+              {result.alternatives.length > 0 && (
+                <p className="text-xs text-slate-500">
+                  Zeile anklicken für Details — das Panel öffnet sich rechts.
+                </p>
+              )}
 
               {result.webSources && result.webSources.length > 0 && (
                 <div className="rounded-lg border border-slate-200 bg-white p-3">
@@ -410,6 +390,195 @@ export function AlternativeSearchPanel({ initialQuery }: { initialQuery?: string
           )}
         </div>
       )}
+
+      {selected && <AltDetailSlideOver alt={selected} onClose={() => setSelected(null)} />}
+    </div>
+  );
+}
+
+/** Match-Index als Prozentzahl mit Farbbalken (Score ist additiv, für die Anzeige gedeckelt) */
+function matchTone(score: number): { text: string; bar: string } {
+  if (score >= 60) return { text: "text-emerald-700", bar: "bg-emerald-500" };
+  if (score >= 40) return { text: "text-lime-700", bar: "bg-lime-500" };
+  if (score >= 20) return { text: "text-amber-700", bar: "bg-amber-500" };
+  return { text: "text-red-700", bar: "bg-red-500" };
+}
+function MatchMeter({ score, size = "sm" }: { score: number; size?: "sm" | "lg" }) {
+  const pct = Math.max(0, Math.min(100, score));
+  const tone = matchTone(pct);
+  return (
+    <div className={size === "lg" ? "w-full" : "w-20 shrink-0"}>
+      <div className={`font-bold ${tone.text} ${size === "lg" ? "text-3xl" : "text-sm"}`}>{pct}%</div>
+      <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-slate-200">
+        <div className={`h-full rounded-full ${tone.bar}`} style={{ width: `${pct}%` }} />
+      </div>
+    </div>
+  );
+}
+
+/** Kompakte Ergebnis-Zeile — Klick öffnet das Detail-Panel rechts */
+function AltRow({ alt, rank, onOpen }: { alt: AltMatch; rank: number; onOpen: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      className="flex w-full items-center gap-4 border-b border-slate-100 p-3 text-left transition last:border-0 hover:bg-slate-50"
+    >
+      <span className="hidden w-5 shrink-0 text-center text-xs font-bold text-slate-400 sm:block">{rank}</span>
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="font-semibold text-slate-900">{alt.manufacturer} {alt.name}</span>
+          <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ${FIT_BADGE[alt.fit].cls}`}>
+            {FIT_BADGE[alt.fit].label}
+          </span>
+        </div>
+        <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+          <span>
+            {alt.chemistry ? CHEMISTRY_LABEL[alt.chemistry] ?? alt.chemistry : ""}
+            {alt.viscosityIso ? ` · ISO VG ${alt.viscosityIso}` : ""}
+          </span>
+          {alt.availability.available ? (
+            <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-1.5 py-0.5 text-[10px] font-semibold text-blue-800">
+              <CheckCircle2 size={10} /> Angebot verfügbar
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">
+              <BookOpen size={10} /> nur im Katalog
+            </span>
+          )}
+        </div>
+      </div>
+      <MatchMeter score={alt.score} />
+      <ChevronRight size={18} className="shrink-0 text-slate-300" />
+    </button>
+  );
+}
+
+/** Detail-Panel — schiebt sich von rechts über die Seite */
+function AltDetailSlideOver({ alt, onClose }: { alt: AltMatch; onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-50" role="dialog" aria-modal="true">
+      <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[1px]" onClick={onClose} />
+      <aside className="absolute inset-y-0 right-0 flex w-full max-w-md animate-[altSlideIn_.25s_ease-out] flex-col overflow-y-auto bg-white shadow-lift">
+        <style>{`@keyframes altSlideIn { from { transform: translateX(100%);} to { transform: translateX(0);} }`}</style>
+
+        <div className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 p-5 backdrop-blur">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <div className="text-xs uppercase tracking-wide text-slate-500">Alternative im Detail</div>
+              <h3 className="mt-0.5 truncate text-lg font-bold text-slate-900">
+                {alt.manufacturer} {alt.name}
+              </h3>
+              <span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-semibold ${FIT_BADGE[alt.fit].cls}`}>
+                {FIT_BADGE[alt.fit].label}
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+              aria-label="Schließen"
+            >
+              <X size={20} />
+            </button>
+          </div>
+        </div>
+
+        <div className="space-y-5 p-5">
+          <section className="rounded-xl border border-slate-200 p-4">
+            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-500">Match-Index</div>
+            <MatchMeter score={alt.score} size="lg" />
+          </section>
+
+          <section className="rounded-xl border border-slate-200 p-4">
+            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Produkt-Daten</div>
+            <dl className="space-y-1.5 text-sm">
+              <DetailRow label="Hersteller" value={alt.manufacturer} />
+              {alt.category && <DetailRow label="Kategorie" value={CATEGORY_LABEL[alt.category] ?? alt.category} />}
+              {alt.chemistry && <DetailRow label="Chemie" value={CHEMISTRY_LABEL[alt.chemistry] ?? alt.chemistry} />}
+              {alt.viscosityIso && <DetailRow label="Viskosität" value={`ISO VG ${alt.viscosityIso}`} />}
+              <DetailRow
+                label="Verfügbarkeit"
+                value={
+                  alt.availability.available
+                    ? `Angebot vorhanden${
+                        typeof alt.availability.priceEur === "number" ? ` · ${alt.availability.priceEur.toFixed(2)} €` : ""
+                      }${
+                        alt.availability.quantity
+                          ? ` · ${alt.availability.quantity.toLocaleString("de-CH")} ${alt.availability.quantityUnit ?? ""}`
+                          : ""
+                      }`
+                    : "nur im Katalog, aktuell kein Angebot"
+                }
+              />
+            </dl>
+          </section>
+
+          <section className="space-y-4">
+            <div>
+              <div className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                <ThumbsUp size={14} /> Spricht dafür
+              </div>
+              {alt.pros.length === 0 ? (
+                <div className="text-sm italic text-slate-400">—</div>
+              ) : (
+                <ul className="space-y-1 text-sm text-slate-700">
+                  {alt.pros.map((p, i) => (
+                    <li key={i}>• {p}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <div>
+              <div className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-red-700">
+                <ThumbsDown size={14} /> Risiken / Abweichungen
+              </div>
+              {alt.cons.length === 0 ? (
+                <div className="text-sm italic text-slate-400">—</div>
+              ) : (
+                <ul className="space-y-1 text-sm text-slate-700">
+                  {alt.cons.map((c, i) => (
+                    <li key={i}>• {c}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            {alt.warnings.length > 0 && (
+              <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+                <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-600" />
+                <ul className="space-y-1">
+                  {alt.warnings.map((w, i) => (
+                    <li key={i}>• {w}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </section>
+        </div>
+
+        <div className="sticky bottom-0 mt-auto flex gap-2 border-t border-slate-200 bg-white p-4">
+          <Link href={`/products/${alt.manufacturerSlug}/${alt.slug}`} className="btn-primary flex-1 text-center">
+            Zum Produkt
+          </Link>
+          {alt.availability.available && (
+            <Link
+              href={`/listings/${alt.availability.listingId}`}
+              className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-center text-sm font-medium text-slate-700 hover:bg-slate-50"
+            >
+              Zum Angebot
+            </Link>
+          )}
+        </div>
+      </aside>
+    </div>
+  );
+}
+
+function DetailRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex justify-between gap-4">
+      <dt className="shrink-0 text-slate-500">{label}</dt>
+      <dd className="text-right font-medium text-slate-900">{value}</dd>
     </div>
   );
 }
