@@ -6917,4 +6917,16 @@ export const SDS_SOURCES: SdsSource[] = [
   { manufacturer: "Laemmle/Panolin", productName: "Panolin HLP SYNTH 46", category: "HYDRAULIC_OIL", language: "DE", sourceUrl: "https://www.korb-schmierstoffe.de/datenblaetter/Panolin/Sicherheitsdatenbla%CC%88tter/HLP%20SYNTH%2046%20-%20SDB%20-%20Deutsch%2020220413.pdf" },
   { manufacturer: "Nils", productName: "GR 7000 Standard", category: "GREASE", language: "IT", sourceUrl: "https://www.perma-tec.com/_Resources/Lubricants/Nils/GR_7000_MSDS_it.pdf" },
   { manufacturer: "Nils", productName: "GR 7000 Standard", category: "GREASE", language: "EN", sourceUrl: "https://www.permausa.com/_Resources/Lubricants/Nils/GR_7000_MSDS_en.pdf" },
+
+  // ============ 2026-07-08 — Phi-Oil (neuer Hersteller) + komplette
+  // Castrol Hysol/Alusol XBB-Produktfamilie ============
+  { manufacturer: "Phi-Oil", productName: "Prexut Fluid A 10 45 E", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://webshop.schachermayer.com/cdn/medias/docus/354/sdat_109968438_PHI-OIL_Kuehlschmierstoff_I803_Prexut_Fluid_A_10_45_E.pdf" },
+  { manufacturer: "Phi-Oil", productName: "Prexut Fluid Life 100", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://webshop.schachermayer.com/cdn/medias/docus/354/sdat_109968443_PHI-OIL_Kuehlschmierstoff_I911_Prexut_Fluid_Life_100.pdf" },
+  { manufacturer: "Phi-Oil", productName: "Unigrease LC Bronze EP2", category: "GREASE", language: "DE", sourceUrl: "https://webshop.schachermayer.com/cdn/medias/docus/354/sdat_109968402_PHI-OIL_Schmierfett_F011_Unigrease_LC_Bronze_EP2.pdf" },
+  { manufacturer: "Phi-Oil", productName: "SafetyGear WS 460", category: "GEAR_OIL", language: "DE", sourceUrl: "https://webshop.schachermayer.com/cdn/medias/docus/369/sdat_109968335_PHI_OIL_SafetyGear_WS_460_AT.pdf" },
+  { manufacturer: "Castrol", productName: "Hysol SL 20 XBB", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://msdspds.castrol.com/ussds/amersdsf.nsf/0/7B05A40D53BD48AC80258B970052AFBC/$file/3118678.pdf" },
+  { manufacturer: "Castrol", productName: "Hysol SL 30 XBB", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://msdspds.castrol.com/ussds/amersdsf.nsf/0/72F43C5CC4952F2F80258CC300534E88/$file/3195591.pdf" },
+  { manufacturer: "Castrol", productName: "Hysol SL 35 XBB", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://msdspds.castrol.com/ussds/amersdsf.nsf/0/8FCA99C2DF18953780258B970052DBF0/$file/3118585.pdf" },
+  { manufacturer: "Castrol", productName: "Alusol SL 41 XBB", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://msdspds.castrol.com/ussds/amersdsf.nsf/0/D7B8383DB24DD27B80258AD60057FFA3/$file/3076562.pdf" },
+  { manufacturer: "Castrol", productName: "Alusol SL 61 XBB", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://hascooil.com/wp-content/uploads/2016/10/Alusol-SL-61-XBB-sds.pdf" },
 ];
