@@ -7,6 +7,8 @@ import {
   updateMonetizationSettings,
   adjustCredits,
   setTrialDays,
+  createReferralCodeAction,
+  deactivateReferralCode,
 } from "./actions";
 import { getAllSettings, AI_ACTION_COSTS, packagePriceChf } from "@/lib/credits";
 import { isMembershipActive } from "@/lib/membership";
@@ -19,7 +21,7 @@ export default async function AdminPage() {
     notFound();
   }
 
-  const [users, settings, usageAgg, purchaseAgg] = await Promise.all([
+  const [users, settings, usageAgg, purchaseAgg, referralCodes] = await Promise.all([
     prisma.user.findMany({
       where: { role: { in: ["RESELLER", "OEM"] } },
       select: {
@@ -45,6 +47,20 @@ export default async function AdminPage() {
     prisma.creditTransaction.aggregate({
       where: { kind: "PURCHASE" },
       _sum: { amount: true },
+    }),
+    prisma.referralCode.findMany({
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        code: true,
+        credits: true,
+        maxUses: true,
+        usedCount: true,
+        active: true,
+        expiresAt: true,
+        note: true,
+        createdAt: true,
+      },
     }),
   ]);
 
@@ -96,6 +112,12 @@ export default async function AdminPage() {
             hint={`Paket M (200) = CHF ${packagePriceChf(200, settings.creditPriceRp).toFixed(2)}`}
             defaultValue={settings.creditPriceRp}
           />
+          <SettingField
+            name="membershipPriceEur"
+            label="Jahresgebühr Abo (€)"
+            hint="Automatische Verlängerung, Default 350 €"
+            defaultValue={settings.membershipPriceEur}
+          />
           <div className="sm:col-span-2 lg:col-span-4">
             <button
               type="submit"
@@ -118,6 +140,143 @@ export default async function AdminPage() {
             <div className="text-lg font-bold text-slate-900">{purchasedCredits}</div>
             <div className="text-xs text-slate-500">Credits verkauft</div>
           </div>
+        </div>
+      </section>
+
+      {/* ============ Referral-/Gutschein-Codes ============ */}
+      <section>
+        <h2 className="page-title">Referral-Codes</h2>
+        <p className="max-w-2xl text-sm text-slate-600">
+          Generiere Codes mit einer festen Credit-Anzahl. Nutzer lösen sie unter{" "}
+          <code className="rounded bg-slate-100 px-1">/mitgliedschaft</code> ein — pro
+          Code einmal pro Nutzer, insgesamt bis „Max. Einlösungen" oft.
+        </p>
+      </section>
+
+      <section className="card">
+        <form
+          action={createReferralCodeAction}
+          className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5"
+        >
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium text-slate-700">Code (optional)</span>
+            <input
+              type="text"
+              name="code"
+              placeholder="leer = zufällig"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 uppercase"
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium text-slate-700">Credits</span>
+            <input
+              type="number"
+              name="credits"
+              min={1}
+              defaultValue={20}
+              required
+              className="w-full rounded-md border border-slate-300 px-3 py-2"
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium text-slate-700">Max. Einlösungen</span>
+            <input
+              type="number"
+              name="maxUses"
+              min={1}
+              defaultValue={1}
+              className="w-full rounded-md border border-slate-300 px-3 py-2"
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium text-slate-700">Gültig bis (optional)</span>
+            <input type="date" name="expiresAt" className="w-full rounded-md border border-slate-300 px-3 py-2" />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium text-slate-700">Vermerk (optional)</span>
+            <input
+              type="text"
+              name="note"
+              placeholder="z.B. Messe Hannover"
+              className="w-full rounded-md border border-slate-300 px-3 py-2"
+            />
+          </label>
+          <div className="sm:col-span-2 lg:col-span-5">
+            <button
+              type="submit"
+              className="rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700"
+            >
+              Code generieren
+            </button>
+          </div>
+        </form>
+
+        <div className="mt-4 overflow-x-auto border-t border-slate-100 pt-4">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-xs uppercase tracking-wide text-slate-500">
+                <th className="py-2 pr-3">Code</th>
+                <th className="py-2 pr-3">Credits</th>
+                <th className="py-2 pr-3">Einlösungen</th>
+                <th className="py-2 pr-3">Gültig bis</th>
+                <th className="py-2 pr-3">Vermerk</th>
+                <th className="py-2 pr-3">Status</th>
+                <th className="py-2 pr-3"></th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {referralCodes.map((c) => {
+                const expired = c.expiresAt ? c.expiresAt.getTime() < Date.now() : false;
+                const exhausted = c.usedCount >= c.maxUses;
+                return (
+                  <tr key={c.id}>
+                    <td className="py-2 pr-3">
+                      <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs">{c.code}</code>
+                    </td>
+                    <td className="py-2 pr-3 font-medium text-slate-900">{c.credits}</td>
+                    <td className="py-2 pr-3 text-slate-600">
+                      {c.usedCount} / {c.maxUses}
+                    </td>
+                    <td className="py-2 pr-3 text-slate-600">
+                      {c.expiresAt ? c.expiresAt.toLocaleDateString("de-CH") : "unbegrenzt"}
+                    </td>
+                    <td className="py-2 pr-3 text-slate-500">{c.note ?? "—"}</td>
+                    <td className="py-2 pr-3">
+                      {!c.active ? (
+                        <span className="text-slate-400">deaktiviert</span>
+                      ) : expired ? (
+                        <span className="text-amber-600">abgelaufen</span>
+                      ) : exhausted ? (
+                        <span className="text-amber-600">ausgeschöpft</span>
+                      ) : (
+                        <span className="text-emerald-700">aktiv</span>
+                      )}
+                    </td>
+                    <td className="py-2 pr-3">
+                      {c.active && (
+                        <form action={deactivateReferralCode}>
+                          <input type="hidden" name="id" value={c.id} />
+                          <button
+                            type="submit"
+                            className="text-xs font-medium text-red-600 hover:underline"
+                          >
+                            Deaktivieren
+                          </button>
+                        </form>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+              {referralCodes.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="py-4 text-center text-slate-500">
+                    Noch keine Codes generiert.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </section>
 

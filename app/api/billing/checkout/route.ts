@@ -1,12 +1,13 @@
 // POST /api/billing/checkout
-// Erzeugt eine Stripe-Checkout-Session für die Jahres-/Zugangsgebühr und gibt
-// die Weiterleitungs-URL zur gehosteten Stripe-Bezahlseite zurück.
+// Erzeugt eine Stripe-Checkout-Session für ein ECHTES Jahres-Abo mit
+// automatischer Verlängerung (mode: "subscription") und gibt die
+// Weiterleitungs-URL zur gehosteten Stripe-Bezahlseite zurück.
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { stripe, isStripeConfigured, appBaseUrl } from "@/lib/stripe";
-import { membershipPriceEur } from "@/lib/membership";
+import { getMembershipPriceEur, isMembershipActive } from "@/lib/membership";
 
 export async function POST() {
   const session = await getServerSession(authOptions);
@@ -27,9 +28,12 @@ export async function POST() {
   const userId = session.user.id;
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { email: true, stripeCustomerId: true },
+    select: { email: true, stripeCustomerId: true, membershipValidUntil: true, stripeSubscriptionId: true },
   });
   if (!user) return NextResponse.json({ error: "User nicht gefunden" }, { status: 404 });
+  if (isMembershipActive(user.membershipValidUntil) && user.stripeSubscriptionId) {
+    return NextResponse.json({ error: "Du hast bereits ein aktives Abo." }, { status: 409 });
+  }
 
   // Stripe-Customer sicherstellen (einmalig anlegen, dann wiederverwenden)
   let customerId = user.stripeCustomerId;
@@ -39,11 +43,14 @@ export async function POST() {
     await prisma.user.update({ where: { id: userId }, data: { stripeCustomerId: customerId } });
   }
 
-  const priceEur = membershipPriceEur();
+  const priceEur = await getMembershipPriceEur();
   const base = appBaseUrl();
 
+  // Echtes Abo (mode: "subscription") — verlängert sich automatisch jährlich,
+  // bis der Nutzer kündigt (siehe /api/billing/cancel). Kein vorab in Stripe
+  // angelegtes Preis-Objekt nötig: price_data mit recurring geht auch inline.
   const checkout = await stripe.checkout.sessions.create({
-    mode: "payment",
+    mode: "subscription",
     customer: customerId,
     line_items: [
       {
@@ -51,14 +58,16 @@ export async function POST() {
         price_data: {
           currency: "eur",
           unit_amount: priceEur * 100,
+          recurring: { interval: "year" },
           product_data: {
-            name: "Brisco — Jahres-Zugang",
-            description: "12 Monate Zugang zur Brisco-Plattform",
+            name: "Brisco — Jahres-Abo",
+            description: "Jährlich kündbares Abo für den Zugang zur Brisco-Plattform. Verlängert sich automatisch, sofern nicht vorher gekündigt.",
           },
         },
       },
     ],
     metadata: { userId, kind: "MEMBERSHIP" },
+    subscription_data: { metadata: { userId } },
     success_url: `${base}/mitgliedschaft?status=success&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${base}/mitgliedschaft?status=cancel`,
   });

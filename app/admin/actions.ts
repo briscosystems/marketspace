@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { grantCredits, setSetting, type SettingKey } from "@/lib/credits";
+import { grantCredits, setSetting, createReferralCode, type SettingKey } from "@/lib/credits";
 
 /**
  * Stellt sicher, dass NUR der Eigentümer (Rolle ADMIN) diese Aktionen ausführt.
@@ -50,6 +50,7 @@ export async function updateMonetizationSettings(formData: FormData) {
     { name: "trialDays", min: 0, max: 365 },
     { name: "referralCredits", min: 0, max: 500 },
     { name: "creditPriceRp", min: 1, max: 1000 },
+    { name: "membershipPriceEur", min: 1, max: 100000 },
   ];
   for (const f of fields) {
     const raw = Number(formData.get(f.name));
@@ -92,5 +93,42 @@ export async function setTrialDays(formData: FormData) {
   const trialEndsAt = days > 0 ? new Date(Date.now() + days * 24 * 60 * 60 * 1000) : null;
   await prisma.user.update({ where: { id: userId }, data: { trialEndsAt } });
 
+  revalidatePath("/admin");
+}
+
+/**
+ * Referral-/Gutschein-Code generieren. Nur der Eigentümer sieht diesen
+ * Bereich in /admin. Ein leeres "code"-Feld erzeugt einen Zufalls-Code.
+ */
+export async function createReferralCodeAction(formData: FormData) {
+  await assertOwner();
+  const session = await getServerSession(authOptions);
+  const adminId = session!.user.id;
+
+  const codeRaw = String(formData.get("code") ?? "").trim();
+  const credits = Math.max(1, Math.min(10000, Math.round(Number(formData.get("credits") ?? 0))));
+  const maxUses = Math.max(1, Math.min(100000, Math.round(Number(formData.get("maxUses") ?? 1))));
+  const expiresRaw = String(formData.get("expiresAt") ?? "").trim();
+  const note = String(formData.get("note") ?? "").trim() || undefined;
+  if (!Number.isFinite(credits) || credits <= 0) return;
+
+  await createReferralCode({
+    createdById: adminId,
+    credits,
+    maxUses,
+    expiresAt: expiresRaw ? new Date(expiresRaw) : null,
+    note,
+    code: codeRaw || undefined,
+  });
+
+  revalidatePath("/admin");
+}
+
+/** Code deaktivieren — kann danach nicht mehr eingelöst werden. */
+export async function deactivateReferralCode(formData: FormData) {
+  await assertOwner();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  await prisma.referralCode.update({ where: { id }, data: { active: false } });
   revalidatePath("/admin");
 }

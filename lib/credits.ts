@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import crypto from "node:crypto";
 import type { CreditTxKind } from "@prisma/client";
 import { isMembershipActive } from "@/lib/membership";
 
@@ -22,6 +23,8 @@ export const SETTING_DEFAULTS = {
   referralCredits: 10,
   /** Verkaufspreis pro Credit in Rappen (CHF-Cent). 10 Rp = CHF 0.10 */
   creditPriceRp: 10,
+  /** Jahresgebühr des Abos in Euro (Default 350 €, Superadmin-einstellbar) */
+  membershipPriceEur: 350,
 } as const;
 
 export type SettingKey = keyof typeof SETTING_DEFAULTS;
@@ -197,4 +200,87 @@ export const CREDIT_PACKAGES: CreditPackage[] = [
 
 export function packagePriceChf(credits: number, priceRp: number): number {
   return Math.round(credits * priceRp) / 100;
+}
+
+// ---------- Referral-/Gutschein-Codes (Admin generiert, Nutzer löst ein) ----------
+
+/** Zufälligen, gut lesbaren Code generieren, z.B. "BRISCO-7K4Q-XM2P". */
+export function generateReferralCodeString(): string {
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // ohne verwechselbare Zeichen (0/O, 1/I)
+  const part = () =>
+    Array.from(crypto.randomBytes(4))
+      .map((b) => alphabet[b % alphabet.length])
+      .join("");
+  return `BRISCO-${part()}-${part()}`;
+}
+
+export async function createReferralCode(params: {
+  createdById: string;
+  credits: number;
+  maxUses?: number;
+  expiresAt?: Date | null;
+  note?: string;
+  code?: string;
+}) {
+  const code = (params.code?.trim().toUpperCase() || generateReferralCodeString()).replace(/\s+/g, "");
+  return prisma.referralCode.create({
+    data: {
+      code,
+      credits: params.credits,
+      maxUses: params.maxUses ?? 1,
+      expiresAt: params.expiresAt ?? null,
+      note: params.note,
+      createdById: params.createdById,
+    },
+  });
+}
+
+export type RedeemCodeResult =
+  | { ok: true; credits: number; balance: number }
+  | { ok: false; reason: "not_found" | "expired" | "exhausted" | "already_redeemed" };
+
+/** Code für einen Nutzer einlösen — atomar, verhindert Doppel-Einlösung/Überbuchung. */
+export async function redeemReferralCode(userId: string, rawCode: string): Promise<RedeemCodeResult> {
+  const code = rawCode.trim().toUpperCase().replace(/\s+/g, "");
+  const referralCode = await prisma.referralCode.findUnique({ where: { code } });
+  if (!referralCode || !referralCode.active) return { ok: false, reason: "not_found" };
+  if (referralCode.expiresAt && referralCode.expiresAt.getTime() < Date.now()) {
+    return { ok: false, reason: "expired" };
+  }
+  if (referralCode.usedCount >= referralCode.maxUses) {
+    return { ok: false, reason: "exhausted" };
+  }
+  const already = await prisma.referralCodeRedemption.findUnique({
+    where: { codeId_userId: { codeId: referralCode.id, userId } },
+  });
+  if (already) return { ok: false, reason: "already_redeemed" };
+
+  // Atomar: usedCount nur erhöhen, wenn weiterhin unter maxUses (verhindert Überbuchung bei Race)
+  const claimed = await prisma.referralCode.updateMany({
+    where: { id: referralCode.id, usedCount: { lt: referralCode.maxUses } },
+    data: { usedCount: { increment: 1 } },
+  });
+  if (claimed.count === 0) return { ok: false, reason: "exhausted" };
+
+  try {
+    await prisma.$transaction([
+      prisma.referralCodeRedemption.create({
+        data: { codeId: referralCode.id, userId, credits: referralCode.credits },
+      }),
+      prisma.user.update({
+        where: { id: userId },
+        data: { creditBalance: { increment: referralCode.credits } },
+      }),
+      prisma.creditTransaction.create({
+        data: { userId, amount: referralCode.credits, kind: "CODE", note: `Code eingelöst: ${code}` },
+      }),
+    ]);
+  } catch {
+    // Unique-Verletzung (codeId_userId) durch parallelen Doppel-Versuch
+    await prisma.referralCode.update({ where: { id: referralCode.id }, data: { usedCount: { decrement: 1 } } });
+    return { ok: false, reason: "already_redeemed" };
+  }
+
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { creditBalance: true } });
+  return { ok: true, credits: referralCode.credits, balance: user?.creditBalance ?? 0 };
 }

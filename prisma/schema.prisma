@@ -460,11 +460,20 @@ model User {
   // Suchergebnissen und Vorschlägen. Wird NIE an die normale UI/API
   // ausgegeben und ist nur über /admin durch den Eigentümer steuerbar.
   searchBoost  Int           @default(0)
-  // Bezahlte Jahres-/Zugangsmitgliedschaft (Stripe). Aktiv, solange
-  // membershipValidUntil in der Zukunft liegt.
+  // Bezahlte Jahres-/Zugangsmitgliedschaft (Stripe, echtes Abo mit
+  // automatischer Verlängerung). Aktiv, solange membershipValidUntil in
+  // der Zukunft liegt — dieses Feld wird bei jeder erfolgreichen
+  // Verlängerungszahlung (Webhook invoice.payment_succeeded) fortgeschrieben.
   stripeCustomerId    String?
+  // Stripe-Subscription-ID des aktiven Abos (null = kein/kein aktives Abo).
+  stripeSubscriptionId String?
   membershipValidUntil DateTime?
+  // true = Nutzer hat gekündigt; Abo läuft zum Ende der bezahlten Periode
+  // aus (membershipValidUntil) und verlängert sich NICHT automatisch weiter.
+  membershipCancelAtPeriodEnd Boolean @default(false)
   payments            Payment[]
+  referralCodesCreated ReferralCode[]           @relation("ReferralCodesCreatedBy")
+  referralRedemptions  ReferralCodeRedemption[]
   // KYC light — internal only
   companyName  String?
   vatId        String?
@@ -532,9 +541,15 @@ model Payment {
   amountEur Float
   currency  String        @default("eur")
 
-  // Stripe-Referenzen (Checkout-Session / PaymentIntent)
+  // Stripe-Referenzen (Checkout-Session / PaymentIntent) — Erstabschluss.
   stripeSessionId       String? @unique
   stripePaymentIntentId String?
+  // Stripe-Invoice-ID einer Abo-Verlängerungszahlung (Webhook
+  // invoice.payment_succeeded) — für Idempotenz, da Verlängerungen keine
+  // Checkout-Session haben. Erstabschluss-Zahlungen haben dieses Feld leer.
+  // Bewusst kein DB-Unique-Constraint (vermeidet riskante Migration auf
+  // bestehender Tabelle) — Idempotenz wird im Code per findFirst geprüft.
+  stripeInvoiceId       String?
 
   // Abgedeckter Zeitraum (bei MEMBERSHIP: 1 Jahr ab Zahlung)
   periodStart DateTime?
@@ -545,6 +560,7 @@ model Payment {
 
   @@index([userId])
   @@index([status])
+  @@index([stripeInvoiceId])
 }
 
 // ============================================================
@@ -553,7 +569,8 @@ model Payment {
 enum CreditTxKind {
   WELCOME      // Startguthaben bei Registrierung (Kennenlernphase)
   PURCHASE     // Gekauftes Paket (Stripe)
-  REFERRAL     // Prämie fürs Werben eines Neukunden
+  REFERRAL     // Prämie fürs Werben eines Neukunden (Pseudonym-Link)
+  CODE         // Eingelöster Referral-/Gutschein-Code (Admin-generiert)
   USAGE        // Verbrauch durch eine KI-Funktion (negativ)
   ADMIN_ADJUST // Manuelle Korrektur durch den Superadmin
 }
@@ -572,8 +589,44 @@ model CreditTransaction {
 }
 
 // ============================================================
+// Referral-/Gutschein-Codes — vom Superadmin generiert (nur eigene
+// Konsole /admin), vom Nutzer im Konto eingelöst für Credits.
+// ============================================================
+model ReferralCode {
+  id          String   @id @default(cuid())
+  code        String   @unique // z.B. "WILLKOMMEN2026" — vom Admin frei wählbar
+  credits     Int
+  maxUses     Int      @default(1)
+  usedCount   Int      @default(0)
+  active      Boolean  @default(true)
+  expiresAt   DateTime?
+  note        String?  // interner Vermerk, z.B. "Messe Hannover 2026"
+
+  createdById String
+  createdBy   User     @relation("ReferralCodesCreatedBy", fields: [createdById], references: [id], onDelete: Cascade)
+
+  redemptions ReferralCodeRedemption[]
+  createdAt   DateTime @default(now())
+
+  @@index([active])
+}
+
+model ReferralCodeRedemption {
+  id         String       @id @default(cuid())
+  codeId     String
+  code       ReferralCode @relation(fields: [codeId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  credits    Int
+  redeemedAt DateTime     @default(now())
+
+  @@unique([codeId, userId]) // ein Code pro Nutzer nur einmal einlösbar
+}
+
+// ============================================================
 // Globale Einstellungen — vom Superadmin in /admin steuerbar
-// (z.B. welcomeCredits, trialDays, referralCredits, creditPriceRp)
+// (z.B. welcomeCredits, trialDays, referralCredits, creditPriceRp,
+// membershipPriceEur)
 // ============================================================
 model AppSetting {
   key       String   @id

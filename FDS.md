@@ -727,24 +727,37 @@ Ranking ist ausschließlich intern und für Nutzer nicht erkennbar (siehe C.2).
 - **Kontaktdaten-Verbot** in Nachrichten (§ 4 AGB) — technische Erkennung/
   Maskierung geplant (Anbahnung pseudonym halten).
 
-## C.5 Kreditkarten-Zahlung — Jahres-/Zugangsgebühr (Stripe)
+## C.5 Kreditkarten-Zahlung — Jahres-Abo mit automatischer Verlängerung (Stripe)
 
-- Anbieter **Stripe**; Modell **Jahresgebühr** (gegen Disintermediation, vgl.
-  Geschäftsmodell-Analyse). Betrag über `MEMBERSHIP_PRICE_EUR` (Default 290 €).
-- Datenmodell: `User.stripeCustomerId`, `User.membershipValidUntil`, Modell
-  `Payment` (kind MEMBERSHIP, status PENDING/PAID/FAILED, Stripe-Refs, Periode).
-- Flow: `POST /api/billing/checkout` → Stripe-Checkout-Session (mode `payment`,
-  `price_data` inline) → gehostete Bezahlseite. Freischaltung über
-  `POST /api/billing/webhook` (signaturgeprüft, `checkout.session.completed`) und
-  Fallback `GET /api/billing/confirm?session_id=…` (für Dev ohne Webhook). Beides
-  idempotent über `fulfillCheckoutSession` (verlängert 12 Monate).
-- UI: Seite `/mitgliedschaft` (Status + Bezahl-Button), Nav-Link „Zugang".
+- Anbieter **Stripe**; Modell **echtes Jahres-Abo** (Stripe Subscription, nicht
+  mehr Einmalzahlung — Umstellung 2026-07-08, siehe C.10). Betrag als
+  Superadmin-Einstellung `membershipPriceEur` in `/admin` (Default **350 €**,
+  vorher fix 290 € über Env-Var).
+- Datenmodell: `User.stripeCustomerId`, `User.stripeSubscriptionId`,
+  `User.membershipValidUntil`, `User.membershipCancelAtPeriodEnd`, Modell
+  `Payment` (kind MEMBERSHIP, status PENDING/PAID/FAILED, Stripe-Refs inkl.
+  `stripeInvoiceId` für Verlängerungszahlungen, Periode).
+- Flow: `POST /api/billing/checkout` → Stripe-Checkout-Session (mode
+  `subscription`, `price_data` inline mit `recurring: {interval: "year"}`) →
+  gehostete Bezahlseite. Erstfreischaltung über `POST /api/billing/webhook`
+  (`checkout.session.completed`) und Dev-Fallback
+  `GET /api/billing/confirm?session_id=…`. **Jede automatische Verlängerung**
+  läuft ausschließlich über den Webhook (`invoice.payment_succeeded` →
+  `fulfillRenewalInvoice`, idempotent über `stripeInvoiceId`) — ohne
+  konfigurierten Webhook verlängert sich ein Abo in Produktion NICHT automatisch.
+  Kündigung: `POST /api/billing/cancel` (`cancel_at_period_end: true`),
+  Widerruf: `POST /api/billing/reactivate`. `customer.subscription.updated/
+  deleted` hält den lokalen Stand synchron, falls im Stripe-Kundenportal
+  gekündigt wird.
+- UI: Seite `/mitgliedschaft` (Status, Kündigen-Knopf immer sichtbar solange
+  Abo aktiv, Offenlegungstext zu Laufzeit/Kündigung, Erinnerung 30 Tage vor
+  Verlängerung), Nav-Link „Zugang".
 - Helfer: `lib/stripe.ts` (Singleton, null ohne Key), `lib/membership.ts`.
 - **Testmodus:** funktioniert, sobald `STRIPE_SECRET_KEY` (sk_test_…) in `.env`
-  steht (+ optional `STRIPE_WEBHOOK_SECRET`). Vorlage in `.env.example`.
-  Testkarte 4242 4242 4242 4242. **Noch zu tun für Live:** echtes Stripe-Konto,
-  Live-Keys, Webhook-Endpoint registrieren; optional Stripe Connect für
-  Transaktions-Split (3 %) später.
+  steht (+ optional `STRIPE_WEBHOOK_SECRET`). Testkarte 4242 4242 4242 4242.
+  **Noch zu tun für Live:** echtes Stripe-Konto, Live-Keys, Webhook-Endpoint
+  registrieren (Pflicht für automatische Verlängerung!); optional Stripe
+  Connect für Transaktions-Split (3 %) später.
 
 ## C.6 Glaubwürdigkeit / Vertrauen
 
@@ -901,6 +914,78 @@ Präferenz statt hartem Filter → es werden IMMER Alternativen angezeigt, mit
 **Match-Index 0–100 %**, Ein-Satz-Begründung, Pro/Contra/Warnungen; Verstöße
 gegen Must-haves deckeln den Index bei 49 %. Ergebnis als kompakte Liste,
 Details im **Slide-over-Panel von rechts** (Muster der Browse-Seite).
+
+## C.10 Echtes Abo mit automatischer Verlängerung + Referral-Codes (2026-07-08)
+
+Löst drei Aufträge: (1) Referral-Programm mit Admin-generierten Codes,
+(2) Bestätigung des bestehenden Credit-Modells (unverändert, siehe C.9),
+(3) echtes Abo-Geschäftsmodell mit Kreditkarten-Zahlung, automatischer
+Verlängerung und rechtssicherer Offenlegung.
+
+### Referral-/Gutschein-Codes (Admin generiert, Nutzer löst ein)
+Neu neben dem bestehenden automatischen Pseudonym-Link-Referral (C.9): Der
+Superadmin generiert in `/admin` einen Code mit fester Credit-Anzahl, optional
+Mehrfach-Einlösung (`maxUses`), Ablaufdatum und internem Vermerk (z. B. für
+Messen). Nutzer lösen ihn unter `/mitgliedschaft` ein.
+- Schema: `ReferralCode` (code, credits, maxUses, usedCount, active,
+  expiresAt, note), `ReferralCodeRedemption` (ein Code pro Nutzer nur einmal —
+  `@@unique([codeId, userId])`). Neuer `CreditTxKind.CODE`.
+- Logik in `lib/credits.ts`: `createReferralCode`, `redeemReferralCode`
+  (atomar über `updateMany`-Claim gegen `maxUses`, verhindert Überbuchung bei
+  gleichzeitigen Einlösungen).
+- UI: `components/RedeemCodeBox.tsx` + Admin-Generator-Formular mit
+  Code-Liste (Status aktiv/abgelaufen/ausgeschöpft/deaktiviert,
+  „Deaktivieren"-Knopf).
+
+### Echtes Abo (Stripe Subscription statt Einmalzahlung)
+Siehe C.5 für den vollständigen Flow. Kernpunkt: `mode: "subscription"` mit
+inline `price_data.recurring.interval = "year"` — kein vorab in Stripe
+angelegtes Preis-Objekt nötig. Jahresgebühr per Superadmin-Einstellung
+`membershipPriceEur` (Default **350 €**, `/admin` → Monetarisierung).
+
+### Rechtliche Grundlage automatische Verlängerung (recherchiert, KEINE Rechtsberatung)
+- **§ 309 Nr. 9 BGB** (Reform 2022) gilt **nur für Verbraucherverträge (B2C)**
+  — B2B (§ 310 Abs. 1 BGB) ist ausdrücklich ausgenommen. Vorgabe für B2C:
+  max. 2 Jahre Erstlaufzeit, danach unbefristete Verlängerung mit max.
+  1 Monat Kündigungsfrist.
+- **§ 312k BGB „Kündigungsbutton"** (seit 1.7.2022, B2C): dauerhafte
+  Online-Verträge brauchen einen leicht auffindbaren Kündigen-Button.
+- **§ 312j BGB „Button-Lösung"**: Preis/Laufzeit/Kündigungsbedingungen müssen
+  direkt vor dem Bestell-Button sichtbar sein.
+- **Ab 19.6.2026 zusätzlich**: § 356a BGB „Widerrufsbutton" (EU-Richtlinie
+  2023/2673) — noch nicht umgesetzt, vormerken.
+- **Schweiz**: kein kodifiziertes Gesetz zu Abo-Fallen, nur weiche
+  OR/UWG-Fairness-Doktrin (Offenlegung + Kündigungsmöglichkeit + Hinweis).
+- Da Brisco auch die Rolle „Endkunde" kennt (potenziell Verbraucher) und
+  deutschsprachige Inhalte anbietet, wurde **bewusst strenger als für B2B
+  nötig** umgesetzt: jederzeit kündbar ohne Vorlauffrist (übertrifft die
+  gesetzliche 1-Monats-Grenze), persistenter „Abo kündigen"-Knopf auf
+  `/mitgliedschaft`, Offenlegungstext direkt bei der Abo-Aktion, 30-Tage-
+  Erinnerung vor Verlängerung. **Vor Live-Schaltung von Anwältin/Anwalt in
+  CH und DE prüfen lassen** — insbesondere die Reichweite deutschen
+  Verbraucherrechts auf eine Schweizer Anbieterin mit deutschsprachigem
+  Angebot (Art. 6 Rom-I-VO „Ausrichtung").
+
+### Umsetzung
+- Schema: `User.stripeSubscriptionId`, `User.membershipCancelAtPeriodEnd`,
+  `Payment.stripeInvoiceId` (bewusst ohne DB-Unique-Constraint — Idempotenz
+  per Code-Check, um eine riskante Migration auf der bestehenden Tabelle zu
+  vermeiden).
+- `lib/membership.ts`: `getMembershipPriceEur()` (async, AppSetting),
+  `fulfillCheckoutSession` (Erstabschluss → Stripe-Subscription verknüpfen),
+  `fulfillRenewalInvoice` (jede automatische Verlängerung, Webhook
+  `invoice.payment_succeeded`), `syncSubscriptionStatus`, `cancelMembership`,
+  `reactivateMembership`.
+- Webhook (`/api/billing/webhook`) verarbeitet jetzt zusätzlich
+  `invoice.payment_succeeded`, `customer.subscription.updated/deleted`.
+- Neue Routen: `POST /api/billing/cancel`, `POST /api/billing/reactivate`.
+- `/mitgliedschaft` zeigt jetzt ALLES an einem Ort: Abo-Status +
+  Kündigen/Reaktivieren, Offenlegungstext, KI-Credit-Preisliste, Code
+  einlösen, Empfehlungs-Link, Zahlungssicherheit.
+- Alles End-to-End gegen echte Stripe-Test-API geprüft: Subscription-Checkout
+  erzeugt, Kündigung/Reaktivierung gegen ein echtes Test-Abo verifiziert
+  (inkl. Sync-Check direkt bei Stripe), Verlängerungs-Webhook mit
+  Idempotenz-Test (zweiter Aufruf erzeugt keine doppelte Payment-Zeile).
 
 ---
 
