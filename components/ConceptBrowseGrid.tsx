@@ -21,6 +21,10 @@ export type BrowseListing = {
   minOrder: number | null;
   region: string;
   price: number | null;
+  // Anbieter hat einen bezahlten Sichtbarkeits-Boost — muss als "Gesponsert"
+  // ausgewiesen werden (EU-P2B-Verordnung 2019/1150: bezahltes Ranking
+  // transparent machen)
+  sponsored?: boolean;
   seller: { name: string; tier: string; ratingAvg: number | null; ratingCount: number };
 };
 
@@ -151,9 +155,19 @@ export function ConceptBrowseGrid({ listings }: { listings: BrowseListing[] }) {
 
             {/* Inhalt */}
             <div className="flex flex-1 flex-col gap-1.5 p-4">
-              <span className="inline-flex w-fit items-center gap-1 rounded-md bg-brand-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-800">
-                <Tag size={10} /> Bietet an
-              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="inline-flex w-fit items-center gap-1 rounded-md bg-brand-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-800">
+                  <Tag size={10} /> Bietet an
+                </span>
+                {l.sponsored && (
+                  <span
+                    className="inline-flex w-fit items-center rounded-md bg-amber-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-800"
+                    title="Dieser Anbieter hat eine bezahlte Platzierung — das Angebot erscheint dadurch weiter oben."
+                  >
+                    Gesponsert
+                  </span>
+                )}
+              </div>
               <h3 className="text-base font-bold leading-tight text-slate-900">{l.productName}</h3>
               <div className="text-xs text-slate-500">{l.productType}</div>
 

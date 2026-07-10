@@ -4,6 +4,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { PasswordInput } from "@/components/PasswordInput";
 import { generatePseudonym, findPseudonymLeak } from "@/lib/pseudonym";
 import { EUROPE_COUNTRIES } from "@/lib/europe-countries";
 import { withBasePath } from "@/lib/base-path";
@@ -170,8 +171,7 @@ export default function RegisterPage() {
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label className="label">Passwort (min. 8 Zeichen)</label>
-            <input
-              type="password"
+            <PasswordInput
               required
               minLength={8}
               value={form.password}
@@ -181,8 +181,7 @@ export default function RegisterPage() {
           </div>
           <div>
             <label className="label">Passwort wiederholen</label>
-            <input
-              type="password"
+            <PasswordInput
               required
               minLength={8}
               value={form.passwordConfirm}

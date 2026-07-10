@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { withBasePath } from "@/lib/base-path";
+import { formatCurrency } from "@/lib/currency";
 
-type Pkg = { id: string; credits: number; label: string; priceChf: number };
+type Pkg = { id: string; credits: number; label: string; price: number; currency: string };
 
 /**
  * Credit-Pakete kaufen — startet den Stripe-Checkout.
@@ -49,7 +50,7 @@ export function CreditActions({ packages }: { packages: Pkg[] }) {
               {p.credits} Credits
             </div>
             <div className="text-sm text-slate-600">
-              CHF {p.priceChf.toFixed(2)}
+              {formatCurrency(p.price, p.currency)}
             </div>
             <div className="mt-2 text-xs font-medium text-brand-700">
               {loading === p.id ? "Öffne Checkout …" : "Kaufen →"}

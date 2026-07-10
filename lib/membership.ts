@@ -2,6 +2,10 @@ import type Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
 import { stripe } from "@/lib/stripe";
 import { grantCredits, getSettingInt } from "@/lib/credits";
+import { formatCurrency } from "@/lib/currency";
+import { sendEmail } from "@/lib/mailer";
+import { renewalConfirmationEmail } from "@/lib/membership-emails";
+import { appBaseUrl } from "@/lib/stripe";
 
 // ============================================================
 // Abo mit ECHTER automatischer Verlängerung (Stripe Subscriptions).
@@ -59,6 +63,13 @@ function periodEndOf(subscription: Stripe.Subscription): Date {
  *   - kind CREDITS    → gekaufte Credits gutschreiben (metadata.credits)
  */
 export async function fulfillCheckoutSession(session: Stripe.Checkout.Session): Promise<void> {
+  // Käuferschutz-Zahlungen haben einen eigenen Ablauf (lib/protection-flow.ts)
+  if (session.metadata?.kind === "PROTECTION") {
+    const { confirmProtectionPayment } = await import("@/lib/protection-flow");
+    await confirmProtectionPayment(session);
+    return;
+  }
+
   const userId = session.metadata?.userId;
   if (!userId) return;
   if (session.payment_status !== "paid" && session.status !== "complete") return;
@@ -132,22 +143,27 @@ export async function fulfillRenewalInvoice(invoice: Stripe.Invoice): Promise<vo
       : invoice.parent?.subscription_details?.subscription?.id;
   if (!subId || !stripe) return;
 
-  const user = await prisma.user.findFirst({ where: { stripeSubscriptionId: subId } });
+  const user = await prisma.user.findFirst({
+    where: { stripeSubscriptionId: subId },
+    select: { id: true, email: true, pseudonym: true },
+  });
   if (!user) return;
 
   const existing = await prisma.payment.findFirst({ where: { stripeInvoiceId: invoice.id } });
-  if (existing?.status === "PAID") return; // bereits erfüllt
+  const alreadyFulfilled = existing?.status === "PAID";
 
   const subscription = await stripe.subscriptions.retrieve(subId);
   const periodEnd = periodEndOf(subscription);
 
-  await prisma.user.update({
-    where: { id: user.id },
-    data: {
-      membershipValidUntil: periodEnd,
-      membershipCancelAtPeriodEnd: subscription.cancel_at_period_end,
-    },
-  });
+  if (!alreadyFulfilled) {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        membershipValidUntil: periodEnd,
+        membershipCancelAtPeriodEnd: subscription.cancel_at_period_end,
+      },
+    });
+  }
 
   const data = {
     status: "PAID" as const,
@@ -167,6 +183,20 @@ export async function fulfillRenewalInvoice(invoice: Stripe.Invoice): Promise<vo
         ...data,
       },
     });
+  }
+
+  // Bestätigungs-Mail nur bei einer ECHTEN automatischen Verlängerung
+  // (billing_reason "subscription_cycle"), nicht beim Erstabschluss — und
+  // nicht erneut bei einer doppelt zugestellten Webhook-Nachricht.
+  if (!alreadyFulfilled && invoice.billing_reason === "subscription_cycle") {
+    const priceLabel = formatCurrency((invoice.amount_paid ?? 0) / 100, (invoice.currency ?? "eur").toUpperCase());
+    const email = renewalConfirmationEmail({
+      pseudonym: user.pseudonym,
+      validUntil: periodEnd,
+      priceLabel,
+      cancelUrl: `${appBaseUrl()}/mitgliedschaft`,
+    });
+    await sendEmail({ userId: user.id, kind: "MEMBERSHIP_RENEWED", to: user.email, ...email });
   }
 }
 

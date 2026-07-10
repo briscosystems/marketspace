@@ -7,8 +7,12 @@ import { TrustBadge } from "@/components/TrustBadge";
 import { RatingDisplay } from "@/components/RatingDisplay";
 import { ListingCard, type ListingCardData } from "@/components/ListingCard";
 import { AboutEditor } from "@/components/AboutEditor";
+import { CurrencyEditor } from "@/components/CurrencyEditor";
+import { PasswordChangeEditor } from "@/components/PasswordChangeEditor";
+import { VatValidationBox } from "@/components/VatValidationBox";
 import { ContactSellerButton } from "@/components/ContactSellerButton";
-import { Store, Package, Search, Handshake } from "lucide-react";
+import { currencyForUser, formatCurrency, convertCurrency } from "@/lib/currency";
+import { Store, Package, Search, Handshake, Wallet, BadgeCheck } from "lucide-react";
 
 const tagLabels: Record<string, string> = {
   FAST_RESPONSE: "Schnelle Antwort",
@@ -38,6 +42,10 @@ export default async function ProfilePage({
         trustTier: true,
         role: true,
         country: true,
+        preferredCurrency: true,
+        vatId: true,
+        vatValidatedAt: true,
+        stripeConnectOnboarded: true,
         about: true,
         createdAt: true,
       },
@@ -48,7 +56,7 @@ export default async function ProfilePage({
 
   const isOwnProfile = session?.user?.id === user.id;
 
-  const [completedCount, ratingAgg, reviews, tagCounts, activeListings, openRfqs] =
+  const [completedCount, revenueAgg, ratingAgg, reviews, tagCounts, activeListings, openRfqs] =
     await Promise.all([
       prisma.transaction.count({
         where: {
@@ -56,6 +64,14 @@ export default async function ProfilePage({
           OR: [{ buyerId: user.id }, { sellerId: user.id }],
         },
       }),
+      // Umsatz (Verkäufe) — nur für den Profil-Inhaber selbst berechnet, siehe unten
+      isOwnProfile
+        ? prisma.transaction.aggregate({
+            where: { sellerId: user.id, status: "COMPLETED" },
+            _sum: { totalEur: true },
+            _count: { _all: true },
+          })
+        : null,
       prisma.review.aggregate({
         where: { revieweeId: user.id },
         _avg: { rating: true },
@@ -91,6 +107,14 @@ export default async function ProfilePage({
         },
       }),
     ]);
+
+  const currency = currencyForUser(user);
+  const revenue = revenueAgg
+    ? {
+        total: convertCurrency(revenueAgg._sum.totalEur ?? 0, "EUR", currency),
+        count: revenueAgg._count._all,
+      }
+    : null;
 
   const tagHistogram = new Map<string, number>();
   for (const r of tagCounts) {
@@ -135,6 +159,22 @@ export default async function ProfilePage({
               <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-slate-600">
                 <span>{roleLabels[user.role] ?? user.role}</span>
                 <TrustBadge tier={user.trustTier} />
+                {user.vatValidatedAt && (
+                  <span
+                    className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 ring-1 ring-emerald-200"
+                    title="USt-ID über die offizielle EU-Datenbank (VIES) bestätigt"
+                  >
+                    <BadgeCheck size={12} /> USt-ID geprüft
+                  </span>
+                )}
+                {user.stripeConnectOnboarded && (
+                  <span
+                    className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-blue-200"
+                    title="Dieser Anbieter bietet Zahlung mit Käuferschutz an: Geld wird sicher geparkt und erst nach Lieferbestätigung freigegeben. Identität und Bankverbindung wurden vom Zahlungsdienstleister Stripe geprüft."
+                  >
+                    <BadgeCheck size={12} /> Käuferschutz verfügbar
+                  </span>
+                )}
                 {user.country && <span className="text-slate-400">· {user.country}</span>}
                 <span className="text-slate-400">
                   · Mitglied seit {user.createdAt.toLocaleDateString("de-DE")}
@@ -151,7 +191,7 @@ export default async function ProfilePage({
         </div>
 
         {/* Kennzahlen-Leiste */}
-        <div className="grid grid-cols-3 gap-3 border-t border-slate-100 pt-4">
+        <div className={`grid gap-3 border-t border-slate-100 pt-4 ${revenue ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-3"}`}>
           <StorefrontStat
             icon={<Package size={16} />}
             value={activeListings.length}
@@ -170,7 +210,31 @@ export default async function ProfilePage({
             label={completedCount === 1 ? "Transaktion" : "Transaktionen"}
             tone="text-emerald-700 bg-emerald-50"
           />
+          {revenue && (
+            <Link href="/umsaetze" className="block transition hover:opacity-80" title="Alle Umsätze ansehen">
+              <StorefrontStat
+                icon={<Wallet size={16} />}
+                value={formatCurrency(revenue.total, currency)}
+                label="Umsatz (Verkäufe) →"
+                tone="text-slate-700 bg-slate-100"
+              />
+            </Link>
+          )}
         </div>
+
+        {/* Nur für den Profil-Inhaber sichtbar: Umsatz ist private Geschäftszahl,
+            keine anderen Nutzer oder Besucher sehen sie — der Superadmin hat eine
+            eigene Übersicht unter /admin. */}
+        {isOwnProfile && (
+          <div className="space-y-3 border-t border-slate-100 pt-4">
+            <CurrencyEditor initial={user.preferredCurrency} />
+            <VatValidationBox
+              initialVatId={user.vatId}
+              validatedAt={user.vatValidatedAt?.toISOString() ?? null}
+            />
+            <PasswordChangeEditor />
+          </div>
+        )}
 
         {/* Über uns */}
         {(user.about || isOwnProfile) && (
@@ -199,8 +263,9 @@ export default async function ProfilePage({
         )}
       </div>
 
-      {/* Bietet an — alle aktiven Angebote als kompakte Karten */}
-      {cardListings.length > 0 && (
+      {/* Bietet an — alle aktiven Angebote als kompakte Karten. Nur für Besucher
+          (der Inhaber sieht seine eigenen Angebote bereits im Dashboard). */}
+      {!isOwnProfile && cardListings.length > 0 && (
         <section>
           <h2 className="mb-3 section-title">Bietet an</h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -292,7 +357,7 @@ function StorefrontStat({
   tone,
 }: {
   icon: React.ReactNode;
-  value: number;
+  value: number | string;
   label: string;
   tone: string;
 }) {

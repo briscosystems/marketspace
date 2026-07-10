@@ -90,28 +90,33 @@ export default function AgbPage() {
         </p>
       </Section>
 
-      <Section n="6" title="Entgelte & Provision">
+      <Section n="6" title="Entgelte">
         <p>
-          Für erfolgreich über die Plattform vermittelte Transaktionen schuldet der Anbieter Brisco
-          eine <strong>Vermittlungsprovision in Höhe von 3 % des Netto-Kaufpreises</strong> der
-          jeweiligen Transaktion, sofern nichts anderes vereinbart ist. Die Provision wird mit
-          Zustandekommen des Vertrags zwischen den Nutzern fällig. Brisco kann die Entgeltstruktur mit
-          angemessener Vorankündigung anpassen.
+          Die Nutzung der Plattform setzt eine <strong>Jahres-Mitgliedschaft</strong> voraus
+          (Preis gemäß aktueller Preisangabe, automatische Verlängerung mit jederzeitiger
+          Kündigungsmöglichkeit, siehe Mitgliedschaftsseite). KI-Funktionen werden über ein
+          separates <strong>Credit-Guthaben</strong> (Prepaid) abgerechnet.{" "}
+          <strong>Brisco erhebt keine Provision und keine Gebühr auf Transaktionen zwischen
+          Nutzern</strong> und ist am Warenumsatz nicht beteiligt.
         </p>
       </Section>
 
-      <Section n="7" title="Umgehungsverbot (Nichtumgehungsklausel)">
+      <Section n="7" title="Käuferschutz (optionale Zahlungsabwicklung)">
         <p>
-          Nutzer, die über die Plattform in Kontakt gekommen sind, verpflichten sich, über die
-          Plattform angebahnte Geschäfte <strong>nicht bewusst an der Plattform vorbei abzuwickeln</strong>,
-          um die Provision zu vermeiden. Dieses Umgehungsverbot gilt für die angebahnte sowie für
-          unmittelbar darauf aufbauende Folgegeschäfte für die Dauer von <strong>zwölf (12) Monaten</strong>{" "}
-          ab Erstkontakt.
+          Verkäufer können freiwillig den <strong>Käuferschutz</strong> aktivieren
+          (Identitäts- und Bankdaten-Prüfung durch den Zahlungsdienstleister Stripe).
+          Wählt der Käufer diese Zahlungsart, wird der Kaufbetrag über Stripe eingezogen
+          und dort geparkt; die <strong>Auszahlung an den Verkäufer erfolgt erst nach der
+          Lieferbestätigung des Käufers</strong>. Meldet der Käufer ein Problem, bleibt der
+          Betrag geparkt, bis Brisco nach Prüfung über Freigabe oder Rückerstattung
+          entscheidet.
         </p>
         <p>
-          Bei nachweislichem Verstoß ist Brisco berechtigt, die andernfalls angefallene Provision
-          sowie eine angemessene Vertragsstrafe in Rechnung zu stellen und den Zugang zu sperren. Das
-          Recht zur Geltendmachung weiteren Schadens bleibt unberührt.
+          Die beim Checkout ausgewiesene <strong>Abwicklungsgebühr</strong> deckt die Kosten
+          des Zahlungsdienstleisters und wird vom Käufer getragen; Brisco erzielt daraus
+          keinen Ertrag. Der Käuferschutz ist keine Treuhand- oder Bankdienstleistung von
+          Brisco; die Zahlungsabwicklung erfolgt durch Stripe. Die Haltedauer geparkter
+          Beträge beträgt maximal 90 Tage.
         </p>
       </Section>
 

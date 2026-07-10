@@ -6929,4 +6929,34 @@ export const SDS_SOURCES: SdsSource[] = [
   { manufacturer: "Castrol", productName: "Hysol SL 35 XBB", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://msdspds.castrol.com/ussds/amersdsf.nsf/0/8FCA99C2DF18953780258B970052DBF0/$file/3118585.pdf" },
   { manufacturer: "Castrol", productName: "Alusol SL 41 XBB", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://msdspds.castrol.com/ussds/amersdsf.nsf/0/D7B8383DB24DD27B80258AD60057FFA3/$file/3076562.pdf" },
   { manufacturer: "Castrol", productName: "Alusol SL 61 XBB", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://hascooil.com/wp-content/uploads/2016/10/Alusol-SL-61-XBB-sds.pdf" },
+
+  // ============ KSS-Charge Juli 2026 (4 Recherche-Agenten: Cimcool, Fuchs, ============
+  // ============ Mobil, Rhenus Lub — jeder Link per Download als PDF geprüft) ============
+  // Cimcool: cimcool.com blockt Bots — Original-PDFs stabil über archive.org (id_-Links)
+  { manufacturer: "Cimcool", productName: "Cimperial 1010", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://web.archive.org/web/20171027191058id_/http://www.cimcool.com/sds/uploads/SDS%20US%20English%20-%20CIMPERIAL%201010_US.pdf" },
+  { manufacturer: "Cimcool", productName: "Cimperial 1011", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://web.archive.org/web/20171027190155id_/http://www.cimcool.com/sds/uploads/SDS%20US%20English%20-%20CIMPERIAL%201011_US.pdf" },
+  { manufacturer: "Cimcool", productName: "Cimperial 1070", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://cdn.dgisupply.ca/img/product-images/Asset_URL/CIMPERIAL_1070_SDS.pdf" },
+  { manufacturer: "Cimcool", productName: "Cimstar 540", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://web.archive.org/web/20171027192501id_/http://www.cimcool.com/sds/uploads/SDS%20US%20English%20-%20CIMSTAR%20540_US.pdf" },
+  { manufacturer: "Cimcool", productName: "Cimstar 540 BLUE", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://web.archive.org/web/20171027193924id_/http://www.cimcool.com/sds/uploads/SDS%20US%20English%20-%20CIMSTAR%20540%20BLUE_US.pdf" },
+  { manufacturer: "Cimcool", productName: "Cimstar 60C-HFP", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://www.marssupply.com/userfiles/products/documents/c/Cimcool_SDSUSEnglish-CIMSTAR60C-HFP_US.pdf" },
+  { manufacturer: "Cimcool", productName: "Cimstar 60XLZ", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://web.archive.org/web/20171027202035id_/http://www.cimcool.com/sds/uploads/SDS%20US%20English%20-%20CIMSTAR%2060XLZ_US.pdf" },
+  { manufacturer: "Cimcool", productName: "Cimstar 66", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://web.archive.org/web/20171027194110id_/http://www.cimcool.com/sds/uploads/SDS%20US%20English%20-%20CIMSTAR%2066_US.pdf" },
+  { manufacturer: "Cimcool", productName: "Cimtech 310", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://cdn.dgisupply.ca/img/product-images/Asset_URL/CIMTECH_310_SDS.pdf" },
+  { manufacturer: "Cimcool", productName: "Cimtech 320", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://web.archive.org/web/20171027181848id_/http://www.cimcool.com/sds/uploads/SDS%20US%20English%20-%20CIMTECH%20320%20with%20InSol%20Technology_US.pdf" },
+  { manufacturer: "Cimcool", productName: "Cimtech 410", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://web.archive.org/web/20171027201817id_/http://www.cimcool.com/sds/uploads/SDS%20US%20English%20-%20CIMTECH%20410_US.pdf" },
+  // Fuchs
+  { manufacturer: "Fuchs", productName: "ECOCOOL Global 10", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://static-content.cromwell.co.uk/pdfs/s/medusa_attachments/fch/fch7402996f_sds.pdf" },
+  { manufacturer: "Fuchs", productName: "ECOCOOL R-AFC 1515 JLR", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://www.fuchs.com/fileadmin/uk/Media/SDS/SDS_ECOCOOL_R_AFC_1515_JLR.PDF" },
+  { manufacturer: "Fuchs", productName: "Ecocool R 2030", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://shop.schusterundsohn.de/wp-content/uploads/2023/01/SDB-Fuchs-Ecocool-R-2030.pdf" },
+  { manufacturer: "Fuchs", productName: "ECOCOOL 711", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://sds.chemtel.net/docs/Fuchs%20Lubricants%20Co-0002505/Fuchs%20Lubricants%20Company_ECOCOOL%20711_Unknown_07-18-2019_English.pdf" },
+  // Mobil
+  { manufacturer: "Mobil", productName: "Mobilcut 140", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://file.jayadipa.co.id/msds/mobil/MSDS%20Mobilcut%20140.pdf" },
+  { manufacturer: "Mobil", productName: "Mobilcut 230", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://file.jayadipa.co.id/msds/mobil/MSDS%20Mobilcut%20230.pdf" },
+  { manufacturer: "Mobil", productName: "Mobilcut 250", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://file.jayadipa.co.id/msds/mobil/MSDS%20Mobilcut%20250.pdf" },
+  { manufacturer: "Mobil", productName: "Mobilmet 426", category: "NEAT_CUTTING_OIL", language: "EN", sourceUrl: "https://hascooil.com/wp-content/uploads/2016/05/MOBILMET-426-sds.pdf" },
+  { manufacturer: "Mobil", productName: "Mobilmet 763", category: "NEAT_CUTTING_OIL", language: "EN", sourceUrl: "https://media.hayley-group.co.uk/api/1/media/682c0934-b48f-11eb-9ac9-42010a150102.pdf" },
+  // Rhenus Lub (Original-Dokumente über Händler egp-handel.de, Stand 15.12.2023)
+  { manufacturer: "Rhenus Lub", productName: "Rhenus FU 51", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://www.egp-handel.de/mediafiles/Datenblaetter/RhenusSicherheitsDatenblaetter/SIDA_rhenus%20FU%2051_15.12.2023_D_DE.pdf" },
+  { manufacturer: "Rhenus Lub", productName: "Rhenus FU 750", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://www.egp-handel.de/mediafiles/Datenblaetter/RhenusSicherheitsDatenblaetter/SIDA_rhenus%20FU%20750_15.12.2023_D_DE.pdf" },
+  { manufacturer: "Rhenus Lub", productName: "rhenus FU 800", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://www.egp-handel.de/mediafiles/Datenblaetter/RhenusSicherheitsDatenblaetter/SIDA_rhenus%20FU%20800_15.12.2023_D_DE.pdf" },
 ];

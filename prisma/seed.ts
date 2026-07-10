@@ -181,7 +181,9 @@ async function main() {
     },
   });
 
-  // Abgeschlossene Beispiel-Transaktion mit beidseitigen Reviews
+  // Abgeschlossene Beispiel-Transaktion mit beidseitigen Reviews.
+  // Käufer hat ein Alternativprodukt eingesetzt (Einsparungs-Kennlinie in
+  // /umsaetze): vorher 4,10 €/L → jetzt 3,40 €/L = 1 400 € gespart.
   const tx = await prisma.transaction.create({
     data: {
       buyerId: alpha.id,
@@ -192,6 +194,8 @@ async function main() {
       status: "COMPLETED",
       shippedAt: new Date(Date.now() - 6 * 86400000),
       completedAt: new Date(Date.now() - 1 * 86400000),
+      replacedProductName: "Blasocut 2000 Universal",
+      replacedPricePerUnit: 4.1,
     },
   });
   await prisma.review.create({

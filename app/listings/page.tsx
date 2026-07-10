@@ -9,7 +9,8 @@ import {
   getApplicationFacet,
   listingMatchesApplication,
 } from "@/lib/application-facets";
-import { LayoutGrid } from "lucide-react";
+import { buildSearchWhere } from "@/lib/normalize-search";
+import { LayoutGrid, BookOpen } from "lucide-react";
 
 type SearchParams = Promise<{
   q?: string;
@@ -149,7 +150,7 @@ export default async function ListingsPage({ searchParams }: { searchParams: Sea
 
   const listings = await prisma.listing.findMany({
     where: activeDims.length > 0 ? { id: { in: allowedIds } } : where,
-    include: { seller: { select: { id: true, pseudonym: true, trustTier: true } } },
+    include: { seller: { select: { id: true, pseudonym: true, trustTier: true, searchBoost: true } } },
     orderBy: [{ seller: { searchBoost: "desc" } }, { createdAt: "desc" }],
     take: 60,
   });
@@ -182,6 +183,7 @@ export default async function ListingsPage({ searchParams }: { searchParams: Sea
     minOrder: l.minOrderQty,
     region: l.locationRegion,
     price: l.priceEur,
+    sponsored: l.seller.searchBoost > 0,
     seller: {
       name: l.seller.pseudonym,
       tier: l.seller.trustTier,
@@ -189,6 +191,25 @@ export default async function ListingsPage({ searchParams }: { searchParams: Sea
       ratingCount: ratingsBySeller.get(l.seller.id)?.count ?? 0,
     },
   }));
+
+  // Zusätzlich zu den aktiven Angeboten (Anbieten) auch den Produktkatalog der
+  // Wissensbasis durchsuchen — Angebote decken meist nur eine Handvoll Produkte
+  // ab, während der Katalog (Hersteller × Produkte) deutlich umfangreicher ist.
+  const catalogWhere = buildSearchWhere("searchTokens", q);
+  const catalogProducts = catalogWhere
+    ? await prisma.product.findMany({
+        where: catalogWhere,
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          category: true,
+          manufacturer: { select: { name: true, slug: true } },
+        },
+        orderBy: { name: "asc" },
+        take: 24,
+      })
+    : [];
 
   const totalActive = productTypeOptions.reduce((s, o) => s + o._count._all, 0);
   const categoryChips = productTypeOptions
@@ -260,6 +281,34 @@ export default async function ListingsPage({ searchParams }: { searchParams: Sea
       </div>
 
       <ConceptBrowseGrid listings={browseListings} />
+
+      {/* Treffer aus dem Produktkatalog (Wissensbasis) — auch wenn gerade kein
+          Anbieten dafür aktiv ist, z.B. bei Herstellersuche wie "Blaser". */}
+      {catalogProducts.length > 0 && (
+        <div className="card space-y-3">
+          <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+            <BookOpen size={16} className="text-brand-600" />
+            Produkte im Katalog für „{q}"
+          </div>
+          <p className="text-sm text-slate-600">
+            Diese Produkte sind in unserer Wissensbasis erfasst, aktuell aber nicht als
+            Angebot gelistet. Details, Sicherheitsdatenblatt und Marktpreise findest du auf
+            der Produktseite.
+          </p>
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {catalogProducts.map((p) => (
+              <Link
+                key={p.id}
+                href={`/products/${p.manufacturer.slug}/${p.slug}`}
+                className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm transition hover:border-brand-400 hover:shadow-soft"
+              >
+                <div className="font-medium text-slate-900">{p.name}</div>
+                <div className="text-xs text-slate-500">{p.manufacturer.name}</div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

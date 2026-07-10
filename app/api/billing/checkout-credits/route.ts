@@ -1,14 +1,16 @@
 // POST /api/billing/checkout-credits { packageId: "S" | "M" | "L" }
-// Erzeugt eine Stripe-Checkout-Session für ein KI-Credit-Paket. Preis =
-// Credits × creditPriceRp (Superadmin-Einstellung, Standard 10 Rp/Credit
-// = 100 % Marge auf die teuerste KI-Aktion, siehe FDS C.9). Währung CHF.
+// Erzeugt eine Stripe-Checkout-Session für ein KI-Credit-Paket. Basis-Preis =
+// Credits × creditPriceCt (Superadmin-Einstellung, Standard 10 Ct/Credit
+// = 100 % Marge auf die teuerste KI-Aktion, siehe FDS C.9), Basis-Währung EUR.
+// Abgerechnet wird in der Wunsch-/Landeswährung des Nutzers (lib/currency.ts).
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { stripe, isStripeConfigured, appBaseUrl } from "@/lib/stripe";
-import { CREDIT_PACKAGES, getSettingInt, packagePriceChf } from "@/lib/credits";
+import { CREDIT_PACKAGES, getSettingInt, packagePriceEur } from "@/lib/credits";
+import { billingCurrencyForUser, convertCurrency, toStripeAmount } from "@/lib/currency";
 
 const bodySchema = z.object({
   packageId: z.enum(["S", "M", "L"]),
@@ -36,7 +38,7 @@ export async function POST(req: Request) {
   const userId = session.user.id;
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { email: true, stripeCustomerId: true },
+    select: { email: true, stripeCustomerId: true, country: true, preferredCurrency: true },
   });
   if (!user) return NextResponse.json({ error: "User nicht gefunden" }, { status: 404 });
 
@@ -47,8 +49,10 @@ export async function POST(req: Request) {
     await prisma.user.update({ where: { id: userId }, data: { stripeCustomerId: customerId } });
   }
 
-  const priceRp = await getSettingInt("creditPriceRp");
-  const priceChf = packagePriceChf(pkg.credits, priceRp);
+  const priceCt = await getSettingInt("creditPriceCt");
+  const priceEur = packagePriceEur(pkg.credits, priceCt);
+  const currency = billingCurrencyForUser(user);
+  const price = convertCurrency(priceEur, "EUR", currency);
   const base = appBaseUrl();
 
   const checkout = await stripe.checkout.sessions.create({
@@ -58,8 +62,8 @@ export async function POST(req: Request) {
       {
         quantity: 1,
         price_data: {
-          currency: "chf",
-          unit_amount: Math.round(priceChf * 100),
+          currency: currency.toLowerCase(),
+          unit_amount: toStripeAmount(price, currency),
           product_data: {
             name: `Brisco — KI-Credits Paket ${pkg.label}`,
             description: `${pkg.credits} Credits für KI-Funktionen (Alternativsuche, KSS-Wizard, Concierge)`,
@@ -77,8 +81,8 @@ export async function POST(req: Request) {
       userId,
       kind: "CREDITS",
       status: "PENDING",
-      amountEur: priceChf, // Feldname historisch — enthält den Betrag in `currency`
-      currency: "chf",
+      amountEur: price, // Feldname historisch — enthält den Betrag in `currency`
+      currency: currency.toLowerCase(),
       stripeSessionId: checkout.id,
     },
   });

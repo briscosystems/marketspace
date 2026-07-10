@@ -9,9 +9,12 @@ import {
   setTrialDays,
   createReferralCodeAction,
   deactivateReferralCode,
+  resolveProtectionRelease,
+  resolveProtectionRefund,
 } from "./actions";
-import { getAllSettings, AI_ACTION_COSTS, packagePriceChf } from "@/lib/credits";
+import { getAllSettings, AI_ACTION_COSTS, packagePriceEur } from "@/lib/credits";
 import { isMembershipActive } from "@/lib/membership";
+import { formatCurrency } from "@/lib/currency";
 
 // Interne Eigentümer-Konsole. Für alle außer ADMIN existiert die Seite "nicht"
 // (404), damit ihre Existenz nicht verraten wird.
@@ -21,7 +24,7 @@ export default async function AdminPage() {
     notFound();
   }
 
-  const [users, settings, usageAgg, purchaseAgg, referralCodes] = await Promise.all([
+  const [users, settings, usageAgg, purchaseAgg, referralCodes, revenueByUser, emailLogs] = await Promise.all([
     prisma.user.findMany({
       where: { role: { in: ["RESELLER", "OEM"] } },
       select: {
@@ -62,10 +65,64 @@ export default async function AdminPage() {
         createdAt: true,
       },
     }),
+    // Umsatz je Verkäufer (abgeschlossene Transaktionen) — einheitlich in EUR,
+    // damit Superadmin über alle Nutzer hinweg vergleichen kann.
+    prisma.transaction.groupBy({
+      by: ["sellerId"],
+      where: { status: "COMPLETED" },
+      _sum: { totalEur: true },
+    }),
+    // System-E-Mails (Prototyp-Log, kein echter Versand — siehe lib/mailer.ts)
+    prisma.emailLog.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 30,
+      select: { id: true, kind: true, to: true, subject: true, createdAt: true },
+    }),
+  ]);
+
+  // Käuferschutz: offene Problemfälle + geparkte Zahlungen
+  const protectionCases = await prisma.transaction.findMany({
+    where: { protectionStatus: { in: ["HELD", "DISPUTED"] } },
+    orderBy: { updatedAt: "desc" },
+    include: {
+      buyer: { select: { pseudonym: true } },
+      seller: { select: { pseudonym: true } },
+      listing: { select: { manufacturer: true, productName: true } },
+      rfq: { select: { manufacturer: true, productType: true } },
+    },
+  });
+
+  // Nutzungs-Messung der letzten 30 Tage (UsageEvent, siehe /api/track)
+  const since30d = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  const [pageviewCount, topPages, topSearches, aiActionCounts] = await Promise.all([
+    prisma.usageEvent.count({ where: { kind: "pageview", createdAt: { gte: since30d } } }),
+    prisma.usageEvent.groupBy({
+      by: ["path"],
+      where: { kind: "pageview", createdAt: { gte: since30d }, path: { not: null } },
+      _count: { _all: true },
+      orderBy: { _count: { path: "desc" } },
+      take: 10,
+    }),
+    prisma.usageEvent.groupBy({
+      by: ["meta"],
+      where: { kind: "search", createdAt: { gte: since30d }, meta: { not: null } },
+      _count: { _all: true },
+      orderBy: { _count: { meta: "desc" } },
+      take: 10,
+    }),
+    prisma.usageEvent.groupBy({
+      by: ["meta"],
+      where: { kind: "ai_action", createdAt: { gte: since30d } },
+      _count: { _all: true },
+      orderBy: { _count: { meta: "desc" } },
+    }),
   ]);
 
   const usedCredits = Math.abs(usageAgg._sum.amount ?? 0);
   const purchasedCredits = purchaseAgg._sum.amount ?? 0;
+  const revenueBySellerId = new Map(
+    revenueByUser.map((r) => [r.sellerId, r._sum.totalEur ?? 0]),
+  );
 
   return (
     <div className="space-y-8">
@@ -76,8 +133,8 @@ export default async function AdminPage() {
         <p className="max-w-2xl text-sm text-slate-600">
           KI-Funktionen kosten Credits. Hier stellst du Startguthaben, Trial-Dauer,
           Referral-Prämie und den Verkaufspreis pro Credit ein. Kalkulationsbasis:
-          teuerste KI-Aktion (Web-Recherche) kostet dich ≈ 7 Rp — bei
-          Verkaufspreis {settings.creditPriceRp} Rp/Credit und{" "}
+          teuerste KI-Aktion (Web-Recherche) kostet dich ≈ 7 Ct — bei
+          Verkaufspreis {settings.creditPriceCt} Ct/Credit und{" "}
           {AI_ACTION_COSTS.alternativesWeb} Credits pro Web-Recherche bleibt ≥ 100 %
           Marge (Details in FDS C.9).
         </p>
@@ -107,10 +164,10 @@ export default async function AdminPage() {
             defaultValue={settings.referralCredits}
           />
           <SettingField
-            name="creditPriceRp"
-            label="Credit-Preis (Rp)"
-            hint={`Paket M (200) = CHF ${packagePriceChf(200, settings.creditPriceRp).toFixed(2)}`}
-            defaultValue={settings.creditPriceRp}
+            name="creditPriceCt"
+            label="Credit-Preis (Ct)"
+            hint={`Paket M (200) = EUR ${packagePriceEur(200, settings.creditPriceCt).toFixed(2)}`}
+            defaultValue={settings.creditPriceCt}
           />
           <SettingField
             name="membershipPriceEur"
@@ -280,6 +337,189 @@ export default async function AdminPage() {
         </div>
       </section>
 
+      {/* ============ Käuferschutz ============ */}
+      <section>
+        <h2 className="page-title">Käuferschutz</h2>
+        <p className="max-w-2xl text-sm text-slate-600">
+          Geparkte Zahlungen und gemeldete Probleme. Bei einem Problemfall entscheidest
+          du: Geld an den Verkäufer freigeben oder an den Käufer zurückerstatten.
+        </p>
+      </section>
+
+      <section className="card overflow-x-auto p-0">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500">
+              <th className="px-4 py-3">Transaktion</th>
+              <th className="px-4 py-3">Käufer → Verkäufer</th>
+              <th className="px-4 py-3 text-right">Betrag</th>
+              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3">Entscheidung</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {protectionCases.map((tx) => (
+              <tr key={tx.id} className={tx.protectionStatus === "DISPUTED" ? "bg-red-50/50" : ""}>
+                <td className="px-4 py-3">
+                  <div className="font-medium text-slate-900">
+                    {tx.listing
+                      ? `${tx.listing.manufacturer} ${tx.listing.productName}`
+                      : tx.rfq
+                        ? [tx.rfq.manufacturer, tx.rfq.productType].filter(Boolean).join(" ")
+                        : tx.id.slice(0, 8)}
+                  </div>
+                  <div className="text-xs text-slate-500">{tx.createdAt.toLocaleDateString("de-DE")}</div>
+                </td>
+                <td className="px-4 py-3 text-slate-600">
+                  {tx.buyer.pseudonym} → {tx.seller.pseudonym}
+                </td>
+                <td className="px-4 py-3 text-right font-semibold text-slate-900">
+                  {formatCurrency(tx.totalEur, "EUR")}
+                </td>
+                <td className="px-4 py-3">
+                  {tx.protectionStatus === "DISPUTED" ? (
+                    <span className="chip bg-red-100 text-red-800">Problem gemeldet</span>
+                  ) : (
+                    <span className="chip bg-blue-100 text-blue-800">geparkt</span>
+                  )}
+                </td>
+                <td className="px-4 py-3">
+                  {tx.protectionStatus === "DISPUTED" ? (
+                    <div className="flex gap-2">
+                      <form action={resolveProtectionRelease}>
+                        <input type="hidden" name="id" value={tx.id} />
+                        <button
+                          type="submit"
+                          className="rounded-md bg-emerald-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-emerald-700"
+                        >
+                          An Verkäufer freigeben
+                        </button>
+                      </form>
+                      <form action={resolveProtectionRefund}>
+                        <input type="hidden" name="id" value={tx.id} />
+                        <button
+                          type="submit"
+                          className="rounded-md bg-red-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-red-700"
+                        >
+                          An Käufer erstatten
+                        </button>
+                      </form>
+                    </div>
+                  ) : (
+                    <span className="text-xs text-slate-500">wartet auf Lieferbestätigung</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+            {protectionCases.length === 0 && (
+              <tr>
+                <td colSpan={5} className="px-4 py-4 text-center text-slate-500">
+                  Keine geparkten Zahlungen oder Problemfälle.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </section>
+
+      {/* ============ Nutzung (Web-Analytics) ============ */}
+      <section>
+        <h2 className="page-title">Nutzung (letzte 30 Tage)</h2>
+        <p className="max-w-2xl text-sm text-slate-600">
+          Selbst gehostete, datenschutzarme Messung (keine IP, keine Cookies) —
+          Grundlage, um die Seite gezielt zu verbessern: Welche Bereiche werden
+          genutzt, wonach wird gesucht, welche KI-Funktionen kommen an?
+        </p>
+      </section>
+
+      <section className="grid gap-4 lg:grid-cols-3">
+        <div className="card">
+          <div className="mb-2 flex items-baseline justify-between">
+            <div className="text-sm font-semibold text-slate-800">Meistbesuchte Seiten</div>
+            <div className="text-xs text-slate-500">{pageviewCount} Aufrufe gesamt</div>
+          </div>
+          <ul className="space-y-1 text-sm">
+            {topPages.map((p) => (
+              <li key={p.path} className="flex justify-between gap-2">
+                <span className="truncate text-slate-600">{p.path}</span>
+                <span className="shrink-0 font-medium text-slate-900">{p._count._all}</span>
+              </li>
+            ))}
+            {topPages.length === 0 && <li className="text-slate-500">Noch keine Daten.</li>}
+          </ul>
+        </div>
+        <div className="card">
+          <div className="mb-2 text-sm font-semibold text-slate-800">Top-Suchbegriffe</div>
+          <ul className="space-y-1 text-sm">
+            {topSearches.map((s) => (
+              <li key={s.meta} className="flex justify-between gap-2">
+                <span className="truncate text-slate-600">„{s.meta}"</span>
+                <span className="shrink-0 font-medium text-slate-900">{s._count._all}</span>
+              </li>
+            ))}
+            {topSearches.length === 0 && <li className="text-slate-500">Noch keine Suchen.</li>}
+          </ul>
+        </div>
+        <div className="card">
+          <div className="mb-2 text-sm font-semibold text-slate-800">KI-Funktionen</div>
+          <ul className="space-y-1 text-sm">
+            {aiActionCounts.map((a) => (
+              <li key={a.meta} className="flex justify-between gap-2">
+                <span className="truncate text-slate-600">{a.meta}</span>
+                <span className="shrink-0 font-medium text-slate-900">{a._count._all}</span>
+              </li>
+            ))}
+            {aiActionCounts.length === 0 && (
+              <li className="text-slate-500">Noch keine KI-Nutzung.</li>
+            )}
+          </ul>
+        </div>
+      </section>
+
+      {/* ============ System-E-Mails ============ */}
+      <section>
+        <h2 className="page-title">System-E-Mails</h2>
+        <p className="max-w-2xl text-sm text-slate-600">
+          Kein echter E-Mail-Versand im Prototyp — hier siehst du, was verschickt
+          worden wäre (Erinnerung ~30 Tage vor automatischer Abo-Verlängerung,
+          Bestätigung danach). Details im Server-Log.
+        </p>
+      </section>
+
+      <section className="card overflow-x-auto p-0">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500">
+              <th className="px-4 py-3">Datum</th>
+              <th className="px-4 py-3">Art</th>
+              <th className="px-4 py-3">An</th>
+              <th className="px-4 py-3">Betreff</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {emailLogs.map((e) => (
+              <tr key={e.id}>
+                <td className="px-4 py-3 text-slate-600">
+                  {e.createdAt.toLocaleString("de-DE")}
+                </td>
+                <td className="px-4 py-3 text-slate-600">
+                  {e.kind === "MEMBERSHIP_RENEWAL_REMINDER" ? "Erinnerung" : "Bestätigung"}
+                </td>
+                <td className="px-4 py-3 text-slate-600">{e.to}</td>
+                <td className="px-4 py-3 text-slate-900">{e.subject}</td>
+              </tr>
+            ))}
+            {emailLogs.length === 0 && (
+              <tr>
+                <td colSpan={4} className="py-4 text-center text-slate-500">
+                  Noch keine System-E-Mails versendet.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </section>
+
       <section>
         <h2 className="page-title">Sichtbarkeits-Steuerung &amp; Kunden</h2>
         <p className="max-w-2xl text-sm text-slate-600">
@@ -298,6 +538,7 @@ export default async function AdminPage() {
               <th className="px-4 py-3">Reseller</th>
               <th className="px-4 py-3">Vertrauensstufe</th>
               <th className="px-4 py-3">Angebote</th>
+              <th className="px-4 py-3">Umsatz</th>
               <th className="px-4 py-3">Boost (0–100)</th>
               <th className="px-4 py-3">Credits</th>
               <th className="px-4 py-3">Trial / Abo</th>
@@ -315,6 +556,9 @@ export default async function AdminPage() {
                 </td>
                 <td className="px-4 py-3 text-slate-600">{u.trustTier}</td>
                 <td className="px-4 py-3 text-slate-600">{u._count.listings}</td>
+                <td className="px-4 py-3 text-slate-600">
+                  {formatCurrency(revenueBySellerId.get(u.id) ?? 0, "EUR")}
+                </td>
                 <td className="px-4 py-3">
                   <form action={updateSearchBoost} className="flex items-center gap-2">
                     <input type="hidden" name="userId" value={u.id} />

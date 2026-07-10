@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { getServerSession } from "next-auth";
@@ -9,6 +10,7 @@ import { CompareBar } from "@/components/compare/CompareBar";
 import { ConciergeWidget } from "@/components/ConciergeWidget";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 import { GateLogin } from "@/components/GateLogin";
+import { AnalyticsTracker } from "@/components/AnalyticsTracker";
 import { GATE_COOKIE, gateEnabled, isGateTokenValid } from "@/lib/gate";
 import { withBasePath } from "@/lib/base-path";
 import { Search, ShieldCheck, FileText, Check } from "lucide-react";
@@ -123,11 +125,13 @@ export default async function RootLayout({
           {/* Schlanke Vertrauens-Leiste — auf jeder Seite sichtbar */}
           <div className="border-b border-slate-200 bg-white">
             <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-1 px-4 py-2 text-xs text-slate-500 md:px-6">
+              {/* Nur Versprechen, die die Plattform heute technisch einlöst
+                  (Glaubwürdigkeit: keine ungedeckten Claims in der Kopfzeile) */}
               <span className="inline-flex items-center gap-1.5">
-                <Check className="h-3.5 w-3.5 text-brand-600" aria-hidden /> Geprüfte, verifizierte Anbieter
+                <Check className="h-3.5 w-3.5 text-brand-600" aria-hidden /> Bewertungen nur aus echten Geschäften
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <ShieldCheck className="h-3.5 w-3.5 text-brand-600" aria-hidden /> Sichere Abwicklung über Brisco
+                <ShieldCheck className="h-3.5 w-3.5 text-brand-600" aria-hidden /> Dokumentierte Abwicklung über Brisco
               </span>
               <span className="hidden items-center gap-1.5 sm:inline-flex">
                 <FileText className="h-3.5 w-3.5 text-brand-600" aria-hidden /> Marktpreise &amp; Sicherheitsdatenblätter inklusive
@@ -150,6 +154,10 @@ export default async function RootLayout({
               <a href={withBasePath("/datenschutz")} className="hover:text-slate-700 hover:underline">Datenschutz</a>
             </div>
           </footer>
+          {/* Nutzungs-Messung (datenschutzarm, siehe components/AnalyticsTracker) */}
+          <Suspense fallback={null}>
+            <AnalyticsTracker />
+          </Suspense>
         </Providers>
       </body>
     </html>

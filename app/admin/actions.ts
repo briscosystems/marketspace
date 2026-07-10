@@ -49,7 +49,7 @@ export async function updateMonetizationSettings(formData: FormData) {
     { name: "welcomeCredits", min: 0, max: 1000 },
     { name: "trialDays", min: 0, max: 365 },
     { name: "referralCredits", min: 0, max: 500 },
-    { name: "creditPriceRp", min: 1, max: 1000 },
+    { name: "creditPriceCt", min: 1, max: 1000 },
     { name: "membershipPriceEur", min: 1, max: 100000 },
   ];
   for (const f of fields) {
@@ -130,5 +130,39 @@ export async function deactivateReferralCode(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   if (!id) return;
   await prisma.referralCode.update({ where: { id }, data: { active: false } });
+  revalidatePath("/admin");
+}
+
+// ---------- Käuferschutz: Problemfall-Entscheidung ----------
+
+/** Problemfall: geparktes Geld trotz Reklamation an den Verkäufer freigeben. */
+export async function resolveProtectionRelease(formData: FormData) {
+  await assertOwner();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  const { releaseProtection } = await import("@/lib/protection-flow");
+  const result = await releaseProtection(id);
+  if (result.ok) {
+    await prisma.transaction.update({
+      where: { id },
+      data: { status: "COMPLETED", completedAt: new Date() },
+    });
+  }
+  revalidatePath("/admin");
+}
+
+/** Problemfall: geparktes Geld an den Käufer zurückerstatten (inkl. Gebühr). */
+export async function resolveProtectionRefund(formData: FormData) {
+  await assertOwner();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  const { refundProtection } = await import("@/lib/protection-flow");
+  const result = await refundProtection(id);
+  if (result.ok) {
+    await prisma.transaction.update({
+      where: { id },
+      data: { status: "CANCELED", canceledAt: new Date() },
+    });
+  }
   revalidatePath("/admin");
 }

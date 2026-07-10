@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { PasswordInput } from "@/components/PasswordInput";
 import { withBasePath } from "@/lib/base-path";
 
 export default function ResetPasswordPage() {
@@ -73,9 +74,8 @@ export default function ResetPasswordPage() {
         <form onSubmit={onSubmit} className="card space-y-4">
           <div>
             <label className="label" htmlFor="password">Neues Passwort (min. 8 Zeichen)</label>
-            <input
+            <PasswordInput
               id="password"
-              type="password"
               required
               minLength={8}
               value={password}
@@ -85,9 +85,8 @@ export default function ResetPasswordPage() {
           </div>
           <div>
             <label className="label" htmlFor="confirm">Passwort wiederholen</label>
-            <input
+            <PasswordInput
               id="confirm"
-              type="password"
               required
               minLength={8}
               value={confirm}

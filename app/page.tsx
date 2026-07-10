@@ -236,8 +236,8 @@ async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudo
     }),
     prisma.listing.findMany({
       where: { status: "ACTIVE", NOT: { sellerId: userId } },
-      include: { seller: { select: { id: true, pseudonym: true, trustTier: true } } },
-      // Versteckter Eigentümer-Boost zuerst, dann neueste Angebote (siehe /admin).
+      include: { seller: { select: { id: true, pseudonym: true, trustTier: true, searchBoost: true } } },
+      // Bezahlter Boost zuerst (als "Gesponsert" gekennzeichnet), dann neueste Angebote.
       orderBy: [{ seller: { searchBoost: "desc" } }, { createdAt: "desc" }],
       take: 4,
     }),
@@ -393,7 +393,11 @@ async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudo
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {freshListings.map((l) => (
-              <ListingCard key={l.id} listing={l} hideStatus />
+              <ListingCard
+                key={l.id}
+                listing={{ ...l, sponsored: l.seller.searchBoost > 0 }}
+                hideStatus
+              />
             ))}
           </div>
         </section>

@@ -8,13 +8,16 @@ import { MembershipActions } from "@/components/MembershipActions";
 import { CreditActions } from "@/components/CreditActions";
 import { ReferralLinkBox } from "@/components/ReferralLinkBox";
 import { RedeemCodeBox } from "@/components/RedeemCodeBox";
+import { ConnectOnboardingBox } from "@/components/ConnectOnboardingBox";
+import { syncConnectStatus } from "@/lib/connect";
 import {
   CREDIT_PACKAGES,
   AI_ACTION_COSTS,
   getAllSettings,
   isTrialActive,
-  packagePriceChf,
+  packagePriceEur,
 } from "@/lib/credits";
+import { currencyForUser, convertCurrency, formatCurrency } from "@/lib/currency";
 import { CreditCard, ShieldCheck, Lock, Coins, Gift, Clock, Ticket, ScrollText } from "lucide-react";
 
 export const metadata = { title: "Mitgliedschaft & Kosten — Brisco Marketplace" };
@@ -43,6 +46,8 @@ export default async function MembershipPage() {
         creditBalance: true,
         trialEndsAt: true,
         pseudonym: true,
+        country: true,
+        preferredCurrency: true,
       },
     }),
     getAllSettings(),
@@ -53,6 +58,9 @@ export default async function MembershipPage() {
       select: { id: true, amount: true, kind: true, note: true, createdAt: true },
     }),
   ]);
+  const currency = currencyForUser(user ?? {});
+  // Connect-Onboarding-Status mit Stripe abgleichen (Rückkehr vom Onboarding)
+  const connectOnboarded = await syncConnectStatus(session.user.id);
   const active = isMembershipActive(user?.membershipValidUntil);
   const trialActive = isTrialActive(user?.trialEndsAt);
   const priceEur = await getMembershipPriceEur();
@@ -165,12 +173,13 @@ export default async function MembershipPage() {
           {AI_ACTION_COSTS.concierge} Credit, KI-Alternativen{" "}
           {AI_ACTION_COSTS.alternatives} Credit, Web-Recherche{" "}
           {AI_ACTION_COSTS.alternativesWeb} Credits. 1 Credit ={" "}
-          {(settings.creditPriceRp / 100).toFixed(2).replace(".", ",")} CHF.
+          {formatCurrency(convertCurrency(settings.creditPriceCt / 100, "EUR", currency), currency)}.
         </p>
         <CreditActions
           packages={CREDIT_PACKAGES.map((p) => ({
             ...p,
-            priceChf: packagePriceChf(p.credits, settings.creditPriceRp),
+            price: convertCurrency(packagePriceEur(p.credits, settings.creditPriceCt), "EUR", currency),
+            currency,
           }))}
         />
         {recentTx.length > 0 && (
@@ -197,6 +206,20 @@ export default async function MembershipPage() {
         )}
       </div>
 
+      {/* Käuferschutz als Verkäufer anbieten */}
+      <div className="card space-y-3">
+        <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+          <ShieldCheck size={18} className="text-emerald-600" />
+          Käuferschutz anbieten
+        </div>
+        <p className="text-sm text-slate-600">
+          Optional für Verkäufer: Käufer zahlen über die Plattform, das Geld wird sicher
+          geparkt und nach der Lieferbestätigung an dich freigegeben. Die Abwicklungsgebühr
+          trägt der Käufer — Brisco verdient an der Transaktion nichts.
+        </p>
+        <ConnectOnboardingBox onboarded={connectOnboarded} />
+      </div>
+
       {/* Code einlösen */}
       <div className="card space-y-3">
         <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
@@ -216,8 +239,9 @@ export default async function MembershipPage() {
           Kunden werben — {settings.referralCredits} Credits pro Neukunde
         </div>
         <p className="text-sm text-slate-600">
-          Teile deinen Empfehlungs-Link. Registriert sich darüber ein Neukunde,
-          bekommst du {settings.referralCredits} Credits gutgeschrieben.
+          Lade einen Kontakt per E-Mail ein oder teile deinen Empfehlungs-Link.
+          Registriert sich darüber ein Neukunde, bekommst du{" "}
+          {settings.referralCredits} Credits gutgeschrieben.
         </p>
         <ReferralLinkBox pseudonym={user?.pseudonym ?? ""} />
       </div>

@@ -56,6 +56,21 @@ enum TransactionStatus {
   DISPUTED
 }
 
+// Käuferschutz (Zahlungsfreigabe nach Lieferbestätigung) — bewusst NICHT
+// "Treuhand"/"Escrow" genannt (Stripe Restricted-Businesses-Vorgabe; von
+// Stripe-Support als zulässiger Ablauf bestätigt, Haltefrist max. 90 Tage).
+// Geldfluss: Käufer zahlt über Stripe an die Plattform (separate charges &
+// transfers), das Geld bleibt bei Stripe geparkt, erst nach Lieferbestätigung
+// des Käufers wird an das Connect-Konto des Verkäufers überwiesen.
+enum ProtectionStatus {
+  NONE            // ohne Käuferschutz (Direktabwicklung wie bisher)
+  PENDING_PAYMENT // Käufer hat Checkout gestartet, Zahlung noch offen
+  HELD            // bezahlt — Geld bei Stripe geparkt bis Lieferbestätigung
+  RELEASED        // Käufer hat Lieferung bestätigt, Geld an Verkäufer überwiesen
+  REFUNDED        // Problemfall: Geld an Käufer zurückerstattet
+  DISPUTED        // Käufer hat Problem gemeldet — Superadmin entscheidet
+}
+
 enum ReviewTag {
   FAST_RESPONSE
   QUALITY_AS_DESCRIBED
@@ -472,12 +487,26 @@ model User {
   // aus (membershipValidUntil) und verlängert sich NICHT automatisch weiter.
   membershipCancelAtPeriodEnd Boolean @default(false)
   payments            Payment[]
+  emailLogs            EmailLog[]
   referralCodesCreated ReferralCode[]           @relation("ReferralCodesCreatedBy")
   referralRedemptions  ReferralCodeRedemption[]
   // KYC light — internal only
   companyName  String?
   vatId        String?
+  // USt-ID-Prüfung gegen VIES (offizielle EU-Datenbank, lib/vat-validation.ts):
+  // Zeitpunkt der letzten ERFOLGREICHEN Prüfung + der von VIES gemeldete
+  // Firmenname. null = nie erfolgreich geprüft.
+  vatValidatedAt DateTime?
+  vatValidatedName String?
   country      String?
+  // Gewünschte Anzeige-/Abrechnungswährung, vom Nutzer im Profil wählbar.
+  // Nicht gesetzt (null) → wird aus `country` abgeleitet (lib/currency.ts).
+  preferredCurrency String?
+  // Käuferschutz als Verkäufer anbieten: Stripe-Connect-Konto (Express).
+  // onboarded = Stripe-Prüfung abgeschlossen (charges+payouts aktiv) →
+  // Abzeichen "Käuferschutz verfügbar" auf Profil und Angeboten.
+  stripeConnectAccountId String?
+  stripeConnectOnboarded Boolean @default(false)
   // Öffentlicher Schaufenster-Text ("Über uns") auf der Profilseite —
   // pseudonym bleibt, aber der Anbieter kann sich fachlich vorstellen.
   about        String?
@@ -489,6 +518,10 @@ model User {
   // Kennenlernphase: bis zu diesem Datum ist die Plattform ohne Abo nutzbar.
   // Dauer stellt der Superadmin in /admin ein (AppSetting trialDays).
   trialEndsAt   DateTime?
+  // Kontaktdaten-Filter: Zeitpunkt der einmaligen KI-Prüfung der ersten
+  // Nachricht dieses Accounts (Kosten trägt Brisco, max 1× pro Account —
+  // siehe lib/contact-filter.ts). null = noch nicht geprüft.
+  aiContactCheckAt DateTime?
   // Referral: Wer hat diesen Nutzer geworben? (Empfehlungs-Code = Pseudonym)
   referredById  String?
   referredBy    User?     @relation("Referrals", fields: [referredById], references: [id], onDelete: SetNull)
@@ -561,6 +594,55 @@ model Payment {
   @@index([userId])
   @@index([status])
   @@index([stripeInvoiceId])
+}
+
+// ============================================================
+// System-E-Mails — Prototyp-Log statt echtem Versand (siehe lib/mailer.ts).
+// Deckt insbesondere die Abo-Kommunikation ab: Erinnerung vor automatischer
+// Verlängerung + Bestätigung danach (rechtlicher Hintergrund siehe
+// lib/membership-emails.ts).
+// ============================================================
+enum EmailKind {
+  MEMBERSHIP_RENEWAL_REMINDER // ~30 Tage vor automatischer Verlängerung
+  MEMBERSHIP_RENEWED          // Bestätigung nach erfolgter Verlängerung
+}
+
+model EmailLog {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind      EmailKind
+  to        String
+  subject   String
+  body      String
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([kind])
+}
+
+// ============================================================
+// Nutzungs-Messung (Web-Analytics, selbst gehostet & datenschutzarm).
+// Grundlage für Produktentscheidungen: Welche Seiten werden genutzt,
+// wonach wird gesucht, welche Funktionen kommen an?
+// Bewusst OHNE IP-Adresse, ohne Cookies, ohne Fingerprinting. userId ist
+// optional (nur bei eingeloggten Nutzern) und hat bewusst keine DB-Relation
+// — Löschung eines Users lässt die anonymen Zähler intakt.
+// Auswertung: /admin (Abschnitt "Nutzung").
+// ============================================================
+model UsageEvent {
+  id        String   @id @default(cuid())
+  // Ereignis-Art: "pageview" | "search" | "ai_action" | künftige Arten
+  kind      String
+  // Seite (bei pageview), z.B. "/listings"
+  path      String?
+  // Zusatzinfo: Suchbegriff (search), Aktionsname (ai_action), ...
+  meta      String?
+  userId    String?
+  createdAt DateTime @default(now())
+
+  @@index([kind, createdAt])
+  @@index([createdAt])
 }
 
 // ============================================================
@@ -903,6 +985,21 @@ model Transaction {
   totalEur      Float
   quantity      Float
   quantityUnit  String            @default("L")
+
+  // Einsparung durch Produktwechsel: Der Käufer kann erfassen, welches
+  // Produkt er vorher eingesetzt hat und was es pro Einheit gekostet hat
+  // (EUR). Einsparung = replacedPricePerUnit × quantity − totalEur.
+  // Wird als Kennlinie in der Umsatzansicht (/umsaetze) angezeigt.
+  replacedProductName  String?
+  replacedPricePerUnit Float?
+
+  // Käuferschutz (siehe enum ProtectionStatus). Die Abwicklungsgebühr trägt
+  // der Käufer (transparent im Checkout); die Plattform verdient daran nichts.
+  protectionStatus                ProtectionStatus @default(NONE)
+  protectionFeeEur                Float?
+  stripeProtectionSessionId       String?
+  stripeProtectionPaymentIntentId String?
+  stripeProtectionTransferId      String?
 
   status        TransactionStatus @default(PENDING)
   shippedAt     DateTime?

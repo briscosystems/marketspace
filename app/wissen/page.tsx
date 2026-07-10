@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
+import { SearchInput } from "@/components/SearchInput";
 import { ProductImage } from "@/components/ProductImage";
 import { packagingForProduct } from "@/lib/product-packaging";
 import {
@@ -113,6 +115,13 @@ export default async function WissenPage({ searchParams }: { searchParams: Searc
           </Link>
         </div>
       </section>
+
+      {/* Suche in den Praxis-Fällen (durchsucht Titel, Beschreibung, Symptome) */}
+      <div className="max-w-xl">
+        <Suspense fallback={null}>
+          <SearchInput placeholder="Praxis-Fälle durchsuchen — z.B. Schaum, Ekzem, Alu-Verfärbung, Blasocut…" />
+        </Suspense>
+      </div>
 
       {/* Kategorie-Filter */}
       <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">

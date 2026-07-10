@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { findContactData, aiContactCheck } from "@/lib/contact-filter";
 
 async function assertMember(conversationId: string, userId: string) {
   const convo = await prisma.conversation.findUnique({
@@ -54,6 +55,43 @@ export async function POST(
   const parsed = sendSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: "Nachricht darf nicht leer sein." }, { status: 400 });
+  }
+
+  // Kontaktdaten-Filter Stufe 1 (Regex, jede Nachricht): E-Mail, Telefon,
+  // Links. Schützt das Pseudonym-Modell — Austausch direkter Kontaktdaten
+  // ist nicht erlaubt (siehe AGB / lib/contact-filter.ts).
+  const finding = findContactData(parsed.data.body);
+  if (finding.found) {
+    return NextResponse.json(
+      {
+        error: `Deine Nachricht enthält ${finding.reason}. Der Austausch direkter Kontaktdaten ist auf Brisco nicht erlaubt — die Kommunikation läuft pseudonym über die Plattform.`,
+      },
+      { status: 422 },
+    );
+  }
+
+  // Stufe 2 (KI, einmalig pro neuem Account): prüft die erste Nachricht auf
+  // raffiniert verschleierte Kontaktdaten. Kosten trägt Brisco (gedeckelt,
+  // siehe lib/contact-filter.ts). Zeitstempel wird unabhängig vom Ergebnis
+  // gesetzt — genau eine Prüfung pro Account.
+  const sender = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { aiContactCheckAt: true },
+  });
+  if (sender && sender.aiContactCheckAt === null) {
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { aiContactCheckAt: new Date() },
+    });
+    const ai = await aiContactCheck(parsed.data.body);
+    if (ai?.flagged) {
+      return NextResponse.json(
+        {
+          error: `Deine Nachricht wurde von unserer automatischen Prüfung zurückgehalten${ai.reason ? ` (${ai.reason})` : ""}. Der Austausch direkter Kontaktdaten ist auf Brisco nicht erlaubt.`,
+        },
+        { status: 422 },
+      );
+    }
   }
 
   const message = await prisma.message.create({

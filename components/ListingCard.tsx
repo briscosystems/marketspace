@@ -27,6 +27,9 @@ export type ListingCardData = {
   priceEur: number | null;
   shippingTerms: string | null;
   status?: Status;
+  // Anbieter mit bezahltem Sichtbarkeits-Boost — als "Gesponsert" ausweisen
+  // (EU-P2B-Verordnung 2019/1150: bezahltes Ranking transparent machen)
+  sponsored?: boolean;
   // Weitere Felder bleiben im Datenvertrag erhalten (Detailseite nutzt sie)
   machiningOperations?: string[];
   mineralOilContent?: number | null;
@@ -98,6 +101,14 @@ function CompactCard({ listing, hideStatus }: { listing: ListingCardData; hideSt
             <span className="inline-flex items-center gap-0.5 rounded-md bg-blue-100 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-blue-800">
               <Tag size={8} /> Bietet an
             </span>
+            {listing.sponsored && (
+              <span
+                className="inline-flex items-center rounded-md bg-amber-100 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-amber-800"
+                title="Dieser Anbieter hat eine bezahlte Platzierung — das Angebot erscheint dadurch weiter oben."
+              >
+                Gesponsert
+              </span>
+            )}
             <BrandLogo manufacturer={listing.manufacturer} size="xs" />
             {!hideStatus && listing.status && listing.status !== "ACTIVE" && (
               <span className={`chip ${statusStyle[listing.status].classes}`}>
@@ -185,6 +196,14 @@ function ExtendedCard({ listing, hideStatus }: { listing: ListingCardData; hideS
             <span className="inline-flex w-fit items-center gap-1 rounded-md bg-brand-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-800">
               <Tag size={10} /> Bietet an
             </span>
+            {listing.sponsored && (
+              <span
+                className="inline-flex w-fit items-center rounded-md bg-amber-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-800"
+                title="Dieser Anbieter hat eine bezahlte Platzierung — das Angebot erscheint dadurch weiter oben."
+              >
+                Gesponsert
+              </span>
+            )}
             {showStatusChip && (
               <span className={`chip ${statusStyle[listing.status!].classes}`}>
                 {statusStyle[listing.status!].label}

@@ -70,9 +70,10 @@ export default function VertrauenPage() {
         </div>
         <p className="text-sm text-slate-600">
           Nutzer treten unter einem Pseudonym auf, und in den Nachrichten ist der Austausch von
-          direkten Kontaktdaten nicht erlaubt. Das schützt beide Seiten vor Abwerbung und hält die
-          Plattform <strong>neutral</strong>: Wir bevorzugen niemanden sichtbar, und niemand kann
-          an Brisco vorbei „angefüttert" werden, bevor Vertrauen aufgebaut ist.
+          direkten Kontaktdaten nicht erlaubt — ein automatischer Filter hält Nachrichten mit
+          E-Mail, Telefonnummer oder Links zurück. Das schützt beide Seiten vor Abwerbung.
+          Bezahlte Platzierungen sind für alle sichtbar als <strong>„Gesponsert"</strong>{" "}
+          gekennzeichnet — alles andere ist neutral sortiert.
         </p>
       </section>
 
@@ -88,9 +89,13 @@ export default function VertrauenPage() {
           stehen in den{" "}
           <Link href="/agb" className="text-brand-600 hover:underline">AGB</Link>.
         </p>
-        <p className="text-xs text-slate-500">
-          In Vorbereitung: abgesicherte Zahlung (Treuhand), bei der das Geld erst nach
-          erfolgreicher Lieferung an den Anbieter freigegeben wird.
+        <p className="text-sm text-slate-600">
+          <strong>Käuferschutz (optional):</strong> Bei Anbietern mit dem Abzeichen
+          „Käuferschutz verfügbar" kann der Käufer über die Plattform bezahlen. Das Geld
+          wird beim Zahlungsdienstleister Stripe sicher geparkt und erst nach der
+          Lieferbestätigung des Käufers an den Verkäufer freigegeben; bei Problemen
+          entscheidet Brisco über Freigabe oder Rückerstattung. Die Abwicklungsgebühr
+          trägt der Käufer — Brisco verdient an der Transaktion nichts.
         </p>
       </section>
     </div>

@@ -59,8 +59,9 @@ export default async function ConversationPage({
         )}
         <div className="rounded-md bg-amber-50 p-3 text-xs text-amber-800">
           Diese Konversation läuft pseudonym über die Plattform. Klarname,
-          Telefonnummer und Email der Gegenseite bleiben verborgen. Der
-          AI-Kontaktdaten-Filter (FDS 4.5) ist in dieser Iteration noch nicht aktiv.
+          Telefonnummer und Email der Gegenseite bleiben verborgen. Nachrichten
+          mit direkten Kontaktdaten (E-Mail, Telefon, Links) werden automatisch
+          zurückgehalten.
         </div>
       </div>
 

@@ -21,8 +21,8 @@ export const SETTING_DEFAULTS = {
   trialDays: 30,
   /** Prämie (Credits) für den Werber, wenn sein Empfehlungs-Code genutzt wird */
   referralCredits: 10,
-  /** Verkaufspreis pro Credit in Rappen (CHF-Cent). 10 Rp = CHF 0.10 */
-  creditPriceRp: 10,
+  /** Verkaufspreis pro Credit in Cent (EUR-Cent). 10 Ct = EUR 0.10 */
+  creditPriceCt: 10,
   /** Jahresgebühr des Abos in Euro (Default 350 €, Superadmin-einstellbar) */
   membershipPriceEur: 350,
 } as const;
@@ -30,9 +30,9 @@ export const SETTING_DEFAULTS = {
 export type SettingKey = keyof typeof SETTING_DEFAULTS;
 
 // Kosten je KI-Aktion in Credits. Kalkuliert so, dass bei einem
-// Verkaufspreis von 10 Rp/Credit jede Aktion ≥100 % Marge auf die
-// Anthropic-API-Kosten hat (teuerste Aktion: Web-Recherche ≈ CHF 0.07
-// Selbstkosten → 2 Credits = CHF 0.20 Erlös).
+// Verkaufspreis von 10 Ct/Credit jede Aktion ≥100 % Marge auf die
+// Anthropic-API-Kosten hat (teuerste Aktion: Web-Recherche ≈ EUR 0.07
+// Selbstkosten → 2 Credits = EUR 0.20 Erlös).
 export const AI_ACTION_COSTS = {
   concierge: 1, // Haiku, ~CHF 0.005 Selbstkosten
   kssWizard: 1, // Haiku, ~CHF 0.015
@@ -136,6 +136,11 @@ export async function chargeForAiAction(
   await prisma.creditTransaction.create({
     data: { userId, amount: -cost, kind: "USAGE", note: AI_ACTION_LABEL[action] },
   });
+  // Nutzungs-Messung: welche KI-Funktion wird wie oft genutzt (/admin → Nutzung).
+  // Fire-and-forget — Messung darf die eigentliche Aktion nie ausbremsen.
+  prisma.usageEvent
+    .create({ data: { kind: "ai_action", meta: action, userId } })
+    .catch(() => {});
   return { ok: true, cost, balance: user.creditBalance - cost };
 }
 
@@ -191,15 +196,15 @@ export async function getAccessStatus(userId: string): Promise<AccessStatus | nu
 
 export type CreditPackage = { id: string; credits: number; label: string };
 
-/** Pakete — Preis ergibt sich aus creditPriceRp (Superadmin-Einstellung). */
+/** Pakete — Preis ergibt sich aus creditPriceCt (Superadmin-Einstellung). */
 export const CREDIT_PACKAGES: CreditPackage[] = [
   { id: "S", credits: 50, label: "Starter" },
   { id: "M", credits: 200, label: "Standard" },
   { id: "L", credits: 500, label: "Profi" },
 ];
 
-export function packagePriceChf(credits: number, priceRp: number): number {
-  return Math.round(credits * priceRp) / 100;
+export function packagePriceEur(credits: number, priceCt: number): number {
+  return Math.round(credits * priceCt) / 100;
 }
 
 // ---------- Referral-/Gutschein-Codes (Admin generiert, Nutzer löst ein) ----------

@@ -5,7 +5,11 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { TrustBadge } from "@/components/TrustBadge";
 import { TransactionActions } from "@/components/TransactionActions";
+import { ProtectionPanel } from "@/components/ProtectionPanel";
 import { ReviewForm } from "@/components/ReviewForm";
+import { protectionFeeEur } from "@/lib/protection";
+import { stripe } from "@/lib/stripe";
+import { confirmProtectionPayment } from "@/lib/protection-flow";
 
 const statusStyle: Record<string, string> = {
   PENDING: "bg-amber-100 text-amber-800",
@@ -24,18 +28,36 @@ const tagLabels: Record<string, string> = {
 
 export default async function TransactionPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ protection?: string; session_id?: string }>;
 }) {
   const { id } = await params;
+  const sp = await searchParams;
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) redirect(`/login?callbackUrl=/transactions/${id}`);
+
+  // Rückkehr vom Käuferschutz-Checkout (Dev-Fallback ohne Webhook):
+  // Session direkt bei Stripe verifizieren und Zahlung als geparkt markieren.
+  if (sp.protection === "success" && sp.session_id && stripe) {
+    try {
+      const checkout = await stripe.checkout.sessions.retrieve(sp.session_id);
+      if (checkout.metadata?.transactionId === id) {
+        await confirmProtectionPayment(checkout);
+      }
+    } catch {
+      // Webhook übernimmt es sonst — Seite trotzdem anzeigen
+    }
+  }
 
   const tx = await prisma.transaction.findUnique({
     where: { id },
     include: {
       buyer: { select: { id: true, pseudonym: true, trustTier: true } },
-      seller: { select: { id: true, pseudonym: true, trustTier: true } },
+      seller: {
+        select: { id: true, pseudonym: true, trustTier: true, stripeConnectOnboarded: true },
+      },
       rfq: { select: { id: true, productType: true, isoViscosity: true } },
       listing: { select: { id: true, manufacturer: true, productName: true } },
       reviews: {
@@ -49,6 +71,18 @@ export default async function TransactionPage({
   const isBuyer = tx.buyerId === me;
   const isSeller = tx.sellerId === me;
   if (!isBuyer && !isSeller) redirect("/dashboard");
+
+  // Erstes Geschäft zwischen diesen beiden Parteien? → Käuferschutz empfohlen
+  const priorDeals = await prisma.transaction.count({
+    where: {
+      id: { not: tx.id },
+      status: "COMPLETED",
+      OR: [
+        { buyerId: tx.buyerId, sellerId: tx.sellerId },
+        { buyerId: tx.sellerId, sellerId: tx.buyerId },
+      ],
+    },
+  });
 
   const counterpart = isBuyer ? tx.seller : tx.buyer;
   const myReview = tx.reviews.find((r) => r.reviewerId === me);
@@ -153,6 +187,18 @@ export default async function TransactionPage({
           role={isBuyer ? "BUYER" : "SELLER"}
         />
       </div>
+
+      {/* Käuferschutz — Zahlung über die Plattform, Freigabe nach Lieferbestätigung */}
+      <ProtectionPanel
+        transactionId={tx.id}
+        role={isBuyer ? "BUYER" : "SELLER"}
+        protectionStatus={tx.protectionStatus}
+        totalEur={tx.totalEur}
+        feeEur={tx.protectionFeeEur ?? protectionFeeEur(tx.totalEur)}
+        sellerOffersProtection={tx.seller.stripeConnectOnboarded}
+        isFirstDeal={priorDeals === 0}
+        txOpen={tx.status === "PENDING" || tx.status === "SHIPPED"}
+      />
 
       <section className="space-y-3">
         <h2 className="section-title">Bewertungen</h2>

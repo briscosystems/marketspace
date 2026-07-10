@@ -18,6 +18,7 @@ import {
   FileText,
   Shield,
   Lightbulb,
+  Wallet,
 } from "lucide-react";
 import { useLocale } from "./LocaleProvider";
 import { LanguageSwitcher } from "./LanguageSwitcher";
@@ -115,6 +116,10 @@ export function AccountMenu({ user }: { user: { name: string; isAdmin?: boolean 
             <Link href="/mitgliedschaft" className={itemClass}>
               <CreditCard size={16} className="text-slate-400" />
               {t("account.membership")}
+            </Link>
+            <Link href="/umsaetze" className={itemClass}>
+              <Wallet size={16} className="text-slate-400" />
+              Meine Umsätze
             </Link>
             {user.isAdmin && (
               <Link href="/admin" className={`${itemClass} text-rose-700 hover:bg-rose-50`}>
