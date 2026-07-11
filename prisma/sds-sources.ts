@@ -6959,4 +6959,48 @@ export const SDS_SOURCES: SdsSource[] = [
   { manufacturer: "Rhenus Lub", productName: "Rhenus FU 51", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://www.egp-handel.de/mediafiles/Datenblaetter/RhenusSicherheitsDatenblaetter/SIDA_rhenus%20FU%2051_15.12.2023_D_DE.pdf" },
   { manufacturer: "Rhenus Lub", productName: "Rhenus FU 750", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://www.egp-handel.de/mediafiles/Datenblaetter/RhenusSicherheitsDatenblaetter/SIDA_rhenus%20FU%20750_15.12.2023_D_DE.pdf" },
   { manufacturer: "Rhenus Lub", productName: "rhenus FU 800", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://www.egp-handel.de/mediafiles/Datenblaetter/RhenusSicherheitsDatenblaetter/SIDA_rhenus%20FU%20800_15.12.2023_D_DE.pdf" },
+
+  // ============ Groß-Hersteller-Charge Juli 2026 (6 Agenten: Blaser, Fuchs, ============
+  // ============ Quaker Houghton, Henkel, Master Fluid, Motorex/Bantleon) ============
+  // Blaser: blaser-2022.neos-hosting.ch = offizielles Blaser-SDS-Portal; static.brw.ch = Brütsch/Rüegger (CH-Händler)
+  { manufacturer: "Blaser Swisslube", productName: "Blasocut 2000 CF", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://blaser-2022.neos-hosting.ch/sds-download/Switzerland--SDS_Blasocut%202000%20CF_00875-12_V_6.04_de-CH.pdf" },
+  { manufacturer: "Blaser Swisslube", productName: "Blasocut BC 940", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://blaser-2022.neos-hosting.ch/sds-download/Switzerland--SDS_Blasocut%20BC%20940_01940-01_V_4.00_de-CH.pdf" },
+  { manufacturer: "Blaser Swisslube", productName: "Blasocut 2000 Universal", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://static.brw.ch/pdf/520023.0100_DE.pdf" },
+  { manufacturer: "Blaser Swisslube", productName: "Blasocut BC 25 MD", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://static.brw.ch/pdf/520026.0100_DE.pdf" },
+  { manufacturer: "Blaser Swisslube", productName: "Synergy 905", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://static.brw.ch/pdf/520029.0100_DE.pdf" },
+  // Fuchs
+  { manufacturer: "Fuchs", productName: "Renolin CLP 68", category: "GEAR_OIL", language: "EN", sourceUrl: "https://go.lupinsys.com/fuchs/harms/public/materials/3cb1a37ca29ff9232b022240e188b59d-published/attachments_api/70fa24e2cec470b442cb2d282d69044d/search_api/RENOLIN_CLP_68-SDS.pdf" },
+  { manufacturer: "Fuchs", productName: "Renolin CLP 100", category: "GEAR_OIL", language: "DE", sourceUrl: "https://www.permausa.com/_Resources/Lubricants/Fuchs/RENOLIN_CLP_100_MSDS_de.pdf" },
+  { manufacturer: "Fuchs", productName: "Renolin CLP 460", category: "GEAR_OIL", language: "EN", sourceUrl: "https://go.lupinsys.com/fuchs/harms/public/materials/3cb1a37ca29ff9232b022240e188bbcc-published/attachments_api/81379d031724aa250909809e4a6f991e/search_api/RENOLIN_CLP_460-SDS.pdf" },
+  { manufacturer: "Fuchs", productName: "Renolin CLP 680", category: "GEAR_OIL", language: "EN", sourceUrl: "https://sds.chemtel.net/docs/Fuchs%20Lubricants%20Co-0002505/Fuchs%20Lubricants%20Company_RENOLIN%20CLP%20680_Unknown_06-21-2023_English.pdf" },
+  { manufacturer: "Fuchs", productName: "Plantogel 2 S", category: "GREASE", language: "DE", sourceUrl: "https://www.perma.com.au/_Resources/Lubricants/Fuchs/PLANTOGEL_2_S_MSDS_de.pdf" },
+  { manufacturer: "Fuchs", productName: "Stabyl LT 50", category: "GREASE", language: "DE", sourceUrl: "https://www.perma-tec.com/_Resources/Lubricants/Fuchs/STABYL_LT_50_MSDS_de.pdf" },
+  // Quaker Houghton
+  { manufacturer: "Quaker Houghton", productName: "Cindol 305 D", category: "NEAT_CUTTING_OIL", language: "EN", sourceUrl: "https://www.ppsindustries.co.nz/cdn/images/productdocument/QH-MSDS-CINDOL-305D---2019.pdf" },
+  { manufacturer: "Quaker Houghton", productName: "Hocut 3380", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://eshop.diermeier-energie.de/media/5f/42/00/1712915867/1500_SDB_1500.pdf" },
+  { manufacturer: "Quaker Houghton", productName: "Rust-Veto 377", category: "OTHER", language: "EN", sourceUrl: "https://assets.website-files.com/60941e9e3ce588528a28cf21/6165cba91077cd585570ef7f_SDS_RUST_VETO_377-HF.pdf" },
+  { manufacturer: "Quaker Houghton", productName: "Rust Veto 4242", category: "OTHER", language: "EN", sourceUrl: "https://www.wheeling-nipponsteel.com/images/pdf/sds/rust-veto-4242.pdf" },
+  // Henkel
+  { manufacturer: "Henkel", productName: "Multan 71-2", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://www.oel-prinz.de/images/MSDS%20BONDERITE%20L-MR%2071-2%20known%20as%20Multan%2071-2.PDF" },
+  { manufacturer: "Henkel", productName: "Bonderite L-MR 71.2", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://www.kaiser-soehne.de/KSA/SDB-Henkel-Bonderite-L-MR-71-2_1312.pdf" },
+  { manufacturer: "Henkel", productName: "Loctite LB 8009", category: "OTHER", language: "EN", sourceUrl: "https://static-content.cromwell.co.uk/pdfs/s/medusa_attachments/loc/loc7258009b_sds.pdf" },
+  { manufacturer: "Henkel", productName: "Bonderite 594059 (Multan PL)", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://www.actionis.com/media/wysiwyg/product-documents/Bonderite_594059_SDS.pdf" },
+  // Master Fluid Solutions
+  { manufacturer: "Master Fluid Solutions", productName: "TRIM MicroSol 515", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://www.macduck.co.za/msds/Trim%20Microsol%20515%20SDS%202.3.pdf" },
+  { manufacturer: "Master Fluid Solutions", productName: "TRIM E206", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://assets.unilogcorp.com/2/ITEM/DOC/TRIM_E206N_1_SDS.pdf" },
+  { manufacturer: "Master Fluid Solutions", productName: "TRIM SC520", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://assets.unilogcorp.com/2/ITEM/DOC/TRIM_SC520_1_SDS.pdf" },
+  { manufacturer: "Master Fluid Solutions", productName: "TRIM MicroSol 585XT", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://cdn.grovesindustrial.com/pdf/sds/TRIM_MS585XT_1_SDS.pdf" },
+  { manufacturer: "Master Fluid Solutions", productName: "TRIM MicroSol 685", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://assets.unilogcorp.com/2/ITEM/DOC/TRIM_MS685_1_SDS.pdf" },
+  // Motorex (neuer Hersteller — aktuelle Swisscool-/Swisscut-Familie, Original motorex.com)
+  { manufacturer: "Motorex", productName: "Swisscool Magnum UX 200", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://motorex.com/Shared/Documents/MSDS_Bucher_Motorex/MOTOREX%20AG/SWISSCOOL/MSDS_SWISSCOOL_MAGNUM_UX_200_DE_CH.pdf" },
+  { manufacturer: "Motorex", productName: "Swisscool Magnum UX 550", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://motorex.com/Shared/Documents/MSDS_Bucher_Motorex/MOTOREX%20AG/SWISSCOOL/MSDS_SWISSCOOL_MAGNUM_UX_550_DE_CH.pdf" },
+  { manufacturer: "Motorex", productName: "Swisscool UX 440", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://motorex.com/Shared/Documents/MSDS_Bucher_Motorex/MOTOREX%20AG/SWISSCOOL/MSDS_SWISSCOOL_UX_440_DE_CH.pdf" },
+  { manufacturer: "Motorex", productName: "Swisscool 8000", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://motorex.com/Shared/Documents/MSDS_Bucher_Motorex/MOTOREX%20AG/SWISSCOOL/MSDS_SWISSCOOL_8000_DE_CH.pdf" },
+  { manufacturer: "Motorex", productName: "Swisscool Aero 8200", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://motorex.com/Shared/Documents/MSDS_Bucher_Motorex/MOTOREX%20AG/SWISSCOOL/MSDS_SWISSCOOL_AERO_8200_DE_CH.pdf" },
+  { manufacturer: "Motorex", productName: "Swisscut Ortho NF-X 15", category: "NEAT_CUTTING_OIL", language: "DE", sourceUrl: "https://motorex.com/Shared/Documents/MSDS_Bucher_Motorex/MOTOREX%20AG/SWISSCUT/MSDS_SWISSCUT_ORTHO_NF-X_15_DE_CH.pdf" },
+  // Avia Bantleon (Verbundmarke AVIA — Serien-Dokumente von avia.de)
+  { manufacturer: "Avia Bantleon", productName: "AVIA FLUID RSL", category: "HYDRAULIC_OIL", language: "DE", sourceUrl: "https://www.avia.de/mat/datenblaetter/2/6/1/6.1.1.S.pdf" },
+  { manufacturer: "Avia Bantleon", productName: "AVIA GEAR RSX", category: "GEAR_OIL", language: "DE", sourceUrl: "https://www.avia.de/mat/datenblaetter/2/5/1/5.1.1.S.pdf" },
+  { manufacturer: "Avia Bantleon", productName: "AVIA GEAR RSX 220", category: "GEAR_OIL", language: "DE", sourceUrl: "https://shop.knittel.de/media/import/Downloads/2017330%20%20AVIA%20GEAR%20RSX%20220.PDF" },
+  { manufacturer: "Avia Bantleon", productName: "AVILUB METACOOL SEI 2", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://www.zgonc.at/41122_767.pdf_dl_126359" },
 ];
