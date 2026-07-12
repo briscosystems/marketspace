@@ -7003,4 +7003,35 @@ export const SDS_SOURCES: SdsSource[] = [
   { manufacturer: "Avia Bantleon", productName: "AVIA GEAR RSX", category: "GEAR_OIL", language: "DE", sourceUrl: "https://www.avia.de/mat/datenblaetter/2/5/1/5.1.1.S.pdf" },
   { manufacturer: "Avia Bantleon", productName: "AVIA GEAR RSX 220", category: "GEAR_OIL", language: "DE", sourceUrl: "https://shop.knittel.de/media/import/Downloads/2017330%20%20AVIA%20GEAR%20RSX%20220.PDF" },
   { manufacturer: "Avia Bantleon", productName: "AVILUB METACOOL SEI 2", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://www.zgonc.at/41122_767.pdf_dl_126359" },
+
+  // ============ Charge 3 Juli 2026 (Bechem, Castrol, oelheld, Oemeta, Total) ============
+  // Castrol (msdspds.castrol.com = offizielles Portal; Rest US-Händler mit Originalen)
+  { manufacturer: "Castrol", productName: "Hysol T 15", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://msdspds.castrol.com/ussds/amersdsf.nsf/Files/CFD03E95AB16237C80258D8D00589CAF/$File/3255681.pdf" },
+  { manufacturer: "Castrol", productName: "Hysol XF", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://msdspds.castrol.com/ussds/amersdsf.nsf/Files/3B82FAB81883A08780258AEC00581835/$File/3082659.pdf" },
+  { manufacturer: "Castrol", productName: "Iloform TDN 81", category: "OTHER", language: "EN", sourceUrl: "https://www.farnell.com/datasheets/34897.pdf" },
+  { manufacturer: "Castrol", productName: "Syntilo 75 EF", category: "WATER_MISCIBLE_COOLANT", language: "FR", sourceUrl: "https://msdspds.bp.com/ussds/amersdsf.nsf/0/54B4DD90AC1F5DA9802588700052BF26/$file/2857423.pdf" },
+  { manufacturer: "Castrol", productName: "Alusol SL 51 XBB", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://hascooil.com/wp-content/uploads/2016/10/Alusol-SL-51-XBB-sds.pdf" },
+  { manufacturer: "Castrol", productName: "Hysol SL 36 XBB", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://industrialfluidsmfg.twinoils.com/Asset/Hysol%20SL%2036%20XBB%20SDS.pdf" },
+  { manufacturer: "Castrol", productName: "Hysol SL 45 XBB", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://evosupplygroupcatalog.sfo3.digitaloceanspaces.com/brands/files/Castrol/15B71C-SDS.pdf" },
+  // Carl Bechem (Original-SDB über Händler ASF Bauer, via Internet Archive stabil)
+  { manufacturer: "Carl Bechem", productName: "Berucut XC 2007", category: "NEAT_CUTTING_OIL", language: "DE", sourceUrl: "https://web.archive.org/web/20240620154807id_/https://asf-bauer.de/wp-content/uploads/2021/10/SDB-Bechem-Berucut-XC-2007.pdf" },
+  { manufacturer: "Carl Bechem", productName: "Berucut 20 ZF", category: "NEAT_CUTTING_OIL", language: "DE", sourceUrl: "https://web.archive.org/web/20240629125017id_/https://asf-bauer.de/wp-content/uploads/2022/06/SDB-Berucut-20-ZF.pdf" },
+  { manufacturer: "Carl Bechem", productName: "Avantin 361 I", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://web.archive.org/web/20240630125525id_/https://asf-bauer.de/wp-content/uploads/2021/07/BECHEM-Avantin-361-I-SDB.pdf" },
+  { manufacturer: "Carl Bechem", productName: "Avantin 400", category: "WATER_MISCIBLE_COOLANT", language: "DE", sourceUrl: "https://web.archive.org/web/20240629153929id_/https://asf-bauer.de/wp-content/uploads/2021/07/SDB-Avantin-400.pdf" },
+  // Oemeta
+  { manufacturer: "Oemeta", productName: "Hycut SE 12 EP", category: "NEAT_CUTTING_OIL", language: "EN", sourceUrl: "https://www.industrialsalesgroupllc.com/uploads/6/4/1/3/64138289/hycut_se_12-ep_40701230__us___en-us__oemeta_sds.pdf" },
+  { manufacturer: "Oemeta", productName: "Hycut ET 68", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://www.industrialsalesgroupllc.com/uploads/6/4/1/3/64138289/hycut_et_68_4070116__us___en__oemeta_sds.pdf" },
+  // TotalEnergies
+  { manufacturer: "TotalEnergies", productName: "Drosera MS 220", category: "OTHER", language: "EN", sourceUrl: "https://uploads-ssl.webflow.com/5d513e6ea4a37093208cabb2/5d513e6ea4a370563c8caf4b_DROSERA%20MS%20220.pdf" },
+  // oelheld (GF-Machining-/ANCA-/Tri-Gemini-Kopien der Original-Dokumente)
+  { manufacturer: "oelheld", productName: "SintoGrind TTK", category: "GRINDING_OIL", language: "DE", sourceUrl: "https://web.archive.org/web/20170204093559if_/http://www.gfms.com/content/dam/gfac/3R/pdf/SaftyDataSheets/SintoGrind_TTK_-SDS-(D)_12.pdf" },
+  { manufacturer: "oelheld", productName: "SintoGrind TTS", category: "GRINDING_OIL", language: "DE", sourceUrl: "https://web.archive.org/web/20170204144127if_/http://www.gfms.com/content/dam/gfac/3R/pdf/SaftyDataSheets/SintoGrind_TTS_-SDS-(D)_9.pdf" },
+  { manufacturer: "oelheld", productName: "SintoGrind HSS-X 1400", category: "GRINDING_OIL", language: "EN", sourceUrl: "https://machines.anca.com/Anca.CNC/media/shop/SintoGrind_HSS-X_1400_-SDS-(US-)_1.pdf" },
+  { manufacturer: "oelheld", productName: "SintoGrind TC-X 630", category: "GRINDING_OIL", language: "EN", sourceUrl: "https://machines.anca.com/Anca.CNC/media/shop/SintoGrind_TC-X_630_-SDS-(US-)_3.pdf" },
+  { manufacturer: "oelheld", productName: "IonoVit S", category: "OTHER", language: "DE", sourceUrl: "https://web.archive.org/web/20170203202104if_/http://www.gfms.com/content/dam/gfac/3R/pdf/SaftyDataSheets/IonoVit_S_-SDS-(D)_6.pdf" },
+  { manufacturer: "oelheld", productName: "IonoGrind", category: "OTHER", language: "DE", sourceUrl: "https://web.archive.org/web/20170203185941if_/http://www.gfms.com/content/dam/gfac/3R/pdf/SaftyDataSheets/IonoGrind_Dielektrikum_-SDS-(D)_7.pdf" },
+  { manufacturer: "oelheld", productName: "IonoGrind 165", category: "OTHER", language: "EN", sourceUrl: "https://machines.anca.com/Anca.CNC/media/shop/IonoGrind_165_-SDS-(US-)_4.pdf" },
+  { manufacturer: "oelheld", productName: "IonoPlus 3000", category: "OTHER", language: "DE", sourceUrl: "https://tri-gemini.com/wp-content/uploads/2025/10/IonoPlus_3000_-SDS-D_8-German.pdf" },
+  { manufacturer: "oelheld", productName: "IonoPlus IME-MH", category: "OTHER", language: "DE", sourceUrl: "https://web.archive.org/web/20170204144429if_/http://www.gfms.com/content/dam/gfac/3R/pdf/SaftyDataSheets/IonoPlus_IME-MH_-SDS-(D)_11.pdf" },
+  { manufacturer: "oelheld", productName: "AquaTec 1550", category: "WATER_MISCIBLE_COOLANT", language: "EN", sourceUrl: "https://www.vhf.com/wp-content/uploads/EU_AquaTec_1550.pdf" },
 ];
