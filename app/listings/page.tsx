@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { ConceptBrowseGrid, type BrowseListing } from "@/components/ConceptBrowseGrid";
 import { CategoryGlyph } from "@/components/CategoryGlyph";
+import { AdSlot } from "@/components/AdSlot";
 import { FilterDropdown, type FilterOption } from "@/components/FilterDropdown";
 import { PACKAGING_LABEL } from "@/lib/branding";
 import {
@@ -301,6 +302,8 @@ export default async function ListingsPage({ searchParams }: { searchParams: Sea
           </div>
         )}
       </div>
+
+      <AdSlot placement="LISTINGS" />
 
       <ConceptBrowseGrid listings={browseListings} />
 

@@ -81,13 +81,13 @@ async function main() {
       ctaLabel: "Mehr erfahren",
       ctaUrl: "https://www.dosimetrix.eu",
       origin: "Made in Switzerland",
-      placements: ["HOME", "STOREFRONT"],
+      placements: ["HOME", "STOREFRONT", "LISTINGS"],
       active: true,
     },
   });
 
   console.log(`OK — Schaufenster: /manufacturers/${manufacturer.slug}`);
-  console.log("Anzeige live auf Startseite + Schaufenster (Verwaltung: /werbung)");
+  console.log("Anzeige live auf Startseite + Schaufenster + Angebotsübersicht (Verwaltung: /werbung)");
   console.log("Login zum Bearbeiten: dosimetrix@example.com / test1234");
 }
 
