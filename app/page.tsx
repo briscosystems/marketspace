@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ListingCard } from "@/components/ListingCard";
+import { AdSlot } from "@/components/AdSlot";
 import { OilBarrels } from "@/components/OilBarrels";
 import { ApplicationEntry } from "@/components/ApplicationEntry";
 import {
@@ -42,6 +43,9 @@ async function PublicLanding() {
 
   return (
     <div className="space-y-10">
+      {/* Werbeplatzierung */}
+      <AdSlot placement="HOME" />
+
       {/* Hero — ruhig, weiß, Lime nur als Akzent */}
       <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-8 shadow-soft md:p-10">
         <div className="eyebrow text-brand-700">Für Reseller, Endkunden &amp; Hersteller</div>
@@ -248,6 +252,9 @@ async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudo
 
   return (
     <div className="space-y-8">
+      {/* Werbeplatzierung */}
+      <AdSlot placement="HOME" />
+
       <section className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="page-title">Willkommen zurück, {pseudonym}</h1>

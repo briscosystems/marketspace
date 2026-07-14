@@ -7,7 +7,8 @@ import { SavingsEditor } from "@/components/SavingsEditor";
 import { currencyForUser, convertCurrency, formatCurrency } from "@/lib/currency";
 import { transactionProductLabel } from "@/lib/transaction-label";
 import { withBasePath } from "@/lib/base-path";
-import { Wallet, Download } from "lucide-react";
+import { activeTier, hasAnalytics } from "@/lib/membership-tiers";
+import { Wallet, Download, Lock } from "lucide-react";
 
 export const metadata = { title: "Meine Umsätze — Brisco Marketplace" };
 
@@ -34,7 +35,12 @@ export default async function UmsaetzePage() {
   const [user, transactions] = await Promise.all([
     prisma.user.findUnique({
       where: { id: userId },
-      select: { country: true, preferredCurrency: true },
+      select: {
+        country: true,
+        preferredCurrency: true,
+        membershipTier: true,
+        membershipValidUntil: true,
+      },
     }),
     prisma.transaction.findMany({
       where: { OR: [{ buyerId: userId }, { sellerId: userId }] },
@@ -89,6 +95,13 @@ export default async function UmsaetzePage() {
       saving: r.saving != null && r.saving > 0 ? r.saving : undefined,
     }));
 
+  const analyticsUnlocked = hasAnalytics(
+    activeTier({
+      membershipTier: user?.membershipTier ?? null,
+      membershipValidUntil: user?.membershipValidUntil ?? null,
+    }),
+  );
+
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -123,10 +136,30 @@ export default async function UmsaetzePage() {
         </div>
       </div>
 
-      {/* Chart */}
-      <div className="card">
-        <UmsatzChart points={points} currency={currency} />
-      </div>
+      {/* Chart — Analysen nur mit Stufe Pro/Marke */}
+      {analyticsUnlocked ? (
+        <div className="card">
+          <UmsatzChart points={points} currency={currency} />
+        </div>
+      ) : (
+        <div className="card flex flex-col items-start gap-2 border-dashed">
+          <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+            <Lock size={16} className="text-slate-400" />
+            Umsatz- &amp; Einsparungs-Analysen
+          </div>
+          <p className="text-sm text-slate-600">
+            Die grafische Auswertung über die Zeit (Umsatzverlauf und kumulierte Einsparung) ist
+            Teil der Stufe <strong>Pro</strong> und <strong>Marke</strong>. Deine Summen und die
+            Transaktionsliste siehst du weiterhin.
+          </p>
+          <Link
+            href="/mitgliedschaft"
+            className="inline-flex items-center gap-1.5 rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700"
+          >
+            Auf Pro wechseln
+          </Link>
+        </div>
+      )}
 
       {/* Alle Transaktionen */}
       <div className="card overflow-x-auto p-0">

@@ -10,6 +10,7 @@ import {
   listingMatchesApplication,
 } from "@/lib/application-facets";
 import { buildSearchWhere } from "@/lib/normalize-search";
+import { activeTier, hasPriorityPlacement } from "@/lib/membership-tiers";
 import { LayoutGrid, BookOpen } from "lucide-react";
 
 type SearchParams = Promise<{
@@ -150,9 +151,30 @@ export default async function ListingsPage({ searchParams }: { searchParams: Sea
 
   const listings = await prisma.listing.findMany({
     where: activeDims.length > 0 ? { id: { in: allowedIds } } : where,
-    include: { seller: { select: { id: true, pseudonym: true, trustTier: true, searchBoost: true } } },
+    include: {
+      seller: {
+        select: {
+          id: true,
+          pseudonym: true,
+          trustTier: true,
+          searchBoost: true,
+          membershipTier: true,
+          membershipValidUntil: true,
+        },
+      },
+    },
     orderBy: [{ seller: { searchBoost: "desc" } }, { createdAt: "desc" }],
     take: 60,
+  });
+
+  // Bevorzugte Platzierung für aktive Pro-/Marke-Mitglieder: innerhalb der
+  // geladenen Seite nach oben sortieren (danach searchBoost, dann Datum).
+  listings.sort((a, b) => {
+    const pa = hasPriorityPlacement(activeTier(a.seller)) ? 1 : 0;
+    const pb = hasPriorityPlacement(activeTier(b.seller)) ? 1 : 0;
+    if (pa !== pb) return pb - pa;
+    if (a.seller.searchBoost !== b.seller.searchBoost) return b.seller.searchBoost - a.seller.searchBoost;
+    return b.createdAt.getTime() - a.createdAt.getTime();
   });
 
   const sellerIds = [...new Set(listings.map((l) => l.seller.id))];

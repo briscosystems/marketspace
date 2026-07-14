@@ -15,6 +15,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { recommendMaterialsForProduct } from "@/lib/seal-recommendations";
 import { chargeForAiAction, refundAiAction } from "@/lib/credits";
+import { sponsoredManufacturerIds } from "@/lib/storefront";
 
 type WizardAnswers = {
   satisfied?: boolean | null;
@@ -39,6 +40,9 @@ type Recommendation = {
   reason: string;
   matchScore: number; // 0-100
   sealWarning?: string;
+  // true = Hersteller mit aktiver Marke-Stufe (gesponsert). MUSS in der UI
+  // klar gekennzeichnet werden (P2B-VO 2019/1150, Art. 5).
+  sponsored?: boolean;
 };
 
 export async function POST(req: Request) {
@@ -68,10 +72,16 @@ export async function POST(req: Request) {
     include: { manufacturer: { select: { name: true, slug: true } } },
   });
 
+  // Gesponserte Hersteller (aktive Marke-Stufe) — leichte Höhergewichtung,
+  // in der Ausgabe klar gekennzeichnet (P2B-VO).
+  const sponsoredIds = await sponsoredManufacturerIds();
+
   // 3) Heuristisches Pre-Scoring (verkleinert Pool für Anthropic-Pfad)
   const scored = candidatePool.map((p) => {
     let score = 50;
     const reasons: string[] = [];
+    const isSponsored = sponsoredIds.has(p.manufacturerId);
+    if (isSponsored) score += 8; // moderater, gekennzeichneter Sponsoring-Boost
 
     if (body.applicationAreas?.length) {
       const overlap = p.applicationAreas.filter((a) => body.applicationAreas!.includes(a));
@@ -115,7 +125,7 @@ export async function POST(req: Request) {
         reasons.push(`Hat geforderte Zertifizierungen`);
       }
     }
-    return { product: p, score, reasons };
+    return { product: p, score, reasons, sponsored: isSponsored };
   });
 
   scored.sort((a, b) => b.score - a.score);
@@ -173,7 +183,8 @@ export async function POST(req: Request) {
       // Map zurück auf vollständige Produkt-Daten
       recommendations = await Promise.all(
         claude.recommendations.slice(0, 3).map(async (r) => {
-          const prod = topCandidates.find((c) => c.product.id === r.productId)?.product;
+          const cand = topCandidates.find((c) => c.product.id === r.productId);
+          const prod = cand?.product;
           if (!prod) return null;
           const sealRec = await computeSealWarning(prod);
           return {
@@ -185,6 +196,7 @@ export async function POST(req: Request) {
             reason: r.reason,
             matchScore: r.matchScore ?? 0,
             sealWarning: sealRec ?? undefined,
+            sponsored: cand?.sponsored ?? false,
           };
         }),
       ).then((arr) => arr.filter(Boolean) as Recommendation[]);
@@ -247,7 +259,7 @@ async function computeSealWarning(product: {
 
 // ─────────────────────────────────────────────────────────────────────────────
 async function heuristicFallback(
-  topCandidates: { product: { id: string; name: string; slug: string; manufacturer: { name: string; slug: string }; category: string; chemistry: string | null; containsBor: boolean | null; containsFormaldehydeDepot: boolean | null; containsMineralOil: boolean | null; containsChlorine: boolean | null }; score: number; reasons: string[] }[],
+  topCandidates: { product: { id: string; name: string; slug: string; manufacturer: { name: string; slug: string }; category: string; chemistry: string | null; containsBor: boolean | null; containsFormaldehydeDepot: boolean | null; containsMineralOil: boolean | null; containsChlorine: boolean | null }; score: number; reasons: string[]; sponsored?: boolean }[],
 ): Promise<{ recommendations: Recommendation[]; summary: string }> {
   const top3 = topCandidates.slice(0, 3);
   const recs: Recommendation[] = await Promise.all(
@@ -260,6 +272,7 @@ async function heuristicFallback(
       reason: c.reasons.length > 0 ? c.reasons.join(" · ") : "Allgemeine Eignung — bitte Datenblatt prüfen",
       matchScore: Math.min(100, c.score),
       sealWarning: (await computeSealWarning(c.product)) ?? undefined,
+      sponsored: c.sponsored ?? false,
     })),
   );
   return {

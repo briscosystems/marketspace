@@ -7,7 +7,8 @@ import { packagingForProduct } from "@/lib/product-packaging";
 import { CompareToggle } from "@/components/compare/CompareToggle";
 import { getCurrentPricesBatch } from "@/lib/price-aggregation";
 import { ComplianceBadges } from "@/components/ComplianceBadges";
-import { ExternalLink, Globe } from "lucide-react";
+import { AdSlot } from "@/components/AdSlot";
+import { ExternalLink, Globe, BadgeCheck } from "lucide-react";
 
 const FOCUS_LABEL: Record<string, string> = {
   COOLANT: "Kühlschmierstoffe",
@@ -55,6 +56,18 @@ export default async function ManufacturerDetailPage({
   });
   if (!m) notFound();
 
+  // Marken-Schaufenster: aktiver Marke-Vertreter dieses Herstellers?
+  // Dann wird die Seite zum offiziellen, verifizierten Schaufenster.
+  const brandRep = await prisma.user.findFirst({
+    where: {
+      brandManufacturerId: m.id,
+      membershipTier: "MARKE",
+      membershipValidUntil: { gt: new Date() },
+    },
+    select: { pseudonym: true, storefrontHeadline: true, about: true },
+    orderBy: { membershipValidUntil: "desc" },
+  });
+
   // Aktuelle Marktpreise pro Produkt batch laden
   const pricesMap = await getCurrentPricesBatch(m.products.map((p) => p.id));
 
@@ -73,10 +86,41 @@ export default async function ManufacturerDetailPage({
         </Link>
       </nav>
 
+      {/* Werbeplatzierung der Marke (falls geschaltet) */}
+      <AdSlot placement="STOREFRONT" manufacturerId={m.id} />
+
+      {brandRep ? (
+        <div className="overflow-hidden rounded-xl border border-brand-300 bg-gradient-to-r from-brand-50 to-white">
+          <div className="flex items-center gap-2 border-b border-brand-200 bg-brand-100/70 px-5 py-2 text-xs font-semibold text-brand-800">
+            <BadgeCheck size={15} />
+            Verifiziertes Marken-Schaufenster
+          </div>
+          <div className="px-5 py-4">
+            {brandRep.storefrontHeadline ? (
+              <p className="text-lg font-semibold text-slate-900">{brandRep.storefrontHeadline}</p>
+            ) : (
+              <p className="text-lg font-semibold text-slate-900">
+                Offizielles Schaufenster von {m.name}
+              </p>
+            )}
+            {brandRep.about ? (
+              <p className="mt-1.5 whitespace-pre-line text-sm text-slate-600">{brandRep.about}</p>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
+
       <header className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-6 sm:flex-row sm:items-center">
         <ManufacturerLogo name={m.name} logoPath={m.logoPath} height={80} />
         <div className="flex-1">
-          <h1 className="page-title">{m.name}</h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="page-title">{m.name}</h1>
+            {brandRep ? (
+              <span className="inline-flex items-center gap-1 rounded-full bg-brand-600 px-2.5 py-0.5 text-xs font-semibold text-white">
+                <BadgeCheck size={12} /> Marke
+              </span>
+            ) : null}
+          </div>
           {m.description ? (
             <p className="mt-1 text-sm text-slate-600">{m.description}</p>
           ) : null}

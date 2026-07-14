@@ -22,6 +22,17 @@ enum UserTrustTier {
   DIAMOND
 }
 
+// Bezahlte Abo-Stufe (Jahres-Zugang). null = keine aktive bezahlte Stufe.
+//   BASIS  — Einstieg für Reseller (Angebots-Limit, Standard-Sichtbarkeit)
+//   PRO    — aktive Händler (unbegrenzte Angebote, Vorrang, Analysen)
+//   MARKE  — OEM/Hersteller (eigenes Marken-Schaufenster, gesponserte
+//            Platzierung im KSS-Wizard)
+enum MembershipTier {
+  BASIS
+  PRO
+  MARKE
+}
+
 enum ListingStatus {
   ACTIVE
   PAUSED
@@ -190,6 +201,9 @@ model Manufacturer {
   listings  Listing[]
   sds       SafetyDataSheet[]
   products  Product[]
+  // Konten, die diese Marke offiziell vertreten (Marke-Stufe, Schaufenster).
+  brandReps User[]            @relation("BrandRep")
+  adBanners AdBanner[]
 
   @@index([slug])
 }
@@ -483,6 +497,11 @@ model User {
   // Stripe-Subscription-ID des aktiven Abos (null = kein/kein aktives Abo).
   stripeSubscriptionId String?
   membershipValidUntil DateTime?
+  // Gebuchte Preisstufe (BASIS/PRO/MARKE). null = keine aktive bezahlte Stufe.
+  // Steuert Funktions-Freischaltung (Angebots-Limit, Sichtbarkeit, Analysen,
+  // Marken-Schaufenster). Wird beim Checkout gesetzt, bei Ablauf/Kündigung
+  // bleibt der letzte Wert, ist aber ohne membershipValidUntil wirkungslos.
+  membershipTier MembershipTier?
   // true = Nutzer hat gekündigt; Abo läuft zum Ende der bezahlten Periode
   // aus (membershipValidUntil) und verlängert sich NICHT automatisch weiter.
   membershipCancelAtPeriodEnd Boolean @default(false)
@@ -511,6 +530,16 @@ model User {
   // pseudonym bleibt, aber der Anbieter kann sich fachlich vorstellen.
   about        String?
 
+  // ---- Marke-Stufe: Hersteller-Schaufenster ----
+  // Welchen Hersteller/Marke dieses Konto offiziell vertritt. Nur mit aktiver
+  // MARKE-Stufe wirksam: schaltet das öffentliche Marken-Schaufenster frei und
+  // hebt die Produkte dieses Herstellers als "gesponsert" im KSS-Wizard hervor
+  // (klar gekennzeichnet, P2B-VO-konform).
+  brandManufacturerId String?
+  brandManufacturer   Manufacturer? @relation("BrandRep", fields: [brandManufacturerId], references: [id], onDelete: SetNull)
+  // Öffentliche Überschrift des Marken-Schaufensters (z.B. Claim/Slogan).
+  storefrontHeadline  String?
+
   // ---- Monetarisierung: KI-Credits, Trial, Referral ----
   // KI-Funktionen (Alternativsuche, KSS-Wizard, Concierge) kosten Credits.
   // Guthaben wird zusätzlich als CreditTransaction-Historie geführt.
@@ -528,6 +557,7 @@ model User {
   referrals     User[]    @relation("Referrals")
 
   creditTransactions CreditTransaction[]
+  adBanners          AdBanner[]    @relation("AdOwner")
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 
@@ -1234,4 +1264,46 @@ model ProductIssue {
   @@index([severity])
   @@index([status])
   @@index([sourceType])
+}
+
+// ============================================================
+// Werbeplattform — buchbare Anzeigen (Banner) von Marke-Mitgliedern.
+// Eine Anzeige wird an einer oder mehreren Platzierungen ausgespielt,
+// solange sie aktiv ist und im Laufzeitfenster liegt. Auslieferung/Rotation
+// siehe lib/ads.ts, Ausspielung via components/AdSlot.
+// ============================================================
+enum AdPlacement {
+  HOME       // Startseite (Besucher + Dashboard)
+  STOREFRONT // Marken-Schaufenster (Herstellerseite)
+  LISTINGS   // Angebotsübersicht
+}
+
+model AdBanner {
+  id      String @id @default(cuid())
+  owner   User   @relation("AdOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId String
+  // Beworbene Marke (optional) — verknüpft die Anzeige mit dem Schaufenster.
+  manufacturer   Manufacturer? @relation(fields: [manufacturerId], references: [id], onDelete: SetNull)
+  manufacturerId String?
+
+  eyebrow  String? // kleine Zeile über der Schlagzeile, z.B. "DOSIMETRIX® hybrid"
+  headline String  // Schlagzeile
+  chips    String[] @default([]) // knappe Vorteile (Pills)
+  // Bild: entweder ein ausgelieferter Pfad ("/images/…") ODER eine data:-URI
+  // (Upload). Die Ansicht unterscheidet anhand des Präfixes.
+  image    String
+  ctaLabel String  @default("Mehr erfahren")
+  ctaUrl   String
+  origin   String? // dezente Zusatzzeile, z.B. "Made in Switzerland"
+
+  placements AdPlacement[] @default([])
+  active     Boolean       @default(false)
+  startsAt   DateTime?
+  endsAt     DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([active])
+  @@index([ownerId])
 }

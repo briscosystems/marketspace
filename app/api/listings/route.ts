@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getSettingInt } from "@/lib/credits";
+import { activeTier, listingLimitFor } from "@/lib/membership-tiers";
 
 const listingSchema = z.object({
   productType: z.string().min(2),
@@ -46,6 +48,34 @@ export async function POST(req: Request) {
   }
 
   const data = parsed.data;
+
+  // Angebots-Limit der Stufe durchsetzen: BASIS (und Nutzer ohne aktive Stufe,
+  // z.B. in der Kennenlernphase) dürfen nur eine begrenzte Zahl gleichzeitig
+  // aktiver Angebote führen; Pro/Marke sind unbegrenzt.
+  const seller = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { membershipTier: true, membershipValidUntil: true },
+  });
+  const tier = activeTier({
+    membershipTier: seller?.membershipTier ?? null,
+    membershipValidUntil: seller?.membershipValidUntil ?? null,
+  });
+  const limit = listingLimitFor(tier, await getSettingInt("basisListingLimit"));
+  if (limit !== null) {
+    const activeCount = await prisma.listing.count({
+      where: { sellerId: session.user.id, status: "ACTIVE" },
+    });
+    if (activeCount >= limit) {
+      return NextResponse.json(
+        {
+          error: `In der Basis-Stufe sind maximal ${limit} gleichzeitig aktive Angebote möglich. Für unbegrenzte Angebote auf Pro oder Marke wechseln (siehe Mitgliedschaft).`,
+          code: "LISTING_LIMIT_REACHED",
+        },
+        { status: 422 },
+      );
+    }
+  }
+
   const listing = await prisma.listing.create({
     data: {
       ...data,

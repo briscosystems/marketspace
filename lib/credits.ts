@@ -23,8 +23,18 @@ export const SETTING_DEFAULTS = {
   referralCredits: 10,
   /** Verkaufspreis pro Credit in Cent (EUR-Cent). 10 Ct = EUR 0.10 */
   creditPriceCt: 10,
-  /** Jahresgebühr des Abos in Euro (Default 350 €, Superadmin-einstellbar) */
-  membershipPriceEur: 350,
+  /** Jahresgebühr Stufe BASIS in Euro (Einstieg für Reseller) */
+  membershipPriceEur: 290,
+  /** Jahresgebühr Stufe PRO in Euro (aktive Händler) */
+  membershipPriceProEur: 990,
+  /** Jahresgebühr Stufe MARKE in Euro (OEM/Hersteller, Schaufenster) */
+  membershipPriceMarkeEur: 3000,
+  /** Käuferschutz-Gebühr: variabler Anteil in Basispunkten (250 = 2,5 %) */
+  protectionFeeBp: 250,
+  /** Käuferschutz-Gebühr: fixer Anteil in Cent (25 = 0,25 €) */
+  protectionFeeFixedCt: 25,
+  /** Max. gleichzeitig aktive Angebote in Stufe BASIS (PRO/MARKE = unbegrenzt) */
+  basisListingLimit: 10,
 } as const;
 
 export type SettingKey = keyof typeof SETTING_DEFAULTS;

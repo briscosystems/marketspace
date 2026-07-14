@@ -85,6 +85,10 @@ export async function fulfillCheckoutSession(session: Stripe.Checkout.Session): 
   let amountEur = (session.amount_total ?? 0) / 100;
 
   if (kind === "MEMBERSHIP") {
+    // Gebuchte Preisstufe aus den Session-Metadaten (Default BASIS).
+    const rawTier = session.metadata?.tier;
+    const tier: "BASIS" | "PRO" | "MARKE" =
+      rawTier === "PRO" || rawTier === "MARKE" ? rawTier : "BASIS";
     const subId = typeof session.subscription === "string" ? session.subscription : session.subscription?.id;
     if (subId && stripe) {
       const subscription = await stripe.subscriptions.retrieve(subId);
@@ -95,6 +99,7 @@ export async function fulfillCheckoutSession(session: Stripe.Checkout.Session): 
           stripeSubscriptionId: subscription.id,
           membershipValidUntil: periodEnd,
           membershipCancelAtPeriodEnd: subscription.cancel_at_period_end,
+          membershipTier: tier,
         },
       });
     } else {

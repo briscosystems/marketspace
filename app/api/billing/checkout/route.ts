@@ -7,12 +7,23 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { stripe, isStripeConfigured, appBaseUrl } from "@/lib/stripe";
-import { getMembershipPriceEur, isMembershipActive } from "@/lib/membership";
+import { isMembershipActive } from "@/lib/membership";
+import { getTierPriceEur, tierProduct, TIER_ORDER } from "@/lib/membership-tiers";
+import type { MembershipTier } from "@prisma/client";
 
-export async function POST() {
+export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Gewählte Preisstufe aus dem Body (Default BASIS für Altaufrufe ohne Stufe).
+  let tier: MembershipTier = "BASIS";
+  try {
+    const body = await req.json();
+    if (body?.tier && TIER_ORDER.includes(body.tier)) tier = body.tier;
+  } catch {
+    // kein/ungültiger Body → BASIS
   }
 
   if (!stripe || !isStripeConfigured()) {
@@ -43,7 +54,8 @@ export async function POST() {
     await prisma.user.update({ where: { id: userId }, data: { stripeCustomerId: customerId } });
   }
 
-  const priceEur = await getMembershipPriceEur();
+  const priceEur = await getTierPriceEur(tier);
+  const product = tierProduct(tier);
   const base = appBaseUrl();
 
   // Echtes Abo (mode: "subscription") — verlängert sich automatisch jährlich,
@@ -60,14 +72,14 @@ export async function POST() {
           unit_amount: priceEur * 100,
           recurring: { interval: "year" },
           product_data: {
-            name: "Brisco — Jahres-Abo",
-            description: "Jährlich kündbares Abo für den Zugang zur Brisco-Plattform. Verlängert sich automatisch, sofern nicht vorher gekündigt.",
+            name: product.name,
+            description: product.description,
           },
         },
       },
     ],
-    metadata: { userId, kind: "MEMBERSHIP" },
-    subscription_data: { metadata: { userId } },
+    metadata: { userId, kind: "MEMBERSHIP", tier },
+    subscription_data: { metadata: { userId, tier } },
     success_url: `${base}/mitgliedschaft?status=success&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${base}/mitgliedschaft?status=cancel`,
   });

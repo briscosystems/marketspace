@@ -94,8 +94,9 @@ export default function VertrauenPage() {
           „Käuferschutz verfügbar" kann der Käufer über die Plattform bezahlen. Das Geld
           wird beim Zahlungsdienstleister Stripe sicher geparkt und erst nach der
           Lieferbestätigung des Käufers an den Verkäufer freigegeben; bei Problemen
-          entscheidet Brisco über Freigabe oder Rückerstattung. Die Abwicklungsgebühr
-          trägt der Käufer — Brisco verdient an der Transaktion nichts.
+          entscheidet Brisco über Freigabe oder Rückerstattung. Die Käuferschutz-Gebühr
+          (2,5 % + 0,25 €) trägt der Käufer; sie deckt die Zahlungsabwicklung und den
+          Käuferschutz-Service.
         </p>
       </section>
     </div>

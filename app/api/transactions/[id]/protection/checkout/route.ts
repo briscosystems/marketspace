@@ -9,6 +9,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { stripe, isStripeConfigured, appBaseUrl } from "@/lib/stripe";
 import { protectionFeeEur } from "@/lib/protection";
+import { getSettingInt } from "@/lib/credits";
 import { transactionProductLabel } from "@/lib/transaction-label";
 
 export async function POST(_req: Request, ctx: { params: Promise<{ id: string }> }) {
@@ -49,7 +50,11 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
     );
   }
 
-  const fee = protectionFeeEur(tx.totalEur);
+  const [feeBp, feeFixedCt] = await Promise.all([
+    getSettingInt("protectionFeeBp"),
+    getSettingInt("protectionFeeFixedCt"),
+  ]);
+  const fee = protectionFeeEur(tx.totalEur, feeBp, feeFixedCt);
   const base = appBaseUrl();
   const product = transactionProductLabel(tx);
 
@@ -73,8 +78,8 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
           currency: "eur",
           unit_amount: Math.round(fee * 100),
           product_data: {
-            name: "Abwicklungsgebühr (Zahlungsdienstleister)",
-            description: "Deckt die Stripe-Gebühren — Brisco verdient an der Transaktion nichts",
+            name: "Käuferschutz-Gebühr",
+            description: "Deckt Zahlungsabwicklung und den Käuferschutz (sichere Verwahrung bis zur Lieferbestätigung, Streitschlichtung)",
           },
         },
       },

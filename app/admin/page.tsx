@@ -171,9 +171,39 @@ export default async function AdminPage() {
           />
           <SettingField
             name="membershipPriceEur"
-            label="Jahresgebühr Abo (€)"
-            hint="Automatische Verlängerung, Default 350 €"
+            label="Abo Basis (€/Jahr)"
+            hint="Einstieg für Reseller"
             defaultValue={settings.membershipPriceEur}
+          />
+          <SettingField
+            name="membershipPriceProEur"
+            label="Abo Pro (€/Jahr)"
+            hint="Aktive Händler"
+            defaultValue={settings.membershipPriceProEur}
+          />
+          <SettingField
+            name="membershipPriceMarkeEur"
+            label="Abo Marke (€/Jahr)"
+            hint="OEM/Hersteller, Schaufenster"
+            defaultValue={settings.membershipPriceMarkeEur}
+          />
+          <SettingField
+            name="protectionFeeBp"
+            label="Käuferschutz (Basispunkte)"
+            hint={`250 = 2,5 % · aktuell ${(settings.protectionFeeBp / 100).toFixed(2)} %`}
+            defaultValue={settings.protectionFeeBp}
+          />
+          <SettingField
+            name="protectionFeeFixedCt"
+            label="Käuferschutz Fixanteil (Ct)"
+            hint="25 = 0,25 € je Transaktion"
+            defaultValue={settings.protectionFeeFixedCt}
+          />
+          <SettingField
+            name="basisListingLimit"
+            label="Basis: max. Angebote"
+            hint="Pro/Marke = unbegrenzt"
+            defaultValue={settings.basisListingLimit}
           />
           <div className="sm:col-span-2 lg:col-span-4">
             <button

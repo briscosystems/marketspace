@@ -37,6 +37,7 @@ type Recommendation = {
   reason: string;
   matchScore: number;
   sealWarning?: string;
+  sponsored?: boolean;
 };
 
 const TOTAL_STEPS = 6;
@@ -595,8 +596,16 @@ function ResultView({
             <div key={r.productId} className="rounded-xl border border-slate-200 p-3">
               <div className="flex items-baseline justify-between gap-2">
                 <div>
-                  <div className="text-xs uppercase tracking-wide text-slate-500">
+                  <div className="flex items-center gap-1.5 text-xs uppercase tracking-wide text-slate-500">
                     #{i + 1} · {r.manufacturer}
+                    {r.sponsored && (
+                      <span
+                        className="rounded-full bg-brand-100 px-1.5 py-0.5 text-[10px] font-semibold normal-case tracking-normal text-brand-700"
+                        title="Bezahlte Hervorhebung eines Marke-Mitglieds"
+                      >
+                        Gesponsert
+                      </span>
+                    )}
                   </div>
                   <Link
                     href={`/products/${r.manufacturerSlug}/${r.productSlug}`}

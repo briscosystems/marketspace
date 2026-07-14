@@ -2,9 +2,11 @@ import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { isMembershipActive, getMembershipPriceEur } from "@/lib/membership";
+import { isMembershipActive } from "@/lib/membership";
+import { getTierPrices, TIER_META, TIER_ORDER, activeTier } from "@/lib/membership-tiers";
 import { isStripeConfigured } from "@/lib/stripe";
 import { MembershipActions } from "@/components/MembershipActions";
+import { StorefrontManager } from "@/components/StorefrontManager";
 import { CreditActions } from "@/components/CreditActions";
 import { ReferralLinkBox } from "@/components/ReferralLinkBox";
 import { RedeemCodeBox } from "@/components/RedeemCodeBox";
@@ -18,7 +20,7 @@ import {
   packagePriceEur,
 } from "@/lib/credits";
 import { currencyForUser, convertCurrency, formatCurrency } from "@/lib/currency";
-import { CreditCard, ShieldCheck, Lock, Coins, Gift, Clock, Ticket, ScrollText } from "lucide-react";
+import { CreditCard, ShieldCheck, Lock, Coins, Gift, Clock, Ticket, ScrollText, Store } from "lucide-react";
 
 export const metadata = { title: "Mitgliedschaft & Kosten — Brisco Marketplace" };
 
@@ -42,12 +44,16 @@ export default async function MembershipPage() {
       select: {
         membershipValidUntil: true,
         membershipCancelAtPeriodEnd: true,
+        membershipTier: true,
         stripeSubscriptionId: true,
         creditBalance: true,
         trialEndsAt: true,
         pseudonym: true,
         country: true,
         preferredCurrency: true,
+        brandManufacturerId: true,
+        storefrontHeadline: true,
+        about: true,
       },
     }),
     getAllSettings(),
@@ -63,8 +69,29 @@ export default async function MembershipPage() {
   const connectOnboarded = await syncConnectStatus(session.user.id);
   const active = isMembershipActive(user?.membershipValidUntil);
   const trialActive = isTrialActive(user?.trialEndsAt);
-  const priceEur = await getMembershipPriceEur();
+  const tierPrices = await getTierPrices();
+  const currentTier = activeTier({
+    membershipTier: user?.membershipTier ?? null,
+    membershipValidUntil: user?.membershipValidUntil ?? null,
+  });
+  const tierOptions = TIER_ORDER.map((tier) => ({
+    tier,
+    name: TIER_META[tier].name,
+    audience: TIER_META[tier].audience,
+    featured: TIER_META[tier].featured,
+    features: TIER_META[tier].features,
+    priceEur: tierPrices[tier],
+  }));
+  const priceEur = tierPrices.BASIS;
   const configured = isStripeConfigured();
+  // Herstellerliste nur laden, wenn das Marken-Schaufenster freigeschaltet ist.
+  const manufacturerOptions =
+    currentTier === "MARKE"
+      ? await prisma.manufacturer.findMany({
+          select: { id: true, name: true, slug: true },
+          orderBy: { name: "asc" },
+        })
+      : [];
   const validUntilLabel = user?.membershipValidUntil
     ? user.membershipValidUntil.toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" })
     : null;
@@ -111,8 +138,9 @@ export default async function MembershipPage() {
           </p>
         )}
         <p className="text-sm text-slate-600">
-          Der Jahres-Zugang kostet <strong>{priceEur} €</strong> und schaltet die Plattform für
-          12 Monate frei.
+          Der Jahres-Zugang gibt es in drei Stufen — <strong>Basis {tierPrices.BASIS} €</strong>,{" "}
+          <strong>Pro {tierPrices.PRO} €</strong> und <strong>Marke {tierPrices.MARKE} €</strong> —
+          jeweils für 12 Monate.
           {trialActive &&
             " Während der Kennenlernphase kannst du alles ohne Abo ausprobieren."}
         </p>
@@ -129,10 +157,12 @@ export default async function MembershipPage() {
       <div className="card">
         <MembershipActions
           active={active}
-          priceEur={priceEur}
           hasSubscription={!!user?.stripeSubscriptionId}
           cancelAtPeriodEnd={!!user?.membershipCancelAtPeriodEnd}
           validUntil={validUntilLabel}
+          currentPriceEur={currentTier ? tierPrices[currentTier] : priceEur}
+          currentTierName={currentTier ? TIER_META[currentTier].name : null}
+          tiers={tierOptions}
         />
       </div>
 
@@ -206,6 +236,33 @@ export default async function MembershipPage() {
         )}
       </div>
 
+      {/* Marken-Schaufenster (nur Stufe Marke) */}
+      {currentTier === "MARKE" && (
+        <div className="card space-y-3">
+          <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+            <Store size={18} className="text-brand-600" />
+            Marken-Schaufenster
+          </div>
+          <p className="text-sm text-slate-600">
+            Als Marke-Mitglied vertreten Sie einen Hersteller offiziell: Die Herstellerseite
+            wird zum verifizierten Schaufenster und Ihre Produkte werden im KSS-Wizard
+            gekennzeichnet hervorgehoben.
+          </p>
+          <StorefrontManager
+            manufacturers={manufacturerOptions}
+            currentManufacturerId={user?.brandManufacturerId ?? null}
+            currentHeadline={user?.storefrontHeadline ?? null}
+            currentAbout={user?.about ?? null}
+          />
+          <Link
+            href="/werbung"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-700 hover:underline"
+          >
+            Werbeanzeigen schalten &amp; verwalten →
+          </Link>
+        </div>
+      )}
+
       {/* Käuferschutz als Verkäufer anbieten */}
       <div className="card space-y-3">
         <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
@@ -214,8 +271,8 @@ export default async function MembershipPage() {
         </div>
         <p className="text-sm text-slate-600">
           Optional für Verkäufer: Käufer zahlen über die Plattform, das Geld wird sicher
-          geparkt und nach der Lieferbestätigung an dich freigegeben. Die Abwicklungsgebühr
-          trägt der Käufer — Brisco verdient an der Transaktion nichts.
+          geparkt und nach der Lieferbestätigung an dich freigegeben. Die Käuferschutz-Gebühr
+          (2,5 % + 0,25 €) trägt der Käufer.
         </p>
         <ConnectOnboardingBox onboarded={connectOnboarded} />
       </div>

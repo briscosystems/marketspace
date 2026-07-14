@@ -112,11 +112,13 @@ export default function AgbPage() {
           entscheidet.
         </p>
         <p>
-          Die beim Checkout ausgewiesene <strong>Abwicklungsgebühr</strong> deckt die Kosten
-          des Zahlungsdienstleisters und wird vom Käufer getragen; Brisco erzielt daraus
-          keinen Ertrag. Der Käuferschutz ist keine Treuhand- oder Bankdienstleistung von
-          Brisco; die Zahlungsabwicklung erfolgt durch Stripe. Die Haltedauer geparkter
-          Beträge beträgt maximal 90 Tage.
+          Die beim Checkout ausgewiesene <strong>Käuferschutz-Gebühr</strong> (2,5 % des
+          Kaufbetrags zzgl. 0,25 €) wird vom Käufer getragen. Sie deckt die
+          Zahlungsabwicklung durch den Zahlungsdienstleister sowie den Käuferschutz-Service
+          (sichere Verwahrung bis zur Lieferbestätigung, Streitschlichtung); ein Teil
+          verbleibt als Entgelt bei Brisco. Der Käuferschutz ist keine Treuhand- oder
+          Bankdienstleistung von Brisco; die Zahlungsabwicklung erfolgt durch Stripe. Die
+          Haltedauer geparkter Beträge beträgt maximal 90 Tage.
         </p>
       </Section>
 

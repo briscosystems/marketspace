@@ -51,6 +51,11 @@ export async function updateMonetizationSettings(formData: FormData) {
     { name: "referralCredits", min: 0, max: 500 },
     { name: "creditPriceCt", min: 1, max: 1000 },
     { name: "membershipPriceEur", min: 1, max: 100000 },
+    { name: "membershipPriceProEur", min: 1, max: 100000 },
+    { name: "membershipPriceMarkeEur", min: 1, max: 100000 },
+    { name: "protectionFeeBp", min: 0, max: 2000 },
+    { name: "protectionFeeFixedCt", min: 0, max: 10000 },
+    { name: "basisListingLimit", min: 1, max: 100000 },
   ];
   for (const f of fields) {
     const raw = Number(formData.get(f.name));
