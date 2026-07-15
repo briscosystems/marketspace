@@ -44,7 +44,15 @@ export async function POST(req: Request) {
   // Der Link geht AUSSCHLIESSLICH per E-Mail raus. Bis 2026-07-15 gab die Route
   // ihn zusätzlich in der Antwort zurück — damit konnte jeder, der eine fremde
   // E-Mail-Adresse kannte, das zugehörige Konto übernehmen.
-  await sendEmail({
+  //
+  // BEWUSST OHNE await: Die Antwort darf nicht auf den Mailserver warten.
+  // Zwei Gründe:
+  //  1. Hängt der Mailserver, hing sonst die ganze Seite auf „Wird gesendet …“.
+  //  2. Sonst verrät die ANTWORTZEIT, ob das Konto existiert (existierend =
+  //     langsam, weil Mailversand; erfunden = sofort). Das ist dieselbe
+  //     Enumeration, die die immer gleiche Antwort verhindern soll — nur über
+  //     die Uhr. Jetzt antworten beide Fälle gleich schnell.
+  void sendEmail({
     userId: user.id,
     kind: "PASSWORD_RESET",
     to: user.email,
@@ -64,6 +72,10 @@ export async function POST(req: Request) {
       "",
       "Brisco Systems GmbH",
     ].join("\n"),
+  }).catch((e) => {
+    // sendEmail fängt Mailfehler selbst ab; das hier ist nur das Netz darunter,
+    // damit ein unerwarteter Fehler nicht als unbehandelte Ablehnung endet.
+    console.error("[Passwort-Reset] Mailversand konnte nicht gestartet werden:", e);
   });
 
   return NextResponse.json({ ok: true });

@@ -42,6 +42,13 @@ function getTransporter(): nodemailer.Transporter | null {
     port,
     secure: port === 465, // 465 = TLS von Anfang an, 587 = STARTTLS
     auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+    // Zeitgrenzen sind PFLICHT: Ohne sie wartet nodemailer unbegrenzt, wenn der
+    // Mailserver nicht erreichbar ist (z.B. wenn der Hoster ausgehende SMTP-Ports
+    // sperrt). Das ließ am 2026-07-15 die Passwort-vergessen-Seite live ewig auf
+    // „Wird gesendet …“ stehen.
+    connectionTimeout: 10_000,
+    greetingTimeout: 10_000,
+    socketTimeout: 20_000,
   });
   return transporter;
 }

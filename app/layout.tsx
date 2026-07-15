@@ -151,7 +151,7 @@ export default async function RootLayout({
           {/* KI-Concierge — schwebender Fachberater auf jeder Seite */}
           <ConciergeWidget />
           <footer className="mt-12 border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500">
-            <div>Brisco Systems GmbH · Prototyp v0.3 · {t("footer.tagline")}</div>
+            <div>Brisco Systems GmbH</div>
             <div className="mt-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
               <a href={withBasePath("/vertrauen")} className="hover:text-slate-700 hover:underline">{t("footer.trust")}</a>
               <span className="text-slate-300">·</span>
