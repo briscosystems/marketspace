@@ -4,7 +4,7 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { HeaderNav } from "@/components/HeaderNav";
+import { HeaderNav, SecondaryNav } from "@/components/HeaderNav";
 import { Providers } from "./providers";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { ConciergeWidget } from "@/components/ConciergeWidget";
@@ -81,51 +81,61 @@ export default async function RootLayout({
       <body>
         <ServiceWorkerRegistration />
         <Providers locale={locale}>
+          {/* Zweizeilige Kopfzeile (Muster großer Portale):
+              Zeile 1 = Logo + Sprache + Konto/Anmelden (Dinge, die man selten braucht)
+              Zeile 2 = Suche + Anbieten (die tägliche Arbeit, volle Breite für die Suche) */}
           <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
-            <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 md:px-6">
-              <Link href="/" className="flex shrink-0 items-center gap-2">
-                {/* Offizielles Brisco-Systems-Logo (Vektor, public/brisco-systems-logo.svg) */}
-                <img
-                  src={withBasePath("/brisco-systems-logo.svg")}
-                  alt="Brisco Systems"
-                  className="h-8 w-auto sm:h-10"
-                />
-                <span className="hidden self-center border-l border-slate-300 pl-3 text-base font-semibold tracking-tight text-slate-500 lg:inline">
-                  Marketplace
-                </span>
-              </Link>
+            <div className="mx-auto max-w-6xl px-4 md:px-6">
+              {/* Zeile 1 */}
+              <div className="flex items-center justify-between gap-4 py-2.5">
+                <Link href="/" className="flex shrink-0 items-center gap-2">
+                  {/* Offizielles Brisco-Systems-Logo (Vektor, public/brisco-systems-logo.svg) */}
+                  <img
+                    src={withBasePath("/brisco-systems-logo.svg")}
+                    alt="Brisco Systems"
+                    className="h-8 w-auto sm:h-10"
+                  />
+                  <span className="hidden self-center border-l border-slate-300 pl-3 text-base font-semibold tracking-tight text-slate-500 lg:inline">
+                    Marketplace
+                  </span>
+                </Link>
 
-              {/* Suchzentrierte Bedienerführung: große Suche direkt im Kopf */}
-              <form
-                action={withBasePath("/listings")}
-                method="get"
-                role="search"
-                className="order-3 flex w-full items-center gap-2 rounded-full border border-slate-300 bg-white pl-4 pr-1.5 transition-colors focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-100 md:order-none md:w-auto md:flex-1 md:max-w-xl"
-              >
-                <Search className="h-4 w-4 shrink-0 text-slate-400" aria-hidden />
-                <input
-                  name="q"
-                  type="search"
-                  placeholder={t("header.searchPlaceholder")}
-                  aria-label={t("header.searchAria")}
-                  className="min-w-0 flex-1 border-0 bg-transparent py-2 text-sm text-slate-900 outline-none placeholder:text-slate-400"
-                />
-                <button
-                  type="submit"
-                  className="shrink-0 rounded-full bg-brand-400 px-4 py-1.5 text-sm font-semibold text-slate-900 transition-colors hover:bg-brand-500"
+                <div className="shrink-0">
+                  <HeaderNav
+                    user={
+                      session?.user
+                        ? { name: session.user.name ?? "", isAdmin: session.user.role === "ADMIN" }
+                        : null
+                    }
+                  />
+                </div>
+              </div>
+
+              {/* Zeile 2 */}
+              <div className="flex items-center gap-2 border-t border-slate-100 py-2.5">
+                <form
+                  action={withBasePath("/listings")}
+                  method="get"
+                  role="search"
+                  className="flex min-w-0 flex-1 items-center gap-2 rounded-full border border-slate-300 bg-white pl-4 pr-1.5 transition-colors focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-100"
                 >
-                  {t("header.searchButton")}
-                </button>
-              </form>
+                  <Search className="h-4 w-4 shrink-0 text-slate-400" aria-hidden />
+                  <input
+                    name="q"
+                    type="search"
+                    placeholder={t("header.searchPlaceholder")}
+                    aria-label={t("header.searchAria")}
+                    className="min-w-0 flex-1 border-0 bg-transparent py-2 text-sm text-slate-900 outline-none placeholder:text-slate-400"
+                  />
+                  <button
+                    type="submit"
+                    className="shrink-0 rounded-full bg-brand-400 px-4 py-1.5 text-sm font-semibold text-slate-900 transition-colors hover:bg-brand-500"
+                  >
+                    {t("header.searchButton")}
+                  </button>
+                </form>
 
-              <div className="shrink-0">
-                <HeaderNav
-                  user={
-                    session?.user
-                      ? { name: session.user.name ?? "", isAdmin: session.user.role === "ADMIN" }
-                      : null
-                  }
-                />
+                <SecondaryNav />
               </div>
             </div>
           </header>
