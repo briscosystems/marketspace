@@ -31,7 +31,7 @@ type ProductPatch = {
 // 1) Praxis-Probleme, deren Quelle die eigene Aussage widerlegt
 //    (die drei schwersten Befunde des Durchgangs)
 // ============================================================
-const ISSUE_DELETIONS: IssueDeletion[] = [
+export const ISSUE_DELETIONS: IssueDeletion[] = [
   {
     id: "cmpim8oq30019llhq3cs1ptgp",
     was: "Castrol Hysol MB 50 — „Coolant wird in neuer Maschine sofort ranzig“",
@@ -70,7 +70,7 @@ const ISSUE_DELETIONS: IssueDeletion[] = [
 // 2) Erfundene Produkte — alle mit hoher Sicherheit belegt.
 //    Vorab geprüft: keiner hängt an echten Preisdaten oder Praxis-Problemen.
 // ============================================================
-const PRODUCT_DELETIONS: ProductDeletion[] = [
+export const PRODUCT_DELETIONS: ProductDeletion[] = [
   // --- Fuchs: der neue Renolin B ---
   {
     id: "cmphf8smg0033llefg08iqvoi",
@@ -336,7 +336,7 @@ const PRODUCT_DELETIONS: ProductDeletion[] = [
 //    Produkte sind real, nur die Zahl ist falsch. Das ist der
 //    RENOLIN-B-Fehler an der zweiten Fuchs-Reihe.
 // ============================================================
-const PRODUCT_PATCHES: ProductPatch[] = [
+export const PRODUCT_PATCHES: ProductPatch[] = [
   {
     id: "cmphf8sm9002zllefuu57vrq3",
     name: "Fuchs Renolin MR 10",
@@ -434,9 +434,13 @@ async function main() {
   if (!DRY) console.log("   Hinweis: danach `npx tsx prisma/backfill-search-tokens.ts` laufen lassen.");
 }
 
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(() => prisma.$disconnect());
+// Nur ausführen, wenn direkt aufgerufen (`npx tsx prisma/fix-…ts`). Beim Import
+// durch deploy-tasks.ts sollen nur die Listen oben geladen werden.
+if (process.argv[1]?.includes("fix-datenqualitaet")) {
+  main()
+    .catch((e) => {
+      console.error(e);
+      process.exit(1);
+    })
+    .finally(() => prisma.$disconnect());
+}

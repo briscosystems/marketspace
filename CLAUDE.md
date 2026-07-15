@@ -117,6 +117,12 @@ Worst-Case-Materialverträglichkeit), dazu `lib/sds-parser.ts` /
 
 - Nach Schema-Änderungen `npx prisma generate` ausführen; das Projekt nutzt `db push`
   (keine Migrationshistorie) — Schema-Änderungen werden direkt angewendet.
+- **Datenbank-Änderungen für LIVE gehören in `prisma/deploy-tasks.ts`** (seit 2026-07-15).
+  Ein `git push` bringt nur den Code nach Railway, nicht die Daten. Der Start-Befehl lautet
+  `prisma db push --skip-generate && npm run deploy:tasks && next start` — damit zieht jeder
+  Deploy Schema UND Daten automatisch nach. Neue Aufgaben müssen **idempotent** sein (laufen
+  bei jedem Start) und dürfen **nie werfen** (sonst startet die Seite nicht). Details im
+  Dateikopf von `deploy-tasks.ts`.
 - Test-Accounts aus dem Seed: `alpha@example.com` (VERIFIED) und
   `beta@example.com` (TRADE_ASSURED), Passwort `test1234`.
 - `NEXTAUTH_SECRET` und `DATABASE_URL` werden zur Laufzeit benötigt (bereits in `.env`).
