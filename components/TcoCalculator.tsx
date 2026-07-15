@@ -160,7 +160,7 @@ export function TcoCalculator({ product }: { product: TcoProductInput }) {
             className="mt-0.5 w-full rounded-md border border-slate-300 px-2 py-1.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-200"
           />
           <span className="text-[10px] text-slate-400">
-            {priceKnown ? "aus Marktpreis vorbefüllt" : "kein Marktpreis — bitte eintragen"}
+            {priceKnown ? "aus Richtwert vorbefüllt (indikativ)" : "kein Richtwert — bitte eintragen"}
           </span>
         </label>
         <label className="block">
@@ -325,7 +325,7 @@ export function TcoComparePanel({ products }: { products: TcoProductInput[] }) {
                     {result ? `${result.eurPerEmulsionL.toFixed(3)} €` : "—"}
                   </td>
                   <td className="px-3 py-2 text-right font-bold">
-                    {result ? `${eur(result.totalEur)} €` : "kein Marktpreis"}
+                    {result ? `${eur(result.totalEur)} €` : "kein Richtwert"}
                   </td>
                 </tr>
               );

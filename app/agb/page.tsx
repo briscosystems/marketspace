@@ -1,30 +1,21 @@
-import { AlertTriangle } from "lucide-react";
-
 export const metadata = {
   title: "AGB — Brisco Marketplace",
 };
 
-// Allgemeine Geschäftsbedingungen (Entwurf). B2B-Plattform, Vermittlermodell.
-// WICHTIG: kein Rechtsrat — muss vor Live-Gang von einer/einem schweizerischen
-// Anwält:in geprüft werden (insb. AGB-Kontrolle nach Art. 8 UWG, zwingende
-// Haftung, DSG/DSGVO, Abgrenzung B2B).
+// Allgemeine Geschäftsbedingungen. B2B-Plattform, Vermittlermodell.
+//
+// Der nutzersichtbare "kein Rechtsrat / Entwurf"-Warnkasten wurde am 2026-07-15 auf
+// Wunsch des Betreibers entfernt: Ein Hinweis "unsere AGB sind ein Entwurf" schwächt
+// auf einer öffentlichen Rechtsseite genau das Dokument, das Verbindlichkeit schaffen
+// soll. Die anwaltliche Prüfung (CH, insb. Art. 8 UWG, Haftung, DSG/DSGVO, Abgrenzung
+// B2B) bleibt davon unberührt und ist als offener Punkt in GO-LIVE.md 1.2 festgehalten
+// — der Betreiber führt sie selbst durch.
 export default function AgbPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div>
         <h1 className="page-title">Allgemeine Geschäftsbedingungen (AGB)</h1>
-        <p className="text-sm text-slate-500">Stand: Juni 2026 · Version 0.3 (Entwurf)</p>
-      </div>
-
-      <div className="flex items-start gap-2 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
-        <AlertTriangle size={18} className="mt-0.5 shrink-0 text-amber-600" />
-        <p>
-          <strong>Hinweis (kein Rechtsrat):</strong> Dieser Text ist ein sorgfältig erstellter
-          Entwurf, ersetzt aber keine anwaltliche Beratung. Vor dem Live-Betrieb muss er von einer
-          bzw. einem in der Schweiz zugelassenen Rechtsanwält:in geprüft werden — insbesondere die
-          Haftungs- und Gewährleistungsklauseln, die AGB-Inhaltskontrolle (Art. 8 UWG) und die
-          Frage, ob ausschließlich Unternehmer (B2B) oder auch Verbraucher zugelassen sind.
-        </p>
+        <p className="text-sm text-slate-500">Stand: Juli 2026</p>
       </div>
 
       <Section n="1" title="Geltungsbereich & Plattformbetreiber">

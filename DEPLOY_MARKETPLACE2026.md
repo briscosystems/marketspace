@@ -1,5 +1,19 @@
 # Live-Schaltung: dosimetrix.eu/marketplace2026
 
+> ## ⚠️ Teilweise überholt (Stand 2026-07-15)
+> Diese Anleitung beschreibt den **Prototyp-Aufbau hinter Passwort**. Er ist umgesetzt und
+> funktioniert — die Seite läuft so seit dem 14.07. live.
+>
+> **Für den echten Betrieb mit Kreditkartenzahlung gilt sie nicht mehr:** Die Plattform bekommt
+> die eigene Adresse **`markt.brisco.ch`** statt `dosimetrix.eu/marketplace2026`. Damit entfallen
+> **Baustein 3 (Netlify-Weiche)** und der Unterpfad `/marketplace2026` ersatzlos.
+>
+> Grund: Dosimetrix ist inzwischen **zahlender Werbekunde** der Plattform — ein neutraler
+> Marktplatz kann nicht unter der Domain eines seiner Werbekunden laufen.
+>
+> **→ Maßgeblich ist [GO-LIVE.md](GO-LIVE.md).** Gültig bleiben hier nur die Railway-Abschnitte
+> A–D (Projekt, Datenbank, Variablen, Daten einspielen).
+
 Ziel: Den Marktplatz unter `https://dosimetrix.eu/marketplace2026` erreichbar machen,
 zunächst durch eine **weiße Login-Seite** geschützt (nur gezielte Personen).
 
@@ -49,7 +63,22 @@ die App fällt sauber auf Heuristik zurück):
 ```
 ANTHROPIC_API_KEY     = (dein Anthropic-Schlüssel)
 STRIPE_SECRET_KEY     = (dein Stripe-Schlüssel, Testmodus)
+STRIPE_WEBHOOK_SECRET = (Signing Secret des Stripe-Webhooks, beginnt mit whsec_)
+CRON_SECRET           = (selbst gewähltes langes Zufallswort)
 ```
+
+> **`STRIPE_WEBHOOK_SECRET` ist für echten Zahlungsbetrieb Pflicht, nicht optional.**
+> Ohne diesen Wert antwortet `/api/billing/webhook` mit 503 — der Erstabschluss geht dann
+> zwar noch über den Erfolgs-Redirect durch, aber **jede spätere automatische Verlängerung
+> kommt nicht an**. Anlegen: Stripe → Entwickler → Webhooks → Endpunkt
+> `https://<adresse>/marketplace2026/api/billing/webhook`, Events `checkout.session.completed`,
+> `invoice.payment_succeeded`, `customer.subscription.updated`, `customer.subscription.deleted`.
+>
+> **`CRON_SECRET`** schützt `/api/cron/membership-reminders` (täglich aufrufen mit Header
+> `Authorization: Bearer <CRON_SECRET>`) — schickt die 30-Tage-Vorabinfo vor jeder
+> Verlängerung. Bei automatischer Verlängerung rechtlich wichtig.
+>
+> Der vollständige Ablauf für den **echten** Zahlungsbetrieb steht in [GO-LIVE.md](GO-LIVE.md).
 
 ### D. Datenbank füllen
 Nach dem ersten erfolgreichen Deploy muss das Schema in die Railway-Datenbank und die

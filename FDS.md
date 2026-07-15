@@ -773,8 +773,9 @@ Ranking ist ausschließlich intern und für Nutzer nicht erkennbar (siehe C.2).
   „✓ Verifizierter Kauf" gekennzeichnet.
 - **Reputations-Signale** im Profil vorhanden: TrustBadge, „Mitglied seit",
   Schnitt + Anzahl Bewertungen, abgeschlossene Transaktionen.
-- **Nächster großer Hebel:** Treuhand/abgesicherte Zahlung (baut auf Stripe auf;
-  für vollen Käuferschutz Stripe Connect / Escrow nötig — eigenes Projekt).
+- **Käuferschutz: umgesetzt** (2026-07-10, Stripe Connect Express) — siehe C.11.
+  Wording-Pflicht (Stripe-Support-Bestätigung liegt vor): **nie „Treuhand" oder
+  „Escrow"**, immer „Käuferschutz".
 
 ## C.7 Einkäufer-Funktionen (Zielgruppe: Einkauf von CNC-Fertigern) — umgesetzt
 
@@ -986,6 +987,113 @@ angelegtes Preis-Objekt nötig. Jahresgebühr per Superadmin-Einstellung
   erzeugt, Kündigung/Reaktivierung gegen ein echtes Test-Abo verifiziert
   (inkl. Sync-Check direkt bei Stripe), Verlängerungs-Webhook mit
   Idempotenz-Test (zweiter Aufruf erzeugt keine doppelte Payment-Zeile).
+
+## C.11 Preisstufen Basis/Pro/Marke + Käuferschutz (2026-07-13)
+
+Ersetzt den Einheitspreis aus C.9/C.10 (dort noch „290 €/Jahr" bzw. „Default
+350 €"). Grund (GTM-Konzept 07/2026): Ein Einheitspreis lässt bei aktiven
+Vielhändlern und bei Herstellern Erlös liegen. Drei Stufen holen die
+Zahlungsbereitschaft ab; die Marke-Stufe erschließt die bisher ungenutzte
+**Herstellerseite**. Das Credit-Modell (C.9) bleibt unverändert daneben bestehen.
+
+### Die drei Stufen (`MembershipTier`, `lib/membership-tiers.ts`)
+
+| Stufe | Zielgruppe | Jahrespreis (Default) | Freigeschaltet |
+|---|---|---|---|
+| **BASIS** | Reseller | 290 € (`membershipPriceEur`) | Volle Wissens-Datenbank, **max. 10 aktive Angebote** (`basisListingLimit`), Suchen unbegrenzt, Käuferschutz nutzbar |
+| **PRO** | aktive Händler | 990 € (`membershipPriceProEur`) | Alles aus Basis + unbegrenzte Angebote + **Vorrang in der `/listings`-Sortierung** + Umsatz-/Einsparungs-Analysen auf `/umsaetze` |
+| **MARKE** | OEM & Hersteller | 3000 € (`membershipPriceMarkeEur`) | Alles aus Pro + **Marken-Schaufenster** + gesponserte KSS-Wizard-Platzierung + Werbeplattform (C.12) |
+
+Alle drei Preise sind per Superadmin (`/admin` → Monetarisierung) einstellbar;
+die Werte oben sind die Defaults aus `SETTING_DEFAULTS` (`lib/credits.ts`).
+
+**Wirksamkeit:** `activeTier(user)` gibt die Stufe nur zurück, solange
+`membershipValidUntil` in der Zukunft liegt. Ohne aktives Abo gilt **keine**
+Stufe — die gebuchte `membershipTier` bleibt gespeichert, ist aber wirkungslos.
+Gating-Helfer: `listingLimitFor`, `hasPriorityPlacement`, `hasAnalytics`,
+`hasStorefront`. Das Basis-Limit wird serverseitig in
+`app/api/listings/route.ts` durchgesetzt (422 `LISTING_LIMIT_REACHED`).
+
+### Marken-Schaufenster (nur MARKE)
+Die Herstellerseite `/manufacturers/[slug]` wird zum **verifizierten
+Schaufenster** (Banner + „Marke"-Badge), sobald ein Konto mit aktiver
+MARKE-Stufe sie über `User.brandManufacturerId` vertritt (`lib/storefront.ts`,
+`sponsoredManufacturerIds()`). Kurz-URL `/marke/[slug]` → Redirect. Verwaltung
+über `StorefrontManager` auf `/mitgliedschaft` → `POST /api/marke/storefront`.
+
+**KSS-Wizard-Sponsoring:** Gesponserte Hersteller erhalten **+8 Score** in der
+Vorauswahl; das Ergebnis trägt das Flag `sponsored` → sichtbares Label
+**„Gesponsert"** im Dialog. Pflicht nach **P2B-VO Art. 5** (Offenlegung, wenn
+Bezahlung das Ranking beeinflusst) — vgl. C.2.
+
+### Käuferschutz — Gebühr 2,5 % + 0,25 €
+Umgesetzt über **Stripe Connect Express** (separate charges & transfers, Geld
+geparkt bis zur Lieferbestätigung; „Problem melden" → Superadmin entscheidet in
+`/admin` über Freigabe/Erstattung). Kern: `lib/protection-flow.ts`,
+`lib/connect.ts`, `app/api/transactions/[id]/protection/*`, `ProtectionPanel.tsx`.
+
+Gebühr (trägt der Käufer): `protectionFeeBp` = **250** (2,5 %) +
+`protectionFeeFixedCt` = **25** (0,25 €). Vorher 1,5 %.
+
+**Wortlaut-Korrektur (wichtig, war vorher falsch):** Früher stand dort „Brisco
+verdient nichts / deckt nur die Stripe-Gebühren". Das war unzutreffend. Der
+Text lautet jetzt überall ehrlich: Die Gebühr deckt **Zahlungsabwicklung UND
+Käuferschutz-Service, ein Teil bleibt als Entgelt bei Brisco** — angepasst in
+AGB §7, `/vertrauen`, `/mitgliedschaft` und im Checkout-Line-Item.
+Ebenfalls korrigiert: **AGB §6** — die alte 3-%-Provision samt Umgehungsverbot
+ist entfernt (sie widersprach dem Abo-Modell), §7 ist jetzt der Käuferschutz.
+
+## C.12 Werbeplattform (2026-07-14)
+
+Dritte Erlösquelle neben Abo (C.11) und KI-Credits (C.9): Hersteller mit
+MARKE-Stufe buchen und **verwalten ihre Anzeigen selbst** — kein manuelles
+Einpflegen durch den Betreiber mehr.
+
+### Datenmodell
+`AdBanner`: `eyebrow`, `headline`, `chips[]` (max. 4), `image`, `ctaLabel`,
+`ctaUrl`, `origin`, `placements[]`, `active`, `startsAt`/`endsAt`, `ownerId`,
+`manufacturerId` (verknüpft die Anzeige mit dem Schaufenster).
+Das Bild ist **entweder ein ausgelieferter Pfad** (`/images/…`) **oder eine
+`data:`-URI** (Upload) — die Ansicht unterscheidet am Präfix. Upload wird
+clientseitig auf 720 px / JPEG verkleinert (Feldgrenze 1,4 MB).
+
+`enum AdPlacement`: **HOME** (Startseite) · **STOREFRONT** (Marken-Schaufenster)
+· **LISTINGS** (Angebotsübersicht). Alle drei Platzierungen sind angeschlossen:
+
+| Platzierung | Ort im Code |
+|---|---|
+| HOME | `app/page.tsx` (beide Zustände: Besucher + Dashboard) |
+| STOREFRONT | `app/manufacturers/[slug]/page.tsx`, auf `manufacturerId` gefiltert |
+| LISTINGS | `app/listings/page.tsx` (zwischen Facetten-Filter und Browse-Grid) |
+
+### Ausspielung
+`lib/ads.ts`: `getLiveAds(placement, manufacturerId?)` — eine Anzeige ist
+**live**, wenn `active` UND (falls gesetzt) im Laufzeitfenster
+`startsAt`/`endsAt`. `getActiveAd()` wählt daraus **zufällig gleichverteilt**
+eine aus (einfache Rotation). `adStatusLabel()` liefert Live/Geplant/
+Pausiert/Abgelaufen. Anzeige über `components/AdBannerView` (datengetrieben,
+dunkles Banner-Design) + `components/AdSlot` (Server-Komponente, lädt und
+kennzeichnet mit **„Anzeige"**).
+
+### Selbstverwaltung
+Seite `/werbung` mit `components/AdManager`: Liste mit Status, Formular mit
+Live-Vorschau, Bild-Upload, Pausieren/Löschen.
+API: `POST /api/ads`, `PATCH`/`DELETE /api/ads/[id]`. Zugriff über
+`requireAdManager()` — **aktives MARKE-Abo ODER Rolle ADMIN**; Nicht-Admins
+sind auf ihre eigene Marke beschränkt.
+
+### Erste echte Anzeige
+`prisma/demo-dosimetrix.ts` legt Hersteller **Dosimetrix** (dosimetrix.eu,
+KSS-Management/eMix1500), das Marke-Konto `dosimetrix@example.com` und den
+`AdBanner` (id `demo-dosimetrix-ad`) an. Die alte fest verdrahtete
+`DosimetrixBanner`-Komponente ist gelöscht.
+
+> **Falle:** Das Seed-Skript nutzt `update: {}` (bewusst idempotent). Änderungen
+> an einer **bestehenden** Anzeige müssen daher zusätzlich per DB-Update
+> gemacht werden — ein Re-Seed allein bewirkt nichts.
+
+> **Falle:** Nach `db push` immer `npx prisma generate` UND den Dev-Server neu
+> starten, sonst ist `prisma.adBanner` zur Laufzeit `undefined`.
 
 ---
 

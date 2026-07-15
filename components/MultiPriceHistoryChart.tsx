@@ -41,7 +41,7 @@ export function MultiPriceHistoryChart({
   if (withData.length === 0) {
     return (
       <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50/40 p-6 text-center text-sm text-slate-500">
-        Für die ausgewählten Produkte liegen noch keine verifizierten Preisdaten vor.
+        Für die ausgewählten Produkte liegen noch keine Preisdaten vor.
       </div>
     );
   }

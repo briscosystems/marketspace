@@ -623,7 +623,7 @@ function PriceBanner({
         <div className="flex items-center gap-2">
           <TrendingUp size={20} className="text-amber-700" />
           <span className="text-sm font-bold uppercase tracking-wide text-amber-900">
-            Marktpreis
+            Richtwert
           </span>
         </div>
         {currentPrice ? (
@@ -654,7 +654,7 @@ function PriceBanner({
           </>
         ) : (
           <span className="text-sm text-slate-600">
-            Noch keine verifizierten Preise — sei der erste!
+            Noch keine Preisdaten — sei der erste!
           </span>
         )}
       </div>
@@ -694,7 +694,7 @@ function PriceSection({
         <div className="flex items-center gap-2">
           <TrendingUp size={16} className="text-amber-700" />
           <h2 className="text-sm font-bold uppercase tracking-wide text-amber-900">
-            Marktpreis &amp; Historie
+            Indikativer Richtwert &amp; Verlauf
           </h2>
           <span className="text-[10px] uppercase tracking-wide text-amber-600/80">
             5-Jahres-Trend
@@ -712,7 +712,7 @@ function PriceSection({
         {currentPrice ? (
           <div className="flex flex-wrap items-baseline gap-4 rounded-lg border border-amber-200 bg-white p-3">
             <div>
-              <div className="text-[10px] uppercase tracking-wide text-slate-500">Aktueller Marktpreis</div>
+              <div className="text-[10px] uppercase tracking-wide text-slate-500">Aktueller Richtwert</div>
               <div className="flex items-baseline gap-1">
                 <span className="text-2xl font-bold text-slate-900">
                   {currentPrice.median.toFixed(2)}
@@ -738,7 +738,7 @@ function PriceSection({
           </div>
         ) : (
           <div className="rounded-lg border border-dashed border-amber-300 bg-white p-3 text-sm text-slate-600">
-            Noch keine verifizierten Preise vorhanden — sei der erste und melde einen Preis!
+            Noch keine Preisdaten vorhanden — sei der erste und melde einen Preis!
           </div>
         )}
 
@@ -746,9 +746,10 @@ function PriceSection({
         <PriceHistoryChart data={priceHistory} />
 
         <p className="text-[10px] text-slate-500">
-          ⚠ Preisdaten stammen aus User-Meldungen, Marketplace-Transaktionen und indikativen
-          Marktwerten. Alle Datenpunkte sind verifiziert. Verbindlich bleibt das individuelle
-          Angebot des Anbieters.
+          ⚠ <strong>Indikative Richtwerte</strong> — modelliert, keine bestätigten Marktpreise.
+          Sie dienen der Orientierung und dem Vergleich. Sobald Nutzer eigene Preise melden oder
+          Käufe über die Plattform laufen, fließen echte Werte ein. Verbindlich bleibt das
+          individuelle Angebot des Anbieters.
         </p>
       </div>
     </section>

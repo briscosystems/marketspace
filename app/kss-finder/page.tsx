@@ -353,7 +353,7 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
             </Collapsible>
 
             <Collapsible
-              title="Marktpreis"
+              title="Richtwert"
               subtitle="Spanne in EUR pro L oder kg"
               badgeCount={counts.price}
               defaultOpen={counts.price > 0}

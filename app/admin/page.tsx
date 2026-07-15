@@ -72,7 +72,7 @@ export default async function AdminPage() {
       where: { status: "COMPLETED" },
       _sum: { totalEur: true },
     }),
-    // System-E-Mails (Prototyp-Log, kein echter Versand — siehe lib/mailer.ts)
+    // System-E-Mails (Versand über SMTP, siehe lib/mailer.ts; Log für den Superadmin)
     prisma.emailLog.findMany({
       orderBy: { createdAt: "desc" },
       take: 30,
@@ -510,9 +510,10 @@ export default async function AdminPage() {
       <section>
         <h2 className="page-title">System-E-Mails</h2>
         <p className="max-w-2xl text-sm text-slate-600">
-          Kein echter E-Mail-Versand im Prototyp — hier siehst du, was verschickt
-          worden wäre (Erinnerung ~30 Tage vor automatischer Abo-Verlängerung,
-          Bestätigung danach). Details im Server-Log.
+          Protokoll aller System-E-Mails: Passwort zurücksetzen, Erinnerung ~30 Tage vor
+          automatischer Abo-Verlängerung, Bestätigung danach. Verschickt wird über SMTP
+          (Zugangsdaten in den Server-Variablen). Sind keine hinterlegt, wird nichts
+          versendet — der Eintrag erscheint hier trotzdem, und der Grund steht im Server-Log.
         </p>
       </section>
 

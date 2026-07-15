@@ -1,7 +1,7 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { DEFAULT_LOCALE, LOCALES, translate, type Locale } from "@/lib/i18n";
+import { createContext, useCallback, useContext, useState } from "react";
+import { DEFAULT_LOCALE, LOCALE_COOKIE, translate, type Locale } from "@/lib/i18n";
 
 type LocaleCtx = {
   locale: Locale;
@@ -15,33 +15,31 @@ const Ctx = createContext<LocaleCtx>({
   t: (k) => k,
 });
 
-function readCookieLocale(): Locale {
-  if (typeof document === "undefined") return DEFAULT_LOCALE;
-  const m = document.cookie.match(/(?:^|; )NEXT_LOCALE=([^;]+)/);
-  const v = m?.[1];
-  return LOCALES.some((l) => l.code === v) ? (v as Locale) : DEFAULT_LOCALE;
-}
-
 /**
- * Stellt die aktuelle Sprache bereit. Start IMMER mit DEFAULT_LOCALE (= Server-
- * Render, vermeidet Hydration-Mismatch); nach dem Mounten wird die in einem
- * Cookie gespeicherte Auswahl übernommen.
+ * Stellt die aktuelle Sprache bereit.
+ *
+ * `initialLocale` kommt aus dem RootLayout, das das Sprach-Cookie serverseitig
+ * liest. Dadurch rendern Server und Browser von Anfang an dieselbe Sprache —
+ * kein Hydration-Mismatch und kein kurzes Aufblitzen von Deutsch.
+ *
+ * Beim Umschalten wird das Cookie gesetzt und die Seite neu geladen, damit auch
+ * die serverseitig gerenderten Texte in der neuen Sprache kommen.
  */
-export function LocaleProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(DEFAULT_LOCALE);
-
-  useEffect(() => {
-    setLocaleState(readCookieLocale());
-  }, []);
+export function LocaleProvider({
+  initialLocale = DEFAULT_LOCALE,
+  children,
+}: {
+  initialLocale?: Locale;
+  children: React.ReactNode;
+}) {
+  const [locale, setLocaleState] = useState<Locale>(initialLocale);
 
   const setLocale = useCallback((l: Locale) => {
-    document.cookie = `NEXT_LOCALE=${l};path=/;max-age=31536000;samesite=lax`;
+    document.cookie = `${LOCALE_COOKIE}=${l};path=/;max-age=31536000;samesite=lax`;
     setLocaleState(l);
-    try {
-      document.documentElement.lang = l;
-    } catch {
-      /* noop */
-    }
+    // Neu laden, damit die Server-Komponenten (Kopfzeile, Seiteninhalte) in der
+    // neuen Sprache gerendert werden — ein reines State-Update erreicht sie nicht.
+    window.location.reload();
   }, []);
 
   const t = useCallback((key: string) => translate(locale, key), [locale]);

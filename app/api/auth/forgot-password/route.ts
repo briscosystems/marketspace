@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { sendEmail } from "@/lib/mailer";
+import { withBasePath } from "@/lib/base-path";
 import {
   generateResetToken,
   hashResetToken,
@@ -19,11 +21,9 @@ export async function POST(req: Request) {
 
   const user = await prisma.user.findUnique({ where: { email } });
 
-  // Kein User-Enumeration nach außen: Die Antwort ist immer "ok". Existiert das
-  // Konto, erzeugen wir einen Token. Da im Prototyp noch kein Mailversand läuft,
-  // geben wir den Link in der Antwort zurück, damit er getestet werden kann.
-  // PRODUKTIV: resetUrl NICHT zurückgeben, sondern ausschließlich per E-Mail
-  // an den Posteingang zustellen.
+  // Keine User-Enumeration nach außen: Die Antwort ist IMMER "ok" — unabhängig
+  // davon, ob das Konto existiert und ob der Mailversand geklappt hat. Sonst
+  // könnte ein Angreifer durchprobieren, welche Adressen registriert sind.
   if (!user) {
     return NextResponse.json({ ok: true });
   }
@@ -38,10 +38,33 @@ export async function POST(req: Request) {
   });
 
   const origin = new URL(req.url).origin;
-  const resetUrl = `${origin}/reset-password?token=${token}`;
+  const resetUrl = `${origin}${withBasePath("/reset-password")}?token=${token}`;
+  const stunden = Math.round(RESET_TOKEN_TTL_MS / 3_600_000);
 
-  // Solange kein echter Versand existiert: in den Server-Log schreiben.
-  console.log(`[Passwort-Reset] Link für ${email}: ${resetUrl}`);
+  // Der Link geht AUSSCHLIESSLICH per E-Mail raus. Bis 2026-07-15 gab die Route
+  // ihn zusätzlich in der Antwort zurück — damit konnte jeder, der eine fremde
+  // E-Mail-Adresse kannte, das zugehörige Konto übernehmen.
+  await sendEmail({
+    userId: user.id,
+    kind: "PASSWORD_RESET",
+    to: user.email,
+    subject: "Brisco Marketplace — Passwort zurücksetzen",
+    body: [
+      `Hallo ${user.pseudonym},`,
+      "",
+      "für dein Brisco-Konto wurde ein Zurücksetzen des Passworts angefordert.",
+      "Über diesen Link vergibst du ein neues Passwort:",
+      "",
+      resetUrl,
+      "",
+      `Der Link ist ${stunden} Stunden gültig und kann nur einmal verwendet werden.`,
+      "",
+      "Warst du das nicht? Dann ignoriere diese E-Mail einfach — dein Passwort",
+      "bleibt unverändert, und niemand erfährt von dieser Anfrage.",
+      "",
+      "Brisco Systems GmbH",
+    ].join("\n"),
+  });
 
-  return NextResponse.json({ ok: true, resetUrl });
+  return NextResponse.json({ ok: true });
 }

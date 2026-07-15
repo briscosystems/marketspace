@@ -21,16 +21,16 @@ import {
   Wallet,
 } from "lucide-react";
 import { useLocale } from "./LocaleProvider";
-import { LanguageSwitcher } from "./LanguageSwitcher";
 
-const NAV_LINKS: { href: string; label: string; icon: typeof Search }[] = [
-  { href: "/rfqs", label: "Suchen (Anfragen)", icon: Search },
-  { href: "/prices", label: "Marktpreise", icon: TrendingUp },
-  { href: "/wissen", label: "Praxis-Wissen", icon: Lightbulb },
-  { href: "/kss-finder", label: "KSS-Finder", icon: Sparkles },
-  { href: "/manufacturers", label: "Hersteller", icon: Building2 },
-  { href: "/sds", label: "Sicherheitsdatenblätter", icon: FileText },
-  { href: "/materials", label: "Materialien", icon: Shield },
+// Beschriftungen kommen über i18n (labelKey), nicht als fester Text.
+const NAV_LINKS: { href: string; labelKey: string; icon: typeof Search }[] = [
+  { href: "/rfqs", labelKey: "nav.rfqs", icon: Search },
+  { href: "/prices", labelKey: "nav.prices", icon: TrendingUp },
+  { href: "/wissen", labelKey: "nav.knowledge", icon: Lightbulb },
+  { href: "/kss-finder", labelKey: "nav.kssFinder", icon: Sparkles },
+  { href: "/manufacturers", labelKey: "nav.manufacturers", icon: Building2 },
+  { href: "/sds", labelKey: "nav.sds", icon: FileText },
+  { href: "/materials", labelKey: "nav.materials", icon: Shield },
 ];
 
 /**
@@ -119,7 +119,7 @@ export function AccountMenu({ user }: { user: { name: string; isAdmin?: boolean 
             </Link>
             <Link href="/umsaetze" className={itemClass}>
               <Wallet size={16} className="text-slate-400" />
-              Meine Umsätze
+              {t("account.revenue")}
             </Link>
             {user.isAdmin && (
               <Link href="/admin" className={`${itemClass} text-rose-700 hover:bg-rose-50`}>
@@ -135,13 +135,10 @@ export function AccountMenu({ user }: { user: { name: string; isAdmin?: boolean 
               return (
                 <Link key={it.href} href={it.href} className={itemClass}>
                   <Icon size={16} className="text-slate-400" />
-                  {it.label}
+                  {t(it.labelKey)}
                 </Link>
               );
             })}
-            <div className="px-3 py-1.5">
-              <LanguageSwitcher />
-            </div>
           </div>
 
           <div className="border-t border-slate-100 py-1">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { BASE_PATH } from "@/lib/base-path";
 
 // Weiße, minimalistische Login-Seite, die dem Marktplatz vorgeschaltet ist.
@@ -9,6 +10,7 @@ import { BASE_PATH } from "@/lib/base-path";
 export function GateLogin() {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
+  const [visible, setVisible] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -87,14 +89,27 @@ export function GateLogin() {
           autoFocus
           style={inputStyle}
         />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Passwort"
-          autoComplete="current-password"
-          style={inputStyle}
-        />
+        {/* Passwortfeld mit Auge zum Sichtbarmachen. Inline-Styles wie der Rest
+            dieser Seite — sie soll unabhängig vom App-CSS funktionieren. */}
+        <div style={{ position: "relative" }}>
+          <input
+            type={visible ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Passwort"
+            autoComplete="current-password"
+            style={{ ...inputStyle, paddingRight: "42px" }}
+          />
+          <button
+            type="button"
+            onClick={() => setVisible((v) => !v)}
+            aria-label={visible ? "Passwort verbergen" : "Passwort anzeigen"}
+            title={visible ? "Passwort verbergen" : "Passwort anzeigen"}
+            style={eyeButtonStyle}
+          >
+            {visible ? <EyeOff size={16} /> : <Eye size={16} />}
+          </button>
+        </div>
 
         {error && (
           <p style={{ margin: 0, fontSize: "13px", color: "#dc2626" }}>
@@ -133,4 +148,19 @@ const inputStyle: React.CSSProperties = {
   outline: "none",
   width: "100%",
   boxSizing: "border-box",
+};
+
+const eyeButtonStyle: React.CSSProperties = {
+  position: "absolute",
+  right: "10px",
+  top: "50%",
+  transform: "translateY(-50%)",
+  display: "flex",
+  alignItems: "center",
+  padding: "4px",
+  border: "none",
+  background: "transparent",
+  color: "#64748b",
+  cursor: "pointer",
+  lineHeight: 0,
 };

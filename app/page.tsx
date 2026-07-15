@@ -6,6 +6,7 @@ import { ListingCard } from "@/components/ListingCard";
 import { AdSlot } from "@/components/AdSlot";
 import { OilBarrels } from "@/components/OilBarrels";
 import { ApplicationEntry } from "@/components/ApplicationEntry";
+import { getT } from "@/lib/i18n-server";
 import {
   FlaskConical,
   Building2,
@@ -27,6 +28,7 @@ export default async function HomePage() {
 }
 
 async function PublicLanding() {
+  const t = await getT();
   const [listingCount, userCount, sdsCount, manufacturerCount, freshListings] =
     await Promise.all([
       prisma.listing.count({ where: { status: "ACTIVE" } }),
@@ -48,23 +50,20 @@ async function PublicLanding() {
 
       {/* Hero — ruhig, weiß, Lime nur als Akzent */}
       <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-8 shadow-soft md:p-10">
-        <div className="eyebrow text-brand-700">Für Reseller, Endkunden &amp; Hersteller</div>
+        <div className="eyebrow text-brand-700">{t("home.eyebrow")}</div>
         <h1 className="mt-2 max-w-2xl text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
-          Der B2B-Marktplatz für Industrieöle, KSS &amp; Schmierstoffe
+          {t("home.title")}
         </h1>
-        <p className="mt-3 max-w-2xl text-slate-600">
-          Was dem einen fehlt, hat der andere im Lager. Öl-Händler gleichen Überschuss und
-          Engpässe direkt untereinander aus — anonym, geprüft und sicher bezahlt.
-        </p>
+        <p className="mt-3 max-w-2xl text-slate-600">{t("home.lead")}</p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
             href="/listings"
             className="btn bg-slate-900 font-semibold text-white shadow-soft hover:bg-slate-800"
           >
-            Angebote entdecken
+            {t("home.ctaBrowse")}
           </Link>
           <Link href="/register" className="btn-secondary">
-            Reseller-Konto anlegen
+            {t("home.ctaRegister")}
           </Link>
         </div>
       </section>
@@ -76,18 +75,21 @@ async function PublicLanding() {
           className="group relative overflow-hidden rounded-2xl border border-blue-200 bg-white p-6 shadow-soft transition hover:border-blue-400 hover:shadow-lift"
         >
           <div className="absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-blue-600 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
-            Anbieten
+            {t("home.offerBadge")}
           </div>
           <OilBarrels className="h-11 w-auto" />
           <h2 className="mt-2 text-xl font-bold text-slate-900 group-hover:text-blue-700">
-            Ich habe Bestand zu verkaufen
+            {t("home.offerTitle")}
           </h2>
           <p className="mt-1 text-sm text-slate-600">
-            Stell dein Lager als Angebot ein oder durchstöbere, was andere Anbieter
-            verfügbar haben. {listingCount} aktive Angebot{listingCount === 1 ? "" : "e"}.
+            {t("home.offerText")}{" "}
+            {t(listingCount === 1 ? "home.activeOffers.one" : "home.activeOffers.other").replace(
+              "{n}",
+              String(listingCount),
+            )}
           </p>
           <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-blue-700">
-            Angebote durchsuchen <ArrowRight className="h-4 w-4" />
+            {t("home.offerLink")} <ArrowRight className="h-4 w-4" />
           </div>
         </Link>
 
@@ -96,18 +98,17 @@ async function PublicLanding() {
           className="group relative overflow-hidden rounded-2xl border border-amber-200 bg-white p-6 shadow-soft transition hover:border-amber-400 hover:shadow-lift"
         >
           <div className="absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-amber-600 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
-            Suchen
+            {t("home.seekBadge")}
           </div>
           <div className="text-3xl">🔎</div>
           <h2 className="mt-2 text-xl font-bold text-slate-900 group-hover:text-amber-700">
-            Ich suche ein bestimmtes Produkt
+            {t("home.seekTitle")}
           </h2>
           <p className="mt-1 text-sm text-slate-600">
-            Stell deinen Bedarf öffentlich ein und lass Anbieter dir Preise nennen.
-            Oder schau dir an, was andere Käufer gerade suchen.
+            {t("home.seekText")}
           </p>
           <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-amber-700">
-            Bedarfe durchsuchen <ArrowRight className="h-4 w-4" />
+            {t("home.seekLink")} <ArrowRight className="h-4 w-4" />
           </div>
         </Link>
       </section>
@@ -121,22 +122,22 @@ async function PublicLanding() {
           href="/sds"
           icon={<FlaskConical className="h-5 w-5" />}
           value={sdsCount.toLocaleString("de-CH")}
-          title="Sicherheitsdatenblätter"
-          hint="geparste GHS-/REACH-Daten"
+          title={t("home.tileSdsTitle")}
+          hint={t("home.tileSdsHint")}
         />
         <DiscoverTile
           href="/manufacturers"
           icon={<Building2 className="h-5 w-5" />}
           value={String(manufacturerCount)}
-          title="Hersteller"
-          hint="Marken im Produktkatalog"
+          title={t("home.tileMfrTitle")}
+          hint={t("home.tileMfrHint")}
         />
         <DiscoverTile
           href="/prices"
           icon={<TrendingUp className="h-5 w-5" />}
-          value="Marktpreise"
-          title="Preistransparenz"
-          hint="aus Meldungen und Transaktionen"
+          value={t("home.tilePriceValue")}
+          title={t("home.tilePriceTitle")}
+          hint={t("home.tilePriceHint")}
         />
       </section>
 
@@ -144,12 +145,12 @@ async function PublicLanding() {
       {freshListings.length > 0 && (
         <section>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="section-title">Neu im Markt</h2>
+            <h2 className="section-title">{t("home.newInMarket")}</h2>
             <Link
               href="/listings"
               className="inline-flex items-center gap-1 text-sm font-medium text-brand-700 hover:underline"
             >
-              alle Angebote <ArrowRight className="h-4 w-4" />
+              {t("home.allOffers")} <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -164,17 +165,17 @@ async function PublicLanding() {
       <section className="grid gap-4 sm:grid-cols-3">
         <div className="card">
           <div className="stat-value text-brand-600">{listingCount}</div>
-          <div className="mt-0.5 text-sm text-slate-600">aktive Angebote</div>
+          <div className="mt-0.5 text-sm text-slate-600">{t("home.statOffers")}</div>
         </div>
         <div className="card">
           <div className="stat-value text-brand-600">{userCount}</div>
-          <div className="mt-0.5 text-sm text-slate-600">registrierte Reseller</div>
+          <div className="mt-0.5 text-sm text-slate-600">{t("home.statResellers")}</div>
         </div>
         <div className="card">
           <div className="stat-value text-brand-600">
             {sdsCount.toLocaleString("de-CH")}
           </div>
-          <div className="mt-0.5 text-sm text-slate-600">Sicherheitsdatenblätter</div>
+          <div className="mt-0.5 text-sm text-slate-600">{t("home.tileSdsTitle")}</div>
         </div>
       </section>
     </div>

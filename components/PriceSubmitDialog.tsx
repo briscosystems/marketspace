@@ -95,7 +95,7 @@ export function PriceSubmitDialog({ productId, productName, manufacturer, onClos
         <div className="space-y-3 px-5 py-4">
           <div className="rounded bg-amber-50 px-3 py-2 text-xs text-amber-800">
             ℹ️ Deine Meldung wird <strong>geprüft</strong>, bevor sie öffentlich
-            in der Marktpreis-Statistik erscheint. Trade-Assured+ User oder Admins können
+            in der Richtwert-Statistik erscheint. Trade-Assured+ User oder Admins können
             verifizieren.
           </div>
 

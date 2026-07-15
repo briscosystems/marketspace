@@ -635,6 +635,7 @@ model Payment {
 enum EmailKind {
   MEMBERSHIP_RENEWAL_REMINDER // ~30 Tage vor automatischer Verlängerung
   MEMBERSHIP_RENEWED          // Bestätigung nach erfolgter Verlängerung
+  PASSWORD_RESET              // Link zum Zurücksetzen des Passworts
 }
 
 model EmailLog {

@@ -234,7 +234,7 @@ export default async function ManufacturerDetailPage({
                         {pricesMap.get(p.id) && (
                           <span
                             className="rounded-md bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold text-amber-900 ring-1 ring-amber-300"
-                            title={`Marktpreis: ${pricesMap.get(p.id)!.observationCount} Beobachtungen, Konfidenz ${pricesMap.get(p.id)!.confidence}`}
+                            title={`Indikativer Richtwert (modelliert): ${pricesMap.get(p.id)!.observationCount} Datenpunkte, Konfidenz ${pricesMap.get(p.id)!.confidence}`}
                           >
                             💰 {pricesMap.get(p.id)!.median.toFixed(2)} {pricesMap.get(p.id)!.unitLabel}
                           </span>

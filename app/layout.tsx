@@ -12,6 +12,7 @@ import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistratio
 import { GateLogin } from "@/components/GateLogin";
 import { AnalyticsTracker } from "@/components/AnalyticsTracker";
 import { GATE_COOKIE, gateEnabled, isGateTokenValid } from "@/lib/gate";
+import { DEFAULT_LOCALE, LOCALE_COOKIE, toLocale, translate } from "@/lib/i18n";
 import { withBasePath } from "@/lib/base-path";
 import { Search, ShieldCheck, FileText, Check } from "lucide-react";
 import "./globals.css";
@@ -51,14 +52,21 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const store = await cookies();
+
+  // Sprachwahl serverseitig aus dem Cookie lesen: so kommt die Seite bereits in
+  // der richtigen Sprache aus dem Server (kein Aufblitzen von Deutsch) und die
+  // Server-Komponenten unten können `translate(locale, …)` benutzen.
+  const locale = toLocale(store.get(LOCALE_COOKIE)?.value);
+  const t = (key: string) => translate(locale, key);
+
   // Vorgeschaltete Zugangssperre: solange kein gültiges Gate-Cookie vorliegt, nur die
   // weiße Login-Seite zeigen (nur in Produktion aktiv, siehe gateEnabled()).
   if (gateEnabled()) {
-    const store = await cookies();
     const ok = await isGateTokenValid(store.get(GATE_COOKIE)?.value);
     if (!ok) {
       return (
-        <html lang="de">
+        <html lang={locale}>
           <body>
             <GateLogin />
           </body>
@@ -69,10 +77,10 @@ export default async function RootLayout({
 
   const session = await getServerSession(authOptions);
   return (
-    <html lang="de">
+    <html lang={locale}>
       <body>
         <ServiceWorkerRegistration />
-        <Providers>
+        <Providers locale={locale}>
           <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
             <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 md:px-6">
               <Link href="/" className="flex shrink-0 items-center gap-2">
@@ -98,15 +106,15 @@ export default async function RootLayout({
                 <input
                   name="q"
                   type="search"
-                  placeholder="Öl, Fett, Marke oder ISO VG suchen …"
-                  aria-label="Angebote durchsuchen"
+                  placeholder={t("header.searchPlaceholder")}
+                  aria-label={t("header.searchAria")}
                   className="min-w-0 flex-1 border-0 bg-transparent py-2 text-sm text-slate-900 outline-none placeholder:text-slate-400"
                 />
                 <button
                   type="submit"
                   className="shrink-0 rounded-full bg-brand-400 px-4 py-1.5 text-sm font-semibold text-slate-900 transition-colors hover:bg-brand-500"
                 >
-                  Suchen
+                  {t("header.searchButton")}
                 </button>
               </form>
 
@@ -128,13 +136,13 @@ export default async function RootLayout({
               {/* Nur Versprechen, die die Plattform heute technisch einlöst
                   (Glaubwürdigkeit: keine ungedeckten Claims in der Kopfzeile) */}
               <span className="inline-flex items-center gap-1.5">
-                <Check className="h-3.5 w-3.5 text-brand-600" aria-hidden /> Bewertungen nur aus echten Geschäften
+                <Check className="h-3.5 w-3.5 text-brand-600" aria-hidden /> {t("trust.reviews")}
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <ShieldCheck className="h-3.5 w-3.5 text-brand-600" aria-hidden /> Dokumentierte Abwicklung über Brisco
+                <ShieldCheck className="h-3.5 w-3.5 text-brand-600" aria-hidden /> {t("trust.handling")}
               </span>
               <span className="hidden items-center gap-1.5 sm:inline-flex">
-                <FileText className="h-3.5 w-3.5 text-brand-600" aria-hidden /> Marktpreise &amp; Sicherheitsdatenblätter inklusive
+                <FileText className="h-3.5 w-3.5 text-brand-600" aria-hidden /> {t("trust.data")}
               </span>
             </div>
           </div>
@@ -143,16 +151,22 @@ export default async function RootLayout({
           {/* KI-Concierge — schwebender Fachberater auf jeder Seite */}
           <ConciergeWidget />
           <footer className="mt-12 border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500">
-            <div>Brisco Systems GmbH · Prototyp v0.3 · Pseudonyme Reseller-Plattform</div>
+            <div>Brisco Systems GmbH · Prototyp v0.3 · {t("footer.tagline")}</div>
             <div className="mt-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
-              <a href={withBasePath("/vertrauen")} className="hover:text-slate-700 hover:underline">Vertrauen</a>
+              <a href={withBasePath("/vertrauen")} className="hover:text-slate-700 hover:underline">{t("footer.trust")}</a>
               <span className="text-slate-300">·</span>
-              <a href={withBasePath("/agb")} className="hover:text-slate-700 hover:underline">AGB</a>
+              <a href={withBasePath("/agb")} className="hover:text-slate-700 hover:underline">{t("footer.terms")}</a>
               <span className="text-slate-300">·</span>
-              <a href={withBasePath("/impressum")} className="hover:text-slate-700 hover:underline">Impressum</a>
+              <a href={withBasePath("/impressum")} className="hover:text-slate-700 hover:underline">{t("footer.imprint")}</a>
               <span className="text-slate-300">·</span>
-              <a href={withBasePath("/datenschutz")} className="hover:text-slate-700 hover:underline">Datenschutz</a>
+              <a href={withBasePath("/datenschutz")} className="hover:text-slate-700 hover:underline">{t("footer.privacy")}</a>
             </div>
+            {/* Rechtstexte bleiben bewusst deutsch (Entscheidung 2026-07-15): acht
+                Sprachfassungen wären acht rechtsverbindliche Dokumente. Der Hinweis
+                erscheint nur, wenn der Nutzer nicht auf Deutsch liest. */}
+            {locale !== DEFAULT_LOCALE && (
+              <div className="mt-1 text-[11px] text-slate-400">{t("footer.legalNote")}</div>
+            )}
           </footer>
           {/* Nutzungs-Messung (datenschutzarm, siehe components/AnalyticsTracker) */}
           <Suspense fallback={null}>

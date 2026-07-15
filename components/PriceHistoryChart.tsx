@@ -16,7 +16,7 @@ export function PriceHistoryChart({
   if (data.length === 0) {
     return (
       <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50/40 p-6 text-center text-sm text-slate-500">
-        Noch keine verifizierten Preisdaten. Trage den ersten Preis bei!
+        Noch keine Preisdaten. Trage den ersten Preis bei!
       </div>
     );
   }

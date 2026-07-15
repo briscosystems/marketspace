@@ -317,7 +317,7 @@ export default async function ListingsPage({ searchParams }: { searchParams: Sea
           </div>
           <p className="text-sm text-slate-600">
             Diese Produkte sind in unserer Wissensbasis erfasst, aktuell aber nicht als
-            Angebot gelistet. Details, Sicherheitsdatenblatt und Marktpreise findest du auf
+            Angebot gelistet. Details, Sicherheitsdatenblatt und Preis-Richtwerte findest du auf
             der Produktseite.
           </p>
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">

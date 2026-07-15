@@ -69,7 +69,7 @@ export function PriceRangeSlider({
 
       <p className="text-[10px] text-slate-500">
         Voller Bereich = kein Preisfilter. Aktiv gefiltert wird nur, wenn du einen Regler
-        bewegst — Produkte ohne verifizierten Marktpreis fallen dann raus.
+        bewegst — Produkte ohne Richtwert fallen dann raus.
       </p>
 
       {/* Daumen klickbar machen (die Inputs selbst sind pointer-events-none) */}

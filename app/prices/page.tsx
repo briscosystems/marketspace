@@ -36,7 +36,7 @@ function extractVgClasses(viscosityIso: string | null): number[] {
   return [...found];
 }
 
-export const metadata = { title: "Marktpreise — Brisco Marketplace" };
+export const metadata = { title: "Indikative Richtwerte — Brisco Marketplace" };
 
 const CATEGORY_LABEL: Record<string, string> = {
   COOLANT_WATER_MIX: "KSS (wassermischbar)",
@@ -194,9 +194,15 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
           <TrendingUp size={20} />
         </span>
         <div>
-          <h1 className="page-title">Marktpreise</h1>
+          <h1 className="page-title">Indikative Richtwerte</h1>
           <p className="text-sm text-slate-500">
-            {productIdsWithPrices.length.toLocaleString("de-CH")} Produkte mit verifizierten Preisen
+            {productIdsWithPrices.length.toLocaleString("de-CH")} Produkte mit Richtwert
+          </p>
+          <p className="mt-1 rounded-md border border-amber-200 bg-amber-50 px-2 py-1 text-xs text-amber-900">
+            Die Werte sind <strong>modellierte Richtwerte</strong>, keine bestätigten
+            Marktpreise — sie dienen der Orientierung und dem Vergleich. Sobald Nutzer eigene
+            Preise melden oder Käufe über die Plattform laufen, fließen echte Werte ein.
+            Verbindlich ist immer das individuelle Angebot des Anbieters.
           </p>
           <p className="mt-0.5 text-xs text-slate-400">
             Tipp: In der Spalte <span className="font-medium text-slate-500">Vergleich</span>{" "}
@@ -222,7 +228,7 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
             />
             <SimilarToggle />
             <span className="text-xs text-slate-500">
-              {total} {total === 1 ? "Produkt" : "Produkte"} mit Marktpreis
+              {total} {total === 1 ? "Produkt" : "Produkte"} mit Richtwert
             </span>
           </>
         }
@@ -274,7 +280,7 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
               <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
                 <tr>
                   <th className="px-3 py-2">Produkt</th>
-                  <th className="px-3 py-2 text-right">Marktpreis</th>
+                  <th className="px-3 py-2 text-right">Richtwert</th>
                   <th className="px-3 py-2 text-right">Spanne</th>
                   <th className="px-3 py-2 text-center">Beob.</th>
                   <th className="px-3 py-2 text-center">Konfidenz</th>
