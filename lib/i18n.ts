@@ -87,7 +87,13 @@ export const MESSAGES: Record<Locale, Dict> = {
     "home.lead":
       "Was dem einen fehlt, hat der andere im Lager. Öl-Händler gleichen Überschuss und Engpässe direkt untereinander aus — anonym, geprüft und sicher bezahlt.",
     "home.ctaBrowse": "Angebote entdecken",
-    "home.ctaRegister": "Reseller-Konto anlegen",
+    "home.ctaRegister": "{n} Tage kostenlos testen",
+    "home.ctaRegisterHint": "Ohne Abo, ohne Kreditkarte — inkl. {c} KI-Credits.",
+    "trial.badge": "{n} Tage gratis",
+    "trial.pitch": "Neu hier? {n} Tage voller Zugang — ohne Abo, ohne Kreditkarte, inkl. {c} KI-Credits.",
+    "listing.signinToContact": "Anmelden & Anbieter kontaktieren",
+    "listing.signinHint": "Neu? {n} Tage kostenlos testen — ohne Kreditkarte.",
+    "register.lead": "{n} Tage voller Zugang, {c} KI-Credits, keine Kreditkarte nötig. Das Abo beginnt erst, wenn du dich dafür entscheidest.",
     "home.offerBadge": "Anbieten",
     "home.offerTitle": "Ich habe Bestand zu verkaufen",
     "home.offerText":
@@ -157,7 +163,13 @@ export const MESSAGES: Record<Locale, Dict> = {
     "home.lead":
       "What one is short of, another has on the shelf. Oil traders balance surplus and shortages directly between them — anonymously, verified and safely paid.",
     "home.ctaBrowse": "Browse offers",
-    "home.ctaRegister": "Create reseller account",
+    "home.ctaRegister": "Try {n} days free",
+    "home.ctaRegisterHint": "No subscription, no credit card — includes {c} AI credits.",
+    "trial.badge": "{n} days free",
+    "trial.pitch": "New here? {n} days of full access — no subscription, no credit card, includes {c} AI credits.",
+    "listing.signinToContact": "Sign in & contact supplier",
+    "listing.signinHint": "New? Try {n} days free — no credit card.",
+    "register.lead": "{n} days of full access, {c} AI credits, no credit card required. The subscription only starts when you decide to take it.",
     "home.offerBadge": "Offering",
     "home.offerTitle": "I have stock to sell",
     "home.offerText":
@@ -227,7 +239,13 @@ export const MESSAGES: Record<Locale, Dict> = {
     "home.lead":
       "Wat de één tekortkomt, heeft de ander op voorraad. Oliehandelaren wisselen overschot en tekorten rechtstreeks onderling uit — anoniem, geverifieerd en veilig betaald.",
     "home.ctaBrowse": "Aanbiedingen ontdekken",
-    "home.ctaRegister": "Reselleraccount aanmaken",
+    "home.ctaRegister": "{n} dagen gratis proberen",
+    "home.ctaRegisterHint": "Geen abonnement, geen creditcard — inclusief {c} AI-credits.",
+    "trial.badge": "{n} dagen gratis",
+    "trial.pitch": "Nieuw hier? {n} dagen volledige toegang — geen abonnement, geen creditcard, inclusief {c} AI-credits.",
+    "listing.signinToContact": "Inloggen & aanbieder contacteren",
+    "listing.signinHint": "Nieuw? {n} dagen gratis proberen — geen creditcard.",
+    "register.lead": "{n} dagen volledige toegang, {c} AI-credits, geen creditcard nodig. Het abonnement start pas als je daarvoor kiest.",
     "home.offerBadge": "Aanbieden",
     "home.offerTitle": "Ik heb voorraad te koop",
     "home.offerText":
@@ -256,4 +274,21 @@ export const MESSAGES: Record<Locale, Dict> = {
 
 export function translate(locale: Locale, key: string): string {
   return MESSAGES[locale]?.[key] ?? MESSAGES[DEFAULT_LOCALE][key] ?? key;
+}
+
+/**
+ * Ersetzt Platzhalter wie {n} oder {c} in einem übersetzten Text.
+ *
+ *   fill(t("trial.pitch"), { n: 10, c: 20 })
+ *
+ * Wird für die Trial-Werbung gebraucht: Die Zahlen kommen aus den
+ * Superadmin-Einstellungen (trialDays, welcomeCredits) und stehen NICHT fest im
+ * Text — sonst wirbt die Seite irgendwann mit 10 Tagen, während die Software 30
+ * gewährt.
+ */
+export function fill(text: string, vars: Record<string, string | number>): string {
+  return Object.entries(vars).reduce(
+    (s, [k, v]) => s.split(`{${k}}`).join(String(v)),
+    text,
+  );
 }

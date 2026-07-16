@@ -3,6 +3,9 @@ import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getT } from "@/lib/i18n-server";
+import { fill } from "@/lib/i18n";
+import { getSettingInt } from "@/lib/credits";
 import { ContactSellerButton } from "@/components/ContactSellerButton";
 import { InquiryButtons } from "@/components/InquiryButtons";
 import { TrustBadge } from "@/components/TrustBadge";
@@ -27,12 +30,14 @@ export default async function ListingDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [listing, session] = await Promise.all([
+  const [listing, session, t, trialDays] = await Promise.all([
     prisma.listing.findUnique({
       where: { id },
       include: { seller: { select: { id: true, pseudonym: true, trustTier: true } } },
     }),
     getServerSession(authOptions),
+    getT(),
+    getSettingInt("trialDays"),
   ]);
   if (!listing) notFound();
   const isOwnListing = session?.user?.id === listing.sellerId;
@@ -136,13 +141,19 @@ export default async function ListingDetailPage({
                   />
                 </>
               ) : (
-                <Link
-                  href={`/login?callbackUrl=/listings/${listing.id}`}
-                  className="btn-primary text-sm"
-                >
-                  <MessagesSquare size={14} className="mr-1.5" />
-                  Anmelden zum Kontaktieren
-                </Link>
+                <div>
+                  <Link
+                    href={`/register?callbackUrl=/listings/${listing.id}`}
+                    className="btn-primary text-sm"
+                  >
+                    <MessagesSquare size={14} className="mr-1.5" />
+                    {t("listing.signinToContact")}
+                  </Link>
+                  {/* Der Knopf sagte bisher nur „Anmelden“ — ohne Grund, warum. */}
+                  <p className="mt-1 text-xs text-slate-500">
+                    {fill(t("listing.signinHint"), { n: trialDays })}
+                  </p>
+                </div>
               )}
               {!isOwnListing && (
                 <Link
@@ -461,12 +472,17 @@ export default async function ListingDetailPage({
           ) : session?.user ? (
             <ContactSellerButton sellerId={listing.seller.id} listingId={listing.id} />
           ) : (
-            <Link
-              href={`/login?callbackUrl=/listings/${listing.id}`}
-              className="btn-primary"
-            >
-              Anmelden
-            </Link>
+            <div className="text-right">
+              <Link
+                href={`/register?callbackUrl=/listings/${listing.id}`}
+                className="btn-primary"
+              >
+                {t("listing.signinToContact")}
+              </Link>
+              <p className="mt-1 text-xs text-slate-500">
+                {fill(t("listing.signinHint"), { n: trialDays })}
+              </p>
+            </div>
           )}
         </div>
       </section>

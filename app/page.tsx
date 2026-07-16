@@ -7,6 +7,8 @@ import { AdSlot } from "@/components/AdSlot";
 import { OilBarrels } from "@/components/OilBarrels";
 import { ApplicationEntry } from "@/components/ApplicationEntry";
 import { getT } from "@/lib/i18n-server";
+import { fill } from "@/lib/i18n";
+import { getSettingInt } from "@/lib/credits";
 import {
   FlaskConical,
   Building2,
@@ -29,6 +31,11 @@ export default async function HomePage() {
 
 async function PublicLanding() {
   const t = await getT();
+  // Trial-Zahlen aus den Superadmin-Einstellungen — nie fest im Text.
+  const [trialDays, welcomeCredits] = await Promise.all([
+    getSettingInt("trialDays"),
+    getSettingInt("welcomeCredits"),
+  ]);
   const [listingCount, userCount, sdsCount, manufacturerCount, freshListings] =
     await Promise.all([
       prisma.listing.count({ where: { status: "ACTIVE" } }),
@@ -63,9 +70,14 @@ async function PublicLanding() {
             {t("home.ctaBrowse")}
           </Link>
           <Link href="/register" className="btn-secondary">
-            {t("home.ctaRegister")}
+            {fill(t("home.ctaRegister"), { n: trialDays })}
           </Link>
         </div>
+        {/* Das Angebot stand bisher nirgends — der Knopf sagte nur „Konto anlegen“.
+            Zahlen kommen aus den Einstellungen, nicht aus dem Text. */}
+        <p className="mt-2 text-xs text-slate-500">
+          {fill(t("home.ctaRegisterHint"), { c: welcomeCredits })}
+        </p>
       </section>
 
       {/* Anbieten / Suchen — feste Konvention: Anbieten blau, Suchen amber */}

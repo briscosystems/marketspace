@@ -17,8 +17,11 @@ import { isMembershipActive } from "@/lib/membership";
 export const SETTING_DEFAULTS = {
   /** Startguthaben (Credits) für Neukunden in der Kennenlernphase */
   welcomeCredits: 20,
-  /** Dauer der Kennenlernphase (Trial) in Tagen — ohne Abo nutzbar */
-  trialDays: 30,
+  /** Dauer der Kennenlernphase (Trial) in Tagen — ohne Abo nutzbar.
+   *  Wird in der Werbung auf Startseite/Login/Registrierung genannt: die Texte
+   *  lesen IMMER diesen Wert, damit sie nicht irgendwann etwas anderes
+   *  versprechen als die Software gewährt. Änderbar in /admin. */
+  trialDays: 10,
   /** Prämie (Credits) für den Werber, wenn sein Empfehlungs-Code genutzt wird */
   referralCredits: 10,
   /** Verkaufspreis pro Credit in Cent (EUR-Cent). 10 Ct = EUR 0.10 */

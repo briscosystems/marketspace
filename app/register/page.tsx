@@ -8,9 +8,18 @@ import { PasswordInput } from "@/components/PasswordInput";
 import { generatePseudonym, findPseudonymLeak } from "@/lib/pseudonym";
 import { EUROPE_COUNTRIES } from "@/lib/europe-countries";
 import { withBasePath } from "@/lib/base-path";
+import { Gift } from "lucide-react";
 
 export default function RegisterPage() {
   const router = useRouter();
+  // Trial-Konditionen aus den Einstellungen holen (nie fest im Text, s. /api/trial-info)
+  const [trial, setTrial] = useState<{ days: number; credits: number } | null>(null);
+  useEffect(() => {
+    fetch(withBasePath("/api/trial-info"))
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => d && setTrial(d))
+      .catch(() => {}); // Werbekasten ist Beiwerk — Fehler darf das Formular nicht stören
+  }, []);
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -112,10 +121,33 @@ export default function RegisterPage() {
   return (
     <div className="mx-auto max-w-xl">
       <h1 className="mb-2 page-title">Registrieren</h1>
-      <p className="mb-6 text-sm text-slate-600">
+      <p className="mb-4 text-sm text-slate-600">
         Klarname und Kontaktdaten bleiben verborgen. Andere Reseller sehen nur dein
         Pseudonym.
       </p>
+
+      {/* Was der Neukunde bekommt. Stand bisher NIRGENDS — weder hier noch auf der
+          Startseite. Zahlen kommen aus /api/trial-info (Superadmin-Einstellungen),
+          damit der Text nie etwas anderes verspricht, als die Software gewährt. */}
+      {trial && (
+        <div className="mb-6 rounded-xl border border-brand-200 bg-brand-50/60 p-4">
+          <div className="flex items-center gap-2">
+            <Gift size={16} className="text-brand-700" />
+            <span className="text-sm font-semibold text-slate-900">
+              {trial.days} Tage kostenlos — ohne Abo, ohne Kreditkarte
+            </span>
+          </div>
+          <ul className="mt-2 space-y-1 text-sm text-slate-600">
+            <li>· Voller Zugang zu Angebotsdetails und Anbieter-Kontakt</li>
+            <li>· {trial.credits} KI-Credits für Wizard, Vergleich und Alternativsuche</li>
+            <li>· Wissensbasis, Sicherheitsdatenblätter und Richtwerte inklusive</li>
+          </ul>
+          <p className="mt-2 text-xs text-slate-500">
+            Das Abo beginnt erst, wenn du dich aktiv dafür entscheidest. Es läuft nichts
+            automatisch an.
+          </p>
+        </div>
+      )}
       <form onSubmit={onSubmit} className="card space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
