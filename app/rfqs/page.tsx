@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getT } from "@/lib/i18n-server";
 import { FilterBar } from "@/components/FilterBar";
 import { FilterDropdown } from "@/components/FilterDropdown";
 import { SearchInput } from "@/components/SearchInput";
@@ -28,6 +29,7 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 export default async function RfqListPage({ searchParams }: { searchParams: SearchParams }) {
+  const t = await getT();
   const sp = await searchParams;
   const { q, productType, isoViscosity, region, status } = sp;
   const variant: "compact" | "extended" = sp.view === "extended" ? "extended" : "compact";
@@ -145,7 +147,7 @@ export default async function RfqListPage({ searchParams }: { searchParams: Sear
             <Search size={22} />
           </span>
           <div>
-            <h1 className="page-title text-amber-900">Ich suche</h1>
+            <h1 className="page-title text-amber-900">{t("rfqs.iAmLooking")}</h1>
             <p className="mt-0.5 text-sm text-slate-600">
               Stell deinen Bedarf ein — Anbieter melden sich mit Preis und Lieferzeit.
             </p>
@@ -167,12 +169,12 @@ export default async function RfqListPage({ searchParams }: { searchParams: Sear
 
       <FilterBar
         count={cards.length}
-        title="Aktuelle Bedarfe"
+        title={t("rfqs.currentNeeds")}
         noun={cards.length === 1 ? "Bedarf" : "Bedarfe"}
         resetHref="/rfqs"
         filterCount={filterCount}
         collapsible
-        search={<SearchInput placeholder="z.B. Castrol, KSS, Schleifen…" />}
+        search={<SearchInput placeholder={t("rfqs.searchPlaceholder")} />}
         toolbar={
           <div className="inline-flex overflow-hidden rounded-full ring-1 ring-slate-200">
             <Link
@@ -180,7 +182,7 @@ export default async function RfqListPage({ searchParams }: { searchParams: Sear
               className={`px-3 py-1.5 text-xs font-medium transition-colors ${
                 variant === "compact" ? "bg-brand-500 text-white" : "bg-white text-slate-600 hover:bg-slate-50"
               }`}
-              title="Kompakte Liste"
+              title={t("rfqs.viewCompact")}
             >
               ≡ Kompakt
             </Link>
@@ -189,17 +191,17 @@ export default async function RfqListPage({ searchParams }: { searchParams: Sear
               className={`px-3 py-1.5 text-xs font-medium transition-colors ${
                 variant === "extended" ? "bg-brand-500 text-white" : "bg-white text-slate-600 hover:bg-slate-50"
               }`}
-              title="Detaillierte Karten"
+              title={t("rfqs.viewCards")}
             >
               ▦ Erweitert
             </Link>
           </div>
         }
       >
-        <FilterDropdown label="Produkttyp" paramKey="productType" options={productTypeOptions} />
-        <FilterDropdown label="ISO VG" paramKey="isoViscosity" options={isoOptions} />
-        <FilterDropdown label="Region" paramKey="region" options={regionOptions} />
-        <FilterDropdown label="Status" paramKey="status" options={statusOptions} />
+        <FilterDropdown label={t("filter.productType")} paramKey="productType" options={productTypeOptions} />
+        <FilterDropdown label={t("filter.isoVg")} paramKey="isoViscosity" options={isoOptions} />
+        <FilterDropdown label={t("filter.region")} paramKey="region" options={regionOptions} />
+        <FilterDropdown label={t("filter.status")} paramKey="status" options={statusOptions} />
       </FilterBar>
 
       {cards.length === 0 ? (

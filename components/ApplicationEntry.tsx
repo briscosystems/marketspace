@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { getT } from "@/lib/i18n-server";
+import { fill } from "@/lib/i18n";
 import {
   APPLICATION_FACETS,
   listingMatchesApplication,
@@ -41,6 +43,7 @@ export async function ApplicationEntry() {
     select: { applicationArea: true, machiningOperations: true },
   });
 
+  const t = await getT();
   const tiles = APPLICATION_FACETS.map((f) => ({
     facet: f,
     count: rows.filter((r) =>
@@ -52,10 +55,8 @@ export async function ApplicationEntry() {
 
   return (
     <section>
-      <h2 className="section-title">Nach Anwendung einsteigen</h2>
-      <p className="mt-1 text-sm text-slate-600">
-        Produktname unbekannt? Starte bei deiner Aufgabe — wir zeigen passende Angebote.
-      </p>
+      <h2 className="section-title">{t("appEntry.title")}</h2>
+      <p className="mt-1 text-sm text-slate-600">{t("appEntry.lead")}</p>
       <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         {tiles.map(({ facet, count }) => (
           <Link
@@ -68,10 +69,10 @@ export async function ApplicationEntry() {
             </span>
             <div className="min-w-0">
               <div className="truncate text-sm font-semibold text-slate-900 group-hover:text-brand-700">
-                {facet.label}
+                {t(facet.labelKey)}
               </div>
               <div className="text-xs text-slate-500">
-                {count} Angebot{count === 1 ? "" : "e"}
+                {fill(t(count === 1 ? "appEntry.offers.one" : "appEntry.offers.other"), { n: count })}
               </div>
             </div>
           </Link>

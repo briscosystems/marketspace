@@ -11,6 +11,8 @@ import {
   listingMatchesApplication,
 } from "@/lib/application-facets";
 import { buildSearchWhere } from "@/lib/normalize-search";
+import { getT } from "@/lib/i18n-server";
+import { fill } from "@/lib/i18n";
 import { activeTier, hasPriorityPlacement } from "@/lib/membership-tiers";
 import { LayoutGrid, BookOpen } from "lucide-react";
 
@@ -40,6 +42,7 @@ const CHEMISTRY_LABEL: Record<string, string> = {
 };
 
 export default async function ListingsPage({ searchParams }: { searchParams: SearchParams }) {
+  const t = await getT();
   const params = await searchParams;
   const { q, productType } = params;
 
@@ -144,7 +147,7 @@ export default async function ListingsPage({ searchParams }: { searchParams: Sea
   const applicationRows = rowsExcept("application");
   const applicationOptions: FilterOption[] = APPLICATION_FACETS.map((f) => ({
     value: f.id,
-    label: f.label,
+    label: t(f.labelKey),
     count: applicationRows.filter((r) =>
       listingMatchesApplication(f, r.applicationArea, r.machiningOperations),
     ).length,
@@ -264,7 +267,7 @@ export default async function ListingsPage({ searchParams }: { searchParams: Sea
           <CatChip
             href={chipHref(null)}
             active={!productType}
-            label="Alle"
+            label={t("filter.all")}
             count={totalActive}
             glyph={<LayoutGrid className="h-4 w-4" />}
           />
@@ -284,12 +287,12 @@ export default async function ListingsPage({ searchParams }: { searchParams: Sea
       {/* Facetten-Filter — nach Eigenschaften eingrenzen statt nur Volltext */}
       <div className="card space-y-2 p-3">
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
-          <FilterDropdown label="Hersteller" paramKey="manufacturer" options={manufacturerOptions} multiple />
-          <FilterDropdown label="Anwendung" paramKey="application" options={applicationOptions} multiple />
-          <FilterDropdown label="Chemie" paramKey="chemistry" options={chemistryOptions} multiple />
-          <FilterDropdown label="Gebinde" paramKey="packaging" options={packagingOptions} multiple />
-          <FilterDropdown label="Region" paramKey="region" options={regionOptions} multiple />
-          <FilterDropdown label="Freigaben" paramKey="cert" options={certOptions} multiple />
+          <FilterDropdown label={t("filter.manufacturer")} paramKey="manufacturer" options={manufacturerOptions} multiple />
+          <FilterDropdown label={t("filter.application")} paramKey="application" options={applicationOptions} multiple />
+          <FilterDropdown label={t("filter.chemistry")} paramKey="chemistry" options={chemistryOptions} multiple />
+          <FilterDropdown label={t("filter.packaging")} paramKey="packaging" options={packagingOptions} multiple />
+          <FilterDropdown label={t("filter.region")} paramKey="region" options={regionOptions} multiple />
+          <FilterDropdown label={t("filter.approvals")} paramKey="cert" options={certOptions} multiple />
         </div>
         {activeDims.length > 0 && (
           <div className="flex justify-end">
@@ -297,7 +300,7 @@ export default async function ListingsPage({ searchParams }: { searchParams: Sea
               href={resetHref}
               className="text-sm font-medium text-brand-700 hover:text-brand-800 hover:underline"
             >
-              {activeDims.length} Filter zurücksetzen
+              {fill(t("filter.reset"), { n: activeDims.length })}
             </Link>
           </div>
         )}
@@ -313,12 +316,10 @@ export default async function ListingsPage({ searchParams }: { searchParams: Sea
         <div className="card space-y-3">
           <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
             <BookOpen size={16} className="text-brand-600" />
-            Produkte im Katalog für „{q}"
+            {fill(t("listings.catalogTitle"), { q: q ?? "" })}
           </div>
           <p className="text-sm text-slate-600">
-            Diese Produkte sind in unserer Wissensbasis erfasst, aktuell aber nicht als
-            Angebot gelistet. Details, Sicherheitsdatenblatt und Preis-Richtwerte findest du auf
-            der Produktseite.
+            {t("listings.catalogHint")}
           </p>
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {catalogProducts.map((p) => (

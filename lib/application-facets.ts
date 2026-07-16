@@ -6,22 +6,31 @@
 
 export type ApplicationFacet = {
   id: string;
-  label: string;
-  /** Kleingeschriebene Teilstrings, die in applicationArea ODER machiningOperations matchen. */
+  /**
+   * Übersetzungsschlüssel der Beschriftung (siehe lib/i18n.ts, "app.*").
+   * Bewusst KEIN fester Text: „Fräsen/Bohren/Schleifen“ sind normale Wörter, die
+   * es in jeder Sprache gibt — anders als Produktnamen.
+   */
+  labelKey: string;
+  /**
+   * Kleingeschriebene Teilstrings, die in applicationArea ODER machiningOperations
+   * matchen. Bleiben DEUTSCH: Sie vergleichen gegen die deutschen Freitext-Angaben
+   * in der Datenbank, nicht gegen die angezeigte Sprache.
+   */
   match: string[];
 };
 
 export const APPLICATION_FACETS: ApplicationFacet[] = [
-  { id: "fraesen", label: "Fräsen", match: ["fräs", "fraes"] },
-  { id: "drehen", label: "Drehen", match: ["dreh"] },
-  { id: "bohren", label: "Bohren", match: ["bohr"] },
-  { id: "gewindeschneiden", label: "Gewindeschneiden", match: ["gewinde"] },
-  { id: "schleifen", label: "Schleifen", match: ["schleif"] },
-  { id: "saegen", label: "Sägen/Trennen", match: ["säg", "saeg", "trenn"] },
-  { id: "umformen", label: "Umformen/Stanzen", match: ["umform", "stanz", "zieh", "press"] },
-  { id: "hydraulik", label: "Hydraulik", match: ["hydraulik"] },
-  { id: "gleitbahn", label: "Gleitbahn", match: ["gleitbahn", "bettbahn"] },
-  { id: "getriebe", label: "Getriebe", match: ["getriebe"] },
+  { id: "fraesen", labelKey: "app.fraesen", match: ["fräs", "fraes"] },
+  { id: "drehen", labelKey: "app.drehen", match: ["dreh"] },
+  { id: "bohren", labelKey: "app.bohren", match: ["bohr"] },
+  { id: "gewindeschneiden", labelKey: "app.gewindeschneiden", match: ["gewinde"] },
+  { id: "schleifen", labelKey: "app.schleifen", match: ["schleif"] },
+  { id: "saegen", labelKey: "app.saegen", match: ["säg", "saeg", "trenn"] },
+  { id: "umformen", labelKey: "app.umformen", match: ["umform", "stanz", "zieh", "press"] },
+  { id: "hydraulik", labelKey: "app.hydraulik", match: ["hydraulik"] },
+  { id: "gleitbahn", labelKey: "app.gleitbahn", match: ["gleitbahn", "bettbahn"] },
+  { id: "getriebe", labelKey: "app.getriebe", match: ["getriebe"] },
 ];
 
 export function getApplicationFacet(id: string): ApplicationFacet | undefined {
