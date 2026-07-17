@@ -15,6 +15,7 @@ import {
 import { getAllSettings, AI_ACTION_COSTS, packagePriceEur } from "@/lib/credits";
 import { isMembershipActive } from "@/lib/membership";
 import { formatCurrency } from "@/lib/currency";
+import { checkMailStatus } from "@/lib/mail-status";
 
 // Interne Eigentümer-Konsole. Für alle außer ADMIN existiert die Seite "nicht"
 // (404), damit ihre Existenz nicht verraten wird.
@@ -24,6 +25,7 @@ export default async function AdminPage() {
     notFound();
   }
 
+  const mailStatus = await checkMailStatus();
   const [users, settings, usageAgg, purchaseAgg, referralCodes, revenueByUser, emailLogs] = await Promise.all([
     prisma.user.findMany({
       where: { role: { in: ["RESELLER", "OEM"] } },
@@ -512,9 +514,31 @@ export default async function AdminPage() {
         <p className="max-w-2xl text-sm text-slate-600">
           Protokoll aller System-E-Mails: Passwort zurücksetzen, Erinnerung ~30 Tage vor
           automatischer Abo-Verlängerung, Bestätigung danach. Verschickt wird über SMTP
-          (Zugangsdaten in den Server-Variablen). Sind keine hinterlegt, wird nichts
-          versendet — der Eintrag erscheint hier trotzdem, und der Grund steht im Server-Log.
+          (Zugangsdaten in den Server-Variablen).
         </p>
+
+        {/* Live-Diagnose: prüft beim Laden die Anmeldung am Mailserver und benennt
+            den Grund, falls nichts rausgeht. */}
+        <div
+          className={`mt-3 rounded-lg border p-3 text-sm ${
+            mailStatus.loginOk
+              ? "border-emerald-300 bg-emerald-50 text-emerald-900"
+              : "border-amber-400 bg-amber-50 text-amber-900"
+          }`}
+        >
+          <div className="font-semibold">
+            {mailStatus.loginOk ? "✓ " : "⚠ "}
+            {mailStatus.headline}
+          </div>
+          <p className="mt-1">{mailStatus.detail}</p>
+          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs opacity-80">
+            {mailStatus.facts.map((f) => (
+              <span key={f.label}>
+                <span className="font-medium">{f.label}:</span> {f.value}
+              </span>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section className="card overflow-x-auto p-0">
