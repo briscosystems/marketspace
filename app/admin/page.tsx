@@ -9,6 +9,7 @@ import {
   setTrialDays,
   createReferralCodeAction,
   deactivateReferralCode,
+  deleteReferralCode,
   resolveProtectionRelease,
   resolveProtectionRefund,
 } from "./actions";
@@ -16,6 +17,8 @@ import { getAllSettings, AI_ACTION_COSTS, packagePriceEur } from "@/lib/credits"
 import { isMembershipActive } from "@/lib/membership";
 import { formatCurrency } from "@/lib/currency";
 import { checkMailStatus } from "@/lib/mail-status";
+import { withBasePath } from "@/lib/base-path";
+import { Download } from "lucide-react";
 
 // Interne Eigentümer-Konsole. Für alle außer ADMIN existiert die Seite "nicht"
 // (404), damit ihre Existenz nicht verraten wird.
@@ -234,7 +237,10 @@ export default async function AdminPage() {
 
       {/* ============ Referral-/Gutschein-Codes ============ */}
       <section>
-        <h2 className="page-title">Referral-Codes</h2>
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="page-title">Referral-Codes</h2>
+          <CsvButton list="referrals" />
+        </div>
         <p className="max-w-2xl text-sm text-slate-600">
           Generiere Codes mit einer festen Credit-Anzahl. Nutzer lösen sie unter{" "}
           <code className="rounded bg-slate-100 px-1">/mitgliedschaft</code> ein — pro
@@ -342,17 +348,33 @@ export default async function AdminPage() {
                       )}
                     </td>
                     <td className="py-2 pr-3">
-                      {c.active && (
-                        <form action={deactivateReferralCode}>
-                          <input type="hidden" name="id" value={c.id} />
-                          <button
-                            type="submit"
-                            className="text-xs font-medium text-red-600 hover:underline"
-                          >
-                            Deaktivieren
-                          </button>
-                        </form>
-                      )}
+                      <div className="flex items-center gap-3">
+                        {c.active && (
+                          <form action={deactivateReferralCode}>
+                            <input type="hidden" name="id" value={c.id} />
+                            <button
+                              type="submit"
+                              className="text-xs font-medium text-amber-700 hover:underline"
+                            >
+                              Deaktivieren
+                            </button>
+                          </form>
+                        )}
+                        {/* Löschen nur bei nie eingelösten Codes — sonst ginge der
+                            Beleg verloren, wer Credits erhalten hat. */}
+                        {c.usedCount === 0 && (
+                          <form action={deleteReferralCode}>
+                            <input type="hidden" name="id" value={c.id} />
+                            <button
+                              type="submit"
+                              className="text-xs font-medium text-red-600 hover:underline"
+                              title="Endgültig löschen (nur möglich, weil noch nie eingelöst)"
+                            >
+                              Löschen
+                            </button>
+                          </form>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 );
@@ -371,7 +393,10 @@ export default async function AdminPage() {
 
       {/* ============ Käuferschutz ============ */}
       <section>
-        <h2 className="page-title">Käuferschutz</h2>
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="page-title">Käuferschutz</h2>
+          <CsvButton list="protection" />
+        </div>
         <p className="max-w-2xl text-sm text-slate-600">
           Geparkte Zahlungen und gemeldete Probleme. Bei einem Problemfall entscheidest
           du: Geld an den Verkäufer freigeben oder an den Käufer zurückerstatten.
@@ -510,7 +535,10 @@ export default async function AdminPage() {
 
       {/* ============ System-E-Mails ============ */}
       <section>
-        <h2 className="page-title">System-E-Mails</h2>
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="page-title">System-E-Mails</h2>
+          <CsvButton list="emails" />
+        </div>
         <p className="max-w-2xl text-sm text-slate-600">
           Protokoll aller System-E-Mails: Passwort zurücksetzen, Erinnerung ~30 Tage vor
           automatischer Abo-Verlängerung, Bestätigung danach. Verschickt wird über SMTP
@@ -576,7 +604,10 @@ export default async function AdminPage() {
       </section>
 
       <section>
-        <h2 className="page-title">Sichtbarkeits-Steuerung &amp; Kunden</h2>
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="page-title">Sichtbarkeits-Steuerung &amp; Kunden</h2>
+          <CsvButton list="users" />
+        </div>
         <p className="max-w-2xl text-sm text-slate-600">
           Hier legst du fest, welche Reseller in Suche und Vorschlägen weiter oben
           erscheinen. Ein höherer Wert (0–100) schiebt deren Angebote nach vorne.
@@ -729,5 +760,19 @@ function SettingField({
       />
       <span className="mt-1 block text-xs text-slate-500">{hint}</span>
     </label>
+  );
+}
+
+// Download-Knopf für eine Admin-Liste als CSV (Excel-kompatibel, Strichpunkt + BOM).
+function CsvButton({ list }: { list: "users" | "referrals" | "protection" | "emails" }) {
+  return (
+    <a
+      href={withBasePath(`/api/admin/export?list=${list}`)}
+      className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+      title="Als CSV herunterladen (öffnet in Excel)"
+    >
+      <Download size={15} />
+      CSV
+    </a>
   );
 }

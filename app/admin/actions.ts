@@ -138,6 +138,24 @@ export async function deactivateReferralCode(formData: FormData) {
   revalidatePath("/admin");
 }
 
+/**
+ * Löscht einen Referral-Code — aber NUR, wenn er nie eingelöst wurde. Ein bereits
+ * genutzter Code bleibt als Beleg erhalten (wer hat wann Credits erhalten); dafür
+ * gibt es „Deaktivieren". So geht keine Nachvollziehbarkeit verloren.
+ */
+export async function deleteReferralCode(formData: FormData) {
+  await assertOwner();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  const code = await prisma.referralCode.findUnique({
+    where: { id },
+    select: { usedCount: true },
+  });
+  if (!code || code.usedCount > 0) return; // benutzte Codes nicht löschen
+  await prisma.referralCode.delete({ where: { id } });
+  revalidatePath("/admin");
+}
+
 // ---------- Käuferschutz: Problemfall-Entscheidung ----------
 
 /** Problemfall: geparktes Geld trotz Reklamation an den Verkäufer freigeben. */
