@@ -1,22 +1,16 @@
-import { AlertTriangle } from "lucide-react";
-
 export const metadata = { title: "Datenschutz — Brisco Marketplace" };
 
-// Datenschutzerklärung (DSGVO-Grundgerüst). Platzhalter vor Live-Gang füllen
-// und von einer/einem Datenschutz-Fachkundigen prüfen lassen.
+// Datenschutzerklärung (DSGVO/DSG-Grundgerüst).
+//
+// Der nutzersichtbare „Entwurf“-Warnkasten wurde am 2026-07-17 entfernt (analog zu
+// den AGB): Er schwächt auf einer öffentlichen Rechtsseite genau das Dokument, das
+// Verbindlichkeit schaffen soll, und es standen keine offenen [ … ]-Platzhalter mehr
+// darin. Die fachkundige Prüfung bleibt ein offener Punkt (GO-LIVE.md 1.2), der
+// Betreiber führt sie selbst durch.
 export default function DatenschutzPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <h1 className="page-title">Datenschutzerklärung</h1>
-
-      <div className="flex items-start gap-2 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
-        <AlertTriangle size={18} className="mt-0.5 shrink-0 text-amber-600" />
-        <p>
-          <strong>Entwurf:</strong> DSGVO-Grundgerüst. Vor dem Live-Gang die <code>[ … ]</code>-Felder
-          ergänzen und fachkundig prüfen lassen (insb. Auftragsverarbeiter, Speicherdauern,
-          Rechtsgrundlagen).
-        </p>
-      </div>
 
       <Block title="1. Verantwortlicher">
         <p>
