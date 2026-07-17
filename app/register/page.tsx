@@ -9,8 +9,11 @@ import { generatePseudonym, findPseudonymLeak } from "@/lib/pseudonym";
 import { EUROPE_COUNTRIES } from "@/lib/europe-countries";
 import { withBasePath } from "@/lib/base-path";
 import { Gift } from "lucide-react";
+import { useLocale } from "@/components/LocaleProvider";
+import { fill } from "@/lib/i18n";
 
 export default function RegisterPage() {
+  const { t } = useLocale();
   const router = useRouter();
   // Trial-Konditionen aus den Einstellungen holen (nie fest im Text, s. /api/trial-info)
   const [trial, setTrial] = useState<{ days: number; credits: number } | null>(null);
@@ -89,7 +92,7 @@ export default function RegisterPage() {
     e.preventDefault();
     setError(null);
     if (form.password !== form.passwordConfirm) {
-      setError("Die beiden Passwörter stimmen nicht überein.");
+      setError(t("reg.passwordMismatch"));
       return;
     }
     setLoading(true);
@@ -100,7 +103,7 @@ export default function RegisterPage() {
     });
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
-      setError(data.error ?? "Registrierung fehlgeschlagen.");
+      setError(data.error ?? t("reg.failed"));
       setLoading(false);
       return;
     }
@@ -111,7 +114,7 @@ export default function RegisterPage() {
     });
     setLoading(false);
     if (signin?.error) {
-      setError("Account angelegt, Login fehlgeschlagen.");
+      setError(t("reg.createdLoginFailed"));
       return;
     }
     router.push("/dashboard");
@@ -120,10 +123,9 @@ export default function RegisterPage() {
 
   return (
     <div className="mx-auto max-w-xl">
-      <h1 className="mb-2 page-title">Registrieren</h1>
+      <h1 className="mb-2 page-title">{t("reg.title")}</h1>
       <p className="mb-4 text-sm text-slate-600">
-        Klarname und Kontaktdaten bleiben verborgen. Andere Reseller sehen nur dein
-        Pseudonym.
+{t("reg.privacyNote")}
       </p>
 
       {/* Was der Neukunde bekommt. Stand bisher NIRGENDS — weder hier noch auf der
@@ -134,24 +136,23 @@ export default function RegisterPage() {
           <div className="flex items-center gap-2">
             <Gift size={16} className="text-brand-700" />
             <span className="text-sm font-semibold text-slate-900">
-              {trial.days} Tage kostenlos — ohne Abo, ohne Kreditkarte
+              {fill(t("reg.trialDays"), { n: trial.days })}
             </span>
           </div>
           <ul className="mt-2 space-y-1 text-sm text-slate-600">
-            <li>· Voller Zugang zu Angebotsdetails und Anbieter-Kontakt</li>
-            <li>· {trial.credits} KI-Credits für Wizard, Vergleich und Alternativsuche</li>
-            <li>· Wissensbasis, Sicherheitsdatenblätter und Richtwerte inklusive</li>
+            <li>· {t("reg.trialAccess")}</li>
+            <li>· {fill(t("reg.trialCredits"), { c: trial.credits })}</li>
+            <li>· {t("reg.trialKnowledge")}</li>
           </ul>
           <p className="mt-2 text-xs text-slate-500">
-            Das Abo beginnt erst, wenn du dich aktiv dafür entscheidest. Es läuft nichts
-            automatisch an.
+{t("reg.trialNoAutoStart")}
           </p>
         </div>
       )}
       <form onSubmit={onSubmit} className="card space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="label">Email (intern)</label>
+            <label className="label">{t("reg.emailLabel")}</label>
             <input
               type="email"
               required
@@ -160,13 +161,12 @@ export default function RegisterPage() {
               className="input"
             />
             <p className="mt-1 text-xs text-slate-500">
-              Wird <strong>nicht veröffentlicht</strong>. Wir nutzen sie nur für
-              Login und Benachrichtigungen — andere Reseller sehen sie nie.
+{t("reg.emailHint")}
             </p>
           </div>
           <div>
             <div className="flex items-center justify-between">
-              <label className="label">Pseudonym (öffentlich)</label>
+              <label className="label">{t("reg.pseudonymLabel")}</label>
               <button
                 type="button"
                 onClick={() => {
@@ -175,7 +175,7 @@ export default function RegisterPage() {
                 }}
                 className="text-xs text-brand-500 hover:underline"
               >
-                Neuer Vorschlag
+                {t("reg.pseudonymSuggest")}
               </button>
             </div>
             <input
@@ -187,14 +187,13 @@ export default function RegisterPage() {
               onChange={(e) => update("pseudonym", e.target.value)}
               onBlur={checkPseudonym}
               className="input"
-              placeholder="z.B. Anbieter-7F3K"
+              placeholder={t("reg.pseudonymPlaceholder")}
             />
             {pseudonymNote ? (
               <p className="mt-1 text-xs text-amber-700">{pseudonymNote}</p>
             ) : (
               <p className="mt-1 text-xs text-slate-500">
-                Neutraler Name zum Schutz deiner Identität. Verwende nicht deinen
-                Firmen- oder Herstellernamen.
+{t("reg.pseudonymHint")}
               </p>
             )}
           </div>
@@ -202,7 +201,7 @@ export default function RegisterPage() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="label">Passwort (min. 8 Zeichen)</label>
+            <label className="label">{t("reg.passwordLabel")}</label>
             <PasswordInput
               required
               minLength={8}
@@ -212,7 +211,7 @@ export default function RegisterPage() {
             />
           </div>
           <div>
-            <label className="label">Passwort wiederholen</label>
+            <label className="label">{t("reg.passwordConfirmLabel")}</label>
             <PasswordInput
               required
               minLength={8}
@@ -222,7 +221,7 @@ export default function RegisterPage() {
             />
             {form.passwordConfirm && form.password !== form.passwordConfirm && (
               <p className="mt-1 text-xs text-red-600">
-                Passwörter stimmen nicht überein.
+                {t("reg.passwordMismatch")}
               </p>
             )}
           </div>
@@ -230,7 +229,7 @@ export default function RegisterPage() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="label">Rolle</label>
+            <label className="label">{t("reg.roleLabel")}</label>
             <select
               value={form.role}
               onChange={(e) =>
@@ -238,13 +237,13 @@ export default function RegisterPage() {
               }
               className="input"
             >
-              <option value="RESELLER">Reseller</option>
-              <option value="OEM">OEM Manufacturer</option>
-              <option value="ENDKUNDE">Endkunde</option>
+              <option value="RESELLER">{t("reg.roleReseller")}</option>
+              <option value="OEM">{t("reg.roleOem")}</option>
+              <option value="ENDKUNDE">{t("reg.roleEndUser")}</option>
             </select>
           </div>
           <div>
-            <label className="label">Land</label>
+            <label className="label">{t("reg.countryLabel")}</label>
             <select
               required
               value={form.country}
@@ -261,7 +260,7 @@ export default function RegisterPage() {
         </div>
 
         <div>
-          <label className="label">Firma (KYC, intern)</label>
+          <label className="label">{t("reg.companyLabel")}</label>
           <input
             type="text"
             required
@@ -272,7 +271,7 @@ export default function RegisterPage() {
         </div>
 
         <div>
-          <label className="label">USt-ID (optional)</label>
+          <label className="label">{t("reg.vatLabel")}</label>
           <input
             type="text"
             value={form.vatId}
@@ -282,29 +281,28 @@ export default function RegisterPage() {
         </div>
 
         <div>
-          <label className="label">Empfehlungs-Code (optional)</label>
+          <label className="label">{t("reg.referralLabel")}</label>
           <input
             type="text"
             value={form.referralCode}
             onChange={(e) => update("referralCode", e.target.value)}
-            placeholder="Pseudonym des Werbers"
+            placeholder={t("reg.referralPlaceholder")}
             className="input"
           />
           <p className="mt-1 text-xs text-slate-500">
-            Wurdest du von einem Brisco-Mitglied geworben? Dann erhält der Werber
-            eine Credit-Prämie.
+{t("reg.referralHint")}
           </p>
         </div>
 
         {error && <div className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>}
 
         <button type="submit" className="btn-primary w-full" disabled={loading}>
-          {loading ? "Konto wird angelegt …" : "Konto anlegen"}
+          {loading ? t("reg.submitting") : t("reg.submit")}
         </button>
         <p className="text-center text-sm text-slate-600">
-          Bereits registriert?{" "}
+          {t("reg.alreadyRegistered")}{" "}
           <Link href="/login" className="text-brand-500 hover:underline">
-            Anmelden
+            {t("reg.toLogin")}
           </Link>
         </p>
       </form>
