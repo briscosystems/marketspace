@@ -387,12 +387,81 @@ export const CORRECTIONS_2026_07_18: Patch[] = [
     },
     grund: "Real, aber historisch. Hauscode 106 = VG 220; korrekte VG nachgetragen.",
   },
+
+  // ============ FEHLENDE ISO-VG NACHTRAGEN (echte Produkte, VG belegt) ============
+  // WICHTIG: nur belegte echte ISO-VG eintragen — NIE Hauscode-Zahlen (Renolin-B-Falle).
+  {
+    id: "cmpheuwxi0001ll1wxjxy5jy2",
+    name: "Fuchs Renolin B 32 HVI",
+    data: { viscosityIso: "ISO VG 32", chemistry: "MINERAL" },
+    grund: "HVI-Reihe: Zahl = echte VG. VG 32 fehlte.",
+  },
+  {
+    id: "cmpheuxg70079ll1whra7kyqa",
+    name: "Fuchs Renolin B 100 HVI Plus",
+    data: { viscosityIso: "ISO VG 100", chemistry: "MINERAL" },
+    grund: "HVI-Plus-Reihe: Zahl = echte VG. VG 100 fehlte.",
+  },
+  {
+    id: "cmpheuxef006rll1weq9udkbh",
+    name: "Fuchs Renolin PG 220",
+    data: { viscosityIso: "ISO VG 220", chemistry: "PAG" },
+    grund: "Renolin PG = Polyglykol-Getriebeöl, echte VG 220; VG + Chemie fehlten.",
+  },
+  {
+    id: "cmpheuxgf007dll1wlttk7n47",
+    name: "Fuchs Renolin CLPF 460 Super",
+    data: { viscosityIso: "ISO VG 460" },
+    grund: "CLPF-Reihe: Zahl = echte VG (mit MoS₂). VG 460 fehlte.",
+  },
+  {
+    id: "cmpheuxe1006jll1wq1z6dpib",
+    name: "Fuchs Cassida Fluid GL 220",
+    data: { viscosityIso: "ISO VG 220" },
+    grund: "Cassida Fluid = echte VG. VG 220 fehlte (Kategorie GEAR_OIL bereits korrekt).",
+  },
+  ...["cmpheuxe4006lll1wozgxqdur", "cmpheuxe8006nll1w3fq3s49m"].map((id) => ({
+    id,
+    name: "Fuchs Cassida Fluid HF 15",
+    data: { viscosityIso: "ISO VG 15" },
+    grund: "Cassida Fluid = echte VG. VG 15 fehlte.",
+  })),
+  {
+    id: "cmphf4o3a00edllqfuqb1je2a",
+    name: "Q8 Holst CR 22",
+    data: { viscosityIso: "ISO VG 22" },
+    grund: "Holst-CR-Reihe: Zahl = echte VG. VG 22 fehlte.",
+  },
+
+  // ============ FUCHS STABYL — Verdicker in Beschreibung korrigieren ============
+  {
+    id: "cmphf8soa0041llefqdql0mhq",
+    name: "Fuchs Stabyl LT 50",
+    data: {
+      description:
+        "Lithiumseifenfett (einfache Li-Seife) für tiefe Temperaturen bis −50 °C. Die Zahl 50 steht für die Temperaturgrenze, nicht für eine NLGI-Klasse (NLGI 2).",
+    },
+    grund: "Einfache Lithiumseife (nicht Li-Komplex); die 50 steht für minus 50 Grad, nicht NLGI.",
+  },
+  {
+    id: "cmpheuxgq007jll1wr47mit26",
+    name: "Fuchs Stabyl TA",
+    data: { description: "Lithiumseifenfett (einfache Li-Seife) mit Festschmierstoffen." },
+    grund: "Einfache Lithiumseife + Festschmierstoffe (nicht Li-Komplex).",
+  },
 ];
+
+// Fehlendes echtes Bettbahnöl: BP Maccurat D (DIN 51502 CGLP), VG 32/68/150/220.
+// Die im ersten Durchgang gelöschte „Energol WM 32/68/220"-Fantasie war genau
+// diese verwechselte Reihe (Beleg: befund-bp.md). Idempotent per fester id.
+const BP_MANUFACTURER_ID = "cmphew8bm0000llaprnr1x60d";
+const MACCURAT_D: { vg: number }[] = [{ vg: 32 }, { vg: 68 }, { vg: 150 }, { vg: 220 }];
 
 /** Wendet die Korrekturen an. Idempotent. Gibt einen Kurzbericht zurück. */
 export async function applyCorrections2026_07_18(): Promise<string> {
   let applied = 0;
   let missing = 0;
+  let created = 0;
   for (const p of CORRECTIONS_2026_07_18) {
     const exists = await prisma.product.count({ where: { id: p.id } });
     if (exists === 0) {
@@ -403,6 +472,34 @@ export async function applyCorrections2026_07_18(): Promise<string> {
       await prisma.product.update({ where: { id: p.id }, data: p.data });
     }
     applied++;
+  }
+
+  // Fehlendes BP Maccurat D anlegen (idempotent per fester id)
+  const bpExists = await prisma.manufacturer.count({ where: { id: BP_MANUFACTURER_ID } });
+  if (bpExists > 0) {
+    for (const { vg } of MACCURAT_D) {
+      const id = `add-bp-maccurat-d-${vg}`;
+      const name = `Maccurat D ${vg}`;
+      const already = await prisma.product.count({ where: { id } });
+      if (already === 0 && !DRY) {
+        await prisma.product.create({
+          data: {
+            id,
+            manufacturerId: BP_MANUFACTURER_ID,
+            name,
+            slug: `maccurat-d-${vg}`,
+            productFamily: "Maccurat D",
+            category: "SLIDEWAY_OIL",
+            chemistry: "MINERAL",
+            viscosityIso: `ISO VG ${vg}`,
+            description: "BP-Bettbahnöl (Slideway Oil), DIN 51502 CGLP — für Gleitführungen von Werkzeugmaschinen.",
+            sourceConfidence: "verifiziert",
+            searchTokens: buildSearchTokens({ productName: name, manufacturer: "BP" }),
+          },
+        });
+        created++;
+      }
+    }
   }
 
   // searchTokens der umbenannten/umgehängten Produkte neu berechnen
@@ -418,7 +515,7 @@ export async function applyCorrections2026_07_18(): Promise<string> {
     retok++;
   }
 
-  return `${applied} Produktkorrekturen angewandt, ${retok} searchTokens erneuert${missing ? `, ${missing} nicht gefunden (evtl. bereits gelöscht)` : ""}${DRY ? " [DRY]" : ""}`;
+  return `${applied} Produktkorrekturen angewandt, ${created} Produkte angelegt (Maccurat D), ${retok} searchTokens erneuert${missing ? `, ${missing} nicht gefunden (evtl. bereits gelöscht)` : ""}${DRY ? " [DRY]" : ""}`;
 }
 
 // Nur ausführen, wenn direkt aufgerufen. Beim Import durch deploy-tasks.ts wird
