@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { getT } from "@/lib/i18n-server";
 import { Collapsible } from "@/components/Collapsible";
 import { LiveFilterForm } from "@/components/LiveFilterForm";
 import { KssWizardLauncher } from "@/components/KssWizardLauncher";
@@ -59,6 +60,7 @@ function parseMulti(s: string | undefined): string[] {
 }
 
 export default async function KssFinderPage({ searchParams }: { searchParams: SearchParams }) {
+  const t = await getT();
   const sp = await searchParams;
   const q = sp.q?.trim();
   const apps = parseMulti(sp.applicationAreas);
@@ -187,7 +189,7 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border-l-4 border-blue-500 bg-blue-50 px-4 py-2.5 shadow-sm">
         <div className="flex items-center gap-2">
           <Droplets size={20} className="text-blue-600" />
-          <h1 className="page-title">KSS-Finder</h1>
+          <h1 className="page-title">{t("kss.title")}</h1>
           <span className="text-xs text-slate-600">
             {totalCount} KSS · {manufacturersAll.length} Hersteller
           </span>
@@ -200,13 +202,13 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
         <SearchSection
           step="1"
           color="emerald"
-          title="Suchfeld"
-          subtitle="Volltextsuche, live beim Tippen"
+          title={t("kss.searchField")}
+          subtitle={t("kss.searchSub")}
         >
           <input
             name="q"
             defaultValue={q ?? ""}
-            placeholder="z.B. bcool, hocut 795, blaser, ISO VG 46, borfrei…"
+            placeholder={t("kss.searchPlaceholder")}
             className="input border-emerald-200 bg-white focus:border-emerald-400 focus:ring-emerald-300"
             autoComplete="off"
           />
@@ -216,7 +218,7 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
         <SearchSection
           step="2"
           color="slate"
-          title="Suchkriterien"
+          title={t("kss.criteria")}
           subtitle="Bearbeitungsverfahren · KSS-Form · Werkstoffe · Produktionsart · Kritische Punkte · Zertifizierungen"
           rightSlot={
             <span className="flex items-center gap-2 text-[11px]">
@@ -236,8 +238,8 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
           {/* Kompakte 2-Spalten-Grid für die Collapsibles */}
           <div className="grid gap-2 md:grid-cols-2">
             <Collapsible
-              title="Bearbeitungsverfahren"
-              subtitle="Drehen, Fräsen, Schleifen, MMS, …"
+              title={t("kss.machining")}
+              subtitle={t("kss.machiningSub")}
               badgeCount={counts.apps}
               defaultOpen={counts.apps > 0}
             >
@@ -246,17 +248,17 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
             </Collapsible>
 
             <Collapsible
-              title="KSS-Form"
-              subtitle="Emulsion / Teilsynth / Vollsynth / 2K"
+              title={t("kss.form")}
+              subtitle={t("kss.formSub")}
               badgeCount={counts.concentrateForm}
               defaultOpen={counts.concentrateForm > 0}
             >
-              <RadioCards name="concentrateForm" options={[...COOLANT_FORMS]} selected={sp.concentrateForm} />
+              <RadioCards name="concentrateForm" options={[...COOLANT_FORMS]} selected={sp.concentrateForm} t={t} />
             </Collapsible>
 
             <Collapsible
-              title="Werkstoffe"
-              subtitle="Stahl, Aluminium, Buntmetall, …"
+              title={t("kss.materials")}
+              subtitle={t("kss.materialsSub")}
               badgeCount={counts.mats}
               defaultOpen={counts.mats > 0}
             >
@@ -265,17 +267,17 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
             </Collapsible>
 
             <Collapsible
-              title="Produktionsart"
-              subtitle="Lohnfertigung vs. Serie"
+              title={t("kss.production")}
+              subtitle={t("kss.productionSub")}
               badgeCount={counts.productionType}
               defaultOpen={counts.productionType > 0}
             >
-              <RadioCards name="productionType" options={[...PRODUCTION_TYPES]} selected={sp.productionType} withUnknown />
+              <RadioCards name="productionType" options={[...PRODUCTION_TYPES]} selected={sp.productionType} withUnknown t={t} />
             </Collapsible>
 
             <Collapsible
-              title="Kritische Punkte"
-              subtitle="Geruch, Schaum, Hautirritation, …"
+              title={t("kss.critical")}
+              subtitle={t("kss.criticalSub")}
               badgeCount={counts.issues}
               defaultOpen={counts.issues > 0}
             >
@@ -288,8 +290,8 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
             </Collapsible>
 
             <Collapsible
-              title="Zertifizierungen"
-              subtitle="TRGS 611, NSF H1, OEM-Freigaben, …"
+              title={t("kss.certs")}
+              subtitle={t("kss.certsSub")}
               badgeCount={counts.certs}
               defaultOpen={counts.certs > 0}
             >
@@ -303,8 +305,8 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
             </Collapsible>
 
             <Collapsible
-              title="Inhaltsstoffe & Wasser"
-              subtitle="borfrei, formaldehydfrei, Wasserhärte"
+              title={t("kss.ingredients")}
+              subtitle={t("kss.ingredientsSub")}
               badgeCount={counts.ingredients}
               defaultOpen={counts.ingredients > 0}
             >
@@ -317,7 +319,7 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
                     defaultChecked={sp.borFree === "1"}
                     className="h-4 w-4 rounded border-slate-300 accent-brand-600"
                   />
-                  borfrei <span className="text-[10px] text-slate-400">(TRGS 611 / Hautschutz)</span>
+                  borfrei <span className="text-[10px] text-slate-400">{t("kss.boronNote")}</span>
                 </label>
                 <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
                   <input
@@ -327,12 +329,12 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
                     defaultChecked={sp.formaldehydeFree === "1"}
                     className="h-4 w-4 rounded border-slate-300 accent-brand-600"
                   />
-                  formaldehydfrei <span className="text-[10px] text-slate-400">(keine Depot-Stoffe)</span>
+                  formaldehydfrei <span className="text-[10px] text-slate-400">{t("kss.formaldehydeNote")}</span>
                 </label>
                 <label className="block text-sm text-slate-700">
                   <span className="flex items-center gap-1">
                     Meine Wasserhärte
-                    <span className="text-[10px] text-slate-400">(°dH — steht auf der Wasserrechnung)</span>
+                    <span className="text-[10px] text-slate-400">{t("kss.waterHardnessNote")}</span>
                   </span>
                   <input
                     type="number"
@@ -341,7 +343,7 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
                     max={40}
                     step={1}
                     defaultValue={sp.waterHardness ?? ""}
-                    placeholder="z.B. 14"
+                    placeholder={t("kss.pricePlaceholder")}
                     className="mt-1 w-28 rounded-md border border-slate-300 px-2 py-1.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-200"
                   />
                 </label>
@@ -353,8 +355,8 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
             </Collapsible>
 
             <Collapsible
-              title="Richtwert"
-              subtitle="Spanne in EUR pro L oder kg"
+              title={t("kss.priceGuide")}
+              subtitle={t("kss.priceSub")}
               badgeCount={counts.price}
               defaultOpen={counts.price > 0}
             >
@@ -384,7 +386,7 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
       <SearchSection
         step="3"
         color="brand"
-        title="Ergebnisse"
+        title={t("kss.results")}
         subtitle={`${products.length} ${products.length === 1 ? "Treffer" : "Treffer"} aus ${totalCount} KSS`}
         rightSlot={
           products.length === 100 ? (
@@ -518,7 +520,9 @@ function RadioCards({
   options,
   selected,
   withUnknown = false,
+  t,
 }: {
+  t: (k: string) => string;
   name: string;
   options: { value: string; label: string; description?: string }[];
   selected: string | undefined;
@@ -530,8 +534,8 @@ function RadioCards({
       <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-slate-200 p-2 hover:bg-slate-50">
         <input type="radio" name={name} value="" defaultChecked={!selected} className="mt-0.5" />
         <div>
-          <div className="text-sm font-medium text-slate-700">Beliebig</div>
-          <div className="text-xs text-slate-500">Kein Filter</div>
+          <div className="text-sm font-medium text-slate-700">{t("kss.any")}</div>
+          <div className="text-xs text-slate-500">{t("kss.noFilter")}</div>
         </div>
       </label>
       {options.map((o) => (
@@ -556,8 +560,8 @@ function RadioCards({
         <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-slate-200 p-2 hover:bg-slate-50">
           <input type="radio" name={name} value={UNKNOWN} defaultChecked={selected === UNKNOWN} className="mt-0.5" />
           <div>
-            <div className="text-sm font-medium text-slate-900">🤷 Weiß nicht</div>
-            <div className="text-xs text-slate-500">Bin unsicher — KI berücksichtigt das</div>
+            <div className="text-sm font-medium text-slate-900">{t("kss.dontKnow")}</div>
+            <div className="text-xs text-slate-500">{t("kss.dontKnowSub")}</div>
           </div>
         </label>
       )}
