@@ -8,6 +8,8 @@ import { CompareToggle } from "@/components/compare/CompareToggle";
 import { getCurrentPricesBatch } from "@/lib/price-aggregation";
 import { ComplianceBadges } from "@/components/ComplianceBadges";
 import { AdSlot } from "@/components/AdSlot";
+import { getT } from "@/lib/i18n-server";
+import { fill } from "@/lib/i18n";
 import { ExternalLink, Globe, BadgeCheck } from "lucide-react";
 
 const FOCUS_LABEL: Record<string, string> = {
@@ -44,6 +46,7 @@ export default async function ManufacturerDetailPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
+  const t = await getT();
   const { slug } = await params;
   const m = await prisma.manufacturer.findUnique({
     where: { slug },
@@ -82,7 +85,7 @@ export default async function ManufacturerDetailPage({
     <div className="space-y-6">
       <nav className="text-sm">
         <Link href="/manufacturers" className="text-brand-600 hover:underline">
-          ← Alle Hersteller
+          {t("mfr.allManufacturers")}
         </Link>
       </nav>
 
@@ -93,14 +96,14 @@ export default async function ManufacturerDetailPage({
         <div className="overflow-hidden rounded-xl border border-brand-300 bg-gradient-to-r from-brand-50 to-white">
           <div className="flex items-center gap-2 border-b border-brand-200 bg-brand-100/70 px-5 py-2 text-xs font-semibold text-brand-800">
             <BadgeCheck size={15} />
-            Verifiziertes Marken-Schaufenster
+            {t("mfr.verifiedStorefront")}
           </div>
           <div className="px-5 py-4">
             {brandRep.storefrontHeadline ? (
               <p className="text-lg font-semibold text-slate-900">{brandRep.storefrontHeadline}</p>
             ) : (
               <p className="text-lg font-semibold text-slate-900">
-                Offizielles Schaufenster von {m.name}
+                {fill(t("mfr.storefront"), { name: m.name })}
               </p>
             )}
             {brandRep.about ? (
@@ -117,7 +120,7 @@ export default async function ManufacturerDetailPage({
             <h1 className="page-title">{m.name}</h1>
             {brandRep ? (
               <span className="inline-flex items-center gap-1 rounded-full bg-brand-600 px-2.5 py-0.5 text-xs font-semibold text-white">
-                <BadgeCheck size={12} /> Marke
+                <BadgeCheck size={12} /> {t("mfr.brandBadge")}
               </span>
             ) : null}
           </div>
@@ -130,7 +133,7 @@ export default async function ManufacturerDetailPage({
                 📍 {[m.headquartersCity, m.headquartersCountry].filter(Boolean).join(", ")}
               </span>
             ) : null}
-            {m.foundedYear ? <span>· seit {m.foundedYear}</span> : null}
+            {m.foundedYear ? <span>· {t("mfr.since")} {m.foundedYear}</span> : null}
             {m.website ? (
               <a
                 href={m.website}
@@ -150,7 +153,7 @@ export default async function ManufacturerDetailPage({
                 key={f}
                 className="rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-medium text-brand-700"
               >
-                {FOCUS_LABEL[f] ?? f}
+                {t(`focus.${f}`)}
               </span>
             ))}
           </div>
@@ -162,7 +165,7 @@ export default async function ManufacturerDetailPage({
           {m.productFamilies.length > 0 ? (
             <div className="rounded-lg border border-slate-200 bg-white p-4">
               <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Markenfamilien
+                {t("mfr.brandFamilies")}
               </div>
               <div className="mt-2 flex flex-wrap gap-1">
                 {m.productFamilies.map((f) => (
@@ -176,7 +179,7 @@ export default async function ManufacturerDetailPage({
           {m.knownForApplications.length > 0 ? (
             <div className="rounded-lg border border-slate-200 bg-white p-4">
               <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Bekannt für
+                {t("mfr.knownFor")}
               </div>
               <div className="mt-2 flex flex-wrap gap-1">
                 {m.knownForApplications.map((a) => (
@@ -192,14 +195,14 @@ export default async function ManufacturerDetailPage({
 
       <section>
         <h2 className="section-title">
-          Produktkatalog{" "}
+          {t("mfr.catalog")}{" "}
           <span className="text-sm font-normal text-slate-500">
-            ({m.products.length} Produkte)
+            {fill(t("mfr.productsCount"), { n: m.products.length })}
           </span>
         </h2>
         {m.products.length === 0 ? (
           <p className="mt-2 rounded-lg border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-sm text-slate-500">
-            Noch keine Produkte im Katalog für diesen Hersteller. Werden in nachfolgenden Etappen ergänzt.
+            {t("mfr.emptyCatalog")}
           </p>
         ) : (
           <div className="mt-3 space-y-5">
@@ -224,7 +227,7 @@ export default async function ManufacturerDetailPage({
                             {p.name}
                           </div>
                           <div className="mt-0.5 text-xs text-slate-500">
-                            {CATEGORY_LABEL[p.category] ?? p.category}
+                            {t(`cat.${p.category}`)}
                             {p.chemistry ? ` · ${p.chemistry.replace("_", "-").toLowerCase()}` : ""}
                           </div>
                         </div>
@@ -242,7 +245,7 @@ export default async function ManufacturerDetailPage({
                         {p.refractometerFactor != null ? (
                           <span
                             className="rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700"
-                            title="Refraktometer-Faktor verfügbar"
+                            title={t("mfr.refractometer")}
                           >
                             Brix×{p.refractometerFactor}
                           </span>
@@ -268,7 +271,7 @@ export default async function ManufacturerDetailPage({
               <div className="text-sm font-semibold text-slate-900">
                 {m._count.sds} Sicherheitsdatenblätter
               </div>
-              <div className="text-xs text-slate-500">→ zur SDS-Bibliothek</div>
+              <div className="text-xs text-slate-500">{t("mfr.toSds")}</div>
             </Link>
           ) : null}
           {m._count.listings > 0 ? (
@@ -279,7 +282,7 @@ export default async function ManufacturerDetailPage({
               <div className="text-sm font-semibold text-slate-900">
                 {m._count.listings} aktive Listings
               </div>
-              <div className="text-xs text-slate-500">→ zu den Angeboten</div>
+              <div className="text-xs text-slate-500">{t("mfr.toOffers")}</div>
             </Link>
           ) : null}
         </section>

@@ -5,6 +5,7 @@ import { RefractometerCalculator } from "@/components/RefractometerCalculator";
 import { CompareToggle } from "@/components/compare/CompareToggle";
 import { recommendMaterialsForProduct } from "@/lib/seal-recommendations";
 import { getMonthlyMedianHistory, getCurrentMarketPrice } from "@/lib/price-aggregation";
+import { getT } from "@/lib/i18n-server";
 import { PriceHistoryChart } from "@/components/PriceHistoryChart";
 import { PriceSubmitLauncher } from "@/components/PriceSubmitLauncher";
 import { ProductIssuesSection } from "@/components/ProductIssuesSection";
@@ -61,6 +62,7 @@ export default async function ProductDetailPage({
 }: {
   params: Promise<{ manufacturerSlug: string; productSlug: string }>;
 }) {
+  const t = await getT();
   const { manufacturerSlug, productSlug } = await params;
   const m = await prisma.manufacturer.findUnique({ where: { slug: manufacturerSlug } });
   if (!m) notFound();
@@ -154,11 +156,11 @@ export default async function ProductDetailPage({
           <h1 className="mt-0.5 page-title">{product.name}</h1>
           <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
             <span className="rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-medium text-brand-700">
-              {CATEGORY_LABEL[product.category] ?? product.category}
+              {t(`cat.${product.category}`)}
             </span>
             {product.chemistry ? (
               <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs text-slate-700">
-                {CHEMISTRY_LABEL[product.chemistry] ?? product.chemistry}
+                {t(`chem.${product.chemistry}`)}
               </span>
             ) : null}
             {product.productFamily ? (
@@ -173,7 +175,7 @@ export default async function ProductDetailPage({
                     ? "bg-blue-100 text-blue-700"
                     : "bg-slate-100 text-slate-600"
               }`}
-              title="Daten-Vertrauenslevel"
+              title={t("product.dataConfidence")}
             >
               {product.sourceConfidence}
             </span>
@@ -232,7 +234,7 @@ export default async function ProductDetailPage({
             product.suitableMaterials.length > 0 ||
             product.unsuitableMaterials.length > 0) && (
             <section className="rounded-xl border border-slate-200 bg-white p-5">
-              <h2 className="section-title">Anwendung & Werkstoffe</h2>
+              <h2 className="section-title">{t("product.appMaterials")}</h2>
               <div className="mt-3 grid gap-4 sm:grid-cols-2">
                 {product.applicationAreas.length > 0 ? (
                   <div>
@@ -292,13 +294,14 @@ export default async function ProductDetailPage({
           {/* Empfohlene Dichtungs- und Kunststoffwerkstoffe (berechnet) */}
           {sealRec.recommendations.length > 0 && (
             <SealCompatibilitySection
+              t={t}
               recommendations={sealRec.recommendations}
               inferredIngredients={sealRec.inferredIngredients}
             />
           )}
 
           {/* Verlinktes SDS aus eigener Bibliothek */}
-          {product.safetyDataSheet && <LinkedSdsCard sds={product.safetyDataSheet} />}
+          {product.safetyDataSheet && <LinkedSdsCard sds={product.safetyDataSheet} t={t} />}
 
           {/* Praxis-Probleme aus Foren, Hersteller-FAQs, Distributoren — Value Add für Anwender */}
           <ProductIssuesSection issues={issues} />
@@ -317,7 +320,7 @@ export default async function ProductDetailPage({
           <section className="rounded-xl border border-slate-200 bg-white p-5">
             <div className="flex items-center gap-2">
               <Beaker size={16} className="text-brand-600" />
-              <h2 className="section-title">Technische Daten</h2>
+              <h2 className="section-title">{t("product.techData")}</h2>
             </div>
             <dl className="mt-3 grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
               <DataRow
@@ -402,7 +405,7 @@ export default async function ProductDetailPage({
             <section className="rounded-xl border border-blue-200 bg-blue-50 p-5">
               <div className="flex items-center gap-2">
                 <Droplets size={16} className="text-blue-600" />
-                <h2 className="section-title">Ansetzwasser-Anforderung</h2>
+                <h2 className="section-title">{t("product.waterReq")}</h2>
               </div>
               {product.waterHardnessMinDh != null || product.waterHardnessMaxDh != null ? (
                 <div className="mt-2 font-mono text-lg font-bold text-blue-900">
@@ -439,7 +442,7 @@ export default async function ProductDetailPage({
                         {n.condition ? <span className="font-normal"> · {n.condition}</span> : null}
                       </span>
                       <span className="rounded bg-white/60 px-1.5 py-0.5 text-[10px] font-bold uppercase">
-                        {COMPAT_LABEL[n.compatibility]}
+                        {t(`compat.${n.compatibility}`)}
                       </span>
                     </div>
                     <p className="mt-1 text-xs leading-relaxed">{n.note}</p>
@@ -484,7 +487,7 @@ export default async function ProductDetailPage({
           <section className="rounded-xl border border-slate-200 bg-white p-4">
               <div className="flex items-center gap-2">
                 <FileText size={16} className="text-slate-600" />
-                <h3 className="font-semibold text-slate-900">Quellen & Doku</h3>
+                <h3 className="font-semibold text-slate-900">{t("product.sources")}</h3>
               </div>
               <ul className="mt-2 space-y-1.5 text-sm">
                 <li>
@@ -758,7 +761,9 @@ function PriceSection({
 
 function LinkedSdsCard({
   sds,
+  t,
 }: {
+  t: (k: string) => string;
   sds: {
     id: string;
     language: string;
@@ -788,7 +793,7 @@ function LinkedSdsCard({
       <div className="flex items-baseline justify-between gap-3">
         <div className="flex items-center gap-2">
           <FileSearch size={16} className="text-blue-600" />
-          <h2 className="section-title">Sicherheitsdatenblatt</h2>
+          <h2 className="section-title">{t("product.sds")}</h2>
         </div>
         <Link
           href={`/sds/${sds.id}`}
@@ -910,9 +915,11 @@ function LinkedSdsCard({
 function SealCompatibilitySection({
   recommendations,
   inferredIngredients,
+  t,
 }: {
   recommendations: import("@/lib/seal-recommendations").MaterialRec[];
   inferredIngredients: { slug: string; name: string; why: string }[];
+  t: (k: string) => string;
 }) {
   const groups: Record<"UNSUITABLE" | "CAUTION" | "COMPATIBLE" | "RECOMMENDED", typeof recommendations> = {
     UNSUITABLE: [],
@@ -927,7 +934,7 @@ function SealCompatibilitySection({
       <div className="flex items-baseline justify-between gap-3">
         <div className="flex items-center gap-2">
           <Shield size={16} className="text-brand-600" />
-          <h2 className="section-title">Empfohlene Dichtungs- &amp; Kunststoff-Werkstoffe</h2>
+          <h2 className="section-title">{t("product.sealMaterials")}</h2>
         </div>
         <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-600">
           modelliert
