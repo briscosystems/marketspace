@@ -25,6 +25,7 @@
  */
 import { prisma } from "@/lib/prisma";
 import { PRODUCT_DELETIONS, ISSUE_DELETIONS, PRODUCT_PATCHES } from "./fix-datenqualitaet-2026-07-15";
+import { applyCorrections2026_07_18 } from "./fix-datenqualitaet-2026-07-18";
 
 type Task = {
   name: string;
@@ -58,6 +59,15 @@ const TASKS: Task[] = [
         ? "nichts zu tun (bereits angewendet)"
         : `${issues} Praxis-Probleme + ${prod.count} Produkte gelöscht, ${patched} Viskositäten korrigiert`;
     },
+  },
+  {
+    // Folge-Durchgang 2026-07-18: die inhaltlichen Korrekturen aus demselben
+    // belegten Prüfbericht (vertauschte Zink-Beschreibungen Castrol HLP-Z/ZZ,
+    // Vactra↔Velocite, Caloris als Fett, Eni OTE als Turbinenöl, Klüber-Öle/
+    // -Chemie, falsche Marken Macron→Quaker Houghton & Tribol→Castrol, Renep
+    // Compound als historisch markiert). Idempotent (setzt absolute Zielwerte).
+    name: "Datenqualität 2026-07-18 (Kategorien, Chemie, Beschreibungen, Marken)",
+    run: async () => applyCorrections2026_07_18(),
   },
 ];
 
