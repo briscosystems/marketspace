@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { recordAiUsage } from "@/lib/ai-usage";
 import { z } from "zod";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -222,6 +223,8 @@ async function askClaude(messages: ChatMessage[], ctx: Ctx): Promise<string> {
     },
     { timeout: 25000 },
   );
+
+  recordAiUsage("concierge", response.model, response.usage);
 
   const textBlock = response.content.find((b) => b.type === "text");
   const text = textBlock && "text" in textBlock ? textBlock.text : "";

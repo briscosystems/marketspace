@@ -19,6 +19,7 @@ import { isMembershipActive } from "@/lib/membership";
 import { formatCurrency } from "@/lib/currency";
 import { checkMailStatus } from "@/lib/mail-status";
 import { withBasePath } from "@/lib/base-path";
+import { costEur, AI_FEATURE_LABEL, type TokenCounts } from "@/lib/ai-usage";
 import { Download, Mail } from "lucide-react";
 
 // Interne Eigentümer-Konsole. Für alle außer ADMIN existiert die Seite "nicht"
@@ -123,6 +124,94 @@ export default async function AdminPage() {
       orderBy: { _count: { meta: "desc" } },
     }),
   ]);
+
+  // KI-Token-Verbrauch & Kosten (echte Zahlen aus den Anthropic-Antworten)
+  const [aiUsage30d, aiByModelAll, aiCallsAll] = await Promise.all([
+    prisma.aiTokenUsage.findMany({
+      where: { createdAt: { gte: since30d } },
+      select: {
+        feature: true,
+        model: true,
+        inputTokens: true,
+        outputTokens: true,
+        cacheCreationTokens: true,
+        cacheReadTokens: true,
+        createdAt: true,
+      },
+    }),
+    prisma.aiTokenUsage.groupBy({
+      by: ["model"],
+      _sum: {
+        inputTokens: true,
+        outputTokens: true,
+        cacheCreationTokens: true,
+        cacheReadTokens: true,
+      },
+      _count: { _all: true },
+    }),
+    prisma.aiTokenUsage.count(),
+  ]);
+
+  const sumToks = (r: TokenCounts) =>
+    r.inputTokens + r.outputTokens + r.cacheCreationTokens + r.cacheReadTokens;
+
+  // Gesamtkosten aller Zeiten (Kosten je Modell aus den Summen berechnen)
+  const aiCostAllEur = aiByModelAll.reduce(
+    (acc, m) =>
+      acc +
+      costEur(m.model, {
+        inputTokens: m._sum.inputTokens ?? 0,
+        outputTokens: m._sum.outputTokens ?? 0,
+        cacheCreationTokens: m._sum.cacheCreationTokens ?? 0,
+        cacheReadTokens: m._sum.cacheReadTokens ?? 0,
+      }),
+    0,
+  );
+  const aiTokensAll = aiByModelAll.reduce(
+    (acc, m) =>
+      acc +
+      (m._sum.inputTokens ?? 0) +
+      (m._sum.outputTokens ?? 0) +
+      (m._sum.cacheCreationTokens ?? 0) +
+      (m._sum.cacheReadTokens ?? 0),
+    0,
+  );
+
+  // Aufschlüsselung nach Funktion (letzte 30 Tage)
+  const aiByFeature = new Map<
+    string,
+    { calls: number; tokens: number; eur: number }
+  >();
+  for (const r of aiUsage30d) {
+    const cur = aiByFeature.get(r.feature) ?? { calls: 0, tokens: 0, eur: 0 };
+    cur.calls += 1;
+    cur.tokens += sumToks(r);
+    cur.eur += costEur(r.model, r);
+    aiByFeature.set(r.feature, cur);
+  }
+  const aiFeatureRows = [...aiByFeature.entries()]
+    .map(([feature, v]) => ({ feature, ...v }))
+    .sort((a, b) => b.eur - a.eur);
+  const aiCost30dEur = aiFeatureRows.reduce((a, r) => a + r.eur, 0);
+  const aiCalls30d = aiUsage30d.length;
+
+  // Tages-Verlauf für den Chart (30 Balken, ältester links)
+  const dayKey = (d: Date) => d.toISOString().slice(0, 10);
+  const dailyMap = new Map<string, { eur: number; tokens: number }>();
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+    dailyMap.set(dayKey(d), { eur: 0, tokens: 0 });
+  }
+  for (const r of aiUsage30d) {
+    const k = dayKey(r.createdAt);
+    const cur = dailyMap.get(k);
+    if (cur) {
+      cur.eur += costEur(r.model, r);
+      cur.tokens += sumToks(r);
+    }
+  }
+  const dailySeries = [...dailyMap.entries()].map(([day, v]) => ({ day, ...v }));
+  const dailyMaxEur = Math.max(0.0001, ...dailySeries.map((d) => d.eur));
 
   const usedCredits = Math.abs(usageAgg._sum.amount ?? 0);
   const purchasedCredits = purchaseAgg._sum.amount ?? 0;
@@ -532,6 +621,151 @@ export default async function AdminPage() {
             )}
           </ul>
         </div>
+      </section>
+
+      {/* ============ KI-Kosten & Token-Verbrauch ============ */}
+      <section>
+        <h2 className="page-title">KI-Kosten &amp; Token-Verbrauch</h2>
+        <p className="max-w-2xl text-sm text-slate-600">
+          Echte Token-Zahlen aus jeder Claude-Antwort. Kosten sind aus den
+          aktuellen Anthropic-Preisen (Haiku 4.5: 1/5&nbsp;$, Sonnet: 3/15&nbsp;$
+          je Mio. Token; Cache-Treffer ~90&nbsp;% günstiger) berechnet und in Euro
+          umgerechnet — ein Richtwert, keine Abrechnung.
+        </p>
+
+        {aiCallsAll === 0 ? (
+          <div className="card mt-4 text-sm text-slate-500">
+            Noch keine KI-Aufrufe erfasst. Sobald der KSS-Wizard, der Berater-Chat,
+            der Vergleich oder die Alternativen-Suche genutzt werden (und ein
+            ANTHROPIC_API_KEY hinterlegt ist), erscheinen hier Zahlen.
+          </div>
+        ) : (
+          <>
+            {/* Kennzahlen */}
+            <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="card">
+                <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                  Kosten gesamt
+                </div>
+                <div className="mt-1 text-2xl font-bold text-slate-900">
+                  {aiCostAllEur.toLocaleString("de-DE", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}{" "}
+                  €
+                </div>
+                <div className="text-xs text-slate-500">{aiCallsAll} Aufrufe insgesamt</div>
+              </div>
+              <div className="card">
+                <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                  Kosten (30 Tage)
+                </div>
+                <div className="mt-1 text-2xl font-bold text-slate-900">
+                  {aiCost30dEur.toLocaleString("de-DE", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}{" "}
+                  €
+                </div>
+                <div className="text-xs text-slate-500">{aiCalls30d} Aufrufe</div>
+              </div>
+              <div className="card">
+                <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                  Tokens gesamt
+                </div>
+                <div className="mt-1 text-2xl font-bold text-slate-900">
+                  {aiTokensAll.toLocaleString("de-DE")}
+                </div>
+                <div className="text-xs text-slate-500">Input + Output + Cache</div>
+              </div>
+              <div className="card">
+                <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                  Ø Kosten / Aufruf
+                </div>
+                <div className="mt-1 text-2xl font-bold text-slate-900">
+                  {(aiCallsAll > 0 ? aiCostAllEur / aiCallsAll : 0).toLocaleString("de-DE", {
+                    minimumFractionDigits: 3,
+                    maximumFractionDigits: 3,
+                  })}{" "}
+                  €
+                </div>
+                <div className="text-xs text-slate-500">über alle Funktionen</div>
+              </div>
+            </div>
+
+            {/* Tages-Chart (Kosten je Tag, letzte 30 Tage) */}
+            <div className="card mt-4">
+              <div className="mb-3 flex items-baseline justify-between">
+                <div className="text-sm font-semibold text-slate-800">
+                  Nutzung je Tag (Kosten, letzte 30 Tage)
+                </div>
+                <div className="text-xs text-slate-500">
+                  Spitze: {dailyMaxEur.toLocaleString("de-DE", { maximumFractionDigits: 3 })} €
+                </div>
+              </div>
+              <div className="flex h-32 items-end gap-[3px]">
+                {dailySeries.map((d) => (
+                  <div
+                    key={d.day}
+                    className="flex-1 rounded-t bg-brand-500/80 transition hover:bg-brand-600"
+                    style={{
+                      height: `${Math.max(2, (d.eur / dailyMaxEur) * 100)}%`,
+                    }}
+                    title={`${new Date(d.day).toLocaleDateString("de-DE")}: ${d.eur.toLocaleString(
+                      "de-DE",
+                      { minimumFractionDigits: 3, maximumFractionDigits: 3 },
+                    )} € · ${d.tokens.toLocaleString("de-DE")} Tokens`}
+                  />
+                ))}
+              </div>
+              <div className="mt-1 flex justify-between text-[10px] text-slate-400">
+                <span>{new Date(dailySeries[0].day).toLocaleDateString("de-DE")}</span>
+                <span>heute</span>
+              </div>
+            </div>
+
+            {/* Aufschlüsselung nach Funktion (30 Tage) */}
+            <div className="card mt-4 overflow-x-auto p-0">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
+                    <th className="px-4 py-2 font-semibold">Funktion (30 Tage)</th>
+                    <th className="px-4 py-2 text-right font-semibold">Aufrufe</th>
+                    <th className="px-4 py-2 text-right font-semibold">Tokens</th>
+                    <th className="px-4 py-2 text-right font-semibold">Kosten</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {aiFeatureRows.map((r) => (
+                    <tr key={r.feature} className="border-b border-slate-100 last:border-0">
+                      <td className="px-4 py-2 text-slate-800">
+                        {AI_FEATURE_LABEL[r.feature] ?? r.feature}
+                      </td>
+                      <td className="px-4 py-2 text-right text-slate-600">{r.calls}</td>
+                      <td className="px-4 py-2 text-right text-slate-600">
+                        {r.tokens.toLocaleString("de-DE")}
+                      </td>
+                      <td className="px-4 py-2 text-right font-medium text-slate-900">
+                        {r.eur.toLocaleString("de-DE", {
+                          minimumFractionDigits: 3,
+                          maximumFractionDigits: 3,
+                        })}{" "}
+                        €
+                      </td>
+                    </tr>
+                  ))}
+                  {aiFeatureRows.length === 0 && (
+                    <tr>
+                      <td colSpan={4} className="px-4 py-3 text-center text-slate-500">
+                        In den letzten 30 Tagen keine KI-Aufrufe.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
       </section>
 
       {/* ============ System-E-Mails ============ */}

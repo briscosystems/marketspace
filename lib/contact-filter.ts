@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { recordAiUsage } from "@/lib/ai-usage";
 
 // ============================================================
 // Kontaktdaten-Filter für Plattform-Nachrichten (FDS 4.5).
@@ -81,6 +82,8 @@ export async function aiContactCheck(text: string): Promise<AiCheckResult> {
         "Du prüfst Nachrichten eines pseudonymen B2B-Marktplatzes. Die Regeln verbieten den Austausch direkter Kontaktdaten (E-Mail, Telefon, Webseite, Firmenname mit Ortsangabe, Messenger-Handles) — auch verschleiert oder umschrieben (ausgeschriebene Ziffern, 'at'/'punkt', 'googel uns', Social-Media-Verweise). Antworte NUR mit JSON: {\"flagged\": boolean, \"reason\": string|null}. reason: kurze deutsche Begründung, was gefunden wurde. Produktnamen, Mengen, Preise und Normen (ISO VG etc.) sind erlaubt und KEIN Fund.",
       messages: [{ role: "user", content: capped }],
     });
+
+    recordAiUsage("contact_filter", resp.model, resp.usage);
 
     const usage = resp.usage;
     const costChf =

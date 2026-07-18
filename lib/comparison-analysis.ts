@@ -14,6 +14,7 @@
  * ist sha256 über die sortierten Listing-IDs.
  */
 import crypto from "node:crypto";
+import { recordAiUsage } from "@/lib/ai-usage";
 import { prisma } from "@/lib/prisma";
 import type { Listing } from "@prisma/client";
 
@@ -165,6 +166,8 @@ Antworte AUSSCHLIESSLICH mit gültigem JSON in diesem Schema:
       },
     ],
   });
+
+  recordAiUsage("comparison", response.model, response.usage);
 
   const textBlock = response.content.find((b) => b.type === "text");
   if (!textBlock || textBlock.type !== "text") {

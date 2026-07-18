@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { recordAiUsage } from "@/lib/ai-usage";
 import type { Listing, SafetyDataSheet } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { findMatchingSds } from "@/lib/sds";
@@ -427,6 +428,8 @@ async function claudeRanking(
     ],
     messages: [{ role: "user", content: userPrompt }],
   });
+
+  recordAiUsage("alternatives", resp.model, resp.usage);
 
   const textPart = resp.content.find((c) => c.type === "text");
   if (!textPart || textPart.type !== "text") {

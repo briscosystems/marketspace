@@ -10,6 +10,7 @@
 // Antwort: { recommendations: [...], summary: "...", source: "..." }
 
 import { NextResponse } from "next/server";
+import { recordAiUsage } from "@/lib/ai-usage";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -384,6 +385,8 @@ Antworte AUSSCHLIESSLICH mit gültigem JSON:
       },
     ],
   });
+
+  recordAiUsage("kss_wizard", response.model, response.usage);
 
   // JSON aus der Antwort extrahieren
   const textBlock = response.content.find((b) => b.type === "text");

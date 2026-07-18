@@ -14,6 +14,7 @@
  * wird daher über normalisierte Namen abgeglichen.
  */
 import Anthropic from "@anthropic-ai/sdk";
+import { recordAiUsage } from "@/lib/ai-usage";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { normalizeForSearch } from "@/lib/normalize-search";
@@ -542,6 +543,8 @@ export async function searchAlternativesWeb(input: AltSearchInput): Promise<AltS
       // der catch unten liefert dann die Sofort-Treffer zurück.
       { timeout: 55000 },
     );
+
+    recordAiUsage("alt_search", resp.model, resp.usage);
 
     const webSources = extractWebSources(resp.content);
 
