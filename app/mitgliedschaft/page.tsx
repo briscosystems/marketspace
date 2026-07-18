@@ -2,6 +2,8 @@ import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getT } from "@/lib/i18n-server";
+import { fill } from "@/lib/i18n";
 import { isMembershipActive } from "@/lib/membership";
 import { getTierPrices, TIER_META, TIER_ORDER, activeTier } from "@/lib/membership-tiers";
 import { isStripeConfigured } from "@/lib/stripe";
@@ -25,6 +27,7 @@ import { CreditCard, ShieldCheck, Lock, Coins, Gift, Clock, Ticket, ScrollText, 
 export const metadata = { title: "Mitgliedschaft & Kosten — Brisco Marketplace" };
 
 export default async function MembershipPage() {
+  const t = await getT();
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return (
@@ -105,44 +108,35 @@ export default async function MembershipPage() {
     <div className="mx-auto max-w-2xl space-y-6">
       <div className="flex items-center gap-2">
         <CreditCard size={20} className="text-brand-600" />
-        <h1 className="page-title">Mitgliedschaft &amp; Kosten</h1>
+        <h1 className="page-title">{t("mem.title")}</h1>
       </div>
       <p className="text-sm text-slate-600">
-        Alle Kosten auf einen Blick: Jahres-Abo für den Plattform-Zugang, dazu Credits für
-        KI-Funktionen. Beides ist unabhängig voneinander nutzbar/kündbar.
+{t("mem.lead")}
       </p>
 
       {/* Status */}
       <div className="card space-y-2">
-        <div className="text-sm text-slate-600">Status</div>
+        <div className="text-sm text-slate-600">{t("mem.status")}</div>
         {active ? (
           <div className="text-lg font-semibold text-emerald-700">
-            Abo aktiv bis {validUntilLabel}
+            {fill(t("mem.activeUntil"), { d: validUntilLabel ?? "" })}
           </div>
         ) : trialActive ? (
           <div className="flex items-center gap-2 text-lg font-semibold text-blue-700">
             <Clock size={18} />
-            Kennenlernphase bis{" "}
-            {user!.trialEndsAt!.toLocaleDateString("de-DE", {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}
+            {fill(t("mem.trialUntil"), { d: user!.trialEndsAt!.toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" }) })}
           </div>
         ) : (
-          <div className="text-lg font-semibold text-slate-900">Kein aktiver Zugang</div>
+          <div className="text-lg font-semibold text-slate-900">{t("mem.noAccess")}</div>
         )}
         {renewalSoon && (
           <p className="rounded-md bg-blue-50 px-3 py-1.5 text-xs text-blue-800">
-            Erinnerung: Dein Abo verlängert sich in weniger als 30 Tagen automatisch.
+            {t("mem.renewalReminder")}
           </p>
         )}
         <p className="text-sm text-slate-600">
-          Der Jahres-Zugang gibt es in drei Stufen — <strong>Basis {tierPrices.BASIS} €</strong>,{" "}
-          <strong>Pro {tierPrices.PRO} €</strong> und <strong>Marke {tierPrices.MARKE} €</strong> —
-          jeweils für 12 Monate.
-          {trialActive &&
-            " Während der Kennenlernphase kannst du alles ohne Abo ausprobieren."}
+          {fill(t("mem.tiersLine"), { b: tierPrices.BASIS, pr: tierPrices.PRO, m: tierPrices.MARKE })}
+          {trialActive && t("mem.trialSuffix")}
         </p>
       </div>
 
@@ -170,18 +164,14 @@ export default async function MembershipPage() {
       <div className="card space-y-2 border-slate-200 bg-slate-50/60">
         <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
           <ScrollText size={16} className="text-slate-500" />
-          Vertragslaufzeit &amp; Kündigung
+          {t("mem.contractTitle")}
         </div>
         <ul className="list-inside list-disc space-y-1 text-xs text-slate-600">
-          <li>Laufzeit 12 Monate, danach automatische Verlängerung um jeweils 12 Monate.</li>
+          <li>{t("mem.contract1")}</li>
+          <li>{t("mem.contract2")}</li>
+          <li>{t("mem.contract3")}</li>
           <li>
-            Kündigung jederzeit möglich, ohne Vorlauffrist — über den Knopf{" "}
-            <strong>„Abo kündigen"</strong> oben auf dieser Seite. Der Zugang bleibt bis zum Ende
-            der bereits bezahlten Periode aktiv, danach erfolgt keine weitere Abbuchung.
-          </li>
-          <li>Zahlungsmethode: Kreditkarte über Stripe, jährliche Abbuchung.</li>
-          <li>
-            KI-Credits sind ein separates Guthaben (Prepaid, kein Abo) — siehe Preisliste unten.
+            {t("mem.creditsTitle")} sind ein separates Guthaben (Prepaid, kein Abo) — siehe Preisliste unten.
           </li>
         </ul>
       </div>
@@ -195,15 +185,11 @@ export default async function MembershipPage() {
           </div>
           <div className="text-2xl font-bold text-slate-900">
             {user?.creditBalance ?? 0}
-            <span className="ml-1 text-sm font-normal text-slate-500">Credits</span>
+            <span className="ml-1 text-sm font-normal text-slate-500">{t("mem.creditsWord")}</span>
           </div>
         </div>
         <p className="text-sm text-slate-600">
-          KI-Funktionen kosten Credits: Concierge-Frage und KSS-Wizard je{" "}
-          {AI_ACTION_COSTS.concierge} Credit, KI-Alternativen{" "}
-          {AI_ACTION_COSTS.alternatives} Credit, Web-Recherche{" "}
-          {AI_ACTION_COSTS.alternativesWeb} Credits. 1 Credit ={" "}
-          {formatCurrency(convertCurrency(settings.creditPriceCt / 100, "EUR", currency), currency)}.
+          {fill(t("mem.creditsCost"), { c1: AI_ACTION_COSTS.concierge, c2: AI_ACTION_COSTS.alternatives, c3: AI_ACTION_COSTS.alternativesWeb, price: formatCurrency(convertCurrency(settings.creditPriceCt / 100, "EUR", currency), currency) })}
         </p>
         <CreditActions
           packages={CREDIT_PACKAGES.map((p) => ({
@@ -215,7 +201,7 @@ export default async function MembershipPage() {
         {recentTx.length > 0 && (
           <div className="border-t border-slate-100 pt-3">
             <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Letzte Buchungen
+              {t("mem.recentBookings")}
             </div>
             <ul className="space-y-1 text-sm">
               {recentTx.map((t) => (
@@ -241,12 +227,10 @@ export default async function MembershipPage() {
         <div className="card space-y-3">
           <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
             <Store size={18} className="text-brand-600" />
-            Marken-Schaufenster
+            {t("mem.storefrontTitle")}
           </div>
           <p className="text-sm text-slate-600">
-            Als Marke-Mitglied vertreten Sie einen Hersteller offiziell: Die Herstellerseite
-            wird zum verifizierten Schaufenster und Ihre Produkte werden im KSS-Wizard
-            gekennzeichnet hervorgehoben.
+            {t("mem.storefrontText")}
           </p>
           <StorefrontManager
             manufacturers={manufacturerOptions}
@@ -258,7 +242,7 @@ export default async function MembershipPage() {
             href="/werbung"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-700 hover:underline"
           >
-            Werbeanzeigen schalten &amp; verwalten →
+            {t("mem.adsManage")}
           </Link>
         </div>
       )}
@@ -267,12 +251,10 @@ export default async function MembershipPage() {
       <div className="card space-y-3">
         <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
           <ShieldCheck size={18} className="text-emerald-600" />
-          Käuferschutz anbieten
+          {t("mem.protectionTitle")}
         </div>
         <p className="text-sm text-slate-600">
-          Optional für Verkäufer: Käufer zahlen über die Plattform, das Geld wird sicher
-          geparkt und nach der Lieferbestätigung an dich freigegeben. Die Käuferschutz-Gebühr
-          (2,5 % + 0,25 €) trägt der Käufer.
+          {t("mem.protectionText")}
         </p>
         <ConnectOnboardingBox onboarded={connectOnboarded} />
       </div>
@@ -281,10 +263,10 @@ export default async function MembershipPage() {
       <div className="card space-y-3">
         <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
           <Ticket size={18} className="text-brand-600" />
-          Gutschein-Code einlösen
+          {t("mem.redeemTitle")}
         </div>
         <p className="text-sm text-slate-600">
-          Hast du einen Code von Brisco erhalten? Hier einlösen für zusätzliche Credits.
+          {t("mem.redeemText")}
         </p>
         <RedeemCodeBox />
       </div>
@@ -293,12 +275,10 @@ export default async function MembershipPage() {
       <div className="card space-y-3">
         <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
           <Gift size={18} className="text-brand-600" />
-          Kunden werben — {settings.referralCredits} Credits pro Neukunde
+          {fill(t("mem.referralTitle"), { n: settings.referralCredits })}
         </div>
         <p className="text-sm text-slate-600">
-          Lade einen Kontakt per E-Mail ein oder teile deinen Empfehlungs-Link.
-          Registriert sich darüber ein Neukunde, bekommst du{" "}
-          {settings.referralCredits} Credits gutgeschrieben.
+          {fill(t("mem.referralText"), { n: settings.referralCredits })}
         </p>
         <ReferralLinkBox pseudonym={user?.pseudonym ?? ""} />
       </div>
@@ -307,13 +287,10 @@ export default async function MembershipPage() {
       <div className="card space-y-3">
         <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
           <ShieldCheck size={18} className="text-emerald-600" />
-          Sichere Bezahlung über Stripe
+          {t("mem.payTitle")}
         </div>
         <p className="text-sm text-slate-600">
-          Die Zahlung läuft über <strong>Stripe</strong>, einen weltweit führenden
-          Zahlungsdienstleister. Ihre Kartendaten werden verschlüsselt direkt bei Stripe
-          verarbeitet und <strong>niemals auf dieser Plattform gespeichert</strong>
-          {" "}(Sicherheitsstandard PCI-DSS Level 1).
+          {t("mem.payText1")}<strong>{t("mem.payTextBold")}</strong>{t("mem.payText2")}
         </p>
         <div className="flex flex-wrap items-center gap-2">
           {["Visa", "Mastercard", "American Express"].map((brand) => (
@@ -325,7 +302,7 @@ export default async function MembershipPage() {
             </span>
           ))}
           <span className="inline-flex items-center gap-1 text-xs text-slate-500">
-            <Lock size={12} /> SSL-verschlüsselt
+            <Lock size={12} /> {t("mem.sslEncrypted")}
           </span>
         </div>
       </div>
