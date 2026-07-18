@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getT } from "@/lib/i18n-server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -10,13 +11,14 @@ import { Megaphone, Lock } from "lucide-react";
 export const metadata = { title: "Werbung — Brisco Marketplace" };
 
 export default async function WerbungPage() {
+  const t = await getT();
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return (
       <div className="card text-sm text-slate-600">
-        Bitte zuerst{" "}
+        {t("ads.loginHint")}{" "}
         <Link href="/login" className="text-brand-600 hover:underline">
-          einloggen
+          {t("ads.login")}
         </Link>
         .
       </div>
@@ -45,23 +47,19 @@ export default async function WerbungPage() {
       <div className="mx-auto max-w-2xl space-y-4">
         <div className="flex items-center gap-2">
           <Megaphone size={20} className="text-brand-600" />
-          <h1 className="page-title">Werbung</h1>
+          <h1 className="page-title">{t("ads.title")}</h1>
         </div>
         <div className="card flex flex-col items-start gap-3 border-dashed">
           <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
             <Lock size={16} className="text-slate-400" />
-            Werbeanzeigen sind Teil der Stufe Marke
+            {t("ads.lockTitle")}
           </div>
-          <p className="text-sm text-slate-600">
-            Als Marke-Mitglied schalten Sie eigene Banner an den Werbeplätzen der Plattform
-            (Startseite, Marken-Schaufenster, Angebotsübersicht) — mit eigenem Bild, Text, Link
-            und Laufzeit.
-          </p>
+          <p className="text-sm text-slate-600">{t("ads.lockBody")}</p>
           <Link
             href="/mitgliedschaft"
             className="inline-flex items-center gap-1.5 rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700"
           >
-            Auf Marke wechseln
+            {t("ads.switchToMarke")}
           </Link>
         </div>
       </div>
@@ -93,24 +91,23 @@ export default async function WerbungPage() {
     <div className="mx-auto max-w-3xl space-y-6">
       <div className="flex items-center gap-2">
         <Megaphone size={20} className="text-brand-600" />
-        <h1 className="page-title">Werbung</h1>
+        <h1 className="page-title">{t("ads.title")}</h1>
       </div>
       <p className="text-sm text-slate-600">
-        Schalten Sie Banner an den Werbeplätzen der Plattform. Anzeigen erscheinen klar als
-        „Anzeige" gekennzeichnet
+        {t("ads.introBase")}
         {user?.brandManufacturer ? (
           <>
-            {" "}und sind mit Ihrer Marke{" "}
+            {" "}{t("ads.introLinkedPre")}{" "}
             <Link
               href={`/manufacturers/${user.brandManufacturer.slug}`}
               className="text-brand-600 hover:underline"
             >
               {user.brandManufacturer.name}
-            </Link>{" "}
-            verknüpft.
+            </Link>
+            {t("ads.introLinkedPost")}
           </>
         ) : (
-          <>. Tipp: Hinterlegen Sie unter „Mitgliedschaft" Ihre Marke, damit die Schaufenster-Platzierung greift.</>
+          <>. {t("ads.introTip")}</>
         )}
       </p>
 

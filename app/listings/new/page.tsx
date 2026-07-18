@@ -18,12 +18,13 @@ import {
 } from "@/lib/products-knowledge";
 import {
   estimateAutomation,
-  AUTOMATION_FIT_LABEL,
   type MachiningOperationId,
 } from "@/lib/kss-automation";
 import { Autocomplete } from "@/components/Autocomplete";
 import { Droplet, Gauge } from "lucide-react";
 import { withBasePath } from "@/lib/base-path";
+import { useLocale } from "@/components/LocaleProvider";
+import { fill } from "@/lib/i18n";
 
 const chemistries = ["MINERAL", "SYNTHETIC", "SEMI_SYNTHETIC", "ESTER", "PAG", "OTHER"] as const;
 const packagings = ["DRUM", "IBC", "TANK", "CANISTER", "BULK", "OTHER"] as const;
@@ -38,6 +39,7 @@ const UNIT_PRESETS = ["L", "kg", "IBC (1000 L)", "Fass (200 L)", "Kanister (20 L
 
 export default function NewListingPage() {
   const router = useRouter();
+  const { t } = useLocale();
   const { status } = useSession();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -110,7 +112,7 @@ export default function NewListingPage() {
     [],
   );
 
-  if (status !== "authenticated") return <div className="text-slate-500">Lade …</div>;
+  if (status !== "authenticated") return <div className="text-slate-500">{t("lnew.loading")}</div>;
 
   const manufacturerSuggestions = (q: string): Suggestion[] =>
     suggestFrom(allManufacturers, q, 8).map((m) => ({ value: m, label: m }));
@@ -170,7 +172,7 @@ export default function NewListingPage() {
     setLoading(false);
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
-      setError(data.error ?? "Listing konnte nicht angelegt werden.");
+      setError(data.error ?? t("lnew.errCreate"));
       return;
     }
     const created = await res.json();
@@ -184,40 +186,38 @@ export default function NewListingPage() {
     <div className="mx-auto max-w-3xl">
       <div className="mb-6 rounded-xl border border-blue-200 bg-gradient-to-r from-blue-50 to-white p-4">
         <div className="mb-1 inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-700">
-          ANBIETEN
+          {t("lnew.badge")}
         </div>
-        <h1 className="page-title">Neues Angebot einstellen</h1>
+        <h1 className="page-title">{t("lnew.title")}</h1>
         <p className="mt-1 text-sm text-slate-600">
-          Du hast einen Restbestand oder Überlager, den du verkaufen möchtest? Stell die
-          wesentlichen Daten ein — andere Reseller können dann kontaktieren oder direkt kaufen.
+          {t("lnew.intro")}
         </p>
       </div>
       <form onSubmit={onSubmit} className="space-y-6">
         {/* 1. PRODUKT */}
         <section className="card space-y-4">
           <h2 className="eyebrow">
-            1. Produkt
+            {t("lnew.sec1")}
           </h2>
           <div className="grid gap-4 md:grid-cols-2">
             <div className="md:col-span-2">
-              <label className="label">Produktname *</label>
+              <label className="label">{t("lnew.productName")}</label>
               <SuggestInput
                 value={productName}
                 onChange={setProductName}
                 suggest={productNameSuggestions}
-                placeholder="z.B. Tellus S2 M 46, Renolin MR 520, Hyspin AWS 46"
+                placeholder={t("lnew.phProductName")}
                 required
                 footer={
                   fam ? (
                     <span>
-                      Erkannt: <strong>{fam.family}</strong> · {fam.manufacturer} · {fam.productType}
+                      {t("lnew.detectedPrefix")} <strong>{fam.family}</strong> · {fam.manufacturer} · {fam.productType}
                       {" — "}
-                      Hersteller und Produkttyp wurden automatisch ausgefüllt.
+                      {t("lnew.detectedSuffix")}
                     </span>
                   ) : (
                     <span>
-                      Tipp: ein bekannter Familien-Name (Tellus, Renolin, Hyspin, Ecocool, …)
-                      füllt Hersteller und Produkttyp automatisch aus.
+                      {t("lnew.tipFamily")}
                     </span>
                   )
                 }
@@ -226,10 +226,10 @@ export default function NewListingPage() {
 
             <div>
               <label className="label">
-                Hersteller *
+                {t("lnew.manufacturer")}
                 {autoDetected.manufacturer && manufacturer === autoDetected.manufacturer && (
                   <span className="ml-2 text-xs font-normal text-violet-600">
-                    ✨ automatisch erkannt
+                    {t("lnew.autoDetected")}
                   </span>
                 )}
               </label>
@@ -238,16 +238,16 @@ export default function NewListingPage() {
                 onChange={setManufacturer}
                 suggest={manufacturerSuggestions}
                 validate={knownCheck(allManufacturers)}
-                placeholder="Shell, Castrol, Fuchs, Mobil …"
+                placeholder={t("lnew.phManufacturer")}
                 required
               />
             </div>
             <div>
               <label className="label">
-                Produkttyp *
+                {t("lnew.productType")}
                 {autoDetected.productType && productType === autoDetected.productType && (
                   <span className="ml-2 text-xs font-normal text-violet-600">
-                    ✨ automatisch erkannt
+                    {t("lnew.autoDetected")}
                   </span>
                 )}
               </label>
@@ -256,16 +256,16 @@ export default function NewListingPage() {
                 onChange={setProductType}
                 suggest={productTypeSuggestions}
                 validate={knownCheck(PRODUCT_TYPES)}
-                placeholder="Hydrauliköl, Kühlschmierstoff, Getriebeöl …"
+                placeholder={t("lnew.phProductType")}
                 required
               />
             </div>
             <div>
-              <label className="label">ISO Viskosität</label>
+              <label className="label">{t("lnew.isoViscosity")}</label>
               <Autocomplete name="isoViscosity" options={ISO_VG_PRESETS} placeholder="46" />
             </div>
             <div>
-              <label className="label">Chemie-Basis *</label>
+              <label className="label">{t("lnew.chemistryBase")}</label>
               <select
                 name="chemistry"
                 required
@@ -275,23 +275,23 @@ export default function NewListingPage() {
               >
                 {chemistries.map((c) => (
                   <option key={c} value={c}>
-                    {c}
+                    {t(`chem.${c}`)}
                   </option>
                 ))}
               </select>
             </div>
             <div className="md:col-span-2">
-              <label className="label">Anwendungsbereich *</label>
+              <label className="label">{t("lnew.applicationArea")}</label>
               <SuggestInput
                 value={applicationArea}
                 onChange={setApplicationArea}
                 suggest={applicationSuggestions}
                 validate={knownCheck(APPLICATION_AREAS)}
-                placeholder="Hydraulik, Wälzlager, Industriegetriebe …"
+                placeholder={t("lnew.phApplicationArea")}
                 required
               />
               <p className="mt-1 text-xs text-slate-500">
-                Allgemeiner Bereich. Konkrete Bearbeitungsverfahren wählst du im nächsten Abschnitt.
+                {t("lnew.applicationHint")}
               </p>
             </div>
           </div>
@@ -301,11 +301,10 @@ export default function NewListingPage() {
         <section className="card space-y-4">
           <div>
             <h2 className="eyebrow">
-              2. Bearbeitungsverfahren
+              {t("lnew.sec2")}
             </h2>
             <p className="mt-1 text-xs text-slate-500">
-              Wofür ist das Produkt geeignet? Käufer sehen das als Chips auf der Karte
-              (Fräsen, Drehen, Schleifen …).
+              {t("lnew.sec2Hint")}
             </p>
           </div>
           <MachiningSelect value={machiningOperations} onChange={setMachiningOperations} />
@@ -315,17 +314,17 @@ export default function NewListingPage() {
         <section className="card space-y-4">
           <div>
             <h2 className="eyebrow">
-              3. Rezeptur-Angaben
+              {t("lnew.sec3")}
             </h2>
             <p className="mt-1 text-xs text-slate-500">
-              Diese Werte beeinflussen die Automatisierungs-Bewertung unten.
+              {t("lnew.sec3Hint")}
             </p>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             <div>
               <label className="label flex items-center gap-1">
                 <Droplet size={13} className="text-slate-400" />
-                Mineralölgehalt (%)
+                {t("lnew.mineralOil")}
               </label>
               <input
                 type="number"
@@ -335,20 +334,19 @@ export default function NewListingPage() {
                 value={mineralOilContent}
                 onChange={(e) => setMineralOilContent(e.target.value)}
                 className="input"
-                placeholder="z.B. 45"
+                placeholder={t("lnew.phMineralOil")}
               />
               <p className="mt-1 text-xs text-slate-500">
-                Konzentrat-Anteil Mineralöl. Synthetisch ≈ 0 %, halbsynthetisch ≈ 5–30 %,
-                klassische Emulsion ≈ 40–90 %.
+                {t("lnew.mineralOilHint")}
               </p>
             </div>
             <div>
-              <label className="label">Glykol-Anteil enthalten?</label>
+              <label className="label">{t("lnew.glycol")}</label>
               <div className="flex gap-2">
                 {[
-                  { v: true, label: "Ja" },
-                  { v: false, label: "Nein" },
-                  { v: null, label: "Unbekannt" },
+                  { v: true, label: t("lnew.yes") },
+                  { v: false, label: t("lnew.no") },
+                  { v: null, label: t("lnew.unknown") },
                 ].map((opt) => {
                   const selected = containsGlycol === opt.v;
                   return (
@@ -368,8 +366,7 @@ export default function NewListingPage() {
                 })}
               </div>
               <p className="mt-1 text-xs text-slate-500">
-                Glykolhaltige KSS bilden Filme auf Refraktometer-Sensoren — relevant für die Wahl
-                des Messverfahrens.
+                {t("lnew.glycolHint")}
               </p>
             </div>
           </div>
@@ -381,11 +378,10 @@ export default function NewListingPage() {
             <div>
               <h2 className="flex items-center gap-2 eyebrow">
                 <Gauge size={14} />
-                4. Automatisierungs-Eignung
+                {t("lnew.sec4")}
               </h2>
               <p className="mt-1 text-xs text-slate-500">
-                Welche Messverfahren empfiehlt der Hersteller / die Fachfreigabe?
-                Mehrfachauswahl. Glykol-Hinweise oben werden automatisch berücksichtigt.
+                {t("lnew.sec4Hint")}
               </p>
             </div>
             <MeasurementMethodSelect
@@ -397,7 +393,7 @@ export default function NewListingPage() {
             <div className="rounded-lg border border-slate-200 bg-slate-50/60 p-3">
               <div className="flex items-center justify-between gap-2">
                 <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Aus deinen Angaben geschätzt
+                  {t("lnew.estimated")}
                 </div>
                 <AutomationBadge
                   input={{
@@ -410,7 +406,7 @@ export default function NewListingPage() {
                 />
               </div>
               <div className="mt-2 text-sm text-slate-700">
-                {AUTOMATION_FIT_LABEL[automation.fit]} · Score {automation.score}/5
+                {t(`lnew.autofit.${automation.fit}`)} · {fill(t("lnew.scoreLabel"), { score: automation.score })}
               </div>
               {automation.reasons.length > 0 && (
                 <ul className="mt-2 space-y-0.5 text-xs text-slate-600">
@@ -433,45 +429,45 @@ export default function NewListingPage() {
         {/* 5. VERFÜGBARKEIT */}
         <section className="card space-y-4">
           <h2 className="eyebrow">
-            {isCoolant ? "5" : "4"}. Verfügbarkeit
+            {isCoolant ? "5" : "4"}. {t("lnew.secAvailability")}
           </h2>
           <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <label className="label">Menge *</label>
+              <label className="label">{t("lnew.quantity")}</label>
               <input name="quantity" type="number" step="any" required className="input" />
             </div>
             <div>
-              <label className="label">Einheit</label>
+              <label className="label">{t("lnew.unit")}</label>
               <Autocomplete name="quantityUnit" options={UNIT_PRESETS} defaultValue="L" placeholder="L" />
             </div>
             <div>
-              <label className="label">Mindestabnahme</label>
+              <label className="label">{t("lnew.minOrder")}</label>
               <input name="minOrderQty" type="number" step="any" className="input" />
             </div>
             <div>
-              <label className="label">Verpackung *</label>
+              <label className="label">{t("lnew.packaging")}</label>
               <select name="packaging" required defaultValue="DRUM" className="input">
                 {packagings.map((p) => (
                   <option key={p} value={p}>
-                    {p}
+                    {t(`lnew.pkg.${p}`)}
                   </option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="label">Lagerregion *</label>
+              <label className="label">{t("lnew.storageRegion")}</label>
               <Autocomplete name="locationRegion" options={REGION_PRESETS} required placeholder="DE-BW" />
             </div>
             <div>
-              <label className="label">Preis (€, optional)</label>
+              <label className="label">{t("lnew.price")}</label>
               <input name="priceEur" type="number" step="0.01" className="input" />
             </div>
             <div className="md:col-span-2">
-              <label className="label">Versandkonditionen</label>
+              <label className="label">{t("lnew.shipping")}</label>
               <input
                 name="shippingTerms"
                 className="input"
-                placeholder="Selbstabholung / Lieferung / verhandelbar"
+                placeholder={t("lnew.phShipping")}
               />
             </div>
           </div>
@@ -480,25 +476,25 @@ export default function NewListingPage() {
         {/* 6. ZERTIFIKATE */}
         <section className="card space-y-3">
           <h2 className="eyebrow">
-            {isCoolant ? "6" : "5"}. Zertifikate &amp; Freigaben
+            {isCoolant ? "6" : "5"}. {t("lnew.secCerts")}
           </h2>
           <CertInput
             value={certificates}
             onChange={setCertificates}
-            placeholder="z.B. DIN 51524-2, ISO VG 46, Bosch Rexroth"
+            placeholder={t("lnew.phCerts")}
           />
         </section>
 
         {/* 7. BESCHREIBUNG */}
         <section className="card space-y-3">
           <h2 className="eyebrow">
-            {isCoolant ? "7" : "6"}. Beschreibung
+            {isCoolant ? "7" : "6"}. {t("lnew.secDescription")}
           </h2>
           <textarea
             name="description"
             rows={4}
             className="input"
-            placeholder="Zusätzlicher Kontext: Vorgeschichte, Standzeit, Besonderheiten …"
+            placeholder={t("lnew.phDescription")}
           />
         </section>
 
@@ -509,7 +505,7 @@ export default function NewListingPage() {
         )}
         <div className="flex justify-end">
           <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? "Speichern …" : "Listing veröffentlichen"}
+            {loading ? t("lnew.saving") : t("lnew.submit")}
           </button>
         </div>
       </form>

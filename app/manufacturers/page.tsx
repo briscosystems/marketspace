@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getT } from "@/lib/i18n-server";
 import { prisma } from "@/lib/prisma";
 import { ManufacturerLogo } from "@/components/ManufacturerLogo";
 
@@ -19,6 +20,7 @@ const FOCUS_LABEL: Record<string, string> = {
 };
 
 export default async function ManufacturersPage() {
+  const t = await getT();
   const manufacturers = await prisma.manufacturer.findMany({
     orderBy: { name: "asc" },
     include: {
@@ -29,7 +31,7 @@ export default async function ManufacturersPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="page-title">Hersteller & Lieferanten</h1>
+        <h1 className="page-title">{t("mfrList.title")}</h1>
         <p className="mt-1 text-sm text-slate-600">
           {manufacturers.length} Hersteller im Katalog —{" "}
           {manufacturers.reduce((s, m) => s + m._count.products, 0)} Produkte hinterlegt.

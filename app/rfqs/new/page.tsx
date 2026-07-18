@@ -9,6 +9,7 @@ import { Autocomplete } from "@/components/Autocomplete";
 import { APPLICATION_AREAS, MATERIALS } from "@/lib/kss-knowledge";
 import type { KssIssueId, IssueScope } from "@/lib/kss-issues";
 import { withBasePath } from "@/lib/base-path";
+import { useLocale } from "@/components/LocaleProvider";
 
 const chemistries = ["MINERAL", "SYNTHETIC", "SEMI_SYNTHETIC", "ESTER", "PAG", "OTHER"] as const;
 
@@ -21,20 +22,21 @@ const REGION_PRESETS = [
 const UNIT_PRESETS = ["L", "kg", "IBC (1000 L)", "Fass (200 L)", "Kanister (20 L)", "Stück", "t"];
 
 const PRODUCT_TYPE_PRESETS = [
-  { value: "Hydrauliköl", scope: "neat" as const },
-  { value: "Getriebeöl", scope: "neat" as const },
-  { value: "Motoröl", scope: "neat" as const },
-  { value: "Schmierfett", scope: "neat" as const },
-  { value: "Schneidöl (nicht-wassermischbar)", scope: "neat" as const },
-  { value: "Kühlschmierstoff (Emulsion, wassermischbar)", scope: "water" as const },
-  { value: "Kühlschmierstoff (Lösung, wassermischbar)", scope: "water" as const },
-  { value: "Schleiföl", scope: "neat" as const },
-  { value: "Honöl", scope: "neat" as const },
-  { value: "Umformöl", scope: "neat" as const },
+  { value: "Hydrauliköl", scope: "neat" as const, labelKey: "rnew.pt.hydraulic" },
+  { value: "Getriebeöl", scope: "neat" as const, labelKey: "rnew.pt.gear" },
+  { value: "Motoröl", scope: "neat" as const, labelKey: "rnew.pt.motor" },
+  { value: "Schmierfett", scope: "neat" as const, labelKey: "rnew.pt.grease" },
+  { value: "Schneidöl (nicht-wassermischbar)", scope: "neat" as const, labelKey: "rnew.pt.cutting" },
+  { value: "Kühlschmierstoff (Emulsion, wassermischbar)", scope: "water" as const, labelKey: "rnew.pt.coolantEmulsion" },
+  { value: "Kühlschmierstoff (Lösung, wassermischbar)", scope: "water" as const, labelKey: "rnew.pt.coolantSolution" },
+  { value: "Schleiföl", scope: "neat" as const, labelKey: "rnew.pt.grinding" },
+  { value: "Honöl", scope: "neat" as const, labelKey: "rnew.pt.honing" },
+  { value: "Umformöl", scope: "neat" as const, labelKey: "rnew.pt.forming" },
 ];
 
 export default function NewRfqPage() {
   const router = useRouter();
+  const { t } = useLocale();
   const { status } = useSession();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -56,7 +58,7 @@ export default function NewRfqPage() {
   }, []);
 
   if (status !== "authenticated") {
-    return <div className="text-slate-500">Lade …</div>;
+    return <div className="text-slate-500">{t("rnew.loading")}</div>;
   }
 
   // Produkttyp → relevanter Problem-Scope, damit pro Kategorie nur die
@@ -111,7 +113,7 @@ export default function NewRfqPage() {
     setLoading(false);
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
-      setError(data.error ?? "Anfrage konnte nicht angelegt werden.");
+      setError(data.error ?? t("rnew.errCreate"));
       return;
     }
     const created = await res.json();
@@ -125,24 +127,22 @@ export default function NewRfqPage() {
     <div className="mx-auto max-w-3xl">
       <div className="mb-6 rounded-xl border border-amber-200 bg-gradient-to-r from-amber-50 to-white p-4">
         <div className="mb-1 inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-800">
-          SUCHEN
+          {t("rnew.badge")}
         </div>
-        <h1 className="page-title">Bedarf einstellen — was suchst du?</h1>
+        <h1 className="page-title">{t("rnew.title")}</h1>
         <p className="mt-1 text-sm text-slate-600">
-          Beschreibe was du brauchst. Anbieter sehen deinen Bedarf und melden sich mit
-          Preis und Lieferzeit. Pflicht-Zertifikate und Pain Points helfen ihnen,
-          passende Angebote zu machen — auch Alternativ-Vorschläge sind erlaubt.
+          {t("rnew.intro")}
         </p>
       </div>
       <form onSubmit={onSubmit} className="space-y-6">
         {/* GRUNDDATEN */}
         <section className="card space-y-4">
           <h2 className="eyebrow">
-            1. Was suchst du?
+            {t("rnew.sec1")}
           </h2>
           <div className="grid gap-4 md:grid-cols-2">
             <div className="md:col-span-2">
-              <label className="label">Produkttyp *</label>
+              <label className="label">{t("rnew.productType")}</label>
               <select
                 value={productType}
                 onChange={(e) => setProductType(e.target.value)}
@@ -150,50 +150,50 @@ export default function NewRfqPage() {
               >
                 {PRODUCT_TYPE_PRESETS.map((p) => (
                   <option key={p.value} value={p.value}>
-                    {p.value}
+                    {t(p.labelKey)}
                   </option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="label">Hersteller (optional)</label>
+              <label className="label">{t("rnew.manufacturer")}</label>
               <Autocomplete
                 name="manufacturer"
                 options={manufacturerOptions}
-                placeholder="Shell, Fuchs, OEM-Eigenmarke …"
+                placeholder={t("rnew.phManufacturer")}
               />
             </div>
             <div>
-              <label className="label">ISO Viskosität</label>
+              <label className="label">{t("rnew.isoViscosity")}</label>
               <Autocomplete name="isoViscosity" options={ISO_VG_PRESETS} placeholder="46" />
             </div>
             <div>
-              <label className="label">Chemie</label>
+              <label className="label">{t("rnew.chemistry")}</label>
               <select name="chemistry" defaultValue="" className="input">
-                <option value="">egal</option>
+                <option value="">{t("rnew.any")}</option>
                 {chemistries.map((c) => (
-                  <option key={c} value={c}>{c}</option>
+                  <option key={c} value={c}>{t(`chem.${c}`)}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="label">Anwendungsbereich</label>
+              <label className="label">{t("rnew.applicationArea")}</label>
               <Autocomplete
                 name="applicationArea"
                 options={[...APPLICATION_AREAS]}
-                placeholder="Hydraulik / CNC-Drehen / Schleifen"
+                placeholder={t("rnew.phApplicationArea")}
               />
             </div>
             <div>
-              <label className="label">Werkstoff (für KSS wichtig)</label>
+              <label className="label">{t("rnew.material")}</label>
               <Autocomplete
                 name="workpieceMaterial"
                 options={[...MATERIALS]}
-                placeholder="Stahl 1.2379 / Aluminium AlMg3 / Buntmetall …"
+                placeholder={t("rnew.phMaterial")}
               />
             </div>
             <div>
-              <label className="label">Lieferregion *</label>
+              <label className="label">{t("rnew.deliveryRegion")}</label>
               <Autocomplete
                 name="locationRegion"
                 options={REGION_PRESETS}
@@ -202,30 +202,30 @@ export default function NewRfqPage() {
               />
             </div>
             <div>
-              <label className="label">Benötigte Menge *</label>
+              <label className="label">{t("rnew.quantity")}</label>
               <input name="quantity" type="number" step="any" required className="input" />
             </div>
             <div>
-              <label className="label">Einheit</label>
+              <label className="label">{t("rnew.unit")}</label>
               <Autocomplete name="quantityUnit" options={UNIT_PRESETS} defaultValue="L" placeholder="L" />
             </div>
             <div>
-              <label className="label">Frist *</label>
+              <label className="label">{t("rnew.deadline")}</label>
               <input name="deadline" type="date" required defaultValue={tomorrow} className="input" />
             </div>
             <div>
-              <label className="label">Sichtbarkeit</label>
+              <label className="label">{t("rnew.visibility")}</label>
               <select name="visibility" defaultValue="PUBLIC" className="input">
-                <option value="PUBLIC">Öffentlich</option>
-                <option value="VERIFIED_ONLY">Nur Verified+</option>
+                <option value="PUBLIC">{t("rnew.visPublic")}</option>
+                <option value="VERIFIED_ONLY">{t("rnew.visVerified")}</option>
               </select>
             </div>
             <div>
-              <label className="label">Budget min (€)</label>
+              <label className="label">{t("rnew.budgetMin")}</label>
               <input name="budgetMinEur" type="number" step="0.01" className="input" />
             </div>
             <div>
-              <label className="label">Budget max (€)</label>
+              <label className="label">{t("rnew.budgetMax")}</label>
               <input name="budgetMaxEur" type="number" step="0.01" className="input" />
             </div>
           </div>
@@ -235,17 +235,16 @@ export default function NewRfqPage() {
         <section className="card space-y-3">
           <div>
             <h2 className="eyebrow">
-              2. Pflicht-Zertifikate &amp; Freigaben
+              {t("rnew.sec2")}
             </h2>
             <p className="mt-1 text-xs text-slate-500">
-              Werden zur Vorfilterung der Angebote verwendet. Vorschläge erscheinen
-              beim Tippen — unbekannte Einträge werden mit einem Warn-Symbol markiert.
+              {t("rnew.sec2Hint")}
             </p>
           </div>
           <CertInput
             value={requiredCerts}
             onChange={setRequiredCerts}
-            placeholder="z.B. DIN 51524-2, Bosch Rexroth, TRGS 611"
+            placeholder={t("rnew.phCerts")}
           />
         </section>
 
@@ -255,21 +254,21 @@ export default function NewRfqPage() {
             value={issues}
             onChange={setIssues}
             scope={scope}
-            title="3. Welche Probleme MUSS das Produkt vermeiden?"
-            hint="Anbieter sehen diese Anforderungen. Wenn du später die KI-Alternativ-Suche nutzt, vergleicht Claude die SDS-Inhalte gegen genau diese Pain Points."
+            title={t("rnew.sec3Title")}
+            hint={t("rnew.sec3Hint")}
           />
         </section>
 
         {/* NOTIZEN */}
         <section className="card space-y-3">
           <h2 className="eyebrow">
-            4. Freitext (optional)
+            {t("rnew.sec4")}
           </h2>
           <textarea
             name="notes"
             rows={3}
             className="input"
-            placeholder="Spezifische Kontext-Infos: Maschine, Wasserhärte, Standzeit-Erwartung, vorheriges Produkt, Lieferkonditionen …"
+            placeholder={t("rnew.phNotes")}
           />
         </section>
 
@@ -280,7 +279,7 @@ export default function NewRfqPage() {
         )}
         <div className="flex justify-end">
           <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? "Speichern …" : "Anfrage veröffentlichen"}
+            {loading ? t("rnew.saving") : t("rnew.submit")}
           </button>
         </div>
       </form>

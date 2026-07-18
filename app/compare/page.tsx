@@ -1,11 +1,12 @@
 import Link from "next/link";
+import { getT } from "@/lib/i18n-server";
+import { fill } from "@/lib/i18n";
 import { prisma } from "@/lib/prisma";
 import { ProductImage } from "@/components/ProductImage";
 import { packagingForProduct } from "@/lib/product-packaging";
 import { CompareRemoveButton } from "@/components/compare/CompareToggle";
 import { AiAnalysisPanel } from "@/components/compare/AiAnalysisPanel";
 import { BrandLogo } from "@/components/BrandLogo";
-import { PACKAGING_LABEL } from "@/lib/branding";
 import { getCachedAnalysis } from "@/lib/comparison-analysis";
 import { getMonthlyMedianHistory, getCurrentPricesBatch } from "@/lib/price-aggregation";
 import { MultiPriceHistoryChart, type PriceSeries } from "@/components/MultiPriceHistoryChart";
@@ -20,56 +21,50 @@ export const metadata = {
 // Listings
 // ---------------------------------------------------------------------------
 
-const CHEMISTRY_LABEL: Record<string, string> = {
-  MINERAL: "Mineralöl",
-  SEMI_SYNTHETIC: "Semi-synth.",
-  SYNTHETIC: "Vollsynth.",
-  ESTER: "Ester",
-  PAG: "PAG",
-  OTHER: "Andere",
-};
-
 type ListingRow = {
   label: string;
-  render: (l: NonNullable<Awaited<ReturnType<typeof loadListings>>>[number]) => React.ReactNode;
+  render: (
+    l: NonNullable<Awaited<ReturnType<typeof loadListings>>>[number],
+    t: (k: string) => string,
+  ) => React.ReactNode;
   highlight?: boolean;
 };
 
 const LISTING_ROWS: ListingRow[] = [
-  { label: "Hersteller", render: (l) => l.manufacturer },
-  { label: "Produkt", render: (l) => l.productName },
-  { label: "Typ", render: (l) => l.productType },
-  { label: "ISO VG", render: (l) => l.isoViscosity },
+  { label: "cmp.rowManufacturer", render: (l) => l.manufacturer },
+  { label: "cmp.rowProduct", render: (l) => l.productName },
+  { label: "cmp.rowType", render: (l) => l.productType },
+  { label: "cmp.rowIsoVg", render: (l) => l.isoViscosity },
   {
-    label: "Chemie",
-    render: (l) => CHEMISTRY_LABEL[l.chemistry] ?? l.chemistry,
+    label: "cmp.rowChemistry",
+    render: (l, t) => t(`chem.${l.chemistry}`),
   },
-  { label: "Anwendung", render: (l) => l.applicationArea },
+  { label: "cmp.rowApplication", render: (l) => l.applicationArea },
   {
-    label: "Menge",
+    label: "cmp.rowQuantity",
     render: (l) => `${l.quantity.toLocaleString("de-DE")} ${l.quantityUnit}`,
     highlight: true,
   },
   {
-    label: "Min. Abnahme",
+    label: "cmp.rowMinOrder",
     render: (l) =>
       l.minOrderQty ? `${l.minOrderQty.toLocaleString("de-DE")} ${l.quantityUnit}` : null,
   },
-  { label: "Gebinde", render: (l) => PACKAGING_LABEL[l.packaging] ?? l.packaging },
+  { label: "cmp.rowPackaging", render: (l, t) => t(`pkg.${l.packaging}`) },
   {
-    label: "Preis",
+    label: "cmp.rowPrice",
     highlight: true,
-    render: (l) =>
+    render: (l, t) =>
       l.priceEur != null ? (
         <span className="font-mono font-bold text-emerald-700">{l.priceEur.toFixed(2)} €</span>
       ) : (
-        <span className="text-slate-500">auf Anfrage</span>
+        <span className="text-slate-500">{t("cmp.onRequest")}</span>
       ),
   },
-  { label: "Versand", render: (l) => l.shippingTerms },
-  { label: "Standort", render: (l) => l.locationRegion },
+  { label: "cmp.rowShipping", render: (l) => l.shippingTerms },
+  { label: "cmp.rowLocation", render: (l) => l.locationRegion },
   {
-    label: "Zertifikate",
+    label: "cmp.rowCertificates",
     render: (l) =>
       l.certificates.length > 0 ? (
         <div className="flex flex-wrap gap-1">
@@ -85,7 +80,7 @@ const LISTING_ROWS: ListingRow[] = [
       ) : null,
   },
   {
-    label: "Bearbeitungsverfahren",
+    label: "cmp.rowMachining",
     render: (l) =>
       l.machiningOperations.length > 0 ? (
         <div className="flex flex-wrap gap-1">
@@ -101,11 +96,11 @@ const LISTING_ROWS: ListingRow[] = [
       ) : null,
   },
   {
-    label: "Mineralöl-Anteil",
+    label: "cmp.rowMineralOilContent",
     render: (l) => (l.mineralOilContent != null ? `${l.mineralOilContent} %` : null),
   },
   {
-    label: "Verkäufer",
+    label: "cmp.rowSeller",
     render: (l) => (
       <div>
         <div className="text-sm font-medium text-slate-900">{l.seller.pseudonym}</div>
@@ -155,41 +150,26 @@ async function loadListings(ids: string[]) {
 // Products
 // ---------------------------------------------------------------------------
 
-const CATEGORY_LABEL: Record<string, string> = {
-  COOLANT_WATER_MIX: "KSS (wassermischbar)",
-  COOLANT_NEAT: "Schneidöl",
-  GRINDING_OIL: "Schleiföl",
-  EDM_FLUID: "Erodier-Dielektrikum",
-  HYDRAULIC_OIL: "Hydrauliköl",
-  GEAR_OIL: "Getriebeöl",
-  COMPRESSOR_OIL: "Kompressoröl",
-  SLIDEWAY_OIL: "Bettbahnöl",
-  FORMING_OIL: "Umform-/Stanzöl",
-  CLEANER: "Reiniger",
-  CORROSION_PROTECTION: "Korrosionsschutz",
-  GREASE: "Fett",
-  SPECIALTY: "Spezial",
-  ADDITIVE: "Additiv",
-  OTHER: "Sonstiges",
-};
-
 type ProductRow = {
   label: string;
   hint?: string;
-  render: (p: NonNullable<Awaited<ReturnType<typeof loadProducts>>>[number]) => React.ReactNode;
+  render: (
+    p: NonNullable<Awaited<ReturnType<typeof loadProducts>>>[number],
+    t: (k: string) => string,
+  ) => React.ReactNode;
   highlight?: boolean;
 };
 
 const PRODUCT_ROWS: ProductRow[] = [
-  { label: "Kategorie", render: (p) => CATEGORY_LABEL[p.category] ?? p.category },
+  { label: "cmp.rowCategory", render: (p, t) => t(`cat.${p.category}`) },
   {
-    label: "Chemie",
-    render: (p) => (p.chemistry ? (CHEMISTRY_LABEL[p.chemistry] ?? p.chemistry) : null),
+    label: "cmp.rowChemistry",
+    render: (p, t) => (p.chemistry ? t(`chem.${p.chemistry}`) : null),
   },
-  { label: "Produktfamilie", render: (p) => p.productFamily },
+  { label: "cmp.rowProductFamily", render: (p) => p.productFamily },
   {
-    label: "Refraktometer-Faktor",
-    hint: "Brix × Faktor = % Konz.",
+    label: "cmp.rowRefractometerFactor",
+    hint: "cmp.hintRefractometer",
     highlight: true,
     render: (p) =>
       p.refractometerFactor != null ? (
@@ -197,14 +177,14 @@ const PRODUCT_ROWS: ProductRow[] = [
       ) : null,
   },
   {
-    label: "Empf. Konzentration",
+    label: "cmp.rowRecommendedConcentration",
     render: (p) =>
       p.recommendedConcentrationMin != null && p.recommendedConcentrationMax != null
         ? `${p.recommendedConcentrationMin}–${p.recommendedConcentrationMax} %`
         : null,
   },
   {
-    label: "pH Emulsion",
+    label: "cmp.rowPhEmulsion",
     render: (p) =>
       p.phEmulsionMin != null
         ? p.phEmulsionMax != null && p.phEmulsionMin !== p.phEmulsionMax
@@ -213,42 +193,42 @@ const PRODUCT_ROWS: ProductRow[] = [
         : null,
   },
   {
-    label: "Wasserhärte (°dH)",
+    label: "cmp.rowWaterHardness",
     render: (p) =>
       p.waterHardnessMinDh != null || p.waterHardnessMaxDh != null
         ? `${p.waterHardnessMinDh ?? 0}–${p.waterHardnessMaxDh ?? "?"} °dH`
         : null,
   },
-  { label: "ISO VG", render: (p) => p.viscosityIso },
+  { label: "cmp.rowIsoVg", render: (p) => p.viscosityIso },
   {
-    label: "Bor",
-    render: (p) =>
+    label: "cmp.rowBor",
+    render: (p, t) =>
       p.containsBor == null
         ? null
         : p.containsBor
-          ? <span className="text-amber-700">enthalten</span>
-          : <span className="text-emerald-700">bor-frei</span>,
+          ? <span className="text-amber-700">{t("cmp.contained")}</span>
+          : <span className="text-emerald-700">{t("cmp.borFree")}</span>,
   },
   {
-    label: "Formaldehyd-Depot",
-    render: (p) =>
+    label: "cmp.rowFormaldehyde",
+    render: (p, t) =>
       p.containsFormaldehydeDepot == null
         ? null
         : p.containsFormaldehydeDepot
-          ? <span className="text-amber-700">enthalten</span>
-          : <span className="text-emerald-700">frei</span>,
+          ? <span className="text-amber-700">{t("cmp.contained")}</span>
+          : <span className="text-emerald-700">{t("cmp.free")}</span>,
   },
   {
-    label: "Chlor",
-    render: (p) =>
+    label: "cmp.rowChlorine",
+    render: (p, t) =>
       p.containsChlorine == null
         ? null
         : p.containsChlorine
-          ? <span className="text-amber-700">enthalten</span>
-          : <span className="text-emerald-700">chlor-frei</span>,
+          ? <span className="text-amber-700">{t("cmp.contained")}</span>
+          : <span className="text-emerald-700">{t("cmp.chlorineFree")}</span>,
   },
   {
-    label: "Geeignet für",
+    label: "cmp.rowSuitableFor",
     render: (p) =>
       p.suitableMaterials.length > 0 ? (
         <div className="flex flex-wrap gap-1">
@@ -261,7 +241,7 @@ const PRODUCT_ROWS: ProductRow[] = [
       ) : null,
   },
   {
-    label: "Nicht geeignet für",
+    label: "cmp.rowUnsuitableFor",
     render: (p) =>
       p.unsuitableMaterials.length > 0 ? (
         <div className="flex flex-wrap gap-1">
@@ -274,7 +254,7 @@ const PRODUCT_ROWS: ProductRow[] = [
       ) : null,
   },
   {
-    label: "Datenquelle",
+    label: "cmp.rowDataSource",
     render: (p) => (
       <span
         className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${
@@ -306,6 +286,7 @@ export default async function ComparePage({
 }: {
   searchParams: Promise<{ listings?: string; products?: string; ids?: string }>;
 }) {
+  const t = await getT();
   const sp = await searchParams;
   const listingIds = (sp.listings ?? "").split(",").filter((s) => s.length > 0);
   // ?ids=… (alte URL-Form) wird als Produkt-IDs interpretiert
@@ -370,20 +351,20 @@ export default async function ComparePage({
       <header>
         <div className="flex items-center gap-2">
           <GitCompare size={20} className="text-brand-600" />
-          <h1 className="page-title">Vergleich</h1>
+          <h1 className="page-title">{t("cmp.title")}</h1>
         </div>
       </header>
 
       {total === 0 ? (
         <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
           <AlertCircle size={28} className="mx-auto text-slate-400" />
-          <p className="mt-2 text-sm text-slate-600">Keine Einträge zum Vergleichen ausgewählt.</p>
+          <p className="mt-2 text-sm text-slate-600">{t("cmp.empty")}</p>
           <p className="mt-1 text-xs text-slate-500">
-            Setze die Häkchen auf der{" "}
+            {t("cmp.emptyHintBefore")}
             <Link href="/listings" className="text-brand-600 hover:underline">
-              Listings-Seite
+              {t("cmp.emptyHintLink")}
             </Link>
-            , dann oben rechts „Vergleich ansehen".
+            {t("cmp.emptyHintAfter")}
           </p>
         </div>
       ) : null}
@@ -393,7 +374,7 @@ export default async function ComparePage({
           <div className="mb-1 flex items-center gap-2">
             <ListChecks size={18} className="text-slate-600" />
             <h2 className="section-title">
-              Listings <span className="text-sm font-normal text-slate-500">({sortedListings.length})</span>
+              {t("cmp.sectionListings")} <span className="text-sm font-normal text-slate-500">({sortedListings.length})</span>
             </h2>
           </div>
 
@@ -405,15 +386,12 @@ export default async function ComparePage({
                 <div className="flex items-start gap-2 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
                   <AlertTriangle size={16} className="mt-0.5 shrink-0" />
                   <div>
-                    <strong>Unterschiedliche Produkttypen ausgewählt:</strong>{" "}
-                    {Array.from(types).join(", ")}. Diese sind technisch nicht direkt vergleichbar
-                    (z.B. ein Hydrauliköl gegen einen KSS). Der Vergleich ist trotzdem sichtbar,
-                    die KI-Bewertung ist aber deaktiviert. Filtere die Listings vorher per
-                    Produkttyp-Chip auf{" "}
+                    <strong>{t("cmp.mixed")}</strong>{" "}
+                    {Array.from(types).join(", ")}.{t("cmp.mixedBanner1")}
                     <Link href="/listings" className="underline">
                       /listings
-                    </Link>{" "}
-                    auf eine Kategorie ein.
+                    </Link>
+                    {t("cmp.mixedBanner2")}
                   </div>
                 </div>
               );
@@ -425,7 +403,7 @@ export default async function ComparePage({
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50">
                   <th className="sticky left-0 z-10 min-w-[170px] bg-slate-50 px-3 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Eigenschaft
+                    {t("cmp.property")}
                   </th>
                   {sortedListings.map((l) => (
                     <th
@@ -450,7 +428,7 @@ export default async function ComparePage({
               </thead>
               <tbody>
                 {LISTING_ROWS.map((row, i) => {
-                  const cells = sortedListings.map((l) => row.render(l));
+                  const cells = sortedListings.map((l) => row.render(l, t));
                   const hasAny = cells.some((c) => c != null && c !== "" && c !== false);
                   if (!hasAny) return null;
                   return (
@@ -459,7 +437,7 @@ export default async function ComparePage({
                       className={`border-b border-slate-100 ${i % 2 === 0 ? "bg-white" : "bg-slate-50/40"} ${row.highlight ? "bg-emerald-50/40" : ""}`}
                     >
                       <th className="sticky left-0 z-10 min-w-[170px] bg-inherit px-3 py-3 text-left align-top text-xs font-medium text-slate-600">
-                        {row.label}
+                        {t(row.label)}
                       </th>
                       {cells.map((cell, idx) => (
                         <td key={idx} className="border-l border-slate-200 px-3 py-3 align-top text-sm">
@@ -481,7 +459,9 @@ export default async function ComparePage({
               disabled={!aiEligible}
               disabledReason={
                 !aiEligible
-                  ? `KI-Bewertung deaktiviert: Listings haben unterschiedliche Produkttypen (${Array.from(listingTypes).join(", ")}).`
+                  ? fill(t("cmp.aiDisabledReason"), {
+                      types: Array.from(listingTypes).join(", "),
+                    })
                   : undefined
               }
               initialResult={cachedAnalysis}
@@ -495,7 +475,7 @@ export default async function ComparePage({
           <div className="mb-3 flex items-center gap-2">
             <Boxes size={18} className="text-slate-600" />
             <h2 className="section-title">
-              Produkte (Hersteller-Katalog){" "}
+              {t("cmp.sectionProducts")}{" "}
               <span className="text-sm font-normal text-slate-500">({sortedProducts.length})</span>
             </h2>
           </div>
@@ -506,15 +486,14 @@ export default async function ComparePage({
               <div className="mb-3 flex items-center gap-2">
                 <TrendingUp size={16} className="text-amber-600" />
                 <h3 className="text-sm font-semibold text-slate-700">
-                  Preisverlauf-Vergleich
+                  {t("cmp.priceHistoryComparison")}
                 </h3>
               </div>
               {hasAnyPriceData ? (
                 <MultiPriceHistoryChart series={priceSeries} />
               ) : (
                 <p className="rounded-lg border border-dashed border-slate-300 bg-slate-50/40 p-6 text-center text-sm text-slate-500">
-                  Für die ausgewählten Produkte liegen noch keine Preisdaten
-                  vor.
+                  {t("cmp.noPriceData")}
                 </p>
               )}
             </div>
@@ -528,7 +507,7 @@ export default async function ComparePage({
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50">
                   <th className="sticky left-0 z-10 min-w-[170px] bg-slate-50 px-3 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Eigenschaft
+                    {t("cmp.property")}
                   </th>
                   {sortedProducts.map((p) => (
                     <th
@@ -559,7 +538,7 @@ export default async function ComparePage({
               </thead>
               <tbody>
                 {PRODUCT_ROWS.map((row, i) => {
-                  const cells = sortedProducts.map((p) => row.render(p));
+                  const cells = sortedProducts.map((p) => row.render(p, t));
                   const hasAny = cells.some((c) => c != null && c !== "" && c !== false);
                   if (!hasAny) return null;
                   return (
@@ -568,10 +547,10 @@ export default async function ComparePage({
                       className={`border-b border-slate-100 ${i % 2 === 0 ? "bg-white" : "bg-slate-50/40"} ${row.highlight ? "bg-emerald-50/40" : ""}`}
                     >
                       <th className="sticky left-0 z-10 min-w-[170px] bg-inherit px-3 py-3 text-left align-top text-xs font-medium text-slate-600">
-                        {row.label}
+                        {t(row.label)}
                         {row.hint ? (
                           <div className="mt-0.5 text-[10px] font-normal text-slate-400">
-                            {row.hint}
+                            {t(row.hint)}
                           </div>
                         ) : null}
                       </th>

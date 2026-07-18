@@ -4,12 +4,14 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { MessageThread } from "@/components/MessageThread";
+import { getT } from "@/lib/i18n-server";
 
 export default async function ConversationPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const t = await getT();
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) redirect("/login");
   const me = session.user.id;
@@ -36,18 +38,18 @@ export default async function ConversationPage({
   return (
     <div className="space-y-4">
       <Link href="/conversations" className="text-sm text-brand-500 hover:underline">
-        ← Nachrichten-Übersicht
+        {t("convd.back")}
       </Link>
       <div className="card">
         <div className="mb-1 flex items-center gap-2">
           <h1 className="page-title">{counterpart.pseudonym}</h1>
           <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">
-            {conversation.buyerId === me ? "Verkäufer" : "Käufer"}
+            {conversation.buyerId === me ? t("convd.roleSeller") : t("convd.roleBuyer")}
           </span>
         </div>
         {conversation.listing && (
           <div className="mb-3 text-sm text-slate-600">
-            zu Listing:{" "}
+            {t("convd.reListing")}{" "}
             <Link
               href={`/listings/${conversation.listing.id}`}
               className="text-brand-500 hover:underline"
@@ -58,10 +60,7 @@ export default async function ConversationPage({
           </div>
         )}
         <div className="rounded-md bg-amber-50 p-3 text-xs text-amber-800">
-          Diese Konversation läuft pseudonym über die Plattform. Klarname,
-          Telefonnummer und Email der Gegenseite bleiben verborgen. Nachrichten
-          mit direkten Kontaktdaten (E-Mail, Telefon, Links) werden automatisch
-          zurückgehalten.
+          {t("convd.privacyNote")}
         </div>
       </div>
 

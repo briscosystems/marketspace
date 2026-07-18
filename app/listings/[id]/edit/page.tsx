@@ -1,4 +1,5 @@
 import { notFound, redirect } from "next/navigation";
+import { getT } from "@/lib/i18n-server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -9,6 +10,7 @@ export default async function EditListingPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const t = await getT();
   const { id } = await params;
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
@@ -22,7 +24,7 @@ export default async function EditListingPage({
 
   return (
     <div className="mx-auto max-w-3xl space-y-4">
-      <h1 className="page-title">Listing bearbeiten</h1>
+      <h1 className="page-title">{t("le.title")}</h1>
       <ListingEditForm
         listing={{
           id: listing.id,

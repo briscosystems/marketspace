@@ -9,6 +9,8 @@ import { CompareToggle } from "@/components/compare/CompareToggle";
 import { ProductImage } from "@/components/ProductImage";
 import { packagingForProduct } from "@/lib/product-packaging";
 import { SimilarToggle } from "@/components/SimilarToggle";
+import { getT } from "@/lib/i18n-server";
+import { fill } from "@/lib/i18n";
 import { TrendingUp, Sparkles } from "lucide-react";
 
 type SearchParams = Promise<{
@@ -38,25 +40,8 @@ function extractVgClasses(viscosityIso: string | null): number[] {
 
 export const metadata = { title: "Indikative Richtwerte — Brisco Marketplace" };
 
-const CATEGORY_LABEL: Record<string, string> = {
-  COOLANT_WATER_MIX: "KSS (wassermischbar)",
-  COOLANT_NEAT: "Schneidöl",
-  GRINDING_OIL: "Schleiföl",
-  EDM_FLUID: "EDM",
-  HYDRAULIC_OIL: "Hydrauliköl",
-  GEAR_OIL: "Getriebeöl",
-  COMPRESSOR_OIL: "Kompressoröl",
-  SLIDEWAY_OIL: "Bettbahnöl",
-  FORMING_OIL: "Umform",
-  CLEANER: "Reiniger",
-  CORROSION_PROTECTION: "Korrosionsschutz",
-  GREASE: "Fett",
-  SPECIALTY: "Spezial",
-  ADDITIVE: "Additiv",
-  OTHER: "Andere",
-};
-
 export default async function PricesOverviewPage({ searchParams }: { searchParams: SearchParams }) {
+  const t = await getT();
   const sp = await searchParams;
   const sort = sp.sort ?? "price-asc";
   // Preis-Spanne aus Preset-Param "price" (z.B. "5-10", "50-" = ab 50).
@@ -159,29 +144,29 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
   const total = rows.length;
 
   const categoryOptions = [
-    { value: "", label: "Alle Kategorien" },
+    { value: "", label: t("prc.allCategories") },
     ...categoriesAvailable
       .slice()
       .sort((a, b) => b._count._all - a._count._all)
       .map((c) => ({
         value: c.category,
-        label: CATEGORY_LABEL[c.category] ?? c.category,
+        label: t(`prc.cat.${c.category}`),
         count: c._count._all,
       })),
   ];
   const priceOptions = [
-    { value: "", label: "Alle Preise" },
-    { value: "0-5", label: "unter 5 €" },
-    { value: "5-10", label: "5 – 10 €" },
-    { value: "10-20", label: "10 – 20 €" },
-    { value: "20-50", label: "20 – 50 €" },
-    { value: "50-", label: "über 50 €" },
+    { value: "", label: t("prc.allPrices") },
+    { value: "0-5", label: t("prc.priceUnder5") },
+    { value: "5-10", label: t("prc.price5to10") },
+    { value: "10-20", label: t("prc.price10to20") },
+    { value: "20-50", label: t("prc.price20to50") },
+    { value: "50-", label: t("prc.priceOver50") },
   ];
   const sortOptions = [
-    { value: "price-asc", label: "Preis aufsteigend" },
-    { value: "price-desc", label: "Preis absteigend" },
-    { value: "name", label: "Produktname A–Z" },
-    { value: "manufacturer", label: "Hersteller A–Z" },
+    { value: "price-asc", label: t("prc.sortPriceAsc") },
+    { value: "price-desc", label: t("prc.sortPriceDesc") },
+    { value: "name", label: t("prc.sortName") },
+    { value: "manufacturer", label: t("prc.sortManufacturer") },
   ];
   const filterCount =
     (sp.q ? 1 : 0) + (sp.category ? 1 : 0) + (sp.price ? 1 : 0) + (similarRefs.length > 0 ? 1 : 0);
@@ -194,61 +179,56 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
           <TrendingUp size={20} />
         </span>
         <div>
-          <h1 className="page-title">Indikative Richtwerte</h1>
+          <h1 className="page-title">{t("prc.title")}</h1>
           <p className="text-sm text-slate-500">
-            {productIdsWithPrices.length.toLocaleString("de-CH")} Produkte mit Richtwert
+            {fill(t("prc.productsWithGuide"), { n: productIdsWithPrices.length.toLocaleString("de-CH") })}
           </p>
           <p className="mt-1 rounded-md border border-amber-200 bg-amber-50 px-2 py-1 text-xs text-amber-900">
-            Die Werte sind <strong>modellierte Richtwerte</strong>, keine bestätigten
-            Marktpreise — sie dienen der Orientierung und dem Vergleich. Sobald Nutzer eigene
-            Preise melden oder Käufe über die Plattform laufen, fließen echte Werte ein.
-            Verbindlich ist immer das individuelle Angebot des Anbieters.
+            {t("prc.explainA")}<strong>{t("prc.explainStrong")}</strong>{t("prc.explainB")}
           </p>
           <p className="mt-0.5 text-xs text-slate-400">
-            Tipp: In der Spalte <span className="font-medium text-slate-500">Vergleich</span>{" "}
-            mehrere Produkte anhaken → unten erscheint „Vergleich ansehen" mit den
-            Preisverläufen in einem Chart.
+            {t("prc.tipPrefix")}<span className="font-medium text-slate-500">{t("prc.tipColumn")}</span>{t("prc.tipSuffix")}
           </p>
         </div>
       </div>
 
       <FilterBar
         count={total}
-        noun={total === 1 ? "Produkt" : "Produkte"}
+        noun={total === 1 ? t("prc.nounSingular") : t("prc.nounPlural")}
         resetHref="/prices"
         filterCount={filterCount}
-        search={<SearchInput placeholder="z.B. bcool, tellus, mobilgear…" />}
+        search={<SearchInput placeholder={t("prc.searchPlaceholder")} />}
         toolbar={
           <>
             <FilterDropdown
-              label="Sortieren"
+              label={t("prc.sortLabel")}
               paramKey="sort"
               options={sortOptions}
               widthClass="w-56"
             />
             <SimilarToggle />
             <span className="text-xs text-slate-500">
-              {total} {total === 1 ? "Produkt" : "Produkte"} mit Richtwert
+              {total} {total === 1 ? t("prc.nounSingular") : t("prc.nounPlural")} {t("prc.withGuideSuffix")}
             </span>
           </>
         }
       >
-        <FilterDropdown label="Kategorie" paramKey="category" options={categoryOptions} />
-        <FilterDropdown label="Preis" paramKey="price" options={priceOptions} />
+        <FilterDropdown label={t("prc.categoryLabel")} paramKey="category" options={categoryOptions} />
+        <FilterDropdown label={t("prc.priceLabel")} paramKey="price" options={priceOptions} />
       </FilterBar>
 
       {/* Aktiver Ähnlichkeits-Filter: Referenzen anzeigen */}
       {similarRefs.length > 0 ? (
         <div className="flex flex-wrap items-center gap-2 rounded-lg border border-brand-200 bg-brand-50/50 px-3 py-2 text-xs text-slate-700">
           <Sparkles size={14} className="shrink-0 text-brand-600" />
-          <span className="font-medium">Ähnlich zu:</span>
+          <span className="font-medium">{t("prc.similarTo")}</span>
           {similarRefs.map((r) => (
             <span key={r.id} className="rounded-full bg-white px-2 py-0.5 ring-1 ring-brand-200">
               {r.manufacturer.name} · {r.name}
             </span>
           ))}
           <span className="text-slate-500">
-            → gleiche Kategorie + grob passende Eigenschaften (ISO VG, Chemie), {total} Treffer
+            {fill(t("prc.similarExplain"), { n: total })}
           </span>
           <Link
             href={(() => {
@@ -262,7 +242,7 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
             })()}
             className="ml-auto font-medium text-brand-700 hover:underline"
           >
-            Filter aus
+            {t("prc.filterOff")}
           </Link>
         </div>
       ) : null}
@@ -271,20 +251,20 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
       <div className="space-y-2">
         {rows.length === 0 ? (
           <div className="rounded-lg border border-slate-200 bg-white p-4 text-center text-sm text-slate-500">
-            Keine Produkte mit Preis gefunden — Filter aufweichen oder{" "}
-            <Link href="/prices" className="text-brand-600 hover:underline">zurücksetzen</Link>.
+            {t("prc.emptyPrefix")}
+            <Link href="/prices" className="text-brand-600 hover:underline">{t("prc.emptyReset")}</Link>.
           </div>
         ) : (
           <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white">
             <table className="w-full text-sm">
               <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
                 <tr>
-                  <th className="px-3 py-2">Produkt</th>
-                  <th className="px-3 py-2 text-right">Richtwert</th>
-                  <th className="px-3 py-2 text-right">Spanne</th>
-                  <th className="px-3 py-2 text-center">Beob.</th>
-                  <th className="px-3 py-2 text-center">Konfidenz</th>
-                  <th className="px-3 py-2 text-center">Vergleich</th>
+                  <th className="px-3 py-2">{t("prc.colProduct")}</th>
+                  <th className="px-3 py-2 text-right">{t("prc.colGuide")}</th>
+                  <th className="px-3 py-2 text-right">{t("prc.colRange")}</th>
+                  <th className="px-3 py-2 text-center">{t("prc.colObs")}</th>
+                  <th className="px-3 py-2 text-center">{t("prc.colConfidence")}</th>
+                  <th className="px-3 py-2 text-center">{t("prc.colCompare")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -306,7 +286,7 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
                             {r.manufacturer.name} · {r.name}
                           </Link>
                           <div className="text-[10px] text-slate-500">
-                            {CATEGORY_LABEL[r.category] ?? r.category}
+                            {t(`prc.cat.${r.category}`)}
                             {r.chemistry ? ` · ${r.chemistry}` : ""}
                           </div>
                         </div>
@@ -334,7 +314,7 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
                               : "bg-red-100 text-red-800"
                         }`}
                       >
-                        {r.price!.confidence}
+                        {t(`prc.conf.${r.price!.confidence}`)}
                       </span>
                     </td>
                     <td className="px-3 py-2 text-center">
@@ -346,7 +326,7 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
             </table>
             {rows.length > 200 && (
               <div className="border-t border-slate-200 px-3 py-2 text-center text-xs text-amber-700">
-                ⚠ Tabelle zeigt 200 von {rows.length} — Filter verfeinern
+                {fill(t("prc.truncated"), { n: rows.length })}
               </div>
             )}
           </div>

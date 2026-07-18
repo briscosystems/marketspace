@@ -8,25 +8,20 @@ import { currencyForUser, convertCurrency, formatCurrency } from "@/lib/currency
 import { transactionProductLabel } from "@/lib/transaction-label";
 import { withBasePath } from "@/lib/base-path";
 import { activeTier, hasAnalytics } from "@/lib/membership-tiers";
+import { getT } from "@/lib/i18n-server";
+import { fill } from "@/lib/i18n";
 import { Wallet, Download, Lock } from "lucide-react";
 
 export const metadata = { title: "Meine Umsätze — Brisco Marketplace" };
 
-const STATUS_LABEL: Record<string, string> = {
-  PENDING: "offen",
-  SHIPPED: "versendet",
-  COMPLETED: "abgeschlossen",
-  CANCELED: "storniert",
-  DISPUTED: "reklamiert",
-};
-
 export default async function UmsaetzePage() {
+  const t = await getT();
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return (
       <div className="card text-sm text-slate-600">
-        Bitte zuerst{" "}
-        <Link href="/login" className="text-brand-600 hover:underline">einloggen</Link>.
+        {t("rev.pleaseLoginPre")}{" "}
+        <Link href="/login" className="text-brand-600 hover:underline">{t("rev.login")}</Link>{t("rev.pleaseLoginSuffix")}
       </div>
     );
   }
@@ -107,31 +102,31 @@ export default async function UmsaetzePage() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <Wallet size={20} className="text-brand-600" />
-          <h1 className="page-title">Meine Umsätze</h1>
+          <h1 className="page-title">{t("rev.title")}</h1>
         </div>
         <a
           href={withBasePath("/api/umsaetze/export")}
           className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700"
         >
-          <Download size={14} /> CSV exportieren
+          <Download size={14} /> {t("rev.exportCsv")}
         </a>
       </div>
 
       {/* Summen */}
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="card">
-          <div className="text-sm text-slate-500">Verkäufe (abgeschlossen)</div>
+          <div className="text-sm text-slate-500">{t("rev.salesCompleted")}</div>
           <div className="text-2xl font-bold text-emerald-700">{formatCurrency(salesTotal, currency)}</div>
         </div>
         <div className="card">
-          <div className="text-sm text-slate-500">Käufe (abgeschlossen)</div>
+          <div className="text-sm text-slate-500">{t("rev.purchasesCompleted")}</div>
           <div className="text-2xl font-bold text-blue-700">{formatCurrency(purchaseTotal, currency)}</div>
         </div>
         <div className="card">
-          <div className="text-sm text-slate-500">Eingespart durch Produktwechsel</div>
+          <div className="text-sm text-slate-500">{t("rev.savedByswitch")}</div>
           <div className="text-2xl font-bold text-amber-600">{formatCurrency(savingsTotal, currency)}</div>
           <div className="mt-0.5 text-xs text-slate-500">
-            gegenüber dem vorher eingesetzten Produkt
+            {t("rev.vsPrevProduct")}
           </div>
         </div>
       </div>
@@ -145,18 +140,17 @@ export default async function UmsaetzePage() {
         <div className="card flex flex-col items-start gap-2 border-dashed">
           <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
             <Lock size={16} className="text-slate-400" />
-            Umsatz- &amp; Einsparungs-Analysen
+            {t("rev.analyticsTitle")}
           </div>
           <p className="text-sm text-slate-600">
-            Die grafische Auswertung über die Zeit (Umsatzverlauf und kumulierte Einsparung) ist
-            Teil der Stufe <strong>Pro</strong> und <strong>Marke</strong>. Deine Summen und die
-            Transaktionsliste siehst du weiterhin.
+            {t("rev.analyticsBodyPre")} <strong>Pro</strong> {t("rev.analyticsAnd")}{" "}
+            <strong>{t("rev.tierMarke")}</strong>. {t("rev.analyticsBodyPost")}
           </p>
           <Link
             href="/mitgliedschaft"
             className="inline-flex items-center gap-1.5 rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700"
           >
-            Auf Pro wechseln
+            {t("rev.switchToPro")}
           </Link>
         </div>
       )}
@@ -166,14 +160,14 @@ export default async function UmsaetzePage() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500">
-              <th className="px-4 py-3">Datum</th>
-              <th className="px-4 py-3">Art</th>
-              <th className="px-4 py-3">Produkt</th>
-              <th className="px-4 py-3">Gegenseite</th>
-              <th className="px-4 py-3">Menge</th>
-              <th className="px-4 py-3 text-right">Betrag</th>
-              <th className="px-4 py-3 text-right">Einsparung</th>
-              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3">{t("rev.colDate")}</th>
+              <th className="px-4 py-3">{t("rev.colType")}</th>
+              <th className="px-4 py-3">{t("rev.colProduct")}</th>
+              <th className="px-4 py-3">{t("rev.colCounterpart")}</th>
+              <th className="px-4 py-3">{t("rev.colQuantity")}</th>
+              <th className="px-4 py-3 text-right">{t("rev.colAmount")}</th>
+              <th className="px-4 py-3 text-right">{t("rev.colSaving")}</th>
+              <th className="px-4 py-3">{t("rev.colStatus")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -188,7 +182,7 @@ export default async function UmsaetzePage() {
                   <span
                     className={`chip ${r.isSale ? "bg-emerald-100 text-emerald-800" : "bg-blue-100 text-blue-800"}`}
                   >
-                    {r.isSale ? "Verkauf" : "Kauf"}
+                    {r.isSale ? t("rev.sale") : t("rev.purchase")}
                   </span>
                 </td>
                 <td className="px-4 py-3 font-medium text-slate-900">{r.product}</td>
@@ -205,7 +199,11 @@ export default async function UmsaetzePage() {
                       {r.saving != null && (
                         <div
                           className={`font-semibold ${r.saving >= 0 ? "text-amber-600" : "text-red-600"}`}
-                          title={`ersetzt: ${r.replacedProductName ?? "?"} (${r.replacedPricePerUnit?.toFixed(2)} €/${r.unit})`}
+                          title={fill(t("rev.replacesTitle"), {
+                            name: r.replacedProductName ?? "?",
+                            price: r.replacedPricePerUnit?.toFixed(2) ?? "",
+                            unit: r.unit,
+                          })}
                         >
                           {r.saving >= 0 ? "+" : ""}
                           {formatCurrency(r.saving, currency)}
@@ -222,13 +220,13 @@ export default async function UmsaetzePage() {
                     <span className="text-slate-300">—</span>
                   )}
                 </td>
-                <td className="px-4 py-3 text-slate-600">{STATUS_LABEL[r.status] ?? r.status}</td>
+                <td className="px-4 py-3 text-slate-600">{t(`rev.status.${r.status}`)}</td>
               </tr>
             ))}
             {rows.length === 0 && (
               <tr>
                 <td colSpan={8} className="px-4 py-6 text-center text-slate-500">
-                  Noch keine Transaktionen.
+                  {t("rev.emptyTransactions")}
                 </td>
               </tr>
             )}

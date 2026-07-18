@@ -1,10 +1,13 @@
 import { redirect } from "next/navigation";
+import { getT } from "@/lib/i18n-server";
+import { fill } from "@/lib/i18n";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export default async function ConversationsPage() {
+  const t = await getT();
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) redirect("/login?callbackUrl=/conversations");
   const me = session.user.id;
@@ -26,17 +29,18 @@ export default async function ConversationsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="page-title">Nachrichten</h1>
+      <h1 className="page-title">{t("conv.title")}</h1>
       {conversations.length === 0 ? (
         <div className="card text-slate-500">
-          Noch keine Konversationen. Öffne ein Listing und klicke auf{" "}
-          <em>„Verkäufer kontaktieren"</em>.
+          {t("conv.empty")}{" "}
+          <em>{t("conv.contactSeller")}</em>.
         </div>
       ) : (
         <div className="card divide-y divide-slate-200">
           {conversations.map((c) => {
             const counterpart = c.buyerId === me ? c.seller : c.buyer;
-            const role = c.buyerId === me ? "Käufer" : "Verkäufer";
+            const role =
+              c.buyerId === me ? t("conv.roleBuyer") : t("conv.roleSeller");
             const last = c.messages[0];
             return (
               <Link
@@ -53,13 +57,16 @@ export default async function ConversationsPage() {
                   </div>
                   {c.listing && (
                     <div className="text-xs text-slate-500">
-                      zu „{c.listing.manufacturer} {c.listing.productName}"
+                      {fill(t("conv.about"), {
+                        mfr: c.listing.manufacturer ?? "",
+                        product: c.listing.productName,
+                      })}
                     </div>
                   )}
                   <div className="mt-1 truncate text-sm text-slate-600">
                     {last
-                      ? `${last.senderId === me ? "Du: " : ""}${last.body}`
-                      : "Noch keine Nachrichten"}
+                      ? `${last.senderId === me ? t("conv.you") : ""}${last.body}`
+                      : t("conv.noMessages")}
                   </div>
                 </div>
                 <div className="shrink-0 text-xs text-slate-400">

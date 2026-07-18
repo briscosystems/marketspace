@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getT } from "@/lib/i18n-server";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -9,6 +10,7 @@ import { ShieldCheck } from "lucide-react";
 export const metadata = { title: "Preis-Verifizierung — Brisco Marketplace" };
 
 export default async function PriceVerificationPage() {
+  const t = await getT();
   const session = await getServerSession(authOptions);
   if (!session?.user) redirect("/login?next=/dashboard/prices");
 
@@ -18,7 +20,7 @@ export default async function PriceVerificationPage() {
   if (!allowed) {
     return (
       <div className="card">
-        <h1 className="page-title">Zugriff verweigert</h1>
+        <h1 className="page-title">{t("common.accessDenied")}</h1>
         <p className="mt-2 text-sm text-slate-600">
           Preis-Verifizierung ist Admins und Trade-Assured+ Usern vorbehalten.
         </p>
@@ -53,7 +55,7 @@ export default async function PriceVerificationPage() {
       <div className="flex items-center justify-between gap-3 rounded-lg border-l-4 border-blue-500 bg-blue-50 px-4 py-2.5 shadow-sm">
         <div className="flex items-center gap-2">
           <ShieldCheck size={20} className="text-blue-600" />
-          <h1 className="page-title">Preis-Verifizierung</h1>
+          <h1 className="page-title">{t("dp.title")}</h1>
           <span className="text-xs text-slate-600">
             {pending.length} ausstehend · {verifiedCount} verifiziert · {rejectedCount} abgelehnt
           </span>

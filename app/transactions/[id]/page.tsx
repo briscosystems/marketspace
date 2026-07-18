@@ -10,6 +10,8 @@ import { ReviewForm } from "@/components/ReviewForm";
 import { protectionFeeEur } from "@/lib/protection";
 import { stripe } from "@/lib/stripe";
 import { confirmProtectionPayment } from "@/lib/protection-flow";
+import { getT } from "@/lib/i18n-server";
+import { fill } from "@/lib/i18n";
 
 const statusStyle: Record<string, string> = {
   PENDING: "bg-amber-100 text-amber-800",
@@ -20,10 +22,10 @@ const statusStyle: Record<string, string> = {
 };
 
 const tagLabels: Record<string, string> = {
-  FAST_RESPONSE: "Schnelle Antwort",
-  QUALITY_AS_DESCRIBED: "Qualität wie beschrieben",
-  ON_TIME_DELIVERY: "Pünktliche Lieferung",
-  FAIR_NEGOTIATION: "Faire Verhandlung",
+  FAST_RESPONSE: "txn.tagFastResponse",
+  QUALITY_AS_DESCRIBED: "txn.tagQualityAsDescribed",
+  ON_TIME_DELIVERY: "txn.tagOnTimeDelivery",
+  FAIR_NEGOTIATION: "txn.tagFairNegotiation",
 };
 
 export default async function TransactionPage({
@@ -34,6 +36,7 @@ export default async function TransactionPage({
   searchParams: Promise<{ protection?: string; session_id?: string }>;
 }) {
   const { id } = await params;
+  const t = await getT();
   const sp = await searchParams;
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) redirect(`/login?callbackUrl=/transactions/${id}`);
@@ -92,14 +95,14 @@ export default async function TransactionPage({
   return (
     <div className="space-y-6">
       <Link href="/dashboard" className="text-sm text-brand-500 hover:underline">
-        ← Dashboard
+        ← {t("txn.dashboard")}
       </Link>
 
       <div className="card space-y-5">
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="text-xs uppercase tracking-wide text-slate-500">
-              Transaktion #{tx.id.slice(-6)}
+              {fill(t("txn.transactionNumber"), { id: tx.id.slice(-6) })}
             </div>
             <h1 className="page-title">
               {tx.totalEur.toFixed(2)} €
@@ -126,13 +129,13 @@ export default async function TransactionPage({
             </div>
           </div>
           <span className={`rounded-full px-3 py-1 text-xs font-medium ${statusStyle[tx.status]}`}>
-            {tx.status}
+            {t(`txn.status.${tx.status}`)}
           </span>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
           <div>
-            <div className="text-xs uppercase tracking-wide text-slate-500">Käufer</div>
+            <div className="text-xs uppercase tracking-wide text-slate-500">{t("txn.buyer")}</div>
             <div className="flex items-center gap-2">
               <Link
                 href={`/profile/${tx.buyer.pseudonym}`}
@@ -141,11 +144,11 @@ export default async function TransactionPage({
                 {tx.buyer.pseudonym}
               </Link>
               <TrustBadge tier={tx.buyer.trustTier} size="xs" />
-              {isBuyer && <span className="text-xs text-slate-400">(du)</span>}
+              {isBuyer && <span className="text-xs text-slate-400">{t("txn.you")}</span>}
             </div>
           </div>
           <div>
-            <div className="text-xs uppercase tracking-wide text-slate-500">Verkäufer</div>
+            <div className="text-xs uppercase tracking-wide text-slate-500">{t("txn.seller")}</div>
             <div className="flex items-center gap-2">
               <Link
                 href={`/profile/${tx.seller.pseudonym}`}
@@ -154,27 +157,27 @@ export default async function TransactionPage({
                 {tx.seller.pseudonym}
               </Link>
               <TrustBadge tier={tx.seller.trustTier} size="xs" />
-              {isSeller && <span className="text-xs text-slate-400">(du)</span>}
+              {isSeller && <span className="text-xs text-slate-400">{t("txn.you")}</span>}
             </div>
           </div>
           <div>
-            <div className="text-xs uppercase tracking-wide text-slate-500">Angelegt</div>
+            <div className="text-xs uppercase tracking-wide text-slate-500">{t("txn.created")}</div>
             <div className="text-sm">{tx.createdAt.toLocaleString("de-DE")}</div>
           </div>
           <div>
-            <div className="text-xs uppercase tracking-wide text-slate-500">Versendet</div>
+            <div className="text-xs uppercase tracking-wide text-slate-500">{t("txn.shipped")}</div>
             <div className="text-sm">
               {tx.shippedAt ? tx.shippedAt.toLocaleString("de-DE") : "–"}
             </div>
           </div>
           <div>
-            <div className="text-xs uppercase tracking-wide text-slate-500">Abgeschlossen</div>
+            <div className="text-xs uppercase tracking-wide text-slate-500">{t("txn.completed")}</div>
             <div className="text-sm">
               {tx.completedAt ? tx.completedAt.toLocaleString("de-DE") : "–"}
             </div>
           </div>
           <div>
-            <div className="text-xs uppercase tracking-wide text-slate-500">Storniert</div>
+            <div className="text-xs uppercase tracking-wide text-slate-500">{t("txn.canceled")}</div>
             <div className="text-sm">
               {tx.canceledAt ? tx.canceledAt.toLocaleString("de-DE") : "–"}
             </div>
@@ -201,22 +204,22 @@ export default async function TransactionPage({
       />
 
       <section className="space-y-3">
-        <h2 className="section-title">Bewertungen</h2>
+        <h2 className="section-title">{t("txn.reviews")}</h2>
         {otherReview && (
           <div className="card">
             <div className="mb-1 flex items-center gap-2 text-sm">
               <span className="font-medium">{otherReview.reviewer.pseudonym}</span>
-              <span className="text-slate-400">bewertet</span>
+              <span className="text-slate-400">{t("txn.rated")}</span>
               <span className="text-amber-500">{"★".repeat(otherReview.rating)}</span>
             </div>
             {otherReview.tags.length > 0 && (
               <div className="mb-2 flex flex-wrap gap-1">
-                {otherReview.tags.map((t) => (
+                {otherReview.tags.map((tag) => (
                   <span
-                    key={t}
+                    key={tag}
                     className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-700"
                   >
-                    {tagLabels[t] ?? t}
+                    {t(tagLabels[tag] ?? tag)}
                   </span>
                 ))}
               </div>
@@ -243,7 +246,7 @@ export default async function TransactionPage({
           />
         ) : (
           <div className="card text-sm text-slate-500">
-            Bewertung möglich nach Abschluss der Transaktion (Status COMPLETED).
+            {t("txn.reviewAfterCompletion")}
           </div>
         )}
       </section>

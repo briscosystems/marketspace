@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { getT } from "@/lib/i18n-server";
 import { AlternativesClient } from "./AlternativesClient";
 
 export default async function AlternativesPage({
@@ -9,6 +10,7 @@ export default async function AlternativesPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const t = await getT();
   const source = await prisma.listing.findUnique({
     where: { id },
     include: { seller: { select: { pseudonym: true, trustTier: true } } },
@@ -21,7 +23,7 @@ export default async function AlternativesPage({
         href={`/listings/${id}`}
         className="text-sm text-brand-500 hover:underline"
       >
-        ← zurück zum Listing
+        {t("alt.back")}
       </Link>
       <AlternativesClient
         sourceId={source.id}

@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { getT } from "@/lib/i18n-server";
+import { fill } from "@/lib/i18n";
 import { prisma } from "@/lib/prisma";
 import { LiveFilterForm } from "@/components/LiveFilterForm";
 import { Shield, Beaker, AlertTriangle, CheckCircle2, AlertOctagon } from "lucide-react";
@@ -13,38 +15,6 @@ type SearchParams = Promise<{
 
 export const metadata = {
   title: "Materialien & Inhaltsstoff-Verträglichkeit — Brisco Marketplace",
-};
-
-const CATEGORY_LABEL: Record<string, string> = {
-  ELASTOMER: "Elastomer (Dichtung)",
-  THERMOPLASTIC: "Thermoplast (Kunststoff)",
-  THERMOSET: "Duroplast",
-  METAL: "Metall",
-  COATING: "Beschichtung",
-};
-
-const INGREDIENT_CATEGORY_LABEL: Record<string, string> = {
-  AMINE: "Amin",
-  BIOCIDE: "Biozid",
-  FORMALDEHYDE_RELEASER: "Formaldehyd-Donor",
-  BASE_OIL_MINERAL: "Basisöl (mineralisch)",
-  BASE_OIL_ESTER: "Basisöl (Ester)",
-  BASE_OIL_PAO: "Basisöl (PAO)",
-  BASE_OIL_PAG: "Basisöl (PAG)",
-  EMULSIFIER: "Emulgator/Tensid",
-  EP_ADDITIVE_S: "EP-Additiv (S)",
-  EP_ADDITIVE_P: "EP-Additiv (P)",
-  EP_ADDITIVE_CL: "EP-Additiv (Cl-Paraffin)",
-  CORROSION_INHIBITOR: "Korrosionsinhibitor",
-  BORATE: "Borat/Borsäure",
-  CHELATE: "Chelat",
-  GLYCOL_ETHER: "Glykolether",
-  SOLVENT_AROMATIC: "Lösemittel (aromat.)",
-  SOLVENT_POLAR: "Lösemittel (polar)",
-  WATER: "Wasser",
-  ACID: "Säure",
-  ALKALI: "Lauge",
-  OTHER: "Andere",
 };
 
 const RATING_STYLE: Record<string, { icon: typeof CheckCircle2; bg: string; text: string; label: string }> = {
@@ -75,6 +45,7 @@ const RATING_STYLE: Record<string, { icon: typeof CheckCircle2; bg: string; text
 };
 
 export default async function MaterialsPage({ searchParams }: { searchParams: SearchParams }) {
+  const t = await getT();
   const sp = await searchParams;
   const view = sp.view ?? "material";
 
@@ -92,12 +63,10 @@ export default async function MaterialsPage({ searchParams }: { searchParams: Se
       <div>
         <h1 className="flex items-center gap-2 page-title">
           <Shield size={24} className="text-brand-600" />
-          Materialien & Inhaltsstoff-Verträglichkeit
+          {t("mat.pageTitle")}
         </h1>
         <p className="mt-1 text-sm text-slate-600">
-          Welche Inhaltsstoffe (Amine, Biozide, Basisöle, …) greifen welche Dichtungs- und
-          Kunststoffwerkstoffe an? {materials.length} Materialien, {ingredients.length} Inhaltsstoffe,
-          Verträglichkeitsmatrix auf Basis von ISM Compatibility Chart, Trelleborg und O-Ring Prüflabor Richter.
+          {fill(t("mat.pageLead"), { materials: materials.length, ingredients: ingredients.length })}
         </p>
       </div>
 
@@ -109,7 +78,7 @@ export default async function MaterialsPage({ searchParams }: { searchParams: Se
             view === "material" ? "bg-brand-600 text-white" : "bg-white text-slate-700 hover:bg-slate-50"
           }`}
         >
-          <Shield size={14} className="mr-1 inline" /> Nach Material
+          <Shield size={14} className="mr-1 inline" /> {t("mat.byMaterial")}
         </Link>
         <Link
           href="/materials?view=ingredient"
@@ -117,7 +86,7 @@ export default async function MaterialsPage({ searchParams }: { searchParams: Se
             view === "ingredient" ? "bg-brand-600 text-white" : "bg-white text-slate-700 hover:bg-slate-50"
           }`}
         >
-          <Beaker size={14} className="mr-1 inline" /> Nach Inhaltsstoff
+          <Beaker size={14} className="mr-1 inline" /> {t("mat.byIngredient")}
         </Link>
       </div>
 
@@ -135,7 +104,7 @@ export default async function MaterialsPage({ searchParams }: { searchParams: Se
                   <div className="text-sm text-slate-600">{m.name}</div>
                 </div>
                 <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-700">
-                  {CATEGORY_LABEL[m.category] ?? m.category}
+                  {t(`matcat.${m.category}`)}
                 </span>
               </div>
               {m.description && (
@@ -143,7 +112,7 @@ export default async function MaterialsPage({ searchParams }: { searchParams: Se
               )}
               {m.temperatureMinC !== null && m.temperatureMaxC !== null && (
                 <div className="mt-2 text-xs text-slate-500">
-                  Einsatztemperatur: {m.temperatureMinC} °C bis {m.temperatureMaxC} °C
+                  {fill(t("mat.tempRange"), { min: m.temperatureMinC, max: m.temperatureMaxC })}
                 </div>
               )}
             </Link>
@@ -175,7 +144,7 @@ export default async function MaterialsPage({ searchParams }: { searchParams: Se
                   <p className="mt-1 text-sm text-slate-600">{i.functionInFluid}</p>
                 )}
                 <div className="mt-1 text-xs text-slate-500">
-                  {INGREDIENT_CATEGORY_LABEL[i.category]} · CAS{" "}
+                  {t(`ingcat.${i.category}`)} · CAS{" "}
                   {i.casNumbers.length > 0 ? i.casNumbers.join(", ") : "—"}
                   {i.typicalConcentrationPct ? ` · typ. ${i.typicalConcentrationPct}%` : ""}
                 </div>
@@ -192,6 +161,7 @@ export default async function MaterialsPage({ searchParams }: { searchParams: Se
 }
 
 async function CompatibilityMatrix() {
+  const t = await getT();
   const [materials, ingredients, compat] = await Promise.all([
     prisma.material.findMany({
       orderBy: [{ category: "asc" }, { shortName: "asc" }],
@@ -211,12 +181,12 @@ async function CompatibilityMatrix() {
   return (
     <div className="card space-y-3">
       <div className="flex items-baseline justify-between">
-        <h2 className="section-title">Vollständige Verträglichkeitsmatrix</h2>
+        <h2 className="section-title">{t("mat.matrixTitle")}</h2>
         <div className="flex gap-2 text-xs">
-          <span className="rounded bg-emerald-100 px-1.5 py-0.5 text-emerald-700">empfohlen</span>
-          <span className="rounded bg-emerald-50 px-1.5 py-0.5 text-emerald-700">verträglich</span>
-          <span className="rounded bg-amber-100 px-1.5 py-0.5 text-amber-800">Vorsicht</span>
-          <span className="rounded bg-red-100 px-1.5 py-0.5 text-red-700">ungeeignet</span>
+          <span className="rounded bg-emerald-100 px-1.5 py-0.5 text-emerald-700">{t("compat.RECOMMENDED")}</span>
+          <span className="rounded bg-emerald-50 px-1.5 py-0.5 text-emerald-700">{t("compat.COMPATIBLE")}</span>
+          <span className="rounded bg-amber-100 px-1.5 py-0.5 text-amber-800">{t("compat.CAUTION")}</span>
+          <span className="rounded bg-red-100 px-1.5 py-0.5 text-red-700">{t("compat.UNSUITABLE")}</span>
         </div>
       </div>
       <div className="overflow-x-auto">
@@ -224,7 +194,7 @@ async function CompatibilityMatrix() {
           <thead>
             <tr>
               <th className="sticky left-0 z-10 border-b border-slate-200 bg-white px-2 py-2 text-left">
-                Inhaltsstoff ↓ Material →
+                {t("mat.colHeader")}
               </th>
               {materials.map((m) => (
                 <th
@@ -245,7 +215,7 @@ async function CompatibilityMatrix() {
                 <td className="sticky left-0 z-10 border-b border-slate-100 bg-white px-2 py-1.5 text-left">
                   <div className="font-medium">{i.shortName ?? i.name}</div>
                   <div className="text-[10px] text-slate-500">
-                    {INGREDIENT_CATEGORY_LABEL[i.category]}
+                    {t(`ingcat.${i.category}`)}
                   </div>
                 </td>
                 {materials.map((m) => {
@@ -274,9 +244,7 @@ async function CompatibilityMatrix() {
         </table>
       </div>
       <p className="text-xs text-slate-500">
-        Quellen: ISM Compatibility Chart (Dec 2018), Trelleborg Chemical Compatibility DB,
-        Parker Praedifa O-Ring Handbook, O-Ring Prüflabor Richter Schadensanalyse.
-        Bewertungen indikativ — vor Auswahl Versuche bei Anwendungstemperatur durchführen.
+        {t("mat.sources")}
       </p>
     </div>
   );

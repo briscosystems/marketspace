@@ -7,8 +7,11 @@ import { TrustBadge } from "@/components/TrustBadge";
 import { QuickStatusToggle } from "@/components/QuickStatusToggle";
 import { ListingCard } from "@/components/ListingCard";
 import { ProductImage } from "@/components/ProductImage";
+import { getT } from "@/lib/i18n-server";
+import { fill } from "@/lib/i18n";
 
 export default async function DashboardPage() {
+  const t = await getT();
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) redirect("/login?callbackUrl=/dashboard");
 
@@ -97,9 +100,9 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="page-title">Dashboard</h1>
+        <h1 className="page-title">{t("dash.title")}</h1>
         <p className="flex items-center gap-2 text-sm text-slate-600">
-          Eingeloggt als{" "}
+          {t("dash.loggedInAs")}{" "}
           <Link href={`/profile/${user?.pseudonym}`} className="font-medium hover:text-brand-500">
             {user?.pseudonym}
           </Link>
@@ -110,45 +113,45 @@ export default async function DashboardPage() {
 
       <div className="grid gap-4 md:grid-cols-5">
         <div className="card">
-          <div className="text-xs uppercase tracking-wide text-slate-500">Listings</div>
+          <div className="text-xs uppercase tracking-wide text-slate-500">{t("dash.tileListings")}</div>
           <div className="text-2xl font-semibold text-brand-500">{listings.length}</div>
         </div>
         <div className="card">
-          <div className="text-xs uppercase tracking-wide text-slate-500">Anfragen</div>
+          <div className="text-xs uppercase tracking-wide text-slate-500">{t("dash.tileRequests")}</div>
           <div className="text-2xl font-semibold text-brand-500">{myRfqs.length}</div>
         </div>
         <div className="card">
-          <div className="text-xs uppercase tracking-wide text-slate-500">Angebote</div>
+          <div className="text-xs uppercase tracking-wide text-slate-500">{t("dash.tileOffers")}</div>
           <div className="text-2xl font-semibold text-brand-500">{myOffers.length}</div>
         </div>
         <div className="card">
-          <div className="text-xs uppercase tracking-wide text-slate-500">Transaktionen</div>
+          <div className="text-xs uppercase tracking-wide text-slate-500">{t("dash.tileTransactions")}</div>
           <div className="text-2xl font-semibold text-brand-500">{myTxns.length}</div>
         </div>
         <Link
           href="/conversations"
           className="card hover:border-brand-500"
         >
-          <div className="text-xs uppercase tracking-wide text-slate-500">Konversationen</div>
+          <div className="text-xs uppercase tracking-wide text-slate-500">{t("dash.tileConversations")}</div>
           <div className="text-2xl font-semibold text-brand-500">{unreadCount}</div>
         </Link>
       </div>
 
       {(matchingListings.length > 0 || matchingRfqs.length > 0) && (
         <section className="space-y-4">
-          <h2 className="section-title">Für dich</h2>
+          <h2 className="section-title">{t("dash.forYou")}</h2>
           <div className="grid gap-6 md:grid-cols-2">
             {matchingListings.length > 0 && (
               <div>
                 <div className="mb-2 flex items-center justify-between">
                   <h3 className="font-medium">
-                    Neue Listings in deinen Kategorien
+                    {t("dash.newListingsInCategories")}
                   </h3>
                   <Link
                     href="/listings"
                     className="text-xs text-brand-500 hover:underline"
                   >
-                    alle →
+                    {t("dash.all")}
                   </Link>
                 </div>
                 <div className="space-y-3">
@@ -162,10 +165,10 @@ export default async function DashboardPage() {
               <div>
                 <div className="mb-2 flex items-center justify-between">
                   <h3 className="font-medium">
-                    Offene Anfragen zu deinen Herstellern
+                    {t("dash.openRequestsForMfrs")}
                   </h3>
                   <Link href="/rfqs" className="text-xs text-brand-500 hover:underline">
-                    alle →
+                    {t("dash.all")}
                   </Link>
                 </div>
                 <div className="card divide-y divide-slate-200">
@@ -182,12 +185,12 @@ export default async function DashboardPage() {
                           {r.quantity.toLocaleString("de-DE")} {r.quantityUnit}
                         </div>
                         <div className="text-xs text-slate-500">
-                          {r.locationRegion} · Frist{" "}
+                          {r.locationRegion} · {t("dash.deadline")}{" "}
                           {r.deadline.toLocaleDateString("de-DE")} · {r._count.offers}{" "}
-                          Angebot(e)
+                          {t("dash.offersCount")}
                         </div>
                       </div>
-                      <span className="text-xs text-brand-500">Angebot abgeben →</span>
+                      <span className="text-xs text-brand-500">{t("dash.makeOffer")}</span>
                     </Link>
                   ))}
                 </div>
@@ -199,19 +202,19 @@ export default async function DashboardPage() {
 
       <section>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="section-title">Ich biete an</h2>
+          <h2 className="section-title">{t("dash.iOffer")}</h2>
           <Link
             href="/listings/new"
             className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-blue-700"
           >
-            Neues Angebot
+            {t("dash.newOffer")}
           </Link>
         </div>
         {listings.length === 0 ? (
           <div className="card text-center text-slate-500">
-            Du hast noch nichts angeboten.{" "}
+            {t("dash.emptyOffersLead")}{" "}
             <Link href="/listings/new" className="text-blue-600 hover:underline">
-              Erstes Angebot einstellen
+              {t("dash.createFirstOffer")}
             </Link>
           </div>
         ) : (
@@ -235,7 +238,7 @@ export default async function DashboardPage() {
                   href={`/listings/${l.id}/edit`}
                   className="text-xs text-slate-500 hover:text-brand-500"
                 >
-                  Bearbeiten
+                  {t("dash.edit")}
                 </Link>
               </div>
             ))}
@@ -245,16 +248,16 @@ export default async function DashboardPage() {
 
       <section>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="section-title">Ich suche</h2>
+          <h2 className="section-title">{t("dash.iSeek")}</h2>
           <Link
             href="/rfqs/new"
             className="inline-flex items-center gap-1.5 rounded-lg bg-amber-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-amber-700"
           >
-            Neuer Bedarf
+            {t("dash.newRequest")}
           </Link>
         </div>
         {myRfqs.length === 0 ? (
-          <div className="card text-sm text-slate-500">Du suchst aktuell nichts.</div>
+          <div className="card text-sm text-slate-500">{t("dash.emptySeeking")}</div>
         ) : (
           <div className="card divide-y divide-slate-200">
             {myRfqs.map((r) => (
@@ -268,10 +271,10 @@ export default async function DashboardPage() {
                     {r.productType} · {r.quantity.toLocaleString("de-DE")} {r.quantityUnit}
                   </div>
                   <div className="text-xs text-slate-500">
-                    Frist {r.deadline.toLocaleDateString("de-DE")} · {r._count.offers} Angebot(e)
+                    {t("dash.deadline")} {r.deadline.toLocaleDateString("de-DE")} · {r._count.offers} {t("dash.offersCount")}
                   </div>
                 </div>
-                <span className="text-xs text-slate-500">{r.status}</span>
+                <span className="text-xs text-slate-500">{t(`dash.rfqstatus.${r.status}`)}</span>
               </Link>
             ))}
           </div>
@@ -279,30 +282,30 @@ export default async function DashboardPage() {
       </section>
 
       <section>
-        <h2 className="mb-3 section-title">Transaktionen</h2>
+        <h2 className="mb-3 section-title">{t("dash.tileTransactions")}</h2>
         {myTxns.length === 0 ? (
-          <div className="card text-sm text-slate-500">Noch keine Transaktionen.</div>
+          <div className="card text-sm text-slate-500">{t("dash.emptyTransactions")}</div>
         ) : (
           <div className="card divide-y divide-slate-200">
-            {myTxns.map((t) => {
-              const counterpart = t.buyerId === me ? t.seller : t.buyer;
-              const role = t.buyerId === me ? "Käufer" : "Verkäufer";
+            {myTxns.map((tx) => {
+              const counterpart = tx.buyerId === me ? tx.seller : tx.buyer;
+              const role = tx.buyerId === me ? t("dash.roleBuyer") : t("dash.roleSeller");
               return (
                 <Link
-                  key={t.id}
-                  href={`/transactions/${t.id}`}
+                  key={tx.id}
+                  href={`/transactions/${tx.id}`}
                   className="flex items-center justify-between py-3 first:pt-0 last:pb-0 hover:text-brand-500"
                 >
                   <div className="min-w-0">
                     <div className="font-medium">
-                      {t.totalEur.toFixed(2)} € · {t.quantity.toLocaleString("de-DE")} {t.quantityUnit}
+                      {tx.totalEur.toFixed(2)} € · {tx.quantity.toLocaleString("de-DE")} {tx.quantityUnit}
                     </div>
                     <div className="text-xs text-slate-500">
-                      mit {counterpart.pseudonym} ({role}) · {t.createdAt.toLocaleDateString("de-DE")}
+                      {t("dash.withPartner")} {counterpart.pseudonym} ({role}) · {tx.createdAt.toLocaleDateString("de-DE")}
                     </div>
                   </div>
-                  <span className={`rounded-full px-2.5 py-0.5 text-xs ${txStatusStyle[t.status]}`}>
-                    {t.status}
+                  <span className={`rounded-full px-2.5 py-0.5 text-xs ${txStatusStyle[tx.status]}`}>
+                    {t(`dash.txstatus.${tx.status}`)}
                   </span>
                 </Link>
               );
@@ -312,9 +315,9 @@ export default async function DashboardPage() {
       </section>
 
       <section>
-        <h2 className="mb-3 section-title">Eigene Angebote</h2>
+        <h2 className="mb-3 section-title">{t("dash.myOffersTitle")}</h2>
         {myOffers.length === 0 ? (
-          <div className="card text-sm text-slate-500">Du hast noch keine Angebote abgegeben.</div>
+          <div className="card text-sm text-slate-500">{t("dash.emptyMyOffers")}</div>
         ) : (
           <div className="card divide-y divide-slate-200">
             {myOffers.map((o) => (
@@ -325,13 +328,13 @@ export default async function DashboardPage() {
               >
                 <div className="min-w-0">
                   <div className="font-medium">
-                    {o.rfq.productType} · Angebot {o.priceEur.toFixed(2)} €
+                    {o.rfq.productType} · {t("dash.offerLabel")} {o.priceEur.toFixed(2)} €
                   </div>
                   <div className="text-xs text-slate-500">
-                    {o.quantity.toLocaleString("de-DE")} {o.quantityUnit} · Lieferung {o.deliveryDays} Tage
+                    {o.quantity.toLocaleString("de-DE")} {o.quantityUnit} · {fill(t("dash.deliveryDays"), { days: o.deliveryDays })}
                   </div>
                 </div>
-                <span className="text-xs text-slate-500">{o.status}</span>
+                <span className="text-xs text-slate-500">{t(`dash.offerstatus.${o.status}`)}</span>
               </Link>
             ))}
           </div>

@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useLocale } from "@/components/LocaleProvider";
 import { useState } from "react";
 import { withBasePath } from "@/lib/base-path";
 
 export default function ForgotPasswordPage() {
+  const { t } = useLocale();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -26,28 +28,25 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="mx-auto max-w-md">
-      <h1 className="mb-2 page-title">Passwort vergessen</h1>
+      <h1 className="mb-2 page-title">{t("fp.title")}</h1>
       <p className="mb-6 text-sm text-slate-600">
-        Gib deine E-Mail-Adresse ein. Existiert ein Konto dazu, schicken wir dir
-        einen Link zum Zurücksetzen.
+        {t("fp.lead")}
       </p>
 
       {sent ? (
         <div className="card space-y-4">
           <div className="rounded bg-emerald-50 px-3 py-3 text-sm text-emerald-800">
-            Wenn ein Konto zu <strong>{email}</strong> existiert, haben wir dir einen
-            Link zum Zurücksetzen geschickt. Bitte prüfe dein Postfach — auch den
-            Spam-Ordner. Der Link ist 1 Stunde gültig.
+            {t("fp.sentBefore")}<strong>{email}</strong>{t("fp.sentAfter")}
           </div>
 
           <Link href="/login" className="block text-center text-sm text-brand-500 hover:underline">
-            Zurück zur Anmeldung
+            {t("fp.backToLogin")}
           </Link>
         </div>
       ) : (
         <form onSubmit={onSubmit} className="card space-y-4">
           <div>
-            <label className="label" htmlFor="email">E-Mail</label>
+            <label className="label" htmlFor="email">{t("auth.email")}</label>
             <input
               id="email"
               type="email"
@@ -58,11 +57,11 @@ export default function ForgotPasswordPage() {
             />
           </div>
           <button type="submit" className="btn-primary w-full" disabled={loading}>
-            {loading ? "Wird gesendet …" : "Link anfordern"}
+            {loading ? t("fp.sending") : t("fp.request")}
           </button>
           <p className="text-center text-sm text-slate-600">
             <Link href="/login" className="text-brand-500 hover:underline">
-              Zurück zur Anmeldung
+              {t("fp.backToLogin")}
             </Link>
           </p>
         </form>

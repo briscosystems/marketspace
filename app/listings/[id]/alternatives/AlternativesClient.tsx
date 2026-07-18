@@ -17,6 +17,8 @@ import { KssIssueSelect } from "@/components/KssIssueSelect";
 import { CertInput } from "@/components/CertInput";
 import type { KssIssueId } from "@/lib/kss-issues";
 import { withBasePath } from "@/lib/base-path";
+import { useLocale } from "@/components/LocaleProvider";
+import { fill } from "@/lib/i18n";
 
 type AlternativeRanking = {
   listingId: string;
@@ -69,12 +71,12 @@ const fitStyles: Record<
   { label: string; classes: string }
 > = {
   excellent: {
-    label: "Sehr gut passend",
+    label: "alt.fit.excellent",
     classes: "bg-emerald-100 text-emerald-800 ring-emerald-300",
   },
-  good: { label: "Gut passend", classes: "bg-emerald-100 text-emerald-800 ring-emerald-300" },
-  fair: { label: "Eingeschränkt passend", classes: "bg-amber-100 text-amber-800 ring-amber-300" },
-  weak: { label: "Wenig passend", classes: "bg-red-100 text-red-800 ring-red-300" },
+  good: { label: "alt.fit.good", classes: "bg-emerald-100 text-emerald-800 ring-emerald-300" },
+  fair: { label: "alt.fit.fair", classes: "bg-amber-100 text-amber-800 ring-amber-300" },
+  weak: { label: "alt.fit.weak", classes: "bg-red-100 text-red-800 ring-red-300" },
 };
 
 export function AlternativesClient(props: {
@@ -88,6 +90,7 @@ export function AlternativesClient(props: {
   sourcePackaging: string;
   sourceCertificates: string[];
 }) {
+  const { t } = useLocale();
   const [criteria, setCriteria] = useState({
     sameProductType: true,
     sameChemistry: true,
@@ -160,7 +163,7 @@ export function AlternativesClient(props: {
         setEnriched([]);
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Fehler");
+      setError(e instanceof Error ? e.message : t("alt.errorGeneric"));
     } finally {
       setLoading(false);
     }
@@ -177,49 +180,46 @@ export function AlternativesClient(props: {
         <div className="p-6">
           <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-slate-500">
             <Sparkles size={14} className="text-violet-500" />
-            <span>KI-Alternativsuche</span>
+            <span>{t("alt.eyebrow")}</span>
           </div>
           <h1 className="mt-1 page-title">
-            Alternative finden zu{" "}
+            {t("alt.headingTo")}{" "}
             <span style={{ color: readableOnLight(colors) }}>
               {props.sourceManufacturer}
             </span>{" "}
             {props.sourceProductName}
           </h1>
           <p className="mt-1 text-sm text-slate-600">
-            Wähle deine Must-have-Kriterien. Claude vergleicht die aktiven Angebote anhand
-            der Sicherheitsdatenblätter und bewertet jede Alternative mit einem
-            Match-Index von 0–100&nbsp;%. Es werden immer Alternativen angezeigt —
-            Kandidaten, die Kriterien verletzen, sind entsprechend niedriger bewertet.
+            {t("alt.intro")}
           </p>
         </div>
 
         <div className="grid gap-6 border-t border-slate-200 bg-slate-50/50 p-6 md:grid-cols-2">
           <div>
             <div className="mb-2 text-sm font-semibold text-slate-700">
-              Was muss übereinstimmen?
+              {t("alt.mustMatch")}
             </div>
             <div className="space-y-2">
               <Toggle
                 checked={criteria.sameProductType}
                 onChange={(v) => setCriteria({ ...criteria, sameProductType: v })}
-                label="Gleicher Produkttyp"
+                label={t("alt.sameProductType")}
                 hint={props.sourceProductType}
               />
               <Toggle
                 checked={criteria.sameChemistry}
                 onChange={(v) => setCriteria({ ...criteria, sameChemistry: v })}
-                label="Gleiche Chemie-Basis"
+                label={t("alt.sameChemistry")}
                 hint={props.sourceChemistry}
               />
               <Toggle
                 checked={criteria.sameViscosity}
                 onChange={(v) => setCriteria({ ...criteria, sameViscosity: v })}
-                label="Gleiche Viskosität"
+                label={t("alt.sameViscosity")}
                 hint={
                   props.sourceIsoViscosity
                     ? `ISO VG ${props.sourceIsoViscosity}`
-                    : "Quelle hat keine ISO-VG-Angabe"
+                    : t("alt.noIsoVg")
                 }
                 disabled={!props.sourceIsoViscosity}
               />
@@ -228,13 +228,13 @@ export function AlternativesClient(props: {
                 onChange={(v) =>
                   setCriteria({ ...criteria, sameApplicationArea: v })
                 }
-                label="Gleicher Anwendungsbereich"
+                label={t("alt.sameApplication")}
                 hint={props.sourceApplicationArea}
               />
               <Toggle
                 checked={criteria.samePackaging}
                 onChange={(v) => setCriteria({ ...criteria, samePackaging: v })}
-                label="Gleiche Verpackungsform"
+                label={t("alt.samePackaging")}
                 hint={props.sourcePackaging}
               />
             </div>
@@ -242,17 +242,17 @@ export function AlternativesClient(props: {
 
           <div>
             <div className="mb-2 text-sm font-semibold text-slate-700">
-              Pflicht-Freigaben/Normen
+              {t("alt.certsTitle")}
             </div>
             <CertInput
               value={requiredCerts}
               onChange={setRequiredCerts}
-              placeholder="z.B. DIN 51524-2, Bosch Rexroth"
+              placeholder={t("alt.phCerts")}
             />
             {props.sourceCertificates.length > 0 && (
               <div className="mt-2">
                 <div className="mb-1 text-xs text-slate-500">
-                  Schnellauswahl aus Quell-Listing:
+                  {t("alt.quickSelect")}
                 </div>
                 <div className="flex flex-wrap gap-1">
                   {props.sourceCertificates.map((c) => {
@@ -283,8 +283,7 @@ export function AlternativesClient(props: {
               </div>
             )}
             <p className="mt-2 text-xs text-slate-500">
-              Tipp: Kriterien wirken als Präferenz — Angebote, die abweichen, fallen
-              nicht raus, sondern bekommen einen niedrigeren Match-Index (max. 49&nbsp;%).
+              {t("alt.tipPreference")}
             </p>
           </div>
         </div>
@@ -293,40 +292,38 @@ export function AlternativesClient(props: {
         <div className="space-y-4 border-t border-slate-200 bg-amber-50/40 p-6">
           <div>
             <div className="text-sm font-semibold text-slate-700">
-              Werkstoff &amp; Pain Points
+              {t("alt.materialPainTitle")}
             </div>
             <p className="mt-0.5 text-xs text-slate-500">
-              Diese Infos fließen in den KI-Vergleich ein: Claude sucht in den
-              SDS-Texten nach Indikatoren für deine Pain Points und den genannten
-              Werkstoff.
+              {t("alt.materialPainHint")}
             </p>
           </div>
           <div>
-            <label className="label">Werkstoff der Bearbeitung (optional)</label>
+            <label className="label">{t("alt.materialLabel")}</label>
             <input
               type="text"
               value={workpieceMaterial}
               onChange={(e) => setWorkpieceMaterial(e.target.value)}
-              placeholder="Stahl 1.2379 · Aluminium AlMg3 · Messing CuZn37 …"
+              placeholder={t("alt.phMaterial")}
               className="input"
             />
           </div>
           <KssIssueSelect
             value={avoidIssues}
             onChange={setAvoidIssues}
-            title="Welche Probleme MUSS die Alternative vermeiden?"
-            hint="Mehrfachauswahl — z.B. Schaumbildung, Hautreizung, Verfärbung Buntmetall. Wird in den KI-Vergleich übernommen."
+            title={t("alt.issuesTitle")}
+            hint={t("alt.issuesHint")}
           />
 
           {/* Automatisierungs-Anforderungen */}
           <div className="rounded-lg border border-blue-200 bg-blue-50/40 p-3">
             <div className="mb-2 text-sm font-semibold text-slate-700">
-              Automatisierungs-Anforderungen
+              {t("alt.autoReqTitle")}
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <label className="label">
-                  Mindest-Automation-Score (1–5)
+                  {t("alt.minAutoScore")}
                 </label>
                 <div className="flex gap-1">
                   {[0, 2, 3, 4, 5].map((s) => (
@@ -340,20 +337,20 @@ export function AlternativesClient(props: {
                           : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                       }`}
                     >
-                      {s === 0 ? "egal" : `≥ ${s}`}
+                      {s === 0 ? t("alt.any") : `≥ ${s}`}
                     </button>
                   ))}
                 </div>
                 <p className="mt-1 text-xs text-slate-500">
-                  4 = inline-fähig per Refraktometer · 5 = Dosimetrix / volumetrisch
+                  {t("alt.autoScoreHint")}
                 </p>
               </div>
               <div>
-                <label className="label">Glykol-Frei zwingend?</label>
+                <label className="label">{t("alt.glycolFree")}</label>
                 <div className="flex gap-2">
                   {[
-                    { v: false, label: "Egal" },
-                    { v: true, label: "Ja, glykol-frei" },
+                    { v: false, label: t("alt.glycolAny") },
+                    { v: true, label: t("alt.glycolYes") },
                   ].map((opt) => (
                     <button
                       key={String(opt.v)}
@@ -370,8 +367,7 @@ export function AlternativesClient(props: {
                   ))}
                 </div>
                 <p className="mt-1 text-xs text-slate-500">
-                  Glykolhaltige KSS bilden Filme auf Refraktometer-Sensoren — bei
-                  Vollautomation lieber ausschließen.
+                  {t("alt.glycolHint")}
                 </p>
               </div>
             </div>
@@ -382,11 +378,11 @@ export function AlternativesClient(props: {
           <div className="flex items-center gap-2 text-xs text-slate-500">
             <Bot size={14} />
             <span>
-              Claude vergleicht zusätzlich Inhalte der gefundenen Sicherheitsdatenblätter
+              {t("alt.claudeNote")}
             </span>
           </div>
           <button onClick={search} disabled={loading} className="btn-primary">
-            {loading ? "Analysiere …" : "Alternativen finden"}
+            {loading ? t("alt.analyzing") : t("alt.findButton")}
           </button>
         </div>
       </div>
@@ -401,15 +397,15 @@ export function AlternativesClient(props: {
         <div className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="section-title">
-              {enriched.length} Alternative(n) gefunden
+              {fill(t("alt.foundCount"), { n: enriched.length })}
             </h2>
             <div className="flex items-center gap-2">
               {result.credits && result.credits.charged > 0 && (
                 <span className="chip bg-amber-50 text-amber-800 ring-1 ring-amber-200">
                   <Coins size={12} className="mr-1 inline" />
-                  {result.credits.charged} Credit
+                  {result.credits.charged} {t("alt.credit")}
                   {result.credits.balance !== null
-                    ? ` · Rest: ${result.credits.balance}`
+                    ? ` · ${t("alt.rest")} ${result.credits.balance}`
                     : ""}
                 </span>
               )}
@@ -420,7 +416,7 @@ export function AlternativesClient(props: {
                     : "bg-slate-100 text-slate-600 ring-1 ring-slate-200"
                 }`}
               >
-                {result.modelUsed === "claude" ? "✨ KI-Bewertung" : "Regelbasiert"}
+                {result.modelUsed === "claude" ? t("alt.aiRating") : t("alt.ruleBased")}
               </span>
             </div>
           </div>
@@ -428,7 +424,7 @@ export function AlternativesClient(props: {
             <p className="rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-900 ring-1 ring-amber-200">
               {result.credits.notice}{" "}
               <Link href="/mitgliedschaft" className="font-medium underline">
-                Zu Mitgliedschaft &amp; Credits
+                {t("alt.toMembership")}
               </Link>
             </p>
           )}
@@ -444,18 +440,18 @@ export function AlternativesClient(props: {
                 alt={alt}
                 rank={i + 1}
                 onOpen={() => setSelected(alt)}
+                t={t}
               />
             ))}
           </div>
           <p className="text-xs text-slate-500">
-            Zeile anklicken für Details, Begründung und Angebot — das Detail-Panel
-            öffnet sich rechts.
+            {t("alt.rowClickHint")}
           </p>
         </div>
       )}
 
       {selected && (
-        <DetailSlideOver alt={selected} onClose={() => setSelected(null)} />
+        <DetailSlideOver alt={selected} onClose={() => setSelected(null)} t={t} />
       )}
     </div>
   );
@@ -523,10 +519,12 @@ function AlternativeRow({
   alt,
   rank,
   onOpen,
+  t,
 }: {
   alt: Alternative;
   rank: number;
   onOpen: () => void;
+  t: (k: string) => string;
 }) {
   const fit = fitStyles[alt.fit];
   const l = alt.listing;
@@ -544,14 +542,14 @@ function AlternativeRow({
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
           <span className="font-semibold text-slate-900">
-            {l ? `${l.manufacturer} ${l.productName}` : `Angebot #${alt.listingId.slice(-6)}`}
+            {l ? `${l.manufacturer} ${l.productName}` : fill(t("alt.offerNr"), { id: alt.listingId.slice(-6) })}
           </span>
-          <span className={`chip ring-1 ${fit.classes} text-[11px]`}>{fit.label}</span>
+          <span className={`chip ring-1 ${fit.classes} text-[11px]`}>{t(fit.label)}</span>
         </div>
         {l && (
           <div className="mt-0.5 text-xs text-slate-500">
             {l.productType} · ISO VG {l.isoViscosity ?? "–"} · {l.locationRegion}
-            {l.priceEur ? ` · ${l.priceEur.toFixed(2)} €` : " · Preis auf Anfrage"}
+            {l.priceEur ? ` · ${l.priceEur.toFixed(2)} €` : ` · ${t("alt.priceOnRequest")}`}
           </div>
         )}
         <p className="mt-1 line-clamp-2 text-sm text-slate-600">{alt.summary}</p>
@@ -563,7 +561,15 @@ function AlternativeRow({
 }
 
 /** Detail-Panel — schiebt sich von rechts über die Seite (wie im Browse-Konzept) */
-function DetailSlideOver({ alt, onClose }: { alt: Alternative; onClose: () => void }) {
+function DetailSlideOver({
+  alt,
+  onClose,
+  t,
+}: {
+  alt: Alternative;
+  onClose: () => void;
+  t: (k: string) => string;
+}) {
   const fit = fitStyles[alt.fit];
   const l = alt.listing;
   const colors = l ? brandColors(l.manufacturer) : null;
@@ -586,18 +592,18 @@ function DetailSlideOver({ alt, onClose }: { alt: Alternative; onClose: () => vo
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <div className="text-xs uppercase tracking-wide text-slate-500">
-                Alternative im Detail
+                {t("alt.detailEyebrow")}
               </div>
               <h3 className="mt-0.5 truncate text-lg font-bold text-slate-900">
-                {l ? `${l.manufacturer} ${l.productName}` : `Angebot #${alt.listingId.slice(-6)}`}
+                {l ? `${l.manufacturer} ${l.productName}` : fill(t("alt.offerNr"), { id: alt.listingId.slice(-6) })}
               </h3>
-              <span className={`chip mt-1 ring-1 ${fit.classes} text-xs`}>{fit.label}</span>
+              <span className={`chip mt-1 ring-1 ${fit.classes} text-xs`}>{t(fit.label)}</span>
             </div>
             <button
               type="button"
               onClick={onClose}
               className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
-              aria-label="Schließen"
+              aria-label={t("alt.close")}
             >
               <X size={20} />
             </button>
@@ -608,7 +614,7 @@ function DetailSlideOver({ alt, onClose }: { alt: Alternative; onClose: () => vo
           {/* Match-Index groß */}
           <section className="rounded-xl border border-slate-200 p-4">
             <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Match-Index zum Ausgangsprodukt
+              {t("alt.matchIndexTitle")}
             </div>
             <MatchMeter score={alt.score} size="lg" />
             <p className="mt-3 text-sm leading-relaxed text-slate-700">{alt.summary}</p>
@@ -618,21 +624,21 @@ function DetailSlideOver({ alt, onClose }: { alt: Alternative; onClose: () => vo
           {l && (
             <section className="rounded-xl border border-slate-200 p-4">
               <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Angebots-Daten
+                {t("alt.offerData")}
               </div>
               <dl className="space-y-1.5 text-sm">
-                <DetailRow label="Produkttyp" value={l.productType} />
-                <DetailRow label="Chemie" value={l.chemistry} />
-                <DetailRow label="Viskosität" value={l.isoViscosity ? `ISO VG ${l.isoViscosity}` : "–"} />
-                <DetailRow label="Anwendung" value={l.applicationArea} />
-                <DetailRow label="Menge" value={`${l.quantity.toLocaleString("de-CH")} ${l.quantityUnit}`} />
-                <DetailRow label="Verpackung" value={l.packaging} />
-                <DetailRow label="Region" value={l.locationRegion} />
+                <DetailRow label={t("alt.rowProductType")} value={l.productType} />
+                <DetailRow label={t("alt.rowChemistry")} value={l.chemistry} />
+                <DetailRow label={t("alt.rowViscosity")} value={l.isoViscosity ? `ISO VG ${l.isoViscosity}` : "–"} />
+                <DetailRow label={t("alt.rowApplication")} value={l.applicationArea} />
+                <DetailRow label={t("alt.rowQuantity")} value={`${l.quantity.toLocaleString("de-CH")} ${l.quantityUnit}`} />
+                <DetailRow label={t("alt.rowPackaging")} value={l.packaging} />
+                <DetailRow label={t("alt.rowRegion")} value={l.locationRegion} />
                 <DetailRow
-                  label="Preis"
-                  value={l.priceEur ? `${l.priceEur.toFixed(2)} € / ${l.quantityUnit}` : "auf Anfrage"}
+                  label={t("alt.rowPrice")}
+                  value={l.priceEur ? `${l.priceEur.toFixed(2)} € / ${l.quantityUnit}` : t("alt.onRequest")}
                 />
-                <DetailRow label="Anbieter" value={l.seller.pseudonym} />
+                <DetailRow label={t("alt.rowSeller")} value={l.seller.pseudonym} />
               </dl>
               {l.certificates.length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-1">
@@ -650,7 +656,7 @@ function DetailSlideOver({ alt, onClose }: { alt: Alternative; onClose: () => vo
           <section className="space-y-4">
             <div>
               <div className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-emerald-700">
-                <CheckCircle2 size={14} /> Spricht dafür
+                <CheckCircle2 size={14} /> {t("alt.pros")}
               </div>
               {alt.pros.length === 0 ? (
                 <div className="text-sm italic text-slate-400">—</div>
@@ -664,7 +670,7 @@ function DetailSlideOver({ alt, onClose }: { alt: Alternative; onClose: () => vo
             </div>
             <div>
               <div className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-red-700">
-                <XCircle size={14} /> Risiken / Abweichungen
+                <XCircle size={14} /> {t("alt.cons")}
               </div>
               {alt.cons.length === 0 ? (
                 <div className="text-sm italic text-slate-400">—</div>
@@ -697,13 +703,13 @@ function DetailSlideOver({ alt, onClose }: { alt: Alternative; onClose: () => vo
               className="btn-primary flex-1 text-center"
               style={colors ? { color: undefined } : undefined}
             >
-              Zum Angebot
+              {t("alt.toOffer")}
             </Link>
             <Link
               href={`/listings/${l.id}`}
               className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-center text-sm font-medium text-slate-700 hover:bg-slate-50"
             >
-              Muster / Angebot anfragen
+              {t("alt.requestSample")}
             </Link>
           </div>
         )}

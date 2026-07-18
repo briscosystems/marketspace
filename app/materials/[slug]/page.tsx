@@ -1,55 +1,14 @@
 import Link from "next/link";
+import { getT } from "@/lib/i18n-server";
+import { fill } from "@/lib/i18n";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { ArrowLeft, Shield, AlertOctagon, AlertTriangle, CheckCircle2 } from "lucide-react";
 
 type Params = Promise<{ slug: string }>;
 
-const CATEGORY_LABEL: Record<string, string> = {
-  ELASTOMER: "Elastomer (Dichtung)",
-  THERMOPLASTIC: "Thermoplast",
-  THERMOSET: "Duroplast",
-  METAL: "Metall",
-  COATING: "Beschichtung",
-};
-
-const INGREDIENT_CATEGORY_LABEL: Record<string, string> = {
-  AMINE: "Amin",
-  BIOCIDE: "Biozid",
-  FORMALDEHYDE_RELEASER: "Formaldehyd-Donor",
-  BASE_OIL_MINERAL: "Basisöl (mineralisch)",
-  BASE_OIL_ESTER: "Basisöl (Ester)",
-  BASE_OIL_PAO: "Basisöl (PAO)",
-  BASE_OIL_PAG: "Basisöl (PAG)",
-  EMULSIFIER: "Emulgator/Tensid",
-  EP_ADDITIVE_S: "EP-Additiv (S)",
-  EP_ADDITIVE_P: "EP-Additiv (P)",
-  EP_ADDITIVE_CL: "EP-Additiv (Cl-Paraffin)",
-  CORROSION_INHIBITOR: "Korrosionsinhibitor",
-  BORATE: "Borat/Borsäure",
-  CHELATE: "Chelat",
-  GLYCOL_ETHER: "Glykolether",
-  SOLVENT_AROMATIC: "Lösemittel (aromat.)",
-  SOLVENT_POLAR: "Lösemittel (polar)",
-  WATER: "Wasser",
-  ACID: "Säure",
-  ALKALI: "Lauge",
-  OTHER: "Andere",
-};
-
-const EFFECT_LABEL: Record<string, string> = {
-  SWELLING: "Quellung",
-  SHRINKAGE: "Schwund",
-  HARDENING: "Verhärtung",
-  EMBRITTLEMENT: "Versprödung",
-  EXTRACTION: "Extraktion von Additiven",
-  ATTACK_NETWORK: "Angriff Vernetzungsnetz",
-  NONE: "keine Wirkung",
-};
-
-const RATING_ORDER = ["UNSUITABLE", "CAUTION", "COMPATIBLE", "RECOMMENDED"];
-
 export default async function MaterialDetailPage({ params }: { params: Params }) {
+  const t = await getT();
   const { slug } = await params;
   const material = await prisma.material.findUnique({
     where: { slug },
@@ -77,7 +36,7 @@ export default async function MaterialDetailPage({ params }: { params: Params })
         href="/materials"
         className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-brand-600"
       >
-        <ArrowLeft size={14} /> Alle Materialien
+        <ArrowLeft size={14} /> {t("mat.allMaterials")}
       </Link>
 
       <div className="card">
@@ -89,16 +48,16 @@ export default async function MaterialDetailPage({ params }: { params: Params })
             </div>
             <div className="mt-1 flex flex-wrap gap-2 text-xs">
               <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-slate-700">
-                {CATEGORY_LABEL[material.category] ?? material.category}
+                {t(`matcat.${material.category}`)}
               </span>
               {material.temperatureMinC !== null && material.temperatureMaxC !== null && (
                 <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-blue-700">
-                  {material.temperatureMinC} °C bis {material.temperatureMaxC} °C
+                  {fill(t("mat.tempShort"), { min: material.temperatureMinC, max: material.temperatureMaxC })}
                 </span>
               )}
               {material.isPolar !== null && (
                 <span className="rounded-full bg-amber-50 px-2.5 py-0.5 text-amber-700">
-                  {material.isPolar ? "polar" : "unpolar"}
+                  {material.isPolar ? t("mat.polar") : t("mat.nonpolar")}
                 </span>
               )}
               {material.parentSlug && (
@@ -106,7 +65,7 @@ export default async function MaterialDetailPage({ params }: { params: Params })
                   href={`/materials/${material.parentSlug}`}
                   className="rounded-full bg-slate-100 px-2.5 py-0.5 text-slate-600 hover:bg-slate-200"
                 >
-                  Subtyp von {material.parentSlug}
+                  {fill(t("mat.subtypeOf"), { slug: material.parentSlug })}
                 </Link>
               )}
             </div>
@@ -118,7 +77,7 @@ export default async function MaterialDetailPage({ params }: { params: Params })
         )}
         {material.typicalUseCases.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-1.5">
-            <span className="text-xs font-semibold text-slate-500">Typischer Einsatz:</span>
+            <span className="text-xs font-semibold text-slate-500">{t("mat.typicalUse")}</span>
             {material.typicalUseCases.map((u) => (
               <span key={u} className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-700">
                 {u}
@@ -132,45 +91,49 @@ export default async function MaterialDetailPage({ params }: { params: Params })
       <div className="space-y-4">
         {grouped.UNSUITABLE.length > 0 && (
           <CompatGroup
-            title="Ungeeignete Inhaltsstoffe"
-            subtitle="Diese Stoffe greifen das Material an oder zerstören es"
+            title={t("mat.unsuitableTitle")}
+            subtitle={t("mat.unsuitableSub")}
             icon={AlertOctagon}
             iconColor="text-red-600"
             items={grouped.UNSUITABLE}
+            t={t}
           />
         )}
         {grouped.CAUTION.length > 0 && (
           <CompatGroup
-            title="Mit Vorsicht / bedingt geeignet"
-            subtitle="Einsatz möglich, aber Temperatur, Dauer oder Konzentration kritisch prüfen"
+            title={t("mat.cautionSub")}
+            subtitle={t("mat.cautionSubtitle")}
             icon={AlertTriangle}
             iconColor="text-amber-600"
             items={grouped.CAUTION}
+            t={t}
           />
         )}
         {grouped.COMPATIBLE.length > 0 && (
           <CompatGroup
-            title="Verträglich"
-            subtitle="Materialwirkung im normalen Einsatzbereich unkritisch"
+            title={t("mat.compatibleTitle")}
+            subtitle={t("mat.compatibleSub")}
             icon={CheckCircle2}
             iconColor="text-emerald-600"
             items={grouped.COMPATIBLE}
+            t={t}
           />
         )}
         {grouped.RECOMMENDED.length > 0 && (
           <CompatGroup
-            title="Empfohlene Anwendung"
-            subtitle="Material wurde explizit für diese Inhaltsstoff-Klasse entwickelt"
+            title={t("mat.recommendedTitle")}
+            subtitle={t("mat.recommendedSubtitle")}
             icon={CheckCircle2}
             iconColor="text-emerald-700"
             items={grouped.RECOMMENDED}
+            t={t}
           />
         )}
       </div>
 
       {material.compatibilities.length === 0 && (
         <div className="card text-center text-slate-500">
-          Noch keine Verträglichkeitsdaten für dieses Material erfasst.
+          {t("mat.noData")}
         </div>
       )}
     </div>
@@ -183,11 +146,13 @@ function CompatGroup({
   icon: Icon,
   iconColor,
   items,
+  t,
 }: {
   title: string;
   subtitle: string;
   icon: typeof AlertOctagon;
   iconColor: string;
+  t: (k: string) => string;
   items: {
     id: string;
     note: string;
@@ -229,19 +194,19 @@ function CompatGroup({
                 )}
               </div>
               <span className="shrink-0 text-xs text-slate-400">
-                {INGREDIENT_CATEGORY_LABEL[c.ingredient.category]}
+                {t(`ingcat.${c.ingredient.category}`)}
               </span>
             </div>
             <p className="mt-1 text-sm text-slate-700">{c.note}</p>
             <div className="mt-1 flex flex-wrap gap-2 text-xs text-slate-500">
               {c.effectType && c.effectType !== "NONE" && (
                 <span className="rounded bg-slate-50 px-1.5 py-0.5">
-                  {EFFECT_LABEL[c.effectType] ?? c.effectType}
+                  {t(`effect.${c.effectType}`)}
                 </span>
               )}
               {(c.swellPctMin || c.swellPctMax) && (
                 <span className="rounded bg-amber-50 px-1.5 py-0.5 text-amber-700">
-                  Volumenquellung {c.swellPctMin ?? "?"}-{c.swellPctMax ?? "?"} %
+                  {fill(t("mat.swell"), { min: c.swellPctMin ?? "?", max: c.swellPctMax ?? "?" })}
                 </span>
               )}
               {c.conditionNote && (
@@ -252,7 +217,7 @@ function CompatGroup({
               )}
               {c.sourceLabel && (
                 <span className="text-slate-400">
-                  Quelle:{" "}
+                  {t("mat.source")}{" "}
                   {c.sourceUrl ? (
                     <a href={c.sourceUrl} target="_blank" rel="noreferrer" className="hover:underline">
                       {c.sourceLabel}

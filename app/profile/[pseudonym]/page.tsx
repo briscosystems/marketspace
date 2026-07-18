@@ -13,18 +13,20 @@ import { VatValidationBox } from "@/components/VatValidationBox";
 import { ContactSellerButton } from "@/components/ContactSellerButton";
 import { currencyForUser, formatCurrency, convertCurrency } from "@/lib/currency";
 import { Store, Package, Search, Handshake, Wallet, BadgeCheck } from "lucide-react";
+import { getT } from "@/lib/i18n-server";
+import { fill } from "@/lib/i18n";
 
 const tagLabels: Record<string, string> = {
-  FAST_RESPONSE: "Schnelle Antwort",
-  QUALITY_AS_DESCRIBED: "Qualität wie beschrieben",
-  ON_TIME_DELIVERY: "Pünktliche Lieferung",
-  FAIR_NEGOTIATION: "Faire Verhandlung",
+  FAST_RESPONSE: "prof.tagFastResponse",
+  QUALITY_AS_DESCRIBED: "prof.tagQualityAsDescribed",
+  ON_TIME_DELIVERY: "prof.tagOnTimeDelivery",
+  FAIR_NEGOTIATION: "prof.tagFairNegotiation",
 };
 
 const roleLabels: Record<string, string> = {
-  RESELLER: "Reseller",
-  OEM: "OEM-Hersteller",
-  ADMIN: "Team Brisco",
+  RESELLER: "prof.roleReseller",
+  OEM: "prof.roleOem",
+  ADMIN: "prof.roleAdmin",
 };
 
 export default async function ProfilePage({
@@ -33,6 +35,7 @@ export default async function ProfilePage({
   params: Promise<{ pseudonym: string }>;
 }) {
   const { pseudonym } = await params;
+  const t = await getT();
   const [user, session] = await Promise.all([
     prisma.user.findUnique({
       where: { pseudonym },
@@ -118,7 +121,7 @@ export default async function ProfilePage({
 
   const tagHistogram = new Map<string, number>();
   for (const r of tagCounts) {
-    for (const t of r.tags) tagHistogram.set(t, (tagHistogram.get(t) ?? 0) + 1);
+    for (const tag of r.tags) tagHistogram.set(tag, (tagHistogram.get(tag) ?? 0) + 1);
   }
   const topTags = [...tagHistogram.entries()]
     .sort((a, b) => b[1] - a[1])
@@ -157,27 +160,27 @@ export default async function ProfilePage({
                 <Store size={20} className="text-slate-400" />
               </h1>
               <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-slate-600">
-                <span>{roleLabels[user.role] ?? user.role}</span>
+                <span>{t(roleLabels[user.role] ?? user.role)}</span>
                 <TrustBadge tier={user.trustTier} />
                 {user.vatValidatedAt && (
                   <span
                     className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 ring-1 ring-emerald-200"
-                    title="USt-ID über die offizielle EU-Datenbank (VIES) bestätigt"
+                    title={t("prof.vatTitle")}
                   >
-                    <BadgeCheck size={12} /> USt-ID geprüft
+                    <BadgeCheck size={12} /> {t("prof.vatVerified")}
                   </span>
                 )}
                 {user.stripeConnectOnboarded && (
                   <span
                     className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-blue-200"
-                    title="Dieser Anbieter bietet Zahlung mit Käuferschutz an: Geld wird sicher geparkt und erst nach Lieferbestätigung freigegeben. Identität und Bankverbindung wurden vom Zahlungsdienstleister Stripe geprüft."
+                    title={t("prof.protectionTitle")}
                   >
-                    <BadgeCheck size={12} /> Käuferschutz verfügbar
+                    <BadgeCheck size={12} /> {t("prof.protectionAvailable")}
                   </span>
                 )}
                 {user.country && <span className="text-slate-400">· {user.country}</span>}
                 <span className="text-slate-400">
-                  · Mitglied seit {user.createdAt.toLocaleDateString("de-DE")}
+                  · {fill(t("prof.memberSince"), { date: user.createdAt.toLocaleDateString("de-DE") })}
                 </span>
               </div>
             </div>
@@ -185,7 +188,7 @@ export default async function ProfilePage({
           <div className="flex flex-col items-end gap-2">
             <RatingDisplay avg={ratingAgg._avg.rating} count={ratingAgg._count._all} />
             {!isOwnProfile && session?.user?.id && (
-              <ContactSellerButton sellerId={user.id} label="Anbieter kontaktieren" />
+              <ContactSellerButton sellerId={user.id} label={t("prof.contactSeller")} />
             )}
           </div>
         </div>
@@ -195,27 +198,27 @@ export default async function ProfilePage({
           <StorefrontStat
             icon={<Package size={16} />}
             value={activeListings.length}
-            label="Bietet an"
+            label={t("prof.offering")}
             tone="text-brand-700 bg-brand-50"
           />
           <StorefrontStat
             icon={<Search size={16} />}
             value={openRfqs.length}
-            label="Sucht"
+            label={t("prof.searching")}
             tone="text-amber-700 bg-amber-50"
           />
           <StorefrontStat
             icon={<Handshake size={16} />}
             value={completedCount}
-            label={completedCount === 1 ? "Transaktion" : "Transaktionen"}
+            label={completedCount === 1 ? t("prof.statTransaction") : t("prof.statTransactions")}
             tone="text-emerald-700 bg-emerald-50"
           />
           {revenue && (
-            <Link href="/umsaetze" className="block transition hover:opacity-80" title="Alle Umsätze ansehen">
+            <Link href="/umsaetze" className="block transition hover:opacity-80" title={t("prof.revenueLinkTitle")}>
               <StorefrontStat
                 icon={<Wallet size={16} />}
                 value={formatCurrency(revenue.total, currency)}
-                label="Umsatz (Verkäufe) →"
+                label={t("prof.statRevenue")}
                 tone="text-slate-700 bg-slate-100"
               />
             </Link>
@@ -239,7 +242,7 @@ export default async function ProfilePage({
         {/* Über uns */}
         {(user.about || isOwnProfile) && (
           <div className="space-y-2 border-t border-slate-100 pt-4">
-            <h2 className="text-sm font-semibold text-slate-900">Über uns</h2>
+            <h2 className="text-sm font-semibold text-slate-900">{t("prof.aboutHeading")}</h2>
             {user.about && (
               <p className="whitespace-pre-line text-sm leading-relaxed text-slate-700">
                 {user.about}
@@ -256,7 +259,7 @@ export default async function ProfilePage({
                 key={tag}
                 className="rounded-full bg-brand-50 px-3 py-1 text-xs text-brand-700"
               >
-                {tagLabels[tag] ?? tag} · {n}
+                {t(tagLabels[tag] ?? tag)} · {n}
               </span>
             ))}
           </div>
@@ -267,7 +270,7 @@ export default async function ProfilePage({
           (der Inhaber sieht seine eigenen Angebote bereits im Dashboard). */}
       {!isOwnProfile && cardListings.length > 0 && (
         <section>
-          <h2 className="mb-3 section-title">Bietet an</h2>
+          <h2 className="mb-3 section-title">{t("prof.offering")}</h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {cardListings.map((l) => (
               <ListingCard key={l.id} listing={l} variant="compact" hideStatus />
@@ -279,7 +282,7 @@ export default async function ProfilePage({
       {/* Sucht — offene öffentliche Anfragen */}
       {openRfqs.length > 0 && (
         <section>
-          <h2 className="mb-3 section-title">Sucht</h2>
+          <h2 className="mb-3 section-title">{t("prof.searching")}</h2>
           <div className="card divide-y divide-slate-200">
             {openRfqs.map((r) => (
               <Link
@@ -297,7 +300,7 @@ export default async function ProfilePage({
                   </div>
                 </div>
                 <div className="shrink-0 text-xs text-slate-500">
-                  bis {r.deadline.toLocaleDateString("de-DE")}
+                  {fill(t("prof.until"), { date: r.deadline.toLocaleDateString("de-DE") })}
                 </div>
               </Link>
             ))}
@@ -306,10 +309,10 @@ export default async function ProfilePage({
       )}
 
       <section>
-        <h2 className="mb-3 section-title">Letzte Bewertungen</h2>
+        <h2 className="mb-3 section-title">{t("prof.recentReviews")}</h2>
         {reviews.length === 0 ? (
           <div className="card text-sm text-slate-500">
-            Noch keine Bewertungen.
+            {t("prof.noReviews")}
           </div>
         ) : (
           <div className="space-y-3">
@@ -320,9 +323,9 @@ export default async function ProfilePage({
                   <span className="text-amber-500">{"★".repeat(r.rating)}</span>
                   <span
                     className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-700 ring-1 ring-emerald-200"
-                    title="Bewertung nur nach einer über Brisco abgeschlossenen Transaktion möglich"
+                    title={t("prof.verifiedPurchaseTitle")}
                   >
-                    ✓ Verifizierter Kauf
+                    ✓ {t("prof.verifiedPurchase")}
                   </span>
                   <span className="text-slate-400 text-xs">
                     {r.createdAt.toLocaleDateString("de-DE")}
@@ -330,12 +333,12 @@ export default async function ProfilePage({
                 </div>
                 {r.tags.length > 0 && (
                   <div className="mb-2 flex flex-wrap gap-1">
-                    {r.tags.map((t) => (
+                    {r.tags.map((tag) => (
                       <span
-                        key={t}
+                        key={tag}
                         className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-700"
                       >
-                        {tagLabels[t] ?? t}
+                        {t(tagLabels[tag] ?? tag)}
                       </span>
                     ))}
                   </div>

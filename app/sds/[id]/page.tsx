@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { SDS_CATEGORY_LABEL, SDS_LANGUAGE_LABEL } from "@/lib/sds";
+import { getT } from "@/lib/i18n-server";
+import { fill } from "@/lib/i18n";
 import { ProductImage } from "@/components/ProductImage";
-import { GhsPictogram, GHS_NAMES } from "@/components/GhsPictogram";
+import { GhsPictogram } from "@/components/GhsPictogram";
 import {
   AlertOctagon,
   AlertTriangle,
@@ -16,6 +17,7 @@ import {
 } from "lucide-react";
 
 export default async function SdsDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const t = await getT();
   const { id } = await params;
   const sds = await prisma.safetyDataSheet.findUnique({
     where: { id },
@@ -61,13 +63,13 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
   return (
     <div className="space-y-6">
       <Link href="/sds" className="text-sm text-brand-500 hover:underline">
-        ← zur Bibliothek
+        ← {t("sdsd.backToLibrary")}
       </Link>
 
       <div className="card space-y-5">
         <div>
           <div className="text-xs uppercase tracking-wide text-slate-500">
-            {SDS_CATEGORY_LABEL[sds.category] ?? sds.category}
+            {t(`sdsd.cat.${sds.category}`)}
           </div>
           <h1 className="page-title">
             {sds.manufacturer} {sds.productName}
@@ -86,20 +88,20 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
-          <Meta label="Sprache" value={SDS_LANGUAGE_LABEL[sds.language] ?? sds.language} />
-          <Meta label="Seiten" value={sds.pageCount?.toString() ?? "–"} />
-          <Meta label="Dateigröße" value={`${(sds.fileSizeBytes / 1024).toFixed(0)} KB`} />
+          <Meta label={t("sdsd.langLabel")} value={t(`sdsd.lang.${sds.language}`)} />
+          <Meta label={t("sdsd.pages")} value={sds.pageCount?.toString() ?? "–"} />
+          <Meta label={t("sdsd.fileSize")} value={`${(sds.fileSizeBytes / 1024).toFixed(0)} KB`} />
           <Meta
-            label="In Bibliothek geladen"
+            label={t("sdsd.loadedToLibrary")}
             value={sds.fetchedAt.toLocaleDateString("de-DE")}
           />
-          {sds.version && <Meta label="Version" value={sds.version} />}
+          {sds.version && <Meta label={t("sdsd.version")} value={sds.version} />}
           {sds.revisionDate && (
-            <Meta label="Revisionsdatum" value={sds.revisionDate.toLocaleDateString("de-DE")} />
+            <Meta label={t("sdsd.revisionDate")} value={sds.revisionDate.toLocaleDateString("de-DE")} />
           )}
           <Meta label="SHA-256" value={<code className="text-xs">{sds.sha256.slice(0, 24)}…</code>} />
           <Meta
-            label="Originalquelle"
+            label={t("sdsd.originalSource")}
             value={
               <a
                 href={sds.sourceUrl}
@@ -120,7 +122,7 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
             rel="noopener noreferrer"
             className="btn-primary"
           >
-            PDF herunterladen
+            {t("sdsd.downloadPdf")}
           </a>
           <a
             href={`/api/sds/${sds.id}/download?inline=1`}
@@ -128,7 +130,7 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
             rel="noopener noreferrer"
             className="btn-secondary"
           >
-            Im Browser öffnen
+            {t("sdsd.openInBrowser")}
           </a>
         </div>
       </div>
@@ -150,7 +152,7 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
             <section className="card space-y-3">
               <div className="flex items-center gap-2">
                 <ShieldAlert size={16} className="text-brand-600" />
-                <h2 className="section-title">REACH &amp; Inhaltsstoffe</h2>
+                <h2 className="section-title">{t("sdsd.reachIngredients")}</h2>
               </div>
 
               {/* REACH-Status */}
@@ -159,11 +161,11 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
                   <span className="text-xs font-semibold uppercase text-slate-500">REACH</span>
                   {sds.reachCompliant ? (
                     <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">
-                      ✓ konform/registriert
+                      {t("sdsd.reachCompliant")}
                     </span>
                   ) : (
                     <span className="rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700">
-                      ✗ nicht konform
+                      {t("sdsd.reachNonCompliant")}
                     </span>
                   )}
                   {sds.reachNotes && <span className="text-xs text-slate-600">— {sds.reachNotes}</span>}
@@ -191,21 +193,21 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
 
               {/* Inhaltsstoff-Pills */}
               <div className="flex flex-wrap gap-1.5">
-                <IngredientPill name="Bor / Borate" v={sds.containsBoron} />
-                <IngredientPill name="Formaldehyd-Donor" v={sds.containsFormaldehydeReleaser} />
-                <IngredientPill name="sek. Amine (DEA/Morpholin)" v={sds.containsSecondaryAmines} />
-                <IngredientPill name="Chlorparaffine" v={sds.containsChlorinatedParaffins} />
-                <IngredientPill name="Mineralöl" v={sds.containsMineralOil} neutralWhenTrue />
-                <IngredientPill name="primäre arom. Amine (PAA)" v={sds.containsPrimaryAromaticAmines} />
-                <IngredientPill name="Bakterizid" v={sds.hasBactericide} neutralWhenTrue />
-                <IngredientPill name="Fungizid" v={sds.hasFungicide} neutralWhenTrue />
+                <IngredientPill t={t} name={t("sdsd.ing.boron")} v={sds.containsBoron} />
+                <IngredientPill t={t} name={t("sdsd.ing.formaldehyde")} v={sds.containsFormaldehydeReleaser} />
+                <IngredientPill t={t} name={t("sdsd.ing.secondaryAmines")} v={sds.containsSecondaryAmines} />
+                <IngredientPill t={t} name={t("sdsd.ing.chlorParaffins")} v={sds.containsChlorinatedParaffins} />
+                <IngredientPill t={t} name={t("sdsd.ing.mineralOil")} v={sds.containsMineralOil} neutralWhenTrue />
+                <IngredientPill t={t} name={t("sdsd.ing.primaryAromaticAmines")} v={sds.containsPrimaryAromaticAmines} />
+                <IngredientPill t={t} name={t("sdsd.ing.bactericide")} v={sds.hasBactericide} neutralWhenTrue />
+                <IngredientPill t={t} name={t("sdsd.ing.fungicide")} v={sds.hasFungicide} neutralWhenTrue />
               </div>
 
               {/* Biozid-Wirkstoffe konkret */}
               {sds.biocidalActives.length > 0 && (
                 <div>
                   <div className="text-xs font-semibold uppercase text-slate-500">
-                    Biozid-Wirkstoffe
+                    {t("sdsd.biocidalActives")}
                   </div>
                   <div className="mt-1 flex flex-wrap gap-1">
                     {sds.biocidalActives.map((b, i) => (
@@ -226,17 +228,17 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
             <section className="card space-y-3">
               <div className="flex items-center gap-2">
                 <AlertOctagon size={16} className="text-red-600" />
-                <h2 className="section-title">GHS / CLP — Gefahrenmerkmale</h2>
+                <h2 className="section-title">{t("sdsd.ghsClp")}</h2>
               </div>
               {sds.ghsPictograms.length > 0 && (
                 <div>
-                  <div className="text-xs font-semibold uppercase text-slate-500">Piktogramme</div>
+                  <div className="text-xs font-semibold uppercase text-slate-500">{t("sdsd.pictograms")}</div>
                   <div className="mt-1.5 flex flex-wrap items-start gap-3">
                     {sds.ghsPictograms.map((p) => (
                       <div key={p} className="flex flex-col items-center gap-0.5" style={{ width: 76 }}>
                         <GhsPictogram code={p} size={52} />
                         <span className="text-center text-[10px] leading-tight text-slate-600">
-                          {GHS_NAMES[p] ?? p}
+                          {t(`sdsd.ghs.${p}`)}
                         </span>
                       </div>
                     ))}
@@ -246,7 +248,7 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
               {sds.hStatements.length > 0 && (
                 <div>
                   <div className="text-xs font-semibold uppercase text-slate-500">
-                    H-Sätze (Gefahrenhinweise)
+                    {t("sdsd.hStatements")}
                   </div>
                   <div className="mt-1 flex flex-wrap gap-1">
                     {sds.hStatements.map((h) => (
@@ -260,7 +262,7 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
               {sds.pStatements.length > 0 && (
                 <div>
                   <div className="text-xs font-semibold uppercase text-slate-500">
-                    P-Sätze (Sicherheitshinweise)
+                    {t("sdsd.pStatements")}
                   </div>
                   <div className="mt-1 flex flex-wrap gap-1">
                     {sds.pStatements.map((p) => (
@@ -288,14 +290,14 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
             <section className="card space-y-3">
               <div className="flex items-center gap-2">
                 <FlaskConical size={16} className="text-brand-600" />
-                <h2 className="section-title">Physikalisch-chemische Eigenschaften</h2>
+                <h2 className="section-title">{t("sdsd.physChem")}</h2>
               </div>
               <div className="grid gap-3 md:grid-cols-2">
-                <Meta label="Aggregatzustand" value={sds.physicalState ?? "–"} />
-                <Meta label="Farbe / Erscheinung" value={sds.appearanceColor ?? "–"} />
-                <Meta label="Geruch" value={sds.odor ?? "–"} />
+                <Meta label={t("sdsd.physicalState")} value={sds.physicalState ?? "–"} />
+                <Meta label={t("sdsd.color")} value={sds.appearanceColor ?? "–"} />
+                <Meta label={t("sdsd.odor")} value={sds.odor ?? "–"} />
                 <Meta
-                  label="pH-Wert"
+                  label={t("sdsd.phValue")}
                   value={
                     sds.phValue != null
                       ? `${sds.phValue.toFixed(1)}${sds.phContext ? ` (${sds.phContext})` : ""}`
@@ -303,26 +305,26 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
                   }
                 />
                 <Meta
-                  label="Flammpunkt"
+                  label={t("sdsd.flashpoint")}
                   value={sds.flashpointC != null ? `${sds.flashpointC} °C` : "–"}
                 />
                 <Meta
-                  label="Dichte (20 °C)"
+                  label={t("sdsd.density")}
                   value={sds.densityGcm3 != null ? `${sds.densityGcm3.toFixed(3)} g/cm³` : "–"}
                 />
                 <Meta
-                  label="Viskosität (40 °C)"
+                  label={t("sdsd.viscosity")}
                   value={sds.viscosityKv40 != null ? `${sds.viscosityKv40.toFixed(1)} mm²/s` : "–"}
                 />
                 <Meta
-                  label="Stockpunkt"
+                  label={t("sdsd.pourpoint")}
                   value={sds.pourpointC != null ? `${sds.pourpointC} °C` : "–"}
                 />
                 <Meta
-                  label="Siedepunkt"
+                  label={t("sdsd.boilingPoint")}
                   value={sds.boilingPointC != null ? `${sds.boilingPointC} °C` : "–"}
                 />
-                <Meta label="Wasserlöslichkeit" value={sds.waterSolubility ?? "–"} />
+                <Meta label={t("sdsd.waterSolubility")} value={sds.waterSolubility ?? "–"} />
               </div>
             </section>
           )}
@@ -332,7 +334,7 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
             <section className="card space-y-2">
               <div className="flex items-center gap-2">
                 <Beaker size={16} className="text-brand-600" />
-                <h2 className="section-title">CAS-Nummern aus Section 3 ({sds.casNumbers.length})</h2>
+                <h2 className="section-title">{fill(t("sdsd.casNumbers"), { n: sds.casNumbers.length })}</h2>
               </div>
               <div className="flex flex-wrap gap-1">
                 {sds.casNumbers.map((c) => (
@@ -342,7 +344,7 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
                     target="_blank"
                     rel="noopener noreferrer"
                     className="rounded bg-slate-50 px-2 py-0.5 text-xs text-slate-700 hover:bg-slate-100"
-                    title="bei CAS Common Chemistry nachschlagen"
+                    title={t("sdsd.casLookup")}
                   >
                     {c}
                   </a>
@@ -356,12 +358,12 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
             <section className="card space-y-2">
               <div className="flex items-center gap-2">
                 <Truck size={16} className="text-brand-600" />
-                <h2 className="section-title">Transport (ADR)</h2>
+                <h2 className="section-title">{t("sdsd.transport")}</h2>
               </div>
               <div className="grid gap-3 md:grid-cols-3">
-                <Meta label="ADR-Klasse" value={sds.adrClass ?? "–"} />
-                <Meta label="UN-Nummer" value={sds.unNumber ?? "–"} />
-                <Meta label="Bezeichnung" value={sds.transportClass ?? "–"} />
+                <Meta label={t("sdsd.adrClass")} value={sds.adrClass ?? "–"} />
+                <Meta label={t("sdsd.unNumber")} value={sds.unNumber ?? "–"} />
+                <Meta label={t("sdsd.designation")} value={sds.transportClass ?? "–"} />
               </div>
             </section>
           )}
@@ -371,14 +373,14 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
             <section className="card space-y-2">
               <div className="flex items-center gap-2">
                 <Phone size={16} className="text-brand-600" />
-                <h2 className="section-title">Lieferant / Notfallkontakt</h2>
+                <h2 className="section-title">{t("sdsd.supplier")}</h2>
               </div>
               <div className="space-y-1 text-sm">
                 {sds.supplierName && <div className="font-medium">{sds.supplierName}</div>}
                 {sds.supplierAddress && <div className="whitespace-pre-line text-slate-700">{sds.supplierAddress}</div>}
                 {sds.emergencyPhone && (
                   <div className="text-red-700">
-                    Notruf: <a href={`tel:${sds.emergencyPhone}`} className="font-medium hover:underline">{sds.emergencyPhone}</a>
+                    {t("sdsd.emergency")}: <a href={`tel:${sds.emergencyPhone}`} className="font-medium hover:underline">{sds.emergencyPhone}</a>
                   </div>
                 )}
               </div>
@@ -387,9 +389,8 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
 
           {sds.parsedAt && (
             <div className="text-xs text-slate-400">
-              Strukturierte Daten extrahiert {sds.parsedAt.toLocaleDateString("de-DE")}{" "}
-              {sds.parsedVersion && `(Parser v${sds.parsedVersion})`} — heuristische Extraktion aus dem PDF-Volltext,
-              Originaldokument ist autoritativ.
+              {t("sdsd.extractedPrefix")} {sds.parsedAt.toLocaleDateString("de-DE")}{" "}
+              {sds.parsedVersion && `(Parser v${sds.parsedVersion})`} — {t("sdsd.extractedNote")}
             </div>
           )}
         </>
@@ -398,7 +399,7 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
       {sds.products.length > 0 && (
         <section>
           <h2 className="mb-3 section-title">
-            Produkte aus dem Katalog ({sds.products.length})
+            {fill(t("sdsd.catalogProducts"), { n: sds.products.length })}
           </h2>
           <div className="card divide-y divide-slate-200">
             {sds.products.map((p) => (
@@ -427,7 +428,7 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
       {sds.listings.length > 0 && (
         <section>
           <h2 className="mb-3 section-title">
-            Aktive Listings, die dieses Datenblatt nutzen
+            {t("sdsd.activeListings")}
           </h2>
           <div className="card divide-y divide-slate-200">
             {sds.listings.map((l) => (
@@ -471,10 +472,12 @@ function IngredientPill({
   name,
   v,
   neutralWhenTrue,
+  t,
 }: {
   name: string;
   v: boolean | null;
   neutralWhenTrue?: boolean;
+  t: (k: string) => string;
 }) {
   if (v === null) return null;
   if (v === true) {
@@ -484,13 +487,13 @@ function IngredientPill({
     const Icon = neutralWhenTrue ? AlertTriangle : AlertOctagon;
     return (
       <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs ring-1 ${cls}`}>
-        <Icon size={11} /> {name}: enthält
+        <Icon size={11} /> {name}: {t("sdsd.contains")}
       </span>
     );
   }
   return (
     <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs text-emerald-700 ring-1 ring-emerald-200">
-      <CheckCircle2 size={11} /> {name}: frei
+      <CheckCircle2 size={11} /> {name}: {t("sdsd.free")}
     </span>
   );
 }
