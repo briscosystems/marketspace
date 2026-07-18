@@ -1,9 +1,19 @@
 # Functional Design Specification — Marketplace App
 
-**Projekt:** Industrial Oil Trading Platform
-**Version:** 0.1 (Initial Draft)
-**Datum:** 2026-05-17
+**Projekt:** Brisco Marketplace (Industrial Oil Trading Platform)
+**Version:** 0.3 (fortlaufend)
+**Datum:** 2026-05-17, zuletzt aktualisiert 2026-07-18
 **Owner:** Jürgen Gosch, Brisco Systems GmbH
+
+> **Hinweis:** Dieses Dokument (FDS) beschreibt die **funktionale Vision** — inklusive
+> Features, die noch nicht gebaut sind (native Mobile-App, Vektor-Embeddings, selbst-
+> lernender Loop). Die **technische Bauanleitung des tatsächlich implementierten Systems**
+> steht in **[SPEZIFIKATION.md](SPEZIFIKATION.md)**. Bei Widerspruch zwischen Vision und
+> Ist-Zustand gilt SPEZIFIKATION.md.
+>
+> **Live-Stand (2026-07-18):** Plattform produktiv unter **markt.brisco.ch** (Railway),
+> mehrsprachig DE/EN/NL, Käuferschutz + Abo/Credits über Stripe, E-Mail über ZeptoMail,
+> ~924 Produkte / 104 Hersteller / 3270 SDS, Admin-Konsole inkl. KI-Kostenübersicht.
 
 ---
 
