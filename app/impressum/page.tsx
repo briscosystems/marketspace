@@ -35,8 +35,8 @@ export default function ImpressumPage() {
         </p>
         <p>
           Telefon:{" "}
-          <a className="text-brand-600 hover:underline" href="tel:+41795304184">
-            +41 79 530 41 84
+          <a className="text-brand-600 hover:underline" href="tel:+41438830385">
+            +41 43 883 03 85
           </a>
         </p>
       </section>

@@ -3,7 +3,7 @@
 **Projekt:** Industrial Oil Trading Platform
 **Version:** 0.1 (Initial Draft)
 **Datum:** 2026-05-17
-**Owner:** Klaus Gosch, Brisco Systems GmbH
+**Owner:** Jürgen Gosch, Brisco Systems GmbH
 
 ---
 

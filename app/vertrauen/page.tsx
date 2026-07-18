@@ -8,15 +8,18 @@ export default function VertrauenPage() {
   const tiers = Object.values(TIER_STYLES).sort((a, b) => a.level - b.level);
 
   return (
-    <div className="mx-auto max-w-3xl space-y-8">
-      <div>
+    <div className="mx-auto max-w-3xl space-y-12">
+      <div className="rounded-2xl bg-emerald-50/60 p-6 sm:p-8">
         <div className="flex items-center gap-2">
-          <ShieldCheck size={22} className="text-emerald-600" />
+          <ShieldCheck size={24} className="text-emerald-600" />
           <h1 className="page-title">So sorgen wir für Vertrauen</h1>
         </div>
-        <p className="mt-1 max-w-2xl text-sm text-slate-600">
-          Beim Handel zwischen Unternehmen zählt: Mit wem habe ich es zu tun, und bin ich
-          abgesichert? Dafür gibt es bei Brisco mehrere Mechanismen.
+        <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-700">
+          Beim Handel unter Unternehmen zählen zwei Fragen: <strong>Mit wem habe ich es
+          zu tun?</strong> Und: <strong>Bin ich abgesichert, wenn etwas schiefgeht?</strong>
+        </p>
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
+          Auf beides gibt Brisco eine klare Antwort. Hier erfährst du, wie.
         </p>
       </div>
 
@@ -49,44 +52,45 @@ export default function VertrauenPage() {
       </section>
 
       {/* Verifizierte Bewertungen */}
-      <section className="space-y-2">
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft">
         <div className="flex items-center gap-2">
           <Star size={18} className="text-amber-500" />
-          <h2 className="section-title">Verifizierte Bewertungen</h2>
+          <h2 className="section-title">Bewertungen, die man nicht kaufen kann</h2>
         </div>
-        <p className="text-sm text-slate-600">
-          Bewertungen kann nur abgeben, wer über Brisco tatsächlich ein Geschäft
-          <strong> abgeschlossen</strong> hat. Jede Bewertung ist also an eine echte Transaktion
-          gebunden — keine gekauften oder erfundenen Sterne. Schnitt und Anzahl sind auf jedem
-          Profil sichtbar.
+        <p className="mt-2 text-sm leading-relaxed text-slate-600">
+          Eine Bewertung abgeben darf nur, wer über Brisco wirklich ein Geschäft
+          <strong> abgeschlossen</strong> hat. Jeder Stern hängt an einer echten Transaktion —
+          keine gekauften, keine erfundenen. Schnitt und Anzahl stehen offen auf jedem Profil.
         </p>
       </section>
 
       {/* Pseudonymität & Neutralität */}
-      <section className="space-y-2">
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft">
         <div className="flex items-center gap-2">
           <EyeOff size={18} className="text-slate-600" />
-          <h2 className="section-title">Pseudonym & neutral</h2>
+          <h2 className="section-title">Anonym handeln, neutral sortiert</h2>
         </div>
-        <p className="text-sm text-slate-600">
-          Nutzer treten unter einem Pseudonym auf, und in den Nachrichten ist der Austausch von
-          direkten Kontaktdaten nicht erlaubt — ein automatischer Filter hält Nachrichten mit
-          E-Mail, Telefonnummer oder Links zurück. Das schützt beide Seiten vor Abwerbung.
-          Bezahlte Platzierungen sind für alle sichtbar als <strong>„Gesponsert"</strong>{" "}
-          gekennzeichnet — alles andere ist neutral sortiert.
+        <p className="mt-2 text-sm leading-relaxed text-slate-600">
+          Du trittst unter einem Pseudonym auf — dein Klarname bleibt verborgen. In den
+          Nachrichten hält ein automatischer Filter Kontaktdaten (E-Mail, Telefon, Links)
+          zurück, damit dich niemand an der Plattform vorbei abwirbt.
+        </p>
+        <p className="mt-2 text-sm leading-relaxed text-slate-600">
+          Und die Reihenfolge ist ehrlich: Bezahlte Platzierungen sind für alle sichtbar als{" "}
+          <strong>„Gesponsert"</strong> gekennzeichnet. Alles andere ist neutral sortiert.
         </p>
       </section>
 
       {/* Sicherer Ablauf */}
-      <section className="space-y-2">
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft">
         <div className="flex items-center gap-2">
           <Lock size={18} className="text-emerald-600" />
-          <h2 className="section-title">Sicherer Ablauf</h2>
+          <h2 className="section-title">Alles dokumentiert</h2>
         </div>
-        <p className="text-sm text-slate-600">
-          Anbahnung, Angebotsannahme und Kommunikation laufen dokumentiert über die Plattform.
-          Bei Problemen gibt es einen klaren Weg, das Geschäft zu reklamieren. Die Spielregeln
-          stehen in den{" "}
+        <p className="mt-2 text-sm leading-relaxed text-slate-600">
+          Anfrage, Angebot, Annahme und Nachrichten laufen nachvollziehbar über die Plattform —
+          nicht in verstreuten E-Mails. Geht etwas schief, gibt es einen klaren Weg zur
+          Reklamation. Die Spielregeln stehen in den{" "}
           <Link href="/agb" className="text-brand-600 hover:underline">AGB</Link>.
         </p>
       </section>

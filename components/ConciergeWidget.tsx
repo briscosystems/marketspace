@@ -4,11 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { MessageCircleQuestion, Send, Sparkles, X } from "lucide-react";
 import { withBasePath } from "@/lib/base-path";
+import { useLocale } from "@/components/LocaleProvider";
 
 type Msg = { role: "user" | "assistant"; content: string };
-
-const GREETING =
-  "Hallo! Ich bin der Brisco-Concierge. Beschreib mir dein Problem oder deine Aufgabe in normalen Worten — z. B. „Mein Kühlschmierstoff schäumt“ oder „Ich fräse Aluminium und suche eine Emulsion“. Ich zeige dir passende Produkte, Angebote und Praxis-Wissen.";
 
 /** Markdown-Links [Text](/pfad) als klickbare Next-Links rendern, Rest als Text. */
 function RichText({ text }: { text: string }) {
@@ -31,6 +29,7 @@ function RichText({ text }: { text: string }) {
 }
 
 export function ConciergeWidget() {
+  const { t } = useLocale();
   const [open, setOpen] = useState(false);
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
@@ -61,7 +60,7 @@ export function ConciergeWidget() {
       const data = await res.json();
       setMsgs((cur) => [...cur, { role: "assistant", content: data.reply }]);
     } catch {
-      setError("Der Concierge ist gerade nicht erreichbar. Bitte später erneut versuchen.");
+      setError(t("advisor.unavailable"));
     } finally {
       setBusy(false);
     }
@@ -75,10 +74,10 @@ export function ConciergeWidget() {
           type="button"
           onClick={() => setOpen(true)}
           className="fixed bottom-5 right-5 z-40 inline-flex items-center gap-2 rounded-full bg-slate-900 py-3 pl-4 pr-5 text-sm font-semibold text-white shadow-lift transition hover:bg-slate-800"
-          aria-label="Concierge öffnen"
+          aria-label={t("advisor.open")}
         >
           <Sparkles size={16} className="text-brand-400" />
-          Concierge
+          {t("advisor.button")}
         </button>
       )}
 
@@ -91,15 +90,15 @@ export function ConciergeWidget() {
                 <MessageCircleQuestion size={16} />
               </span>
               <div>
-                <div className="text-sm font-bold leading-tight">Brisco-Concierge</div>
-                <div className="text-[11px] text-slate-300">Dein digitaler Fachberater</div>
+                <div className="text-sm font-bold leading-tight">{t("advisor.title")}</div>
+                <div className="text-[11px] text-slate-300">{t("advisor.subtitle")}</div>
               </div>
             </div>
             <button
               type="button"
               onClick={() => setOpen(false)}
               className="rounded-lg p-1 text-slate-300 hover:bg-slate-800 hover:text-white"
-              aria-label="Schließen"
+              aria-label={t("advisor.close")}
             >
               <X size={18} />
             </button>
@@ -108,7 +107,7 @@ export function ConciergeWidget() {
           {/* Verlauf */}
           <div className="flex-1 space-y-3 overflow-y-auto p-3">
             <Bubble role="assistant">
-              <span className="whitespace-pre-line">{GREETING}</span>
+              <span className="whitespace-pre-line">{t("advisor.greeting")}</span>
             </Bubble>
             {msgs.map((m, i) => (
               <Bubble key={i} role={m.role}>
@@ -137,7 +136,7 @@ export function ConciergeWidget() {
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Frage oder Problem beschreiben …"
+              placeholder={t("advisor.placeholder")}
               maxLength={2000}
               className="min-w-0 flex-1 rounded-full border border-slate-300 px-3.5 py-2 text-sm outline-none focus:border-brand-500"
             />
@@ -145,7 +144,7 @@ export function ConciergeWidget() {
               type="submit"
               disabled={busy || !input.trim()}
               className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-brand-600 text-white transition hover:bg-brand-700 disabled:opacity-40"
-              aria-label="Senden"
+              aria-label={t("advisor.send")}
             >
               <Send size={15} />
             </button>
