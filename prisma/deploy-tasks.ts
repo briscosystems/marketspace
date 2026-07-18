@@ -69,6 +69,21 @@ const TASKS: Task[] = [
     name: "Datenqualität 2026-07-18 (Kategorien, Chemie, Beschreibungen, Marken)",
     run: async () => applyCorrections2026_07_18(),
   },
+  {
+    // Dosimetrix-Demo-Anzeige: die Eyebrow-Zeile bildete die Wortmarke
+    // „DOSIMETRIX® hybrid" im generischen grauen Großbuchstaben-Stil nach und
+    // entsprach damit nicht dem offiziellen Logo (das korrekt im Produktbild
+    // steckt). Nur korrigieren, wenn noch der alte Wert dort steht — so werden
+    // spätere manuelle Bearbeitungen unter /werbung nicht überschrieben.
+    name: "Dosimetrix-Anzeige: falsch gestylten Wortmarken-Eyebrow entfernen",
+    run: async () => {
+      const r = await prisma.adBanner.updateMany({
+        where: { id: "demo-dosimetrix-ad", eyebrow: "DOSIMETRIX® hybrid" },
+        data: { eyebrow: "Automatisiertes KSS-Management" },
+      });
+      return r.count ? "Eyebrow korrigiert" : "nichts zu tun (bereits korrekt/bearbeitet)";
+    },
+  },
 ];
 
 async function main() {

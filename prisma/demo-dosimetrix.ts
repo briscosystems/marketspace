@@ -67,14 +67,19 @@ async function main() {
   });
 
   // 3) Erste Anzeige (Werbeplattform) — Dosimetrix-Banner, live auf Start + Schaufenster
+  // Hinweis: Die Eyebrow-Zeile NICHT als Wortmarke „DOSIMETRIX® hybrid" setzen —
+  // das offizielle Logo steckt bereits im Produktbild (korrekte Typografie).
+  // Der generische Eyebrow-Stil (grau, GROSSBUCHSTABEN) würde die Marke sonst
+  // falsch nachbilden. Stattdessen eine neutrale Positionierungszeile.
+  const dosiEyebrow = "Automatisiertes KSS-Management";
   await prisma.adBanner.upsert({
     where: { id: "demo-dosimetrix-ad" },
-    update: {},
+    update: { eyebrow: dosiEyebrow },
     create: {
       id: "demo-dosimetrix-ad",
       ownerId: rep.id,
       manufacturerId: manufacturer.id,
-      eyebrow: "DOSIMETRIX® hybrid",
+      eyebrow: dosiEyebrow,
       headline: "Mehr Standzeit. Weniger Verbrauch.",
       chips: ["−25 % KSS-Verbrauch", "2–3× Standzeit", "Spänepressen-Schnittstelle"],
       image: "/images/BRISCO_Slidergrafiken_Dosimetrix0000.png",
