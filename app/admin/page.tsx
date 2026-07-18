@@ -12,13 +12,14 @@ import {
   deleteReferralCode,
   resolveProtectionRelease,
   resolveProtectionRefund,
+  sendTestEmail,
 } from "./actions";
 import { getAllSettings, AI_ACTION_COSTS, packagePriceEur } from "@/lib/credits";
 import { isMembershipActive } from "@/lib/membership";
 import { formatCurrency } from "@/lib/currency";
 import { checkMailStatus } from "@/lib/mail-status";
 import { withBasePath } from "@/lib/base-path";
-import { Download } from "lucide-react";
+import { Download, Mail } from "lucide-react";
 
 // Interne Eigentümer-Konsole. Für alle außer ADMIN existiert die Seite "nicht"
 // (404), damit ihre Existenz nicht verraten wird.
@@ -566,6 +567,18 @@ export default async function AdminPage() {
               </span>
             ))}
           </div>
+          {/* Live-Beweis: Test-Mail an das eigene Admin-Postfach. */}
+          {mailStatus.configured && (
+            <form action={sendTestEmail} className="mt-3">
+              <button
+                type="submit"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+              >
+                <Mail size={14} />
+                Test-E-Mail an mich senden
+              </button>
+            </form>
+          )}
         </div>
       </section>
 

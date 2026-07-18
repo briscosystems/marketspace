@@ -1,44 +1,67 @@
 import nodemailer from "nodemailer";
-import { isMailConfigured } from "@/lib/mailer";
+import { mailProvider } from "@/lib/mailer";
 
 /**
  * Prüft den E-Mail-Versand und liefert ein für den Admin-Bereich lesbares
- * Ergebnis. Versucht eine echte Anmeldung am Mailserver (verify) und deutet den
- * konkreten Fehler — damit man nicht raten muss, warum eine Mail nicht ankommt.
+ * Ergebnis. Erkennt den aktiven Weg (ZeptoMail über HTTPS oder SMTP) und benennt
+ * den konkreten Fehler — damit man nicht raten muss, warum eine Mail nicht ankommt.
  */
 export type MailStatus = {
+  provider: "zeptomail" | "smtp" | "none";
   configured: boolean;
   loginOk: boolean;
   headline: string;
   detail: string;
-  /** Diagnose-Fakten, verraten kein Geheimnis (nur Längen und Hostname). */
   facts: { label: string; value: string }[];
 };
 
 export async function checkMailStatus(): Promise<MailStatus> {
-  const host = process.env.SMTP_HOST ?? "";
-  const port = Number(process.env.SMTP_PORT ?? 587);
-  const userLen = (process.env.SMTP_USER ?? "").length;
-  const passLen = (process.env.SMTP_PASS ?? "").length;
+  const provider = mailProvider();
+  const from = process.env.MAIL_FROM || "— nicht gesetzt";
 
-  const facts = [
-    { label: "Server", value: host || "— nicht gesetzt" },
-    { label: "Port", value: String(port) },
-    { label: "Benutzer-Länge", value: userLen ? `${userLen} Zeichen` : "— leer" },
-    { label: "Passwort-Länge", value: passLen ? `${passLen} Zeichen` : "— leer" },
-  ];
-
-  if (!isMailConfigured()) {
+  if (provider === "none") {
     return {
+      provider,
       configured: false,
       loginOk: false,
-      headline: "SMTP ist nicht vollständig konfiguriert",
+      headline: "Kein E-Mail-Versand konfiguriert",
       detail:
-        "In den Railway-Variablen fehlt SMTP_HOST, SMTP_USER oder SMTP_PASS. " +
-        "Ohne diese Werte wird keine E-Mail verschickt (Passwort-Reset, Abo-Erinnerungen).",
-      facts,
+        "Weder ZeptoMail (ZEPTOMAIL_TOKEN) noch SMTP ist in den Railway-Variablen gesetzt. " +
+        "Ohne das wird keine E-Mail verschickt (Passwort-Reset, Abo-Erinnerungen).",
+      facts: [{ label: "Absender", value: from }],
     };
   }
+
+  if (provider === "zeptomail") {
+    const tokenLen = (process.env.ZEPTOMAIL_TOKEN ?? "").length;
+    // ZeptoMail hat keinen „Verify"-Endpunkt ohne echten Versand. Wir prüfen die
+    // Konfiguration und verlassen uns für den Live-Beweis auf den Test-Knopf.
+    return {
+      provider,
+      configured: true,
+      loginOk: true,
+      headline: "E-Mail-Versand über ZeptoMail aktiv",
+      detail:
+        "ZeptoMail ist konfiguriert und wird über HTTPS angesprochen (kein SMTP-Port nötig). " +
+        "Ob eine Mail wirklich ankommt, prüfst du am besten mit dem Test-Knopf unten oder über " +
+        "„Passwort vergessen“ mit deiner eigenen Adresse.",
+      facts: [
+        { label: "Absender", value: from },
+        { label: "Token hinterlegt", value: tokenLen ? `ja (${tokenLen} Zeichen)` : "NEIN" },
+      ],
+    };
+  }
+
+  // provider === "smtp"
+  const host = process.env.SMTP_HOST ?? "";
+  const port = Number(process.env.SMTP_PORT ?? 587);
+  const passLen = (process.env.SMTP_PASS ?? "").length;
+  const facts = [
+    { label: "Weg", value: "SMTP" },
+    { label: "Server", value: host },
+    { label: "Port", value: String(port) },
+    { label: "Passwort-Länge", value: passLen ? `${passLen} Zeichen` : "— leer" },
+  ];
 
   const transporter = nodemailer.createTransport({
     host,
@@ -53,41 +76,27 @@ export async function checkMailStatus(): Promise<MailStatus> {
   try {
     await transporter.verify();
     return {
+      provider,
       configured: true,
       loginOk: true,
-      headline: "E-Mail-Versand funktioniert",
-      detail: "Die Anmeldung am Mailserver war erfolgreich. Passwort-Reset & Co. werden zugestellt.",
+      headline: "E-Mail-Versand über SMTP funktioniert",
+      detail: "Die Anmeldung am Mailserver war erfolgreich.",
       facts,
     };
   } catch (e) {
     const err = e as { message?: string; code?: string; response?: string };
     const code = err.code ?? "";
     const resp = err.response ?? err.message ?? "unbekannter Fehler";
-
-    // Fehler deuten — die zwei wahrscheinlichen Ursachen benennen.
     let detail: string;
     if (code === "EAUTH" || resp.includes("535")) {
-      detail =
-        `Der Mailserver lehnt die Anmeldung ab (${resp}). Das Passwort stimmt nicht. ` +
-        `Häufigste Ursache: Beim Kopieren aus der .env ist ein „\\“ vor dem „$“ mit ` +
-        `hineingeraten — in Railway muss das Passwort das „$“ OHNE Backslash enthalten. ` +
-        `Prüfe die Passwort-Länge unten: erwartet werden 25 Zeichen, bei 26 ist der ` +
-        `Backslash mit drin.`;
+      detail = `Der Mailserver lehnt die Anmeldung ab (${resp}). Das Passwort stimmt nicht.`;
     } else if (code === "ETIMEDOUT" || code === "ECONNECTION" || code === "ESOCKET") {
       detail =
-        `Keine Verbindung zum Mailserver (${code}). Das deutet darauf hin, dass der ` +
-        `Hosting-Anbieter ausgehende Mail-Ports sperrt. Dann müssen wir auf den ` +
-        `E-Mail-Versand per API (statt SMTP) umstellen — sag Bescheid, das baue ich.`;
+        `Keine Verbindung zum Mailserver (${code}). Der Hoster sperrt ausgehende SMTP-Ports. ` +
+        `Auf Railway ist das normal — hier muss ZeptoMail (HTTPS) verwendet werden.`;
     } else {
       detail = `Anmeldung fehlgeschlagen: ${resp}${code ? ` (${code})` : ""}.`;
     }
-
-    return {
-      configured: true,
-      loginOk: false,
-      headline: "E-Mail-Versand scheitert",
-      detail,
-      facts,
-    };
+    return { provider, configured: true, loginOk: false, headline: "E-Mail-Versand scheitert", detail, facts };
   }
 }

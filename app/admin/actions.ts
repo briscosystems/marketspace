@@ -5,6 +5,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { grantCredits, setSetting, createReferralCode, type SettingKey } from "@/lib/credits";
+import { sendEmail } from "@/lib/mailer";
 
 /**
  * Stellt sicher, dass NUR der Eigentümer (Rolle ADMIN) diese Aktionen ausführt.
@@ -187,5 +188,32 @@ export async function resolveProtectionRefund(formData: FormData) {
       data: { status: "CANCELED", canceledAt: new Date() },
     });
   }
+  revalidatePath("/admin");
+}
+
+/**
+ * Verschickt eine Test-E-Mail an das eigene Admin-Postfach — zum Prüfen, ob der
+ * Live-Versand (ZeptoMail) wirklich zustellt. Ergebnis erscheint als Log-Eintrag
+ * unter „System-E-Mails".
+ */
+export async function sendTestEmail() {
+  await assertOwner();
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id;
+  if (!userId) return;
+  // Adresse zuverlässig aus der DB holen (die Session führt sie evtl. nicht).
+  const me = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } });
+  const to = me?.email;
+  if (!to) return;
+  await sendEmail({
+    userId,
+    kind: "PASSWORD_RESET", // vorhandener Typ; reiner Testzweck
+    to,
+    subject: "Brisco — Test-E-Mail",
+    body:
+      "Das ist eine Test-E-Mail aus dem Admin-Bereich.\n\n" +
+      "Wenn du sie erhältst, funktioniert der E-Mail-Versand live.\n\n" +
+      "Brisco Systems GmbH",
+  });
   revalidatePath("/admin");
 }

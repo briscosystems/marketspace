@@ -3,54 +3,103 @@ import { prisma } from "@/lib/prisma";
 import type { EmailKind } from "@prisma/client";
 
 /**
- * E-Mail-Versand über SMTP.
+ * E-Mail-Versand mit drei Wegen — automatisch nach vorhandener Konfiguration:
  *
- * Bewusst SMTP und kein Anbieter-SDK: Damit läuft jeder Dienst (das eigene
- * brisco.ch-Postfach, Postmark, Resend, SES, Mailtrap zum Testen) ohne
- * Code-Änderung — nur die Zugangsdaten wechseln.
+ *  1. ZeptoMail (HTTPS)  — für LIVE. Nötig, weil Railway die SMTP-Ports sperrt.
+ *     Läuft über Port 443, den kein Hoster blockiert.
+ *  2. SMTP               — für lokale Entwicklung (Zoho-Postfach, funktioniert hier).
+ *  3. Nur-Log            — wenn nichts konfiguriert ist. Es wird nichts verschickt,
+ *                          der Vorgang aber ins EmailLog geschrieben.
  *
- * Konfiguration über Umgebungsvariablen (in Railway, NICHT im Repo):
- *   SMTP_HOST   z.B. smtp.example.com          (Pflicht)
- *   SMTP_PORT   z.B. 587 (STARTTLS) oder 465 (TLS)   — Standard 587
- *   SMTP_USER   Postfach/Benutzer               (Pflicht)
- *   SMTP_PASS   Passwort/API-Key               (Pflicht)
- *   MAIL_FROM   z.B. "Brisco Marketplace <noreply@brisco.ch>"  — Standard: SMTP_USER
+ * Der EmailLog-Eintrag entsteht in ALLEN Fällen, damit der Superadmin unter /admin
+ * sieht, was rausging bzw. rausgegangen wäre.
  *
- * Ist SMTP NICHT konfiguriert (lokale Entwicklung), wird nichts verschickt,
- * sondern nur ins Server-Log geschrieben — dieselbe Fallback-Logik wie beim
- * ANTHROPIC_API_KEY. Der EmailLog-Eintrag entsteht in BEIDEN Fällen, damit der
- * Superadmin unter /admin sieht, was rausging bzw. rausgegangen wäre.
+ * ── Umgebungsvariablen (in Railway, NICHT im Repo) ──
+ * ZeptoMail (LIVE):
+ *   ZEPTOMAIL_TOKEN   der „Send Mail Token" (beginnt mit „Zoho-enczapikey …")
+ *   ZEPTOMAIL_API     optional, Standard EU: https://api.zeptomail.eu/v1.1/email
+ *   MAIL_FROM         Absender, z.B. "Brisco Marketplace <noreply@brisco.ch>"
+ *
+ * SMTP (lokal):
+ *   SMTP_HOST · SMTP_PORT · SMTP_USER · SMTP_PASS · MAIL_FROM
  */
 
-export function isMailConfigured(): boolean {
-  return Boolean(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS);
+const ZEPTO_DEFAULT_API = "https://api.zeptomail.eu/v1.1/email";
+
+export type MailProvider = "zeptomail" | "smtp" | "none";
+
+/** Welcher Weg ist aktiv? ZeptoMail hat Vorrang (das ist der Live-Weg). */
+export function mailProvider(): MailProvider {
+  if (process.env.ZEPTOMAIL_TOKEN) return "zeptomail";
+  if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) return "smtp";
+  return "none";
 }
 
-/** Absenderadresse: MAIL_FROM, sonst der SMTP-Benutzer. */
+export function isMailConfigured(): boolean {
+  return mailProvider() !== "none";
+}
+
+/** Absender als "Name <adresse>" — für SMTP direkt, für ZeptoMail zerlegt. */
 function mailFrom(): string {
   return process.env.MAIL_FROM || process.env.SMTP_USER || "noreply@brisco.ch";
 }
 
-// Transporter als Singleton — eine Verbindung pro Prozess statt pro Mail.
+/** "Brisco Marketplace <noreply@brisco.ch>" → { name, address }. */
+function parseFrom(from: string): { name: string; address: string } {
+  const m = from.match(/^\s*(.*?)\s*<([^>]+)>\s*$/);
+  if (m) return { name: m[1] || "Brisco Marketplace", address: m[2].trim() };
+  return { name: "Brisco Marketplace", address: from.trim() };
+}
+
+// ---------- Weg 1: ZeptoMail über HTTPS ----------
+async function sendViaZeptoMail(to: string, subject: string, body: string): Promise<void> {
+  const from = parseFrom(mailFrom());
+  const res = await fetch(process.env.ZEPTOMAIL_API || ZEPTO_DEFAULT_API, {
+    method: "POST",
+    headers: {
+      // ZeptoMail erwartet den Token GENAU so (inkl. "Zoho-enczapikey"-Präfix,
+      // das der Token bereits enthält).
+      Authorization: process.env.ZEPTOMAIL_TOKEN as string,
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      from: { address: from.address, name: from.name },
+      to: [{ email_address: { address: to } }],
+      subject,
+      textbody: body,
+    }),
+    // Auch hier eine Zeitgrenze, damit ein hängender Aufruf nicht die Seite blockiert.
+    signal: AbortSignal.timeout(15_000),
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`ZeptoMail HTTP ${res.status}: ${text.slice(0, 300)}`);
+  }
+}
+
+// ---------- Weg 2: SMTP (lokal) ----------
 let transporter: nodemailer.Transporter | null = null;
 function getTransporter(): nodemailer.Transporter | null {
-  if (!isMailConfigured()) return null;
+  if (mailProvider() !== "smtp") return null;
   if (transporter) return transporter;
   const port = Number(process.env.SMTP_PORT ?? 587);
   transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port,
-    secure: port === 465, // 465 = TLS von Anfang an, 587 = STARTTLS
+    secure: port === 465,
     auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-    // Zeitgrenzen sind PFLICHT: Ohne sie wartet nodemailer unbegrenzt, wenn der
-    // Mailserver nicht erreichbar ist (z.B. wenn der Hoster ausgehende SMTP-Ports
-    // sperrt). Das ließ am 2026-07-15 die Passwort-vergessen-Seite live ewig auf
-    // „Wird gesendet …“ stehen.
     connectionTimeout: 10_000,
     greetingTimeout: 10_000,
     socketTimeout: 20_000,
   });
   return transporter;
+}
+
+async function sendViaSmtp(to: string, subject: string, body: string): Promise<void> {
+  const tx = getTransporter();
+  if (!tx) throw new Error("SMTP nicht konfiguriert");
+  await tx.sendMail({ from: mailFrom(), to, subject, text: body });
 }
 
 export async function sendEmail(params: {
@@ -61,28 +110,26 @@ export async function sendEmail(params: {
   subject: string;
   body: string;
 }): Promise<{ sent: boolean }> {
-  const tx = getTransporter();
+  const provider = mailProvider();
   let sent = false;
 
-  if (tx) {
-    try {
-      await tx.sendMail({
-        from: mailFrom(),
-        to: params.to,
-        subject: params.subject,
-        text: params.body,
-      });
+  try {
+    if (provider === "zeptomail") {
+      await sendViaZeptoMail(params.to, params.subject, params.body);
       sent = true;
-    } catch (e) {
-      // Nicht werfen: Ein Mailproblem darf den Aufrufer (z.B. Passwort-Reset)
-      // nicht scheitern lassen — sonst verrät die Fehlermeldung dem Angreifer,
-      // ob das Konto existiert. Der Fehler landet im Log.
-      console.error(`[E-Mail] Versand an ${params.to} fehlgeschlagen:`, e);
+    } else if (provider === "smtp") {
+      await sendViaSmtp(params.to, params.subject, params.body);
+      sent = true;
+    } else {
+      console.log(
+        `[E-Mail] kein Versand konfiguriert — nicht verschickt. An ${params.to} — ${params.subject}`,
+      );
     }
-  } else {
-    console.log(
-      `[E-Mail] SMTP nicht konfiguriert — nicht verschickt. An ${params.to} — ${params.subject}\n${params.body}`,
-    );
+  } catch (e) {
+    // Nicht werfen: Ein Mailproblem darf den Aufrufer (z.B. Passwort-Reset) nicht
+    // scheitern lassen — sonst verrät ein Fehler dem Angreifer, ob ein Konto
+    // existiert. Der Fehler landet im Log; der Admin-Kasten zeigt den Grund.
+    console.error(`[E-Mail] Versand an ${params.to} über ${provider} fehlgeschlagen:`, e);
   }
 
   if (params.userId) {
