@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { getT } from "@/lib/i18n-server";
 import { SDS_CATEGORY_LABEL, SDS_LANGUAGE_LABEL } from "@/lib/sds";
 import { FilterBar } from "@/components/FilterBar";
 import { FilterDropdown } from "@/components/FilterDropdown";
@@ -39,6 +40,7 @@ function triFilter(v: string | undefined): boolean | null | undefined {
 }
 
 export default async function SdsLibraryPage({ searchParams }: { searchParams: SearchParams }) {
+  const t = await getT();
   const sp = await searchParams;
   const { q, manufacturer, category } = sp;
 
@@ -143,7 +145,7 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
           <FileText size={20} />
         </span>
         <div>
-          <h1 className="page-title">Sicherheitsdatenblätter</h1>
+          <h1 className="page-title">{t("nav.sds")}</h1>
           <p className="text-sm text-slate-500">
             {totalCount.toLocaleString("de-CH")} Dokumente · REACH- & Inhaltsstoff-Filter
           </p>
@@ -152,31 +154,31 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
 
       <FilterBar
         count={sheets.length}
-        noun={sheets.length === 1 ? "Datenblatt" : "Datenblätter"}
+        noun={sheets.length === 1 ? t("sds.nounOne") : t("sds.nounOther")}
         resetHref="/sds"
         filterCount={filterCount}
         search={
-          <SearchInput placeholder="z.B. bcool755, Hysol, ISO VG 46, Borsäure, Triazin…" />
+          <SearchInput placeholder={t("sds.searchPlaceholder")} />
         }
       >
-        <FilterDropdown label="Hersteller" paramKey="manufacturer" options={manufacturerOptions} />
-        <FilterDropdown label="Kategorie" paramKey="category" options={categoryOptions} />
+        <FilterDropdown label={t("filter.manufacturer")} paramKey="manufacturer" options={manufacturerOptions} />
+        <FilterDropdown label={t("sds.category")} paramKey="category" options={categoryOptions} />
         <FilterDropdown label="REACH" paramKey="reach" options={reachOptions} />
         <FilterDropdown label="SVHC" paramKey="svhc" options={svhcOptions} />
-        <FilterDropdown label="Borhaltig" paramKey="boron" options={triOptions} />
-        <FilterDropdown label="Formaldehyd-Donor" paramKey="formaldehyde" options={triOptions} />
-        <FilterDropdown label="Sek. Amine" paramKey="amines" options={triOptions} />
-        <FilterDropdown label="Chlorparaffine" paramKey="chlorParaffins" options={triOptions} />
-        <FilterDropdown label="Mineralöl" paramKey="mineralOil" options={triOptions} />
-        <FilterDropdown label="Bakterizid" paramKey="bactericide" options={triOptions} />
-        <FilterDropdown label="Fungizid" paramKey="fungicide" options={triOptions} />
+        <FilterDropdown label={t("sds.filterBoron")} paramKey="boron" options={triOptions} />
+        <FilterDropdown label={t("sds.filterFormaldehyde")} paramKey="formaldehyde" options={triOptions} />
+        <FilterDropdown label={t("sds.filterAmines")} paramKey="amines" options={triOptions} />
+        <FilterDropdown label={t("sds.filterChloroparaffins")} paramKey="chlorParaffins" options={triOptions} />
+        <FilterDropdown label={t("sds.filterMineralOil")} paramKey="mineralOil" options={triOptions} />
+        <FilterDropdown label={t("sds.filterBactericide")} paramKey="bactericide" options={triOptions} />
+        <FilterDropdown label={t("sds.filterFungicide")} paramKey="fungicide" options={triOptions} />
       </FilterBar>
 
       {/* ERGEBNISSE */}
       <div className="space-y-2">
       {sheets.length === 0 ? (
         <div className="rounded-lg border border-slate-200 bg-white p-4 text-center text-slate-500">
-          Keine Datenblätter gefunden — Filter aufweichen oder{" "}
+          {t("sds.emptyBefore")}
           <Link href="/sds" className="text-brand-600 hover:underline">zurücksetzen</Link>.
         </div>
       ) : (
@@ -209,13 +211,13 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
                   {s.svhcSubstances.length > 0 && <Pill color="rose">SVHC</Pill>}
                   {s.containsBoron === true && <Pill color="amber">Bor</Pill>}
                   {s.containsBoron === false && <Pill color="emerald">borfrei</Pill>}
-                  {s.containsFormaldehydeReleaser === true && <Pill color="amber">Formaldehyd-Don.</Pill>}
+                  {s.containsFormaldehydeReleaser === true && <Pill color="amber">{t("sds.chipFormaldehyde")}</Pill>}
                   {s.containsSecondaryAmines === true && <Pill color="amber">sek. Amine</Pill>}
-                  {s.containsChlorinatedParaffins === true && <Pill color="rose">Chlorparaff.</Pill>}
-                  {s.containsMineralOil === true && <Pill color="slate">Mineralöl</Pill>}
+                  {s.containsChlorinatedParaffins === true && <Pill color="rose">{t("sds.chipChloroparaffins")}</Pill>}
+                  {s.containsMineralOil === true && <Pill color="slate">{t("sds.filterMineralOil")}</Pill>}
                   {s.containsPrimaryAromaticAmines === true && <Pill color="rose">PAA</Pill>}
-                  {s.hasBactericide === true && <Pill color="indigo">Bakterizid</Pill>}
-                  {s.hasFungicide === true && <Pill color="indigo">Fungizid</Pill>}
+                  {s.hasBactericide === true && <Pill color="indigo">{t("sds.filterBactericide")}</Pill>}
+                  {s.hasFungicide === true && <Pill color="indigo">{t("sds.filterFungicide")}</Pill>}
                 </div>
                 </div>
               </div>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
+import { getT } from "@/lib/i18n-server";
 import { SearchInput } from "@/components/SearchInput";
 import { ProductImage } from "@/components/ProductImage";
 import { packagingForProduct } from "@/lib/product-packaging";
@@ -41,6 +42,7 @@ const SEVERITY: Record<string, { label: string; cls: string; Icon: typeof Info }
 };
 
 export default async function WissenPage({ searchParams }: { searchParams: SearchParams }) {
+  const t = await getT();
   const { category, q } = await searchParams;
 
   const baseWhere = { status: { not: "REJECTED" as const } };
@@ -93,9 +95,9 @@ export default async function WissenPage({ searchParams }: { searchParams: Searc
     <div className="space-y-6">
       {/* Hero */}
       <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-7 shadow-soft md:p-9">
-        <div className="eyebrow text-brand-700">Praxis-Wissen · exklusiv bei Brisco</div>
+        <div className="eyebrow text-brand-700">{t("know.eyebrow")}</div>
         <h1 className="mt-2 max-w-3xl text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">
-          Bekannte Probleme, Ursachen &amp; Abhilfen
+          {t("know.title")}
         </h1>
         <p className="mt-2 max-w-3xl text-slate-600">
           Was in Datenblättern fehlt: reale Erfahrungen aus Fertigung, Foren und von
@@ -119,13 +121,13 @@ export default async function WissenPage({ searchParams }: { searchParams: Searc
       {/* Suche in den Praxis-Fällen (durchsucht Titel, Beschreibung, Symptome) */}
       <div className="max-w-xl">
         <Suspense fallback={null}>
-          <SearchInput placeholder="Praxis-Fälle durchsuchen — z.B. Schaum, Ekzem, Alu-Verfärbung, Blasocut…" />
+          <SearchInput placeholder={t("know.searchPlaceholder")} />
         </Suspense>
       </div>
 
       {/* Kategorie-Filter */}
       <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
-        <CatChip href={chipHref(null)} active={!category} label="Alle" count={total} />
+        <CatChip href={chipHref(null)} active={!category} label={t("filter.all")} count={total} />
         {chips.map((c) => (
           <CatChip
             key={c.key}
@@ -201,7 +203,7 @@ export default async function WissenPage({ searchParams }: { searchParams: Searc
 
                 {it.rootCause && (
                   <div className="rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-700">
-                    <span className="font-semibold text-slate-900">Ursache:</span> {it.rootCause}
+                    <span className="font-semibold text-slate-900">{t("know.cause")}</span> {it.rootCause}
                   </div>
                 )}
 
@@ -225,10 +227,10 @@ export default async function WissenPage({ searchParams }: { searchParams: Searc
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 hover:text-slate-600"
                     >
-                      <ExternalLink size={12} /> Quelle
+                      <ExternalLink size={12} /> {t("know.source")}
                     </a>
                   ) : (
-                    it.sourceTitle && <span>Quelle: {it.sourceTitle}</span>
+                    it.sourceTitle && <span>{t("know.source")}: {it.sourceTitle}</span>
                   )}
                 </div>
               </article>
