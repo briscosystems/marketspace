@@ -27,7 +27,7 @@ export function HeaderNav({ user }: { user: { name: string; isAdmin?: boolean } 
       ) : (
         <Link
           href="/login"
-          className="rounded-full border border-slate-200 px-4 py-2 font-medium text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50"
+          className="rounded-full border border-white/25 px-4 py-2 font-medium text-white transition-colors hover:border-white/40 hover:bg-white/10"
         >
           {t("header.signin")}
         </Link>
@@ -45,14 +45,14 @@ export function SecondaryNav() {
         href="/compare"
         aria-label={t("header.watchlist")}
         title={t("header.watchlist")}
-        className="grid h-9 w-9 place-items-center rounded-full border border-slate-200 text-slate-500 transition-colors hover:border-slate-300 hover:text-rose-500"
+        className="grid h-9 w-9 place-items-center rounded-full border border-white/25 text-slate-300 transition-colors hover:border-white/40 hover:text-rose-400"
       >
         <Heart size={17} />
       </Link>
 
       <Link
         href="/listings/new"
-        className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-4 py-2 font-semibold text-white transition-colors hover:bg-slate-800"
+        className="inline-flex items-center gap-1.5 rounded-full bg-brand-400 px-4 py-2 font-semibold text-slate-900 shadow-sm transition-colors hover:bg-brand-300"
       >
         <Plus size={16} />
         <span className="hidden sm:inline">{t("header.offer")}</span>

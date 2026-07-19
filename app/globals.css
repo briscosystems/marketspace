@@ -6,19 +6,37 @@ body {
   @apply text-slate-900;
   min-height: 100vh;
   /* NUR der Seitenhintergrund — Kacheln/Inhalte bleiben unverändert.
-     Dezent, professionell, markennah: sanfte Tiefe (Licht von oben), ein
-     hauchzarter Lime-Schimmer oben und zarte fließende Konturen unten-rechts
-     (nimmt die Brisco-Wellen / das Fluid-Thema auf). */
+     Professionell & markennah: sanfte Tiefe (Licht von oben), dezenter
+     Lime-Schimmer und das Brisco-Wellen-Band als ruhiger Saum am unteren
+     Bildschirmrand — volle Breite, aber unter den Inhalten verankert
+     (kein Streifen quer durch die Seite). */
   background-color: #eef1f2;
   background-image:
-    url("/images/bg-flow.png"),
-    radial-gradient(1000px 420px at 50% -150px, rgba(171, 217, 26, 0.11), transparent 70%),
-    radial-gradient(680px 520px at 100% 100%, rgba(171, 217, 26, 0.14), transparent 65%),
-    linear-gradient(180deg, #f8fafa 0%, #eef1f2 44%, #e6eaeb 100%);
-  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
-  background-position: right bottom, center top, right bottom, center;
-  background-size: min(900px, 66%) auto, 100% auto, 100% 100%, 100% 100%;
+    radial-gradient(1100px 460px at 50% -150px, rgba(171, 217, 26, 0.15), transparent 70%),
+    radial-gradient(900px 420px at 50% 100%, rgba(171, 217, 26, 0.10), transparent 65%),
+    linear-gradient(180deg, #f7faf5 0%, #eef1ee 44%, #e4e9e4 100%);
+  background-repeat: no-repeat;
+  background-position: center top, center bottom, center;
+  background-size: 100% auto, 100% 100%, 100% 100%;
   background-attachment: fixed;
+}
+
+/* Brisco-Wellen als ruhiges Wasserzeichen: fest im unteren Viertel des
+   Bildschirms verankert, halbtransparent, nach oben sanft ausgeblendet —
+   volle Breite, ohne in die Inhalte hineinzuragen. */
+body::before {
+  content: "";
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 30vh;
+  z-index: -1;
+  pointer-events: none;
+  background: url("/images/bg-flow.png") center bottom / 100% auto no-repeat;
+  opacity: 0.5;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 45%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 45%);
 }
 
 .btn {
@@ -40,7 +58,9 @@ body {
   @apply mb-1 block text-sm font-medium text-slate-700;
 }
 .card {
-  @apply rounded-xl border border-slate-200 bg-white p-5 shadow-soft;
+  /* Etwas mehr Tiefe und Rundung als früher — wirkt auf dem kräftigeren
+     Hintergrund frischer, bleibt aber ruhig (kein Hover-Effekt global). */
+  @apply rounded-2xl border border-slate-200/80 bg-white p-5 shadow-soft;
 }
 .chip {
   @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium;

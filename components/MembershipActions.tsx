@@ -220,8 +220,7 @@ export function MembershipActions({
         </div>
       )}
       <p className="text-xs text-slate-500">
-        Sichere Kartenzahlung über Stripe. Testmodus: Kartennummer 4242 4242 4242 4242, beliebiges
-        künftiges Ablaufdatum und CVC.
+        Sichere Kartenzahlung über Stripe.
       </p>
     </div>
   );

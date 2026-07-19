@@ -84,18 +84,21 @@ export default async function RootLayout({
           {/* Zweizeilige Kopfzeile (Muster großer Portale):
               Zeile 1 = Logo + Sprache + Konto/Anmelden (Dinge, die man selten braucht)
               Zeile 2 = Suche + Anbieten (die tägliche Arbeit, volle Breite für die Suche) */}
-          <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
+          <header className="sticky top-0 z-30 border-b border-graphite-700/60 bg-gradient-to-b from-graphite-800 to-graphite-900 shadow-md">
+            {/* Markante Lime-Signaturlinie am oberen Rand */}
+            <div className="h-0.5 bg-gradient-to-r from-brand-400 via-brand-300 to-brand-500" />
             <div className="mx-auto max-w-6xl px-4 md:px-6">
               {/* Zeile 1 */}
               <div className="flex items-center justify-between gap-4 py-2.5">
                 <Link href="/" className="flex shrink-0 items-center gap-2">
-                  {/* Offizielles Brisco-Systems-Logo (Vektor, public/brisco-systems-logo.svg) */}
+                  {/* Helle Logo-Variante für die dunkle Kopfzeile
+                      (public/brisco-systems-logo-light.svg, Schrift weiß statt graphit) */}
                   <img
-                    src={withBasePath("/brisco-systems-logo.svg")}
+                    src={withBasePath("/brisco-systems-logo-light.svg")}
                     alt="Brisco Systems"
                     className="h-8 w-auto sm:h-10"
                   />
-                  <span className="hidden self-center border-l border-slate-300 pl-3 text-base font-semibold tracking-tight text-slate-500 lg:inline">
+                  <span className="hidden self-center border-l border-white/20 pl-3 text-base font-semibold tracking-tight text-slate-300 lg:inline">
                     Marketplace
                   </span>
                 </Link>
@@ -112,12 +115,12 @@ export default async function RootLayout({
               </div>
 
               {/* Zeile 2 */}
-              <div className="flex items-center gap-2 border-t border-slate-100 py-2.5">
+              <div className="flex items-center gap-2 border-t border-white/10 py-2.5">
                 <form
                   action={withBasePath("/listings")}
                   method="get"
                   role="search"
-                  className="flex min-w-0 flex-1 items-center gap-2 rounded-full border border-slate-300 bg-white pl-4 pr-1.5 transition-colors focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-100"
+                  className="flex min-w-0 flex-1 items-center gap-2 rounded-full border border-transparent bg-white pl-4 pr-1.5 shadow-sm transition-all focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-400/40"
                 >
                   <Search className="h-4 w-4 shrink-0 text-slate-400" aria-hidden />
                   <input

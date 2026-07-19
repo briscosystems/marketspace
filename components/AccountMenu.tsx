@@ -76,16 +76,16 @@ export function AccountMenu({ user }: { user: { name: string; isAdmin?: boolean 
         aria-expanded={open}
         className={`inline-flex items-center gap-2 rounded-full border py-1 pl-1 pr-2 transition ${
           open
-            ? "border-brand-300 bg-brand-50"
-            : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
+            ? "border-brand-400/60 bg-white/10"
+            : "border-white/25 hover:border-white/40 hover:bg-white/10"
         }`}
       >
-        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-600 text-xs font-bold text-white">
+        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-400 text-xs font-bold text-slate-900">
           {initial}
         </span>
         <span className="hidden text-left leading-tight sm:block">
-          <span className="block text-[10px] text-slate-500">{t("account.greeting")}</span>
-          <span className="block max-w-[8rem] truncate text-xs font-semibold text-slate-800">
+          <span className="block text-[10px] text-slate-400">{t("account.greeting")}</span>
+          <span className="block max-w-[8rem] truncate text-xs font-semibold text-white">
             {user.name}
           </span>
         </span>

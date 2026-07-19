@@ -35,7 +35,7 @@ export function LanguageSwitcher() {
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-label={t("lang.label")}
-        className="inline-flex items-center gap-1 rounded-md px-2 py-1.5 font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900"
+        className="inline-flex items-center gap-1 rounded-md px-2 py-1.5 font-medium text-slate-200 transition-colors hover:bg-white/10 hover:text-white"
       >
         <span className="text-base leading-none">{current.flag}</span>
         <span className="hidden text-xs font-semibold uppercase sm:inline">{current.code}</span>

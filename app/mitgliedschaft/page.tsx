@@ -293,7 +293,11 @@ export default async function MembershipPage() {
           {t("mem.payText1")}<strong>{t("mem.payTextBold")}</strong>{t("mem.payText2")}
         </p>
         <div className="flex flex-wrap items-center gap-2">
-          {["Visa", "Mastercard", "American Express"].map((brand) => (
+          {/* Muss zu den im Stripe-Dashboard aktivierten Zahlungsmethoden passen —
+              Stripe zeigt in der Kaufabwicklung automatisch alles dort Aktivierte. */}
+          {/* PayPal ist im Stripe-Dashboard noch NICHT aktiviert (Stand 2026-07-19) —
+              erst hier ergänzen, wenn der User es dort eingeschaltet hat. */}
+          {["Visa", "Mastercard", "American Express", "TWINT", "Google Pay", "Apple Pay"].map((brand) => (
             <span
               key={brand}
               className="inline-flex items-center rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700"
