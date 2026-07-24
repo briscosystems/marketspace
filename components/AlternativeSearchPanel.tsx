@@ -76,6 +76,7 @@ const CHEMISTRY_LABEL: Record<string, string> = {
   SEMI_SYNTHETIC: "Semi-synthetisch",
   ESTER: "Ester",
   PAG: "PAG",
+  GTL: "GTL (Gas-to-Liquid)",
   OTHER: "Andere",
 };
 const FIT_BADGE: Record<AltMatch["fit"], { label: string; cls: string }> = {

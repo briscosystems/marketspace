@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { createAnthropic } from "@/lib/ai-client";
 import { recordAiUsage } from "@/lib/ai-usage";
 import { z } from "zod";
 import { getServerSession } from "next-auth";
@@ -202,8 +203,7 @@ function heuristicReply(ctx: Ctx): string {
 }
 
 async function askClaude(messages: ChatMessage[], ctx: Ctx): Promise<string> {
-  const Anthropic = (await import("@anthropic-ai/sdk")).default;
-  const client = new Anthropic();
+  const client = createAnthropic();
 
   // Verlauf 1:1 übernehmen; Daten-Kontext an die letzte Nutzer-Nachricht anhängen
   const apiMessages = messages.map((m, idx) => ({

@@ -1,4 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk";
+import { createAnthropic } from "@/lib/ai-client";
 import { recordAiUsage } from "@/lib/ai-usage";
 
 // ============================================================
@@ -72,7 +72,7 @@ export async function aiContactCheck(text: string): Promise<AiCheckResult> {
   if (!process.env.ANTHROPIC_API_KEY) return null;
 
   try {
-    const client = new Anthropic();
+    const client = createAnthropic();
     // Kostendeckel Teil 1: Input kappen (4000 Zeichen ≈ ~1200 Tokens)
     const capped = text.slice(0, 4000);
     const resp = await client.messages.create({

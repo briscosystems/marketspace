@@ -95,6 +95,7 @@ enum ChemistryBase {
   SEMI_SYNTHETIC
   ESTER
   PAG
+  GTL              // Gas-to-Liquid (Fischer-Tropsch, Gruppe III+ — sehr hoher VI, sehr rein)
   OTHER
 }
 

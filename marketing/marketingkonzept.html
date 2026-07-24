@@ -1,0 +1,345 @@
+<title>Brisco Marktplatz — Marketingkonzept</title>
+<style>
+  :root {
+    /* Brisco-Marke, bewusst gewählte Neutrale mit leichtem Grün-Stich */
+    --lime:#abd91a; --lime-600:#74980f; --lime-700:#587209; --lime-050:#f6fbe9;
+    --amber:#e88a14; --amber-700:#9d4f0f; --amber-050:#fef7ec;
+    --ink:#1f1e1e; --graphite:#4f4c4d; --slate:#5f5d5e; --muted:#83817f;
+    --paper:#f7f8f4; --card:#ffffff; --line:#e5e6df; --line-soft:#eeefe8;
+    --shadow:0 1px 2px rgba(31,30,30,.05), 0 6px 18px rgba(31,30,30,.06);
+    --shadow-lift:0 8px 28px rgba(31,30,30,.10);
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink:#f2f3ee; --graphite:#cfcecb; --slate:#b4b3af; --muted:#8b8a86;
+      --paper:#17181a; --card:#1f2023; --line:#33342f; --line-soft:#2a2b28;
+      --lime-050:#20260f; --amber-050:#2a1e0d;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.35);
+      --shadow-lift:0 8px 28px rgba(0,0,0,.45);
+    }
+  }
+  :root[data-theme="light"] {
+    --ink:#1f1e1e; --graphite:#4f4c4d; --slate:#5f5d5e; --muted:#83817f;
+    --paper:#f7f8f4; --card:#ffffff; --line:#e5e6df; --line-soft:#eeefe8;
+    --lime-050:#f6fbe9; --amber-050:#fef7ec;
+    --shadow:0 1px 2px rgba(31,30,30,.05), 0 6px 18px rgba(31,30,30,.06);
+    --shadow-lift:0 8px 28px rgba(31,30,30,.10);
+  }
+  :root[data-theme="dark"] {
+    --ink:#f2f3ee; --graphite:#cfcecb; --slate:#b4b3af; --muted:#8b8a86;
+    --paper:#17181a; --card:#1f2023; --line:#33342f; --line-soft:#2a2b28;
+    --lime-050:#20260f; --amber-050:#2a1e0d;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.35);
+    --shadow-lift:0 8px 28px rgba(0,0,0,.45);
+  }
+
+  * { box-sizing:border-box; }
+  body {
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--sans); line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap { max-width:900px; margin:0 auto; padding:0 22px 96px; }
+
+  /* ---------- Kopf ---------- */
+  header.hero {
+    background:
+      radial-gradient(1200px 340px at 82% -80px, color-mix(in srgb, var(--lime) 16%, transparent), transparent 70%),
+      linear-gradient(180deg, color-mix(in srgb, var(--lime-700) 12%, var(--card)), var(--card));
+    border-bottom:1px solid var(--line);
+  }
+  .hero-inner { max-width:900px; margin:0 auto; padding:52px 22px 40px; }
+  .brand { display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:-.01em; font-size:15px; }
+  .brand .dot { width:22px; height:22px; border-radius:6px; background:var(--lime); box-shadow:inset 0 0 0 3px color-mix(in srgb, var(--lime-700) 45%, var(--lime)); }
+  .kicker { margin-top:26px; font-size:12.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--lime-700); }
+  @media (prefers-color-scheme: dark){ .kicker{ color:var(--lime); } }
+  :root[data-theme="dark"] .kicker{ color:var(--lime); }
+  h1 { font-size:clamp(28px,4.6vw,42px); line-height:1.1; letter-spacing:-.025em; font-weight:800; margin:.28em 0 .3em; text-wrap:balance; }
+  .sub { font-size:clamp(16px,2.1vw,18px); color:var(--slate); max-width:60ch; margin:0; }
+  .goal-row { display:flex; flex-wrap:wrap; gap:12px; margin-top:26px; }
+  .goal { flex:1 1 240px; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 18px; box-shadow:var(--shadow); }
+  .goal .ph { font-size:11.5px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .goal .ph.one { color:var(--lime-700); } .goal .ph.two { color:var(--amber-700); }
+  @media (prefers-color-scheme: dark){ .goal .ph.one{color:var(--lime);} .goal .ph.two{color:var(--amber);} }
+  :root[data-theme="dark"] .goal .ph.one{color:var(--lime);} :root[data-theme="dark"] .goal .ph.two{color:var(--amber);}
+  .goal b { display:block; font-size:17px; margin:4px 0 2px; letter-spacing:-.01em; }
+  .goal span { font-size:13.5px; color:var(--slate); }
+
+  /* ---------- Abschnitte ---------- */
+  section { margin-top:52px; }
+  .eyebrow { font-size:12px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+  h2 { font-size:clamp(21px,3vw,27px); letter-spacing:-.02em; font-weight:800; margin:.25em 0 .1em; text-wrap:balance; }
+  h2 .num { color:var(--lime-700); font-variant-numeric:tabular-nums; }
+  @media (prefers-color-scheme: dark){ h2 .num{color:var(--lime);} }
+  :root[data-theme="dark"] h2 .num{color:var(--lime);}
+  .lead { font-size:16.5px; color:var(--slate); max-width:66ch; margin:.5em 0 0; }
+  h3 { font-size:15.5px; font-weight:750; letter-spacing:-.01em; margin:30px 0 8px; }
+
+  p { max-width:70ch; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:22px 24px; box-shadow:var(--shadow); }
+  .card + .card { margin-top:14px; }
+
+  /* Wertversprechen-Grid */
+  .val-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-top:18px; }
+  @media (max-width:640px){ .val-grid{ grid-template-columns:1fr; } }
+  .val { background:var(--card); border:1px solid var(--line); border-left:3px solid var(--lime); border-radius:12px; padding:16px 18px; box-shadow:var(--shadow); }
+  .val h4 { margin:0 0 4px; font-size:15px; font-weight:750; letter-spacing:-.01em; }
+  .val p { margin:0; font-size:14px; color:var(--slate); max-width:none; }
+
+  /* Kanal-Liste */
+  ul.clean { list-style:none; padding:0; margin:14px 0 0; }
+  ul.clean li { position:relative; padding:10px 0 10px 26px; border-top:1px solid var(--line-soft); font-size:15px; max-width:72ch; }
+  ul.clean li:first-child { border-top:0; }
+  ul.clean li::before { content:""; position:absolute; left:2px; top:17px; width:9px; height:9px; border-radius:50%; background:var(--lime); }
+  ul.clean li b { font-weight:700; }
+  ul.clean.amber li::before { background:var(--amber); }
+  ul.clean li span.small { color:var(--muted); font-size:13.5px; }
+
+  /* Pitch-Box */
+  .pitch { background:var(--lime-050); border:1px solid color-mix(in srgb, var(--lime) 40%, var(--line)); border-radius:14px; padding:20px 22px; margin-top:16px; }
+  .pitch .tag { font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--lime-700); }
+  @media (prefers-color-scheme: dark){ .pitch .tag{color:var(--lime);} }
+  :root[data-theme="dark"] .pitch .tag{color:var(--lime);}
+  .pitch p { margin:8px 0 0; font-size:15.5px; }
+  .pitch em { color:var(--slate); font-style:italic; }
+
+  /* Fahrplan / Wochen */
+  .weeks { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:18px; }
+  @media (max-width:720px){ .weeks{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:420px){ .weeks{ grid-template-columns:1fr; } }
+  .week { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:15px 16px; box-shadow:var(--shadow); }
+  .week .wk { font-size:11.5px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--amber-700); }
+  @media (prefers-color-scheme: dark){ .week .wk{color:var(--amber);} }
+  :root[data-theme="dark"] .week .wk{color:var(--amber);}
+  .week b { display:block; font-size:14.5px; margin:5px 0 6px; letter-spacing:-.01em; }
+  .week p { margin:0; font-size:13px; color:var(--slate); max-width:none; }
+
+  /* Kennzahlen */
+  .kpis { display:flex; flex-wrap:wrap; gap:12px; margin-top:16px; }
+  .kpi { flex:1 1 150px; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 18px; box-shadow:var(--shadow); }
+  .kpi .n { font-size:26px; font-weight:800; letter-spacing:-.02em; color:var(--lime-700); font-variant-numeric:tabular-nums; }
+  @media (prefers-color-scheme: dark){ .kpi .n{color:var(--lime);} }
+  :root[data-theme="dark"] .kpi .n{color:var(--lime);}
+  .kpi .l { font-size:13px; color:var(--slate); margin-top:2px; }
+
+  /* Motor-Highlight (SEO) */
+  .engine { background:linear-gradient(180deg, var(--card), color-mix(in srgb, var(--lime-700) 6%, var(--card))); border:1px solid var(--line); border-radius:16px; padding:22px 24px; box-shadow:var(--shadow); margin-top:16px; }
+  .engine .stats { display:flex; flex-wrap:wrap; gap:22px; margin-top:14px; }
+  .engine .stats div { }
+  .engine .stats .n { font-size:22px; font-weight:800; letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
+  .engine .stats .l { font-size:12.5px; color:var(--slate); }
+
+  /* Zeitleiste */
+  .timeline { margin-top:18px; border-left:2px solid var(--line); padding-left:22px; display:flex; flex-direction:column; gap:20px; }
+  .tl { position:relative; }
+  .tl::before { content:""; position:absolute; left:-29px; top:4px; width:12px; height:12px; border-radius:50%; background:var(--lime); box-shadow:0 0 0 4px var(--paper); }
+  .tl.amber::before { background:var(--amber); }
+  .tl .when { font-size:12px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); }
+  .tl b { display:block; font-size:16px; margin:2px 0 3px; letter-spacing:-.01em; }
+  .tl p { margin:0; font-size:14px; color:var(--slate); }
+
+  /* Risiken-Tabelle */
+  .risk { display:grid; grid-template-columns:1fr 1.2fr; gap:0; border:1px solid var(--line); border-radius:14px; overflow:hidden; margin-top:16px; box-shadow:var(--shadow); }
+  .risk .rh { background:var(--line-soft); font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); padding:11px 16px; }
+  .risk .rc { padding:14px 16px; border-top:1px solid var(--line); font-size:14.5px; }
+  .risk .rc.l { color:var(--ink); font-weight:600; }
+  .risk .rc.r { color:var(--slate); }
+  @media (max-width:560px){ .risk{ grid-template-columns:1fr; } .risk .rh:nth-child(2){ display:none; } .risk .rc.r{ border-top:0; padding-top:0; } }
+
+  .note { margin-top:40px; font-size:13.5px; color:var(--muted); border-top:1px solid var(--line); padding-top:18px; }
+  strong.ink { color:var(--ink); }
+</style>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="brand"><span class="dot"></span>Brisco Marktplatz</div>
+    <div class="kicker">Markteinführung · Marketingkonzept</div>
+    <h1>Erst die Angebote, dann die Öffentlichkeit</h1>
+    <p class="sub">Ein Marktplatz lebt davon, dass beide Seiten da sind. Deshalb bauen wir zuerst die
+      Angebotsseite auf — 30 Reseller mit echten Angeboten — und öffnen die Plattform erst danach für die breite Käuferschaft.</p>
+
+    <div class="goal-row">
+      <div class="goal">
+        <div class="ph one">Phase 1 · Fundament</div>
+        <b>30 Reseller an Bord</b>
+        <span>Händler gewinnen, die echte Angebote einstellen — damit die Plattform ab Tag 1 voll aussieht.</span>
+      </div>
+      <div class="goal">
+        <div class="ph two">Phase 2 · Öffnung</div>
+        <b>Öffentlicher Rollout</b>
+        <span>Käufer holen: Einkäufer, Werkstätten, Betriebe — über Suche, Inhalte und gezielte Werbung.</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- Ausgangslage -->
+  <section>
+    <div class="eyebrow">Die Grundidee</div>
+    <h2>Warum die Reihenfolge über alles entscheidet</h2>
+    <p class="lead">Das klassische Henne-Ei-Problem: Käufer kommen nur, wenn es etwas zu kaufen gibt.
+      Anbieter kommen nur, wenn Käufer da sind. Wer beide gleichzeitig will, bekommt keinen von beiden.</p>
+    <div class="card" style="margin-top:18px">
+      <p style="margin:0"><strong class="ink">Unsere Lösung: Wir starten mit der Angebotsseite.</strong>
+      Ein Marktplatz mit vielen Angeboten und wenigen Käufern wirkt trotzdem lebendig und seriös — ein Marktplatz
+      mit vielen Käufern und leeren Regalen wirkt tot. Deshalb kümmern wir uns in Phase 1 nur um <strong class="ink">30
+      gute Reseller</strong>. Sind ihre Angebote drin, hat die Plattform sofort Substanz. Erst dann drehen wir in
+      Phase 2 den Hahn für die Käufer auf — und die finden dann ein volles Schaufenster vor.</p>
+    </div>
+  </section>
+
+  <!-- PHASE 1 -->
+  <section>
+    <div class="eyebrow">Phase 1</div>
+    <h2><span class="num">30</span> Reseller gewinnen, die Angebote einstellen</h2>
+    <p class="lead">Ziel: 30 Händler von Industrieölen, Kühlschmierstoffen und Schmierstoffen, die mindestens
+      je fünf echte Angebote eingestellt haben. Kein breites Marketing — persönliche, gezielte Ansprache.</p>
+
+    <h3>Wen wir genau ansprechen</h3>
+    <p>Reseller und Zwischenhändler im deutschsprachigen Raum (Schweiz zuerst, dann DACH), die schon heute
+      Öle und KSS verkaufen — kleine bis mittlere Betriebe, die einen zusätzlichen Verkaufskanal ohne Aufwand gut gebrauchen können.</p>
+
+    <h3>Warum sie mitmachen — das Versprechen an den Reseller</h3>
+    <div class="val-grid">
+      <div class="val"><h4>Kostenlos starten</h4><p>In Phase 1 keine Gebühren. Sie stellen Angebote ein und zahlen nichts — kein Risiko.</p></div>
+      <div class="val"><h4>Neue Kundschaft ohne Akquise</h4><p>Betriebe, die gezielt nach genau ihren Produkten suchen — statt selbst kalt anzurufen.</p></div>
+      <div class="val"><h4>Kein Aufwand beim Einstellen</h4><p>Wir übernehmen das Anlegen der Angebote gemeinsam mit ihnen. Der Katalog mit 900+ Produkten und Datenblättern ist schon da.</p></div>
+      <div class="val"><h4>Seriöses Umfeld</h4><p>Käuferschutz, Bewertungen und geprüfte Profile — der Reseller steht in gutem Licht, nicht auf einem Ramsch-Portal.</p></div>
+      <div class="val"><h4>Gründungs-Vorteil</h4><p>Die ersten 30 bekommen dauerhaft bessere Konditionen und ein „Gründungsmitglied“-Abzeichen.</p></div>
+      <div class="val"><h4>Sichtbar in der Suche</h4><p>Wenn Käufer nach „Blasocut“ oder „ISO VG 46“ suchen, taucht ihr Angebot oben auf.</p></div>
+    </div>
+
+    <h3>Wo wir sie finden</h3>
+    <ul class="clean">
+      <li><b>Eigenes Netzwerk zuerst.</b> Bestehende Brisco-Kontakte, Lieferanten, Branchenbekanntschaften — die einfachsten ersten 5–10.</li>
+      <li><b>LinkedIn, gezielt.</b> Personen mit Titeln wie Einkauf, Vertrieb, Geschäftsführung bei Öl-/KSS-Händlern direkt und persönlich anschreiben.</li>
+      <li><b>Branchenverzeichnisse & Verbände.</b> Listen von Schmierstoff-Händlern systematisch durchgehen.</li>
+      <li><b>Messen & regionale Treffen.</b> Fachmessen für Zerspanung/Instandhaltung — dort sind Einkäufer und Händler an einem Ort. <span class="small">Auch ohne Stand: hingehen, Visitenkarten, Nachfassen.</span></li>
+      <li><b>Empfehlungen.</b> Jeden gewonnenen Reseller fragen: „Wen kennen Sie noch, für den das passt?“</li>
+    </ul>
+
+    <h3>Wie wir sie ansprechen</h3>
+    <div class="pitch">
+      <div class="tag">Der Pitch in einem Satz</div>
+      <p>„Wir bauen den ersten neutralen Marktplatz für Industrieöle und KSS im deutschsprachigen Raum —
+        und suchen 30 Gründungs-Händler, die von Anfang an dabei sind. <em>Kostenlos, ohne Aufwand, mit
+        Vorzugskonditionen für immer.</em> Darf ich Ihnen in 15 Minuten zeigen, wie Ihr Angebot dort aussieht?“</p>
+    </div>
+    <p style="margin-top:14px">Kein Massen-Rundschreiben. Jede Ansprache persönlich, mit dem Namen des Betriebs und
+      einem konkreten Beispiel — idealerweise zeigen wir dem Reseller sein eigenes Angebot schon fertig vorbereitet auf der Plattform.</p>
+
+    <h3>Der Trick beim Onboarding: Wir machen es für sie</h3>
+    <div class="card">
+      <p style="margin:0">Die größte Hürde ist „keine Zeit, sich einzuarbeiten“. Also nehmen wir sie ihnen ab:
+      Wir legen die ersten Angebote <strong class="ink">gemeinsam im Gespräch oder komplett für den Reseller an</strong> —
+      der Produktkatalog und die Datenblätter sind ja schon im System. Der Reseller muss nur Preise und Mengen nennen. So
+      geht er aus dem ersten Telefonat mit einem <strong class="ink">fertig bestückten Profil</strong> heraus statt mit einer Hausaufgabe.</p>
+    </div>
+
+    <h3>Fahrplan für die ersten Wochen</h3>
+    <div class="weeks">
+      <div class="week"><div class="wk">Woche 1–2</div><b>Liste & Warmstart</b><p>Zielliste von 60–80 Händlern bauen. Die 10 einfachsten aus dem eigenen Netz zuerst ansprechen.</p></div>
+      <div class="week"><div class="wk">Woche 3–5</div><b>Ansprache-Welle</b><p>Täglich feste Zahl persönlicher Kontakte. Gespräche führen, Profile gemeinsam bestücken.</p></div>
+      <div class="week"><div class="wk">Woche 6–8</div><b>Nachfassen & Empfehlungen</b><p>Unentschlossene nachfassen, gewonnene Reseller um Empfehlungen bitten. Richtung 30.</p></div>
+      <div class="week"><div class="wk">Woche 9–10</div><b>Feinschliff</b><p>Angebote prüfen, Lücken füllen, Plattform „schaufensterreif“ machen für Phase 2.</p></div>
+    </div>
+
+    <h3>Woran wir Erfolg messen</h3>
+    <div class="kpis">
+      <div class="kpi"><div class="n">30</div><div class="l">Reseller mit aktivem Profil</div></div>
+      <div class="kpi"><div class="n">150+</div><div class="l">eingestellte Angebote (Ø 5 pro Reseller)</div></div>
+      <div class="kpi"><div class="n">10</div><div class="l">Produktgruppen abgedeckt</div></div>
+      <div class="kpi"><div class="n">≤10 Wo.</div><div class="l">bis Phase 2 startklar</div></div>
+    </div>
+  </section>
+
+  <!-- PHASE 2 -->
+  <section>
+    <div class="eyebrow">Phase 2</div>
+    <h2>Öffentlicher Rollout — jetzt kommen die Käufer</h2>
+    <p class="lead">Sobald das Schaufenster voll ist, öffnen wir für die Nachfrageseite: Einkäufer in Betrieben,
+      Werkstätten, Instandhalter — alle, die regelmäßig Öle und KSS beschaffen.</p>
+
+    <h3>Unser stärkster Hebel steht schon: der Wissens-Katalog als Suchmaschinen-Motor</h3>
+    <div class="engine">
+      <p style="margin:0"><strong class="ink">Menschen googeln nach genau diesen Produkten und Datenblättern.</strong>
+      Brisco hat bereits einen riesigen, gepflegten Katalog — und jede dieser Seiten kann bei Google gefunden werden.
+      Das bringt Käufer <em>kostenlos</em> und automatisch auf die Plattform, ohne dass wir für jeden Klick zahlen.</p>
+      <div class="stats">
+        <div><div class="n">924</div><div class="l">Produkte im Katalog</div></div>
+        <div><div class="n">3&nbsp;270</div><div class="l">Sicherheitsdatenblätter</div></div>
+        <div><div class="n">104</div><div class="l">Hersteller</div></div>
+        <div><div class="n">1</div><div class="l">KSS-Wizard als Aushängeschild</div></div>
+      </div>
+    </div>
+
+    <h3>Die Argumente, mit denen wir Käufer überzeugen</h3>
+    <div class="val-grid">
+      <div class="val"><h4>KSS-Wizard</h4><p>Der KI-Assistent findet in Minuten das passende Produkt — das gibt es sonst nirgends. Unser Aushängeschild.</p></div>
+      <div class="val"><h4>Preise vergleichen</h4><p>Endlich sehen, was Öle und KSS wirklich kosten — statt bei jedem Lieferanten einzeln anzufragen.</p></div>
+      <div class="val"><h4>Käuferschutz</h4><p>Sicher kaufen bei geprüften Anbietern mit Bewertungen — nimmt die Angst vor dem ersten Kauf.</p></div>
+      <div class="val"><h4>Alles an einem Ort</h4><p>Produktdaten, Datenblätter, Verträglichkeit, Anbieter — kein Zusammensuchen mehr.</p></div>
+    </div>
+
+    <h3>Über welche Kanäle wir Käufer holen</h3>
+    <ul class="clean amber">
+      <li><b>Suchmaschine (SEO) — der Hauptkanal.</b> Die Katalog- und Datenblatt-Seiten so aufbereiten, dass sie bei Google ganz oben stehen. <span class="small">Dauerhaft, kostenlos, skaliert mit dem Katalog.</span></li>
+      <li><b>Google-Anzeigen, gezielt.</b> Auf konkrete Suchbegriffe („KSS kaufen“, Produktnamen) — bezahlt, aber sofort wirksam zum Start.</li>
+      <li><b>Fach-Inhalte.</b> Kurze hilfreiche Artikel & der KSS-Wizard als Köder — Ratgeber, die Einkäufer wirklich suchen.</li>
+      <li><b>LinkedIn & Fachpresse.</b> Launch-Story: „Der erste neutrale Marktplatz für KSS ist live.“ <span class="small">PR-Wirkung, kostet nur Zeit.</span></li>
+      <li><b>Die Reseller selbst.</b> Jeder der 30 bringt seine Bestandskunden mit — sie werden zu Multiplikatoren.</li>
+    </ul>
+
+    <h3>Die Launch-Aktion</h3>
+    <div class="card">
+      <p style="margin:0">Ein klarer Startschuss statt leisem Dahingleiten: ein <strong class="ink">Launch-Tag</strong> mit
+      Ankündigung an alle Reseller-Kontakte, einer Pressemeldung und einer befristeten Aktion für die ersten Käufer
+      (z. B. bevorzugter Käuferschutz oder eine kleine Startgutschrift). Ziel ist ein sichtbarer „Es geht los“-Moment,
+      über den man spricht.</p>
+    </div>
+
+    <h3>Woran wir Erfolg messen</h3>
+    <div class="kpis">
+      <div class="kpi"><div class="n">Besucher</div><div class="l">über Google-Suche pro Monat</div></div>
+      <div class="kpi"><div class="n">Anfragen</div><div class="l">& Käufe pro Woche</div></div>
+      <div class="kpi"><div class="n">Wizard</div><div class="l">Nutzungen pro Woche</div></div>
+      <div class="kpi"><div class="n">Wachstum</div><div class="l">neue Reseller kommen jetzt von selbst</div></div>
+    </div>
+  </section>
+
+  <!-- Zeitleiste -->
+  <section>
+    <div class="eyebrow">Der rote Faden</div>
+    <h2>So greifen die beiden Phasen ineinander</h2>
+    <div class="timeline">
+      <div class="tl"><div class="when">Monat 1–2</div><b>Angebotsseite aufbauen</b><p>30 Reseller ansprechen, gewinnen und ihre Profile gemeinsam bestücken. Kein öffentliches Marketing.</p></div>
+      <div class="tl"><div class="when">Monat 3</div><b>Schaufenster prüfen</b><p>Angebote vollständig, Suche sauber, KSS-Wizard und Käuferschutz getestet. Plattform wirkt voll und seriös.</p></div>
+      <div class="tl amber"><div class="when">Monat 3–4</div><b>Öffentlicher Launch</b><p>Startschuss, Pressemeldung, Google-Anzeigen an. Käufer strömen auf ein volles Angebot.</p></div>
+      <div class="tl amber"><div class="when">ab Monat 4</div><b>Schwungrad dreht</b><p>Käufer ziehen weitere Reseller an, mehr Angebote ziehen mehr Käufer. Das System trägt sich zunehmend selbst.</p></div>
+    </div>
+  </section>
+
+  <!-- Risiken -->
+  <section>
+    <div class="eyebrow">Ehrlich betrachtet</div>
+    <h2>Die drei größten Risiken — und was wir dagegen tun</h2>
+    <div class="risk">
+      <div class="rh">Risiko</div><div class="rh">Gegenmittel</div>
+      <div class="rc l">Reseller zögern, weil noch keine Käufer da sind.</div>
+      <div class="rc r">In Phase 1 kostenlos, ohne Aufwand, mit Gründungs-Vorteil — sie gehen kein Risiko ein und sichern sich einen Vorsprung.</div>
+      <div class="rc l">Angebote werden eingestellt, aber bleiben dünn oder veralten.</div>
+      <div class="rc r">Wir bestücken aktiv mit und prüfen vor dem Launch jedes Profil auf Vollständigkeit.</div>
+      <div class="rc l">Nach dem öffentlichen Launch kommen zu wenige Käufer.</div>
+      <div class="rc r">Der Katalog zieht dauerhaft Google-Besucher; Anzeigen und die Bestandskunden der Reseller sorgen für den Sofort-Schub.</div>
+    </div>
+  </section>
+
+  <p class="note">Konzept-Entwurf zum Weiterdenken. Zahlen zum Katalog (924 Produkte, 3 270 Datenblätter, 104 Hersteller)
+    entsprechen dem aktuellen Live-Stand. Als Nächstes können wir jeden Baustein konkretisieren — z. B. die Zielliste der
+    ersten 60–80 Reseller, den fertigen Ansprache-Text oder den Launch-Plan im Detail.</p>
+
+</div>

@@ -232,6 +232,7 @@ export const MESSAGES: Record<Locale, Dict> = {
     "chem.SYNTHETIC": "Vollsynthetisch",
     "chem.ESTER": "Ester-Basis",
     "chem.PAG": "PAG (Polyalkylenglykol)",
+    "chem.GTL": "GTL (Gas-to-Liquid)",
     "chem.OTHER": "Andere",
     // Werkstoff-Verträglichkeit
     "compat.RECOMMENDED": "Empfohlen",
@@ -1287,6 +1288,7 @@ export const MESSAGES: Record<Locale, Dict> = {
     "chem.SYNTHETIC": "Fully synthetic",
     "chem.ESTER": "Ester-based",
     "chem.PAG": "PAG (polyalkylene glycol)",
+    "chem.GTL": "GTL (gas-to-liquid)",
     "chem.OTHER": "Other",
     "compat.RECOMMENDED": "Recommended",
     "compat.COMPATIBLE": "Suitable",
@@ -2334,6 +2336,7 @@ export const MESSAGES: Record<Locale, Dict> = {
     "chem.SYNTHETIC": "Volsynthetisch",
     "chem.ESTER": "Op esterbasis",
     "chem.PAG": "PAG (polyalkyleenglycol)",
+    "chem.GTL": "GTL (gas-to-liquid)",
     "chem.OTHER": "Overig",
     "compat.RECOMMENDED": "Aanbevolen",
     "compat.COMPATIBLE": "Geschikt",

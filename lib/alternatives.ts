@@ -1,4 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk";
+import { createAnthropic, clampText, aiTemporarilyDisabled, noteAiSuccess, noteAiFailure } from "@/lib/ai-client";
 import { recordAiUsage } from "@/lib/ai-usage";
 import type { Listing, SafetyDataSheet } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
@@ -144,19 +144,22 @@ export async function findAlternatives(
     candidates.map((c) => findMatchingSds(c, 1).then((arr) => arr[0] ?? null)),
   );
 
-  if (!allowAi || !process.env.ANTHROPIC_API_KEY) {
+  if (!allowAi || !process.env.ANTHROPIC_API_KEY || aiTemporarilyDisabled()) {
     return ruleBasedRanking(source, candidates, candidateSds, mustHave);
   }
 
   try {
-    return await claudeRanking(
+    const ranked = await claudeRanking(
       source,
       sourceSds[0] ?? null,
       candidates,
       candidateSds,
       mustHave,
     );
+    noteAiSuccess();
+    return ranked;
   } catch (e) {
+    noteAiFailure();
     console.error("Claude call failed, falling back:", e);
     return ruleBasedRanking(source, candidates, candidateSds, mustHave);
   }
@@ -362,7 +365,7 @@ async function claudeRanking(
   candidateSds: (SafetyDataSheet | null)[],
   mustHave: MustHave,
 ): Promise<AlternativeResponse> {
-  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
+  const anthropic = createAnthropic();
 
   const sourceBlock = formatListingBlock(source, sourceSds);
   const candidateBlocks = candidates
@@ -390,7 +393,7 @@ async function claudeRanking(
     "## MUST-HAVE-KRITERIEN DES KÄUFERS",
     mustHaveText,
     mustHave.workpieceMaterial
-      ? `\n## ZU BEARBEITENDER WERKSTOFF\n${mustHave.workpieceMaterial}`
+      ? `\n## ZU BEARBEITENDER WERKSTOFF\n${clampText(mustHave.workpieceMaterial, 500)}`
       : "",
     issuesText ? `\n## PROBLEME, DIE DAS PRODUKT NICHT HABEN DARF\n${issuesText}` : "",
     automationText ? `\n## AUTOMATISIERUNGS-ANFORDERUNGEN\n${automationText}` : "",

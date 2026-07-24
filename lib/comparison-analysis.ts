@@ -14,6 +14,7 @@
  * ist sha256 über die sortierten Listing-IDs.
  */
 import crypto from "node:crypto";
+import { createAnthropic, aiTemporarilyDisabled, noteAiSuccess, noteAiFailure } from "@/lib/ai-client";
 import { recordAiUsage } from "@/lib/ai-usage";
 import { prisma } from "@/lib/prisma";
 import type { Listing } from "@prisma/client";
@@ -72,14 +73,16 @@ export async function analyzeListings(listings: Listing[]): Promise<AnalysisResu
   let result: AnalysisResult;
   let source: "anthropic-claude" | "heuristic-fallback";
   try {
-    if (hasKey) {
+    if (hasKey && !aiTemporarilyDisabled()) {
       result = await analyzeWithAnthropic(listings);
       source = "anthropic-claude";
+      noteAiSuccess();
     } else {
       result = analyzeHeuristically(listings);
       source = "heuristic-fallback";
     }
   } catch (e) {
+    noteAiFailure();
     console.warn("Anthropic-Analyse fehlgeschlagen, fallback auf Heuristik:", e);
     result = analyzeHeuristically(listings);
     source = "heuristic-fallback";
@@ -104,9 +107,7 @@ export async function analyzeListings(listings: Listing[]): Promise<AnalysisResu
 // ============================================================================
 
 async function analyzeWithAnthropic(listings: Listing[]): Promise<AnalysisResult> {
-  // Lazy import — vermeidet Bundle-Bloat wenn key fehlt
-  const Anthropic = (await import("@anthropic-ai/sdk")).default;
-  const client = new Anthropic();
+  const client = createAnthropic();
 
   const dataBlock = listings
     .map((l, i) => {

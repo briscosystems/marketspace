@@ -10,6 +10,7 @@
 // Antwort: { recommendations: [...], summary: "...", source: "..." }
 
 import { NextResponse } from "next/server";
+import { createAnthropic, clampText, AI_LIMITS, aiTemporarilyDisabled, noteAiSuccess, noteAiFailure } from "@/lib/ai-client";
 import { recordAiUsage } from "@/lib/ai-usage";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -30,6 +31,8 @@ type WizardAnswers = {
   certifications?: string[];
   waterHardness?: number | null;
   unsureDimensions?: string[];
+  /** Kompakte Zusammenfassung eines hochgeladenen SDB (aus /api/sds/parse). */
+  uploadedSds?: string | null;
 };
 
 type Recommendation = {
@@ -142,7 +145,7 @@ export async function POST(req: Request) {
   let aiAllowed = false;
   const session = await getServerSession(authOptions);
 
-  if (hasKey && topCandidates.length > 0) {
+  if (hasKey && topCandidates.length > 0 && !aiTemporarilyDisabled()) {
     if (session?.user?.id) {
       const charge = await chargeForAiAction(session.user.id, "kssWizard");
       if (charge.ok) {
@@ -203,7 +206,9 @@ export async function POST(req: Request) {
       ).then((arr) => arr.filter(Boolean) as Recommendation[]);
       summary = claude.summary;
       source = "anthropic-claude";
+      noteAiSuccess();
     } catch (e) {
+      noteAiFailure();
       console.warn("Anthropic-Call failed, fallback:", e);
       if (session?.user?.id) {
         await refundAiAction(session.user.id, "kssWizard");
@@ -306,8 +311,7 @@ async function callAnthropic(args: {
   recommendations: { productId: string; reason: string; matchScore: number }[];
   summary: string;
 }> {
-  const Anthropic = (await import("@anthropic-ai/sdk")).default;
-  const client = new Anthropic();
+  const client = createAnthropic();
 
   const candidateBlock = args.candidates
     .map(
@@ -335,7 +339,9 @@ Heuristik-Score: ${c.preScore} (${c.heuristicReasons.join("; ")})`,
       aktuelleProduktBeschreibung: args.currentProduct
         ? `${args.currentProduct.manufacturer.name} · ${args.currentProduct.name} (Chemie: ${args.currentProduct.chemistry}, Form: ${args.currentProduct.concentrateForm}, adressiert: ${args.currentProduct.criticalIssuesAddressed.join(", ")})`
         : null,
-      problembeschreibung: args.wizardAnswers.problemDescription || null,
+      problembeschreibung: clampText(args.wizardAnswers.problemDescription, AI_LIMITS.freetext) || null,
+      sicherheitsdatenblattAktuellesProdukt:
+        clampText(args.wizardAnswers.uploadedSds, AI_LIMITS.sdsText) || null,
       bearbeitungsverfahren: args.wizardAnswers.applicationAreas,
       werkstoffe: args.wizardAnswers.materials,
       produktionsart: args.wizardAnswers.productionType,
@@ -365,6 +371,10 @@ WICHTIG — Freitext "problembeschreibung" KRITISCH analysieren:
 - Zerlege die Schilderung in die wahrscheinlichen technischen Ursachen (z.B. "kippt nach 3 Wochen" → Bakterien-/Pilzbefall, zu niedrige Konzentration, Tramp-Oil-Eintrag).
 - Sei ehrlich: wenn die Beschreibung NICHT eindeutig auf ein KSS-Problem zeigt (z.B. eigentlich ein Anlagen- oder Pflegeproblem), sag das im summary klar — kein Schönreden, die Plattform bleibt neutral.
 - Stehen Dimensionen in "unsichereAngaben" (der Anwender weiß es nicht), gewichte sie schwächer und wähle eher universell einsetzbare Produkte; weise im summary darauf hin, was zu klären wäre.
+
+WENN das Feld "sicherheitsdatenblattAktuellesProdukt" gefüllt ist:
+- Berücksichtige dessen Einstufung (H-Sätze) und Inhaltsstoffe (z. B. Borsäure, Formaldehyd-Abspalter, sekundäre Amine, Chlorparaffine, SVHC).
+- Bevorzuge Alternativen, die die kritischen Stoffe des aktuellen Produkts VERMEIDEN, und weise im summary konkret darauf hin (z. B. „Ihr aktuelles Produkt enthält freie Borsäure — die Vorschläge sind borfrei.").
 
 Antworte AUSSCHLIESSLICH mit gültigem JSON:
 {

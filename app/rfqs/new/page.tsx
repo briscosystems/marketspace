@@ -11,7 +11,7 @@ import type { KssIssueId, IssueScope } from "@/lib/kss-issues";
 import { withBasePath } from "@/lib/base-path";
 import { useLocale } from "@/components/LocaleProvider";
 
-const chemistries = ["MINERAL", "SYNTHETIC", "SEMI_SYNTHETIC", "ESTER", "PAG", "OTHER"] as const;
+const chemistries = ["MINERAL", "SYNTHETIC", "SEMI_SYNTHETIC", "ESTER", "PAG", "GTL", "OTHER"] as const;
 
 // Vorschlags-Vokabulare für die Echtzeit-Felder
 const ISO_VG_PRESETS = ["5", "7", "10", "15", "22", "32", "46", "68", "100", "150", "220", "320", "460", "680"];

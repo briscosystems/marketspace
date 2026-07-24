@@ -14,6 +14,7 @@
  * wird daher über normalisierte Namen abgeglichen.
  */
 import Anthropic from "@anthropic-ai/sdk";
+import { createAnthropic, clampText, AI_LIMITS, aiTemporarilyDisabled, noteAiSuccess, noteAiFailure } from "@/lib/ai-client";
 import { recordAiUsage } from "@/lib/ai-usage";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
@@ -460,17 +461,17 @@ export async function searchAlternativesWeb(input: AltSearchInput): Promise<AltS
   // Ohne Schlüssel keine Web-Recherche möglich → regelbasiertes Ergebnis.
   // (Aber: auch wenn der Katalog NICHTS gefunden hat, lassen wir die KI laufen —
   //  sie kann ein unbekanntes Produkt einordnen und Alternativen empfehlen.)
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!process.env.ANTHROPIC_API_KEY || aiTemporarilyDisabled()) {
     return base;
   }
 
   try {
-    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    const anthropic = createAnthropic();
 
     const targetDesc = base.source
       ? `Quell-Produkt: ${base.source.manufacturer ?? ""} ${base.source.name} (Produktart: ${base.source.category ?? "?"}, Chemie: ${base.source.chemistry ?? "?"})`
       : `Anforderungen: ${[
-          input.query,
+          clampText(input.query, AI_LIMITS.freetext),
           input.category && `Produktart ${input.category}`,
           input.chemistry && `Chemie ${input.chemistry}`,
           input.isoViscosity && `ISO VG ${input.isoViscosity}`,
@@ -582,6 +583,7 @@ export async function searchAlternativesWeb(input: AltSearchInput): Promise<AltS
     });
     enriched.sort((a, b) => b.score - a.score);
 
+    noteAiSuccess();
     return {
       ...base,
       alternatives: enriched,
@@ -590,6 +592,7 @@ export async function searchAlternativesWeb(input: AltSearchInput): Promise<AltS
       webSummary: summary,
     };
   } catch (e) {
+    noteAiFailure();
     console.error("Web-Alternativsuche fehlgeschlagen, Fallback auf Regeln:", e);
     return base;
   }

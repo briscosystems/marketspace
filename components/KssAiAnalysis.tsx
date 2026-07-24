@@ -1,9 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ChangeEvent } from "react";
 import Link from "next/link";
-import { Sparkles, Loader2, CheckCircle2, AlertTriangle, Brain } from "lucide-react";
+import { Sparkles, Loader2, CheckCircle2, AlertTriangle, Brain, Upload, FileText, X } from "lucide-react";
 import { withBasePath } from "@/lib/base-path";
+import { sdsFlagChips } from "@/lib/sds-summary";
+
+const CHIP_TONE: Record<"red" | "amber" | "green", string> = {
+  red: "bg-red-100 text-red-800",
+  amber: "bg-amber-100 text-amber-800",
+  green: "bg-emerald-100 text-emerald-800",
+};
 
 type Recommendation = {
   productId: string;
@@ -52,6 +59,42 @@ export function KssAiAnalysis({
   const [error, setError] = useState<string | null>(null);
   const [text, setText] = useState<string>(problemText ?? "");
 
+  // Hochgeladenes SDB des aktuell eingesetzten Produkts (optional).
+  const [sds, setSds] = useState<{
+    summary: string;
+    name: string;
+    chips: { label: string; tone: "red" | "amber" | "green" }[];
+  } | null>(null);
+  const [sdsLoading, setSdsLoading] = useState(false);
+  const [sdsError, setSdsError] = useState<string | null>(null);
+
+  async function onSdsFile(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // erlaubt erneutes Wählen derselben Datei
+    if (!file) return;
+    setSdsError(null);
+    setSdsLoading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const resp = await fetch(withBasePath("/api/sds/parse"), { method: "POST", body: fd });
+      const data = await resp.json();
+      if (!resp.ok || !data.ok) {
+        setSdsError(data?.error ?? "SDB konnte nicht gelesen werden.");
+        return;
+      }
+      setSds({
+        summary: data.summary as string,
+        name: file.name,
+        chips: sdsFlagChips({ hStatements: data.hStatements, ...data.flags }),
+      });
+    } catch {
+      setSdsError("Upload fehlgeschlagen.");
+    } finally {
+      setSdsLoading(false);
+    }
+  }
+
   async function analyze() {
     setLoading(true);
     setError(null);
@@ -69,6 +112,7 @@ export function KssAiAnalysis({
           productionType: productionType || null,
           concentrateForm: concentrateForm || null,
           unsureDimensions,
+          uploadedSds: sds?.summary ?? undefined,
         }),
       });
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
@@ -101,6 +145,58 @@ export function KssAiAnalysis({
         placeholder="z.B. Emulsion kippt nach 3 Wochen trotz Pflege / Bediener klagen über Hautreizungen / Aluminium läuft an …"
         className="input mt-1 font-normal leading-relaxed"
       />
+
+      {/* Optional: SDB des aktuell eingesetzten Produkts hochladen — die KI bezieht es ein */}
+      <div className="mt-3">
+        {!sds ? (
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-dashed border-purple-300 bg-white px-3 py-2 text-xs font-medium text-purple-700 hover:bg-purple-50">
+            {sdsLoading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
+            {sdsLoading
+              ? "SDB wird gelesen…"
+              : "Sicherheitsdatenblatt des aktuellen Produkts (PDF) hochladen — optional"}
+            <input
+              type="file"
+              accept="application/pdf,.pdf"
+              className="hidden"
+              onChange={onSdsFile}
+              disabled={sdsLoading}
+            />
+          </label>
+        ) : (
+          <div className="rounded-lg border border-purple-200 bg-white p-3">
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex min-w-0 items-center gap-2">
+                <FileText size={15} className="shrink-0 text-purple-600" />
+                <span className="truncate text-xs font-medium text-slate-700">{sds.name}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSds(null)}
+                className="shrink-0 rounded p-0.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                aria-label="SDB entfernen"
+              >
+                <X size={14} />
+              </button>
+            </div>
+            {sds.chips.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-1">
+                {sds.chips.map((c, i) => (
+                  <span
+                    key={i}
+                    className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${CHIP_TONE[c.tone]}`}
+                  >
+                    {c.label}
+                  </span>
+                ))}
+              </div>
+            )}
+            <p className="mt-2 text-[11px] text-slate-500">
+              Die KI berücksichtigt dieses SDB bei der Auswahl der Alternativen.
+            </p>
+          </div>
+        )}
+        {sdsError && <p className="mt-1 text-xs text-red-600">{sdsError}</p>}
+      </div>
 
       <button
         type="button"

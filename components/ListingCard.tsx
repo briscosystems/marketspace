@@ -57,6 +57,7 @@ const chemistryLabel: Record<string, string> = {
   SEMI_SYNTHETIC: "Teilsynthetisch",
   ESTER: "Ester",
   PAG: "PAG",
+  GTL: "GTL (Gas-to-Liquid)",
   OTHER: "Sonstige Chemie",
 };
 

@@ -1,0 +1,379 @@
+<title>Brisco — Zielliste Reseller & Ansprache</title>
+<style>
+  :root {
+    --lime:#abd91a; --lime-600:#74980f; --lime-700:#587209; --lime-050:#f6fbe9;
+    --amber:#e88a14; --amber-700:#9d4f0f; --amber-050:#fef7ec;
+    --ink:#1f1e1e; --graphite:#4f4c4d; --slate:#5f5d5e; --muted:#83817f;
+    --paper:#f7f8f4; --card:#ffffff; --line:#e5e6df; --line-soft:#eeefe8;
+    --shadow:0 1px 2px rgba(31,30,30,.05), 0 6px 18px rgba(31,30,30,.06);
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --tierA:#587209; --tierAbg:#f6fbe9; --tierB:#9d4f0f; --tierBbg:#fef7ec; --tierC:#5f5d5e; --tierCbg:#f1f1ee;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink:#f2f3ee; --graphite:#cfcecb; --slate:#b4b3af; --muted:#8b8a86;
+      --paper:#17181a; --card:#1f2023; --line:#33342f; --line-soft:#2a2b28;
+      --lime-050:#20260f; --amber-050:#2a1e0d;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.35);
+      --tierA:#bfe45c; --tierAbg:#20260f; --tierB:#f6a738; --tierBbg:#2a1e0d; --tierC:#b4b3af; --tierCbg:#26272a;
+    }
+  }
+  :root[data-theme="light"]{ --ink:#1f1e1e; --graphite:#4f4c4d; --slate:#5f5d5e; --muted:#83817f; --paper:#f7f8f4; --card:#fff; --line:#e5e6df; --line-soft:#eeefe8; --lime-050:#f6fbe9; --amber-050:#fef7ec; --tierA:#587209; --tierAbg:#f6fbe9; --tierB:#9d4f0f; --tierBbg:#fef7ec; --tierC:#5f5d5e; --tierCbg:#f1f1ee; --shadow:0 1px 2px rgba(31,30,30,.05), 0 6px 18px rgba(31,30,30,.06); }
+  :root[data-theme="dark"]{ --ink:#f2f3ee; --graphite:#cfcecb; --slate:#b4b3af; --muted:#8b8a86; --paper:#17181a; --card:#1f2023; --line:#33342f; --line-soft:#2a2b28; --lime-050:#20260f; --amber-050:#2a1e0d; --tierA:#bfe45c; --tierAbg:#20260f; --tierB:#f6a738; --tierBbg:#2a1e0d; --tierC:#b4b3af; --tierCbg:#26272a; --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.35); }
+
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:1080px; margin:0 auto; padding:0 22px 96px; }
+
+  header.hero { background: radial-gradient(1200px 320px at 85% -80px, color-mix(in srgb, var(--lime) 16%, transparent), transparent 70%), linear-gradient(180deg, color-mix(in srgb, var(--lime-700) 12%, var(--card)), var(--card)); border-bottom:1px solid var(--line); }
+  .hero-inner { max-width:1080px; margin:0 auto; padding:48px 22px 36px; }
+  .brand { display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:-.01em; font-size:15px; }
+  .brand .dot { width:22px; height:22px; border-radius:6px; background:var(--lime); box-shadow:inset 0 0 0 3px color-mix(in srgb, var(--lime-700) 45%, var(--lime)); }
+  .kicker { margin-top:22px; font-size:12.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--lime-700); }
+  :root[data-theme="dark"] .kicker{ color:var(--lime); } @media (prefers-color-scheme:dark){ .kicker{color:var(--lime);} }
+  h1 { font-size:clamp(26px,4.2vw,38px); line-height:1.12; letter-spacing:-.025em; font-weight:800; margin:.28em 0 .3em; text-wrap:balance; }
+  .sub { font-size:clamp(15px,2vw,17px); color:var(--slate); max-width:64ch; margin:0; }
+
+  .legend { display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .tier { display:inline-flex; align-items:center; gap:8px; font-size:13px; background:var(--card); border:1px solid var(--line); border-radius:999px; padding:6px 14px 6px 10px; box-shadow:var(--shadow); }
+  .dotA,.dotB,.dotC{ width:10px; height:10px; border-radius:50%; }
+  .dotA{ background:var(--lime); } .dotB{ background:var(--amber); } .dotC{ background:var(--muted); }
+  .tier b{ font-weight:750; }
+
+  section { margin-top:46px; }
+  .eyebrow { font-size:12px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+  h2 { font-size:clamp(20px,2.8vw,26px); letter-spacing:-.02em; font-weight:800; margin:.25em 0 .1em; text-wrap:balance; }
+  .lead { font-size:16px; color:var(--slate); max-width:70ch; margin:.5em 0 0; }
+  h3 { font-size:17px; font-weight:750; letter-spacing:-.01em; margin:30px 0 6px; display:flex; align-items:center; gap:10px; }
+  .flag { font-size:20px; }
+  .count { font-size:12px; font-weight:700; color:var(--muted); background:var(--line-soft); border-radius:999px; padding:2px 9px; }
+
+  .tablewrap { overflow-x:auto; border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); margin-top:12px; background:var(--card); }
+  table { width:100%; border-collapse:collapse; font-size:13.5px; min-width:760px; }
+  thead th { text-align:left; font-size:11px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); padding:11px 14px; border-bottom:1px solid var(--line); background:var(--line-soft); white-space:nowrap; }
+  tbody td { padding:11px 14px; border-bottom:1px solid var(--line-soft); vertical-align:top; }
+  tbody tr:last-child td { border-bottom:0; }
+  td.firm { font-weight:700; white-space:nowrap; }
+  td.firm a { color:var(--ink); text-decoration:none; border-bottom:1px solid color-mix(in srgb, var(--lime) 60%, transparent); }
+  td.firm a:hover { border-bottom-color:var(--lime); }
+  td.web { font-family:var(--mono); font-size:12px; color:var(--slate); white-space:nowrap; }
+  td.focus { color:var(--slate); min-width:150px; }
+  td.fit { color:var(--slate); min-width:220px; }
+  .pill { display:inline-block; font-size:10.5px; font-weight:800; letter-spacing:.03em; border-radius:999px; padding:2px 9px; }
+  .pA{ color:var(--tierA); background:var(--tierAbg); border:1px solid color-mix(in srgb, var(--lime) 40%, transparent); }
+  .pB{ color:var(--tierB); background:var(--tierBbg); border:1px solid color-mix(in srgb, var(--amber) 40%, transparent); }
+  .pC{ color:var(--tierC); background:var(--tierCbg); border:1px solid var(--line); }
+  .kss { display:inline-block; margin-left:6px; font-size:10px; font-weight:800; color:var(--lime-700); }
+  :root[data-theme="dark"] .kss{ color:var(--lime); }
+
+  .callout { background:var(--lime-050); border:1px solid color-mix(in srgb, var(--lime) 40%, var(--line)); border-radius:14px; padding:18px 20px; margin-top:16px; }
+  .callout p{ margin:0; font-size:15px; } .callout strong{ color:var(--ink); }
+
+  /* Ansprache-Blöcke */
+  .mail { background:var(--card); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); overflow:hidden; margin-top:16px; }
+  .mail .mh { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 18px; background:var(--line-soft); border-bottom:1px solid var(--line); }
+  .mail .mh b{ font-size:14px; } .mail .mh span{ font-size:12px; color:var(--muted); }
+  .mail .mb { padding:20px 22px; font-size:14.5px; }
+  .mail .subject{ font-size:13px; color:var(--muted); margin-bottom:14px; padding-bottom:12px; border-bottom:1px dashed var(--line); }
+  .mail .subject b{ color:var(--ink); font-weight:700; }
+  .mail p{ margin:0 0 12px; max-width:68ch; }
+  .mail .slot{ background:var(--amber-050); color:var(--amber-700); border-radius:5px; padding:1px 6px; font-weight:600; font-size:13px; }
+  :root[data-theme="dark"] .mail .slot{ color:var(--amber); }
+  .mail ul{ margin:0 0 12px; padding-left:20px; } .mail li{ margin:5px 0; }
+
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; }
+  @media (max-width:760px){ .two{ grid-template-columns:1fr; } }
+  .mini { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 20px; box-shadow:var(--shadow); }
+  .mini h4{ margin:0 0 8px; font-size:14px; font-weight:750; }
+  .mini p, .mini li{ font-size:13.5px; color:var(--slate); } .mini ul{ margin:0; padding-left:18px; } .mini li{ margin:5px 0; }
+
+  .note { margin-top:38px; font-size:13px; color:var(--muted); border-top:1px solid var(--line); padding-top:18px; }
+  .note strong{ color:var(--ink); }
+</style>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="brand"><span class="dot"></span>Brisco Marktplatz</div>
+    <div class="kicker">Phase 1 · Direktansprache</div>
+    <h1>Zielliste: die ersten Gründungs-Reseller Europas</h1>
+    <p class="sub">85 echte, per Recherche geprüfte Distributoren für Industrieöle, Kühlschmierstoffe und
+      Schmierstoffe — vom Heimmarkt Schweiz nach außen priorisiert. Alle werden <b>direkt und persönlich</b>
+      angesprochen (Telefon / E-Mail an die Firma), nicht über öffentliche Portale. Dazu der fertige Ansprache-Text.</p>
+    <div class="legend">
+      <span class="tier"><span class="dotA"></span><b>Tier A</b> — zuerst: Heimmarkt DACH, beste Mehrmarken-Fit</span>
+      <span class="tier"><span class="dotB"></span><b>Tier B</b> — Benelux & starke KSS-Spezialisten</span>
+      <span class="tier"><span class="dotC"></span><b>Tier C</b> — übriges Europa, zweite Welle</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section>
+    <div class="eyebrow">So ist die Liste aufgebaut</div>
+    <h2>Von innen nach außen ansprechen</h2>
+    <p class="lead">Fang bei <b>Tier A</b> an: gleiche Sprache, gleicher Rechtsraum, kurze Wege — die höchste
+      Abschlussquote fürs erste Dutzend. <b>Tier B</b> (Benelux) sind besonders viele reine KSS-Spezialisten, dein
+      Kernthema. <b>Tier C</b> ist die zweite Welle fürs restliche Europa. <span class="kss">KSS</span> markiert Firmen
+      mit klarem Kühlschmierstoff-Schwerpunkt — für dein Aushängeschild-Thema die wertvollsten.</p>
+    <div class="callout"><p><strong>Ziel Phase 1:</strong> 30 aktive Reseller. Aus 85 Kandidaten heißt das eine
+      realistische Zusage-Quote von rund einem Drittel — genug Puffer, um wählerisch zu sein und mit den besten zu starten.</p></div>
+  </section>
+
+  <!-- ===================== TIER A: DACH ===================== -->
+  <section>
+    <div class="eyebrow">Tier A · zuerst ansprechen</div>
+    <h2>Heimmarkt DACH — die 32 besten Kandidaten</h2>
+
+    <h3><span class="flag">🇨🇭</span> Schweiz <span class="count">9</span></h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Firma</th><th>Ort</th><th>Website</th><th>Fokus</th><th>Warum Fit</th><th>Tier</th></tr></thead>
+      <tbody>
+        <tr><td class="firm"><a href="https://maagtechnic.ch">Maagtechnic</a></td><td>Dübendorf</td><td class="web">maagtechnic.ch</td><td class="focus">Industrieschmierstoffe, Hydraulik, KSS<span class="kss">KSS</span></td><td class="fit">Großes techn. Handelshaus, breites Mehrmarken-Sortiment + Ölanalyse (ERIKS-Gruppe).</td><td><span class="pill pA">A</span></td></tr>
+        <tr><td class="firm"><a href="https://thommen-furler.ch">Thommen-Furler</a></td><td>Rüti b. Büren</td><td class="web">thommen-furler.ch</td><td class="focus">Schmierstoffe, KSS, Spezialchemie<span class="kss">KSS</span></td><td class="fit">Echter Mehrmarken-Distributor über Schmierstoffe hinaus, offizieller Mobil-Partner CH/FL.</td><td><span class="pill pA">A</span></td></tr>
+        <tr><td class="firm"><a href="https://credimex.ch">CREDIMEX</a></td><td>Alpnach</td><td class="web">credimex.ch</td><td class="focus">Öle, Fette, Pasten, Tribologie</td><td class="fit">Eines der größten CH-Schmierstoffsortimente, starke Tribologie-Beratung.</td><td><span class="pill pA">A</span></td></tr>
+        <tr><td class="firm"><a href="https://slidocuhl.ch">Slidocuhl</a></td><td>Raum Zürich</td><td class="web">slidocuhl.ch</td><td class="focus">Spezialschmier, Hydraulik, KSS<span class="kss">KSS</span></td><td class="fit">Breiter unabhängiger Händler quer durch alle Marken (Castrol, Shell, Fuchs, Klüber …).</td><td><span class="pill pA">A</span></td></tr>
+        <tr><td class="firm"><a href="https://midland.ch">Midland / Oel-Brack</a></td><td>Hunzenschwil</td><td class="web">midland.ch</td><td class="focus">Industrieöle, Hydraulik, Fette</td><td class="fit">Regionaler Hersteller/Abfüller (seit 1880), der zugleich breit distribuiert.</td><td><span class="pill pA">A</span></td></tr>
+        <tr><td class="firm"><a href="https://laveba.ch">LAVEBA Genossenschaft</a></td><td>St. Gallen</td><td class="web">laveba.ch</td><td class="focus">Schmierstoffe Industrie/Agrar</td><td class="fit">Ostschweizer Distributor für Marken- und Eigenmarkenware (Fuchs, Tectrol).</td><td><span class="pill pA">A</span></td></tr>
+        <tr><td class="firm"><a href="https://eberhart.ch">Eberhart Schmierstoffe</a></td><td>Zürich</td><td class="web">eberhart.ch</td><td class="focus">Motor-/Getriebe, Hydraulik, Fette</td><td class="fit">Etablierter Fachhändler (&gt;36 J.) mit Industriefokus; Mobil-Partner.</td><td><span class="pill pA">A</span></td></tr>
+        <tr><td class="firm"><a href="https://schmierstoffzentrum.ch">TM Schmierstoffzentrum</a></td><td>Münchwilen AG</td><td class="web">schmierstoffzentrum.ch</td><td class="focus">Öle, ATF, Additive (autolastig)</td><td class="fit">Reiner Online-Mehrmarken-Händler — Modell gut auf Marktplatz übertragbar.</td><td><span class="pill pA">A</span></td></tr>
+        <tr><td class="firm"><a href="https://igralub.com">IGRALUB</a></td><td>Zürich</td><td class="web">igralub.com</td><td class="focus">Schmiertechnik + -stoffe</td><td class="fit">Eher Schmiersystem-Anbieter — nachrangiger Fit, mit Vorbehalt prüfen.</td><td><span class="pill pC">C</span></td></tr>
+      </tbody>
+    </table></div>
+
+    <h3><span class="flag">🇩🇪</span> Deutschland <span class="count">14</span></h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Firma</th><th>Ort</th><th>Website</th><th>Fokus</th><th>Warum Fit</th><th>Tier</th></tr></thead>
+      <tbody>
+        <tr><td class="firm"><a href="https://schmierstoffe-dm.de">Diermeier Energie</a></td><td>Niederwinkling</td><td class="web">schmierstoffe-dm.de</td><td class="focus">Motor/Getriebe/Hydraulik, Industrie<span class="kss">KSS</span></td><td class="fit">Erklärter Mehrmarken-Lieferant, 30+ Marken (u. a. Quaker Houghton) — Top-Kandidat.</td><td><span class="pill pA">A</span></td></tr>
+        <tr><td class="firm"><a href="https://baumannoil.de">Baumann Mineralöl</a></td><td>Werbach/Külsheim</td><td class="web">baumannoil.de</td><td class="focus">Industrie/Spezial, Hydraulik, Metallbearb.<span class="kss">KSS</span></td><td class="fit">Sehr breiter unabhängiger Distributor, 25+ Marken (Fuchs, Klüber, Motorex …).</td><td><span class="pill pA">A</span></td></tr>
+        <tr><td class="firm"><a href="https://liquon.com">Liquon</a></td><td>Raum Weilheim</td><td class="web">liquon.com</td><td class="focus">Industrieschmierstoffe, KSS<span class="kss">KSS</span></td><td class="fit">Autorisierter Petro-Canada-Distributor + breites Fremdmarken-Portfolio inkl. KSS.</td><td><span class="pill pA">A</span></td></tr>
+        <tr><td class="firm"><a href="https://evlg.de">eVI Lubricants (eVLG)</a></td><td>Schüttorf</td><td class="web">evlg.de</td><td class="focus">Motor/Industrie/Hydraulik, Schneidöle</td><td class="fit">Ausdrücklich markenunabhängiger Großhändler ohne Mindestabnahme.</td><td><span class="pill pA">A</span></td></tr>
+        <tr><td class="firm"><a href="https://kranzoil.de">Kranzoil</a></td><td>Bielefeld</td><td class="web">kranzoil.de</td><td class="focus">2.000+ Schmierstoffe, Hydraulik, Fette</td><td class="fit">Unabhängiger Mehrmarken-Händler mit eigenem Großlager (Gulf, Texaco, Q8).</td><td><span class="pill pA">A</span></td></tr>
+        <tr><td class="firm"><a href="https://riedel-schmierstoffe.de">Riedel</a></td><td>Raum Freiburg</td><td class="web">riedel-schmierstoffe.de</td><td class="focus">Kühlschmierstoffe + KSS-Equipment<span class="kss">KSS</span></td><td class="fit">KSS-Systempartner (Beratung/Versorgung), &gt;50 Jahre am Markt.</td><td><span class="pill pA">A</span></td></tr>
+        <tr><td class="firm"><a href="https://esgemo.de">esgemo Schmierstofftechnik</a></td><td>Mosbach</td><td class="web">esgemo.de</td><td class="focus">KSS, Schleiföle, Stanz-/Schneidöle<span class="kss">KSS</span></td><td class="fit">Spezialist für Metallbearbeitungsmedien — starker KSS-Fit.</td><td><span class="pill pA">A</span></td></tr>
+        <tr><td class="firm"><a href="https://dgm-mineraloele.de">DGM Mineralöle</a></td><td>Wuppertal</td><td class="web">dgm-mineraloele.de</td><td class="focus">KSS/Metallbearb., Industrie, Filter<span class="kss">KSS</span></td><td class="fit">Hersteller UND Händler von KSS mit Beratung, Leergut, KSS-Analyse.</td><td><span class="pill pB">B</span></td></tr>
+        <tr><td class="firm"><a href="https://shop.oest.de">OEST Lubricants</a></td><td>Freudenstadt</td><td class="web">shop.oest.de</td><td class="focus">Industrieöle, KSS, Automotive, Fette<span class="kss">KSS</span></td><td class="fit">Regionaler Hersteller/Abfüller, tritt zugleich als Großhändler auf.</td><td><span class="pill pB">B</span></td></tr>
+        <tr><td class="firm"><a href="https://cs-mineraloel.de">C&amp;S Mineralöl</a></td><td>Zwickau</td><td class="web">cs-mineraloel.de</td><td class="focus">Schmierstoffe Auto + Industrie</td><td class="fit">Regionaler Mehrmarken-Händler mit eigener Logistik (SN/TH/Nordbayern).</td><td><span class="pill pB">B</span></td></tr>
+        <tr><td class="firm"><a href="https://oilmanagement.net">Oil Management &amp; Services</a></td><td>Husum</td><td class="web">oilmanagement.net</td><td class="focus">Getriebe/Hydraulik/Turbine, Fette (Wind)</td><td class="fit">Unabhängiger Schmierstoffhändler, Nischen-Fit Wind/Industrie.</td><td><span class="pill pB">B</span></td></tr>
+        <tr><td class="firm"><a href="https://bundf-schmierstoffe.de">B+F Schmierstoff</a></td><td>Kerpen-Sindorf</td><td class="web">bundf-schmierstoffe.de</td><td class="focus">Automotive + Hydraulik/Getriebe, Fette</td><td class="fit">Markenunabhängiger Händler seit 2008 (Industrieanteil geringer).</td><td><span class="pill pB">B</span></td></tr>
+        <tr><td class="firm"><a href="https://g-oil.net">G-Oil Vertrieb</a></td><td>Gersthofen</td><td class="web">g-oil.net</td><td class="focus">Markenschmierstoffe Industrie/Agrar</td><td class="fit">B2B-Distributor, ISO 9001; eher raffineriegebunden (H&amp;R/SRS).</td><td><span class="pill pC">C</span></td></tr>
+        <tr><td class="firm"><a href="https://lallinger-schmierstoffe.de">Lallinger Schmierstoffe</a></td><td>Schechen</td><td class="web">lallinger-schmierstoffe.de</td><td class="focus">PKW/LKW/Getriebe/Hydraulik, Industrie</td><td class="fit">Regionaler Mehrmarken-Großhandel (WECTOL, Addinol, Eurolub, Aspen).</td><td><span class="pill pC">C</span></td></tr>
+      </tbody>
+    </table></div>
+
+    <h3><span class="flag">🇦🇹</span> Österreich <span class="count">9</span></h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Firma</th><th>Ort</th><th>Website</th><th>Fokus</th><th>Warum Fit</th><th>Tier</th></tr></thead>
+      <tbody>
+        <tr><td class="firm"><a href="https://koeb-oele.at">Günther Köb</a></td><td>Kennelbach</td><td class="web">koeb-oele.at</td><td class="focus">Industrie, Hydraulik, KSS, Nfz<span class="kss">KSS</span></td><td class="fit">Unabhängig, „größtes Öllager Westösterreichs“, 24h-Lieferung.</td><td><span class="pill pA">A</span></td></tr>
+        <tr><td class="firm"><a href="https://wifra.at">WIFRA Handels</a></td><td>Traun</td><td class="web">wifra.at</td><td class="focus">Industrie, Hydraulik, Getriebe/Motor</td><td class="fit">Unabhängiger Mehrmarken-Öldistributor (Mobil, Petronas, Motul, Total …).</td><td><span class="pill pA">A</span></td></tr>
+        <tr><td class="firm"><a href="https://kss-handel.at">KSS-Handel</a></td><td>OÖ (07223)</td><td class="web">kss-handel.at</td><td class="focus">KSS/Zerspanung, Werkzeuge<span class="kss">KSS</span></td><td class="fit">Reiner Mehrmarken-Fachhändler mit Onlineshop im KSS-Segment.</td><td><span class="pill pA">A</span></td></tr>
+        <tr><td class="firm"><a href="https://haberkorn.com">Haberkorn</a></td><td>Wolfurt</td><td class="web">haberkorn.com</td><td class="focus">Industrieschmierstoffe, techn. Großhandel<span class="kss">KSS</span></td><td class="fit">Großes techn. Handelshaus mit exklusivem Shell-Vertrieb (Wedolit, Petrofer, Cassida).</td><td><span class="pill pA">A</span></td></tr>
+        <tr><td class="firm"><a href="https://poier-schmierstoffe.at">Poier Schmierstoffe</a></td><td>Rosental/Kainach</td><td class="web">poier-schmierstoffe.at</td><td class="focus">Industrie/Hydraulik (bio), Getriebe, KSS<span class="kss">KSS</span></td><td class="fit">Mehrmarken-Fachhändler mit &gt;50 J. Historie, klassisches Wiederverkäuferprofil.</td><td><span class="pill pB">B</span></td></tr>
+        <tr><td class="firm"><a href="https://inolub.at">Inolub Industrieservice</a></td><td>Steyrermühl/Linz</td><td class="web">inolub.at</td><td class="focus">KSS, Fette, Gleitbahnöle, KSS-Service<span class="kss">KSS</span></td><td class="fit">Exklusiver AT-Distributor einer starken KSS-Marke (Rhenus Lub) plus Service.</td><td><span class="pill pB">B</span></td></tr>
+        <tr><td class="firm"><a href="https://mpg-schmierstoffe.at">MPG Schmierstoffe</a></td><td>Riedau/Andorf</td><td class="web">mpg-schmierstoffe.at</td><td class="focus">Industrie, Hydraulik, Getriebe, KSS<span class="kss">KSS</span></td><td class="fit">Hersteller-Händler-Mischform mit eigener Flotte, breites Sortiment.</td><td><span class="pill pB">B</span></td></tr>
+        <tr><td class="firm"><a href="https://wodoil.at">WODOIL</a></td><td>Wien</td><td class="web">wodoil.at</td><td class="focus">Industrie, Hydraulik, Ketten/Kompressor</td><td class="fit">Etablierter Distributor („seit 75 Jahren“), mehrere Standorte.</td><td><span class="pill pB">B</span></td></tr>
+        <tr><td class="firm"><a href="https://gogreen.co.at">GoGreen</a></td><td>OÖ (07713)</td><td class="web">gogreen.co.at</td><td class="focus">KSS (kennzeichnungsfrei), MMS, Reiniger<span class="kss">KSS</span></td><td class="fit">KSS-Spezialist für gesunde/kennzeichnungsfreie KSS; sucht aktiv Vertriebspartner.</td><td><span class="pill pB">B</span></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ===================== TIER B: Benelux ===================== -->
+  <section>
+    <div class="eyebrow">Tier B · zweite Welle, viel KSS</div>
+    <h2>Benelux — 12 Distributoren, viele KSS-Spezialisten</h2>
+    <p class="lead">Die Niederlande und Belgien sind auffällig dicht an reinen Kühlschmierstoff-Fachhändlern —
+      dein Kernthema. Sprache: Deutsch/Englisch funktioniert meist, oft auch NL.</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Firma</th><th>Land · Ort</th><th>Website</th><th>Fokus</th><th>Warum Fit</th><th>Tier</th></tr></thead>
+      <tbody>
+        <tr><td class="firm"><a href="https://olieonline.nl">OlieOnline</a></td><td>🇳🇱 NL</td><td class="web">olieonline.nl</td><td class="focus">Industrie/Hydraulik/Getriebe, KSS<span class="kss">KSS</span></td><td class="fit">Markenunabhängiger Webshop mit sehr breitem A-Marken-Sortiment — idealer Marktplatz-Typ.</td><td><span class="pill pB">B</span></td></tr>
+        <tr><td class="firm"><a href="https://ksm-benelux.com">KSM Benelux</a></td><td>🇳🇱 Nederweert</td><td class="web">ksm-benelux.com</td><td class="focus">Industrie, KSS, Metallbearb., Food-grade<span class="kss">KSS</span></td><td class="fit">Unabhängiger Multi-Marken-Distributor, klarer KSS-Fokus, 65 J. Erfahrung.</td><td><span class="pill pB">B</span></td></tr>
+        <tr><td class="firm"><a href="https://vollenhoven-ot.nl">Vollenhoven Olie</a></td><td>🇳🇱 Tilburg</td><td class="web">vollenhoven-ot.nl</td><td class="focus">Industrie/Getriebe/Hydraulik, KSS<span class="kss">KSS</span></td><td class="fit">Einer der größten unabhängigen Öl-Großhändler NL (125+ J.).</td><td><span class="pill pB">B</span></td></tr>
+        <tr><td class="firm"><a href="https://mavom.nl">Mavom</a></td><td>🇳🇱🇧🇪 Alphen/Kontich</td><td class="web">mavom.nl</td><td class="focus">Metallbearbeitung, KSS, Schneidöle<span class="kss">KSS</span></td><td class="fit">Etablierter techn. Großhandel NL+BE+DE, direkt an Industrie und Fachhandel.</td><td><span class="pill pB">B</span></td></tr>
+        <tr><td class="firm"><a href="https://fens.nl">FenS</a></td><td>🇳🇱 NL</td><td class="web">fens.nl</td><td class="focus">KSS, Metallbearbeitung, Reiniger<span class="kss">KSS</span></td><td class="fit">Spezialisierter KSS-Fachhändler mit Prozessberatung (Bechem-Distributor).</td><td><span class="pill pB">B</span></td></tr>
+        <tr><td class="firm"><a href="https://2-s.eu">2-S Service &amp; Specialties</a></td><td>🇳🇱 Helmond</td><td class="web">2-s.eu</td><td class="focus">Metallbearbeitung, Kühlemulsionen<span class="kss">KSS</span></td><td class="fit">KSS-Spezialist mit eigenem ISO-9001-Labor, High-Tech-Industrie (u. a. ASML).</td><td><span class="pill pB">B</span></td></tr>
+        <tr><td class="firm"><a href="https://glavitech.com">Glavitech</a></td><td>🇳🇱 NL</td><td class="web">glavitech.com</td><td class="focus">KSS, Schneidöle, Hydraulik, Filtration<span class="kss">KSS</span></td><td class="fit">Benelux-Distributor mehrerer KSS-Marken plus Filtration/Recycling.</td><td><span class="pill pC">C</span></td></tr>
+        <tr><td class="firm"><a href="https://matrix-benelux.nl">Matrix Benelux</a></td><td>🇳🇱 NL</td><td class="web">matrix-benelux.nl</td><td class="focus">Wassermischbare KSS, Schneid-/Ziehöle<span class="kss">KSS</span></td><td class="fit">Fokussierter Anbieter reiner Metallbearbeitungsöle.</td><td><span class="pill pC">C</span></td></tr>
+        <tr><td class="firm"><a href="https://overwegolie.nl">Overweg Olie</a></td><td>🇳🇱 Salland</td><td class="web">overwegolie.nl</td><td class="focus">Schmierstoffe, KSS, Industrieöle<span class="kss">KSS</span></td><td class="fit">Unabhängiger Händler mehrerer Marken, u. a. Fragol-KSS; wächst über NL/BE.</td><td><span class="pill pC">C</span></td></tr>
+        <tr><td class="firm"><a href="https://lionoil.be">Lionoil</a></td><td>🇧🇪 Antwerpen</td><td class="web">lionoil.be</td><td class="focus">Industrie, KSS, Schneidflüssigkeiten<span class="kss">KSS</span></td><td class="fit">Traditionshaus (1924) mit KSS/Cutting-Fluids und exklusiven Marken-Rechten.</td><td><span class="pill pC">C</span></td></tr>
+        <tr><td class="firm"><a href="https://vrancx.be">Vrancx Lubricants</a></td><td>🇧🇪 Geraardsbergen</td><td class="web">vrancx.be</td><td class="focus">Hydraulik/Getriebe, Fette, KSS<span class="kss">KSS</span></td><td class="fit">Regionaler Multi-Marken-Verteiler mit eigener Private-Label-Linie.</td><td><span class="pill pC">C</span></td></tr>
+        <tr><td class="firm"><a href="https://belub.com">Belub</a></td><td>🇧🇪 Lüttich (+LU)</td><td class="web">belub.com</td><td class="focus">Hydraulik, Motor, Industrieöle</td><td class="fit">&gt;50 J. Distributor für BE und Luxemburg, klarer Industrie-Fokus.</td><td><span class="pill pC">C</span></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ===================== TIER C: übriges Europa ===================== -->
+  <section>
+    <div class="eyebrow">Tier C · zweite Welle Europa</div>
+    <h2>Übriges Europa — 41 weitere Distributoren</h2>
+    <p class="lead">Nach den ersten Zusagen im DACH-Raum. Hier zählt Englisch als Arbeitssprache; die stärksten
+      Mehrmarken-Häuser und KSS-Spezialisten sind zuerst gelistet.</p>
+
+    <h3><span class="flag">🇫🇷</span> Frankreich <span class="count">8</span></h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Firma</th><th>Ort</th><th>Website</th><th>Fokus</th><th>Warum Fit</th></tr></thead>
+      <tbody>
+        <tr><td class="firm"><a href="https://lubeandfluid.fr">Lube &amp; Fluid</a></td><td>Île-de-France</td><td class="web">lubeandfluid.fr</td><td class="focus">Industrie/Motor, KSS, Hydraulik, Bio<span class="kss">KSS</span></td><td class="fit">Klassischer unabhängiger Multimarken-Händler quer über mehrere Ölkonzerne.</td></tr>
+        <tr><td class="firm"><a href="https://deco-meca.fr">Déco-Méca</a></td><td>Marnaz</td><td class="web">deco-meca.fr</td><td class="focus">Schneid-/lösliche Öle, KSS, Spindel<span class="kss">KSS</span></td><td class="fit">Im Zerspanungs-Herzland (Vallée de l'Arve), genau die KSS-Zielgruppe.</td></tr>
+        <tr><td class="firm"><a href="https://lubexcel.com">Lubexcel</a></td><td>national/online</td><td class="web">lubexcel.com</td><td class="focus">Hydraulik, Getriebe/Industrie, Fette</td><td class="fit">Multimarken-Distributor mit Online-Vertrieb, Gebinde 5–209 L.</td></tr>
+        <tr><td class="firm"><a href="http://pechavy-lubrifiants.fr">Péchavy Lubrifiants</a></td><td>Le Passage d'Agen</td><td class="web">pechavy-lubrifiants.fr</td><td class="focus">Industrie/Fette, Hydraulik, Kompressor</td><td class="fit">Regionaler Mobil-Vertragsdistributor mit Lager, Ölanalyse, Service.</td></tr>
+        <tr><td class="firm"><a href="https://fls-tm.com">France Lubrifiants Services</a></td><td>Lieusaint (77)</td><td class="web">fls-tm.com</td><td class="focus">Industrie/Agrar/Auto, Kühlflüssigkeiten</td><td class="fit">Langjähriger offizieller Shell-Distributor mit Fluid-Management.</td></tr>
+        <tr><td class="firm"><a href="https://samaro.fr">Samaro</a></td><td>Beynost (Lyon)</td><td class="web">samaro.fr</td><td class="focus">Spezial: Fette, Öle, Trockenschmierung</td><td class="fit">Familien-Distributor techn. Chemie, Multimarken, EU-Logistik.</td></tr>
+        <tr><td class="firm"><a href="https://sifom.fr">SIFOM</a></td><td>Paris</td><td class="web">sifom.fr</td><td class="focus">Zerspanwerkzeuge + KSS/Schneidöle<span class="kss">KSS</span></td><td class="fit">Techn. Handelshaus seit 1951, Zugang zu Metallbearbeitungs-Kunden.</td></tr>
+        <tr><td class="firm"><a href="https://moovelub.fr">Moove (Groupe Avril)</a></td><td>Compiègne</td><td class="web">moovelub.fr</td><td class="focus">Industrie/KFZ/Marine/Aviation</td><td class="fit">Offizieller Mobil-Distributor Frankreich, eigene Produktion — Volumen.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3><span class="flag">🇮🇹</span> Italien <span class="count">6</span></h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Firma</th><th>Ort</th><th>Website</th><th>Fokus</th><th>Warum Fit</th></tr></thead>
+      <tbody>
+        <tr><td class="firm"><a href="https://ridix.it">RIDIX S.p.A.</a></td><td>Grugliasco (TO)</td><td class="web">ridix.it</td><td class="focus">KSS, Industrieöle, Filtration, Werkzeuge<span class="kss">KSS</span></td><td class="fit">Stark auf Metallbearbeitung/KSS fokussiert, Vor-Ort-Service (u. a. Blaser).</td></tr>
+        <tr><td class="firm"><a href="https://mazzolenifratelli.it">Mazzoleni Fratelli</a></td><td>Collebeato (BS)</td><td class="web">mazzolenifratelli.it</td><td class="focus">Industrie, Hydraulik, Schneidöle/KSS<span class="kss">KSS</span></td><td class="fit">Unabhängiger Multimarken-Händler, &gt;50 J. (Fuchs, Mobil, Total, ENI …).</td></tr>
+        <tr><td class="firm"><a href="https://ghetti-lubrificanti.it">Ghetti Lubrificanti</a></td><td>Faenza (RA)</td><td class="web">ghetti-lubrificanti.it</td><td class="focus">Industrie, Metallbearb./KSS, Ölanalyse<span class="kss">KSS</span></td><td class="fit">360°-Industrieschmierstoff-Händler seit 1955 mit techn. Service.</td></tr>
+        <tr><td class="firm"><a href="https://tesi.re.it">Tesi Srl</a></td><td>Reggio Emilia</td><td class="web">tesi.re.it</td><td class="focus">KSS für Metallbearbeitung, Additive<span class="kss">KSS</span></td><td class="fit">Spezialisierter KSS-Distributor im Kernsegment (Master Fluid, Hangsterfer's).</td></tr>
+        <tr><td class="firm"><a href="https://oilcenter.it">Oil Center</a></td><td>Barge (CN)</td><td class="web">oilcenter.it</td><td class="focus">Industrie/Auto/Agrar, Getriebe/Motor</td><td class="fit">Autorisierter Multimarken-Distributor mit eigener Marke OILTECH.</td></tr>
+        <tr><td class="firm"><a href="https://zappolilubrificanti.com">Zappoli Lubrificanti</a></td><td>Bologna</td><td class="web">zappolilubrificanti.com</td><td class="focus">Metallbearbeitung, Hydraulik, Getriebe<span class="kss">KSS</span></td><td class="fit">40+ J. in der bologneser Metallindustrie; Monobrand (Castrol) — engerer Fit.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3><span class="flag">🇪🇸</span> Spanien <span class="count">6</span></h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Firma</th><th>Ort</th><th>Website</th><th>Fokus</th><th>Warum Fit</th></tr></thead>
+      <tbody>
+        <tr><td class="firm"><a href="https://lubritec.com">Lubritec</a></td><td>Barcelona</td><td class="web">lubritec.com</td><td class="focus">Industrie, Hydraulik, Getriebefette, Bio<span class="kss">KSS</span></td><td class="fit">Sehr breiter unabhängiger Multimarken-Distributor seit 1983 — idealer Fit.</td></tr>
+        <tr><td class="firm"><a href="https://chavanel.es">Chavanel</a></td><td>Barbastro (Huesca)</td><td class="web">chavanel.es</td><td class="focus">Industrie, Hydraulik/Getriebe, Schneidfl.<span class="kss">KSS</span></td><td class="fit">&gt;100.000 Referenzen mehrerer Marken — großes Handelshaus.</td></tr>
+        <tr><td class="firm"><a href="https://lufilsur.es">LUFILSUR</a></td><td>Sevilla</td><td class="web">lufilsur.es</td><td class="focus">Hydraulik, KSS/taladrinas, Filter<span class="kss">KSS</span></td><td class="fit">Referenz-Distributor Südspaniens für Metalworking-Fluids.</td></tr>
+        <tr><td class="firm"><a href="https://comercialmendoza.es">Comercial Mendoza</a></td><td>Sondika (Bizkaia)</td><td class="web">comercialmendoza.es</td><td class="focus">Getriebe/Hydraulik/Thermo, Industrie</td><td class="fit">Familiengeführter Multimarken-Distributor mit eigener Flotte, &gt;30 J.</td></tr>
+        <tr><td class="firm"><a href="https://velfair.com">Velfair</a></td><td>Requejada (Kantabrien)</td><td class="web">velfair.com</td><td class="focus">Industrieöle, Hydraulik, Schneidöle</td><td class="fit">Industriedistributor mit &gt;60.000 Referenzen; Öle als ein Segment.</td></tr>
+        <tr><td class="firm"><a href="https://lubricantes-as.es">Lubricantes AS</a></td><td>Cabrera de Mar (BCN)</td><td class="web">lubricantes-as.es</td><td class="focus">KSS/taladrinas, Schneidfluide, Hydraulik<span class="kss">KSS</span></td><td class="fit">&gt;30 J. auf industrielle Schmierung spezialisiert — guter Nischen-Fit.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3><span class="flag">🇬🇧</span> UK &amp; <span class="flag">🇮🇪</span> Irland <span class="count">8</span></h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Firma</th><th>Land · Ort</th><th>Website</th><th>Fokus</th><th>Warum Fit</th></tr></thead>
+      <tbody>
+        <tr><td class="firm"><a href="https://oil-store.co.uk">Oil Store (TrAchem)</a></td><td>🇬🇧 Doncaster</td><td class="web">oil-store.co.uk</td><td class="focus">Hydraulik, KSS, Getriebe/Kompressor<span class="kss">KSS</span></td><td class="fit">Reiner unabhängiger Multimarken-Händler, keine Mindestbestellmenge — idealer Fit.</td></tr>
+        <tr><td class="firm"><a href="https://theoilstore.ie">The Oil Store</a></td><td>🇮🇪 Dublin</td><td class="web">theoilstore.ie</td><td class="focus">Industrie, Hydraulik, Getriebe</td><td class="fit">Unabhängiges Familienunternehmen (seit 1989), echter „one stop oil shop“.</td></tr>
+        <tr><td class="firm"><a href="https://finol.ie">Finol Oils</a></td><td>🇮🇪 Dublin</td><td class="web">finol.ie</td><td class="focus">Hydraulik/Getriebe/Turbine, Schneidöle<span class="kss">KSS</span></td><td class="fit">Etablierter irischer Vertriebspartner (seit 1977), Bulk + Gebinde.</td></tr>
+        <tr><td class="firm"><a href="https://midlandoilgroup.co.uk">Midland Oil Group</a></td><td>🇬🇧 Halesowen</td><td class="web">midlandoilgroup.co.uk</td><td class="focus">Hydraulik/Getriebe, KSS (CNC), Industrie<span class="kss">KSS</span></td><td class="fit">Hersteller + Distributor, sehr breites Industrie-/KSS-Sortiment, ISO 9001.</td></tr>
+        <tr><td class="firm"><a href="https://universallubricant.co.uk">Universal Lubricants</a></td><td>🇬🇧 London</td><td class="web">universallubricant.co.uk</td><td class="focus">Hydraulik/Getriebe, Fette, Kühlmittel</td><td class="fit">Autorisierter Multimarken-Distributor, &gt;20 J., mehrere Industriemarken.</td></tr>
+        <tr><td class="firm"><a href="https://lubecareltd.com">Lubecare</a></td><td>🇬🇧 Armagh (NI)</td><td class="web">lubecareltd.com</td><td class="focus">Industrie, Metallbearb., Hydraulik<span class="kss">KSS</span></td><td class="fit">Haupt-Fuchs-Distributor NI/Irland, führt bewusst mehrere Marken.</td></tr>
+        <tr><td class="firm"><a href="https://mcbridelubricants.com">McBride Lubricants</a></td><td>🇬🇧 Lisburn (NI)</td><td class="web">mcbridelubricants.com</td><td class="focus">Hydraulik/Getriebe, KSS, Fette<span class="kss">KSS</span></td><td class="fit">Unabhängiger Familien-Distributor (&gt;30 J.), breites Sortiment inkl. KSS.</td></tr>
+        <tr><td class="firm"><a href="https://penninelubricants.co.uk">Pennine Lubricants</a></td><td>🇬🇧 Sheffield</td><td class="web">penninelubricants.co.uk</td><td class="focus">KSS (Ultrasol), Hydraulik, Foodsafe<span class="kss">KSS</span></td><td class="fit">Spezialist-Blender mit eigenem KSS-Programm; Eigen- + Handelsware.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3><span class="flag">🇵🇱</span> Polen &amp; <span class="flag">🇨🇿</span> Tschechien <span class="count">8</span></h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Firma</th><th>Land · Ort</th><th>Website</th><th>Fokus</th><th>Warum Fit</th></tr></thead>
+      <tbody>
+        <tr><td class="firm"><a href="https://egrando.pl">Egrando</a></td><td>🇵🇱 Łódź</td><td class="web">egrando.pl</td><td class="focus">Industrie, KSS/Bearbeitung, Fette, Chemie<span class="kss">KSS</span></td><td class="fit">Unabhängiger Multi-Marken-Händler, eigenes Lager, 24h-Versand, techn. Beratung.</td></tr>
+        <tr><td class="firm"><a href="https://eurofluid.pl">EUROFLUID Poland</a></td><td>🇵🇱 Kielce</td><td class="web">eurofluid.pl</td><td class="focus">KSS/Metallbearbeitung, Härtung, Ziehöle<span class="kss">KSS</span></td><td class="fit">Spezialisierter, unabhängiger KSS-Systemanbieter („Nr. 1 unabhängig in PL“).</td></tr>
+        <tr><td class="firm"><a href="https://oleje-smary.pl">ALVESTA</a></td><td>🇵🇱 online</td><td class="web">oleje-smary.pl</td><td class="focus">Industrie, KSS, Fette, NSF-H1<span class="kss">KSS</span></td><td class="fit">Reine B2B-Einkaufsplattform für Schmierstoffe vieler Marken — marktplatz-affin.</td></tr>
+        <tr><td class="firm"><a href="https://adnf.pl">ADNF</a></td><td>🇵🇱 Tczew</td><td class="web">adnf.pl</td><td class="focus">Hydraulik, KSS, Getriebe/Maschinenöle<span class="kss">KSS</span></td><td class="fit">Unabhängiger Öl-Großhandel seit 2002 mit eigenem Transport.</td></tr>
+        <tr><td class="firm"><a href="https://olejspol.cz">Olejspol</a></td><td>🇨🇿 Opava</td><td class="web">olejspol.cz</td><td class="focus">Industrie/Hydraulik/Turbine, Getriebe, Fette</td><td class="fit">Einer der größten unabhängigen CZ-Distributoren, Großhandel + E-Shop.</td></tr>
+        <tr><td class="firm"><a href="https://merlinplus.cz">MERLIN-PLUS</a></td><td>🇨🇿 Hrušky</td><td class="web">merlinplus.cz</td><td class="focus">Auto/Industrie, Metallbearbeitung, Fette<span class="kss">KSS</span></td><td class="fit">Sehr breites Portfolio (80+ Marken) mit Industrie- und KSS-Segment.</td></tr>
+        <tr><td class="firm"><a href="https://tlab.cz">T-LAB</a></td><td>🇨🇿 Brno</td><td class="web">tlab.cz</td><td class="focus">KSS/Metallbearbeitung, Fluidmanagement<span class="kss">KSS</span></td><td class="fit">Unabhängiger KSS-Spezialist seit 1994 mit komplettem Fluidmanagement.</td></tr>
+        <tr><td class="firm"><a href="https://dukor.cz">DUKOR</a></td><td>🇨🇿 CZ</td><td class="web">dukor.cz</td><td class="focus">Motor/Industrie/Hydraulik, Schleif/Kühl<span class="kss">KSS</span></td><td class="fit">~20 J. unabhängiger Multi-Marken-Distributor, alle Gebinde bis IBC.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3><span class="flag">🇸🇪</span><span class="flag">🇳🇴</span><span class="flag">🇩🇰</span><span class="flag">🇫🇮</span> Skandinavien <span class="count">8</span></h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Firma</th><th>Land · Ort</th><th>Website</th><th>Fokus</th><th>Warum Fit</th></tr></thead>
+      <tbody>
+        <tr><td class="firm"><a href="https://motiontek.fi">Motiontek</a></td><td>🇫🇮 Järvenpää</td><td class="web">motiontek.fi</td><td class="focus">KSS/Metallbearbeitung, Hydraulik, Fette<span class="kss">KSS</span></td><td class="fit">Selbsterklärter „multi-brand distributor“ — idealer Marktplatz-Verkäufer.</td></tr>
+        <tr><td class="firm"><a href="https://telko.com">Telko</a></td><td>🇫🇮 Espoo</td><td class="web">telko.com</td><td class="focus">Getriebe, Metallbearbeitung, Fette, Formöle<span class="kss">KSS</span></td><td class="fit">Großer etablierter Multi-Marken-Distributor (Aspo-Konzern, 18 Länder).</td></tr>
+        <tr><td class="firm"><a href="https://teknisksalg.no">Teknisk Salg</a></td><td>🇳🇴 Arendal</td><td class="web">teknisksalg.no</td><td class="focus">Industrie/Hydraulik, Getriebe/Kompressor, Bio</td><td class="fit">Familienbetrieb, klassischer Multi-Marken-Händler mit techn. Beratung.</td></tr>
+        <tr><td class="firm"><a href="https://scandic-oil.dk">Danco Oil (Scandic-Oil)</a></td><td>🇩🇰 Varde</td><td class="web">scandic-oil.dk</td><td class="focus">Hydraulik (min/synth/bio), Industrie, Motor</td><td class="fit">Echter Multi-Marken-Öldistributor mit breitem Programm plus Equipment.</td></tr>
+        <tr><td class="firm"><a href="https://hydroshark.dk">HydroShark</a></td><td>🇩🇰 Kolding</td><td class="web">hydroshark.dk</td><td class="focus">Hydraulik (zinkfrei), Getriebe, Food-grade</td><td class="fit">Auf Industrieschmierstoffe spezialisierter Fachhändler.</td></tr>
+        <tr><td class="firm"><a href="https://anderstorphydraulik.se">Anderstorp Hydraulik</a></td><td>🇸🇪 Anderstorp</td><td class="web">anderstorphydraulik.se</td><td class="focus">Hydraulik, KSS, Zieh-/Industrieöle, Fette<span class="kss">KSS</span></td><td class="fit">Etablierter Hydraulik-/Schmierstoffhändler (seit 1983), breites Öl-Sortiment.</td></tr>
+        <tr><td class="firm"><a href="https://oilcenter.se">Oilcenter.se</a></td><td>🇸🇪 Borlänge</td><td class="web">oilcenter.se</td><td class="focus">Motor/Hydraulik/Schneid/Industrie, Chemie<span class="kss">KSS</span></td><td class="fit">Reiner Öl-/Schmierstoffhändler mit B2B-Fokus (komplettes MOL-Sortiment).</td></tr>
+        <tr><td class="firm"><a href="https://maxxol.no">Maxxol Norge</a></td><td>🇳🇴 Tønsberg</td><td class="web">maxxol.no</td><td class="focus">Industrie, Hydraulik, Fette, Wartungschemie</td><td class="fit">Chemie-/Schmierstoffgrossist, typischer regionaler Distributor mit Öl-Kern.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ===================== ANSPRACHE ===================== -->
+  <section>
+    <div class="eyebrow">Der fertige Ansprache-Text</div>
+    <h2>So sprichst du sie an</h2>
+    <p class="lead">Direkt und persönlich. Am stärksten wirkt der Zweischritt: <b>kurze E-Mail</b> an die Firma,
+      dann nach 2–3 Tagen <b>telefonisch nachfassen</b>. Die <span class="slot">gelb markierten Stellen</span>
+      passt du je Firma an. Kein Rundschreiben an alle gleichzeitig.</p>
+
+    <div class="mail">
+      <div class="mh"><b>E-Mail · deutsche Fassung (DACH)</b><span>~120 Wörter · persönlich halten</span></div>
+      <div class="mb">
+        <div class="subject">Betreff: <b>Gründungs-Partner für den neuen Marktplatz für Öle &amp; KSS gesucht</b></div>
+        <p>Guten Tag <span class="slot">Herr/Frau …</span>,</p>
+        <p>ich wende mich an <span class="slot">Firmenname</span>, weil Sie zu den etablierten Händlern für
+          <span class="slot">Industrieöle / Kühlschmierstoffe</span> in <span class="slot">Region</span> gehören.</p>
+        <p>Wir bauen <b>Brisco</b> auf — den ersten <b>neutralen Online-Marktplatz</b> für Industrieöle,
+          Kühlschmierstoffe und Schmierstoffe im deutschsprachigen Raum. Käufer suchen dort gezielt nach Produkten
+          und finden geprüfte Anbieter wie Sie. Für den Start suchen wir <b>30 Gründungs-Händler</b>, die von Anfang an dabei sind.</p>
+        <p>Was das für Sie bedeutet:</p>
+        <ul>
+          <li><b>Kostenlos</b> in der Startphase — kein Risiko.</li>
+          <li><b>Kein Aufwand:</b> Wir legen Ihre ersten Angebote gemeinsam mit Ihnen an — der Produktkatalog liegt schon vor.</li>
+          <li><b>Dauerhafter Gründungs-Vorteil</b> bei den Konditionen.</li>
+        </ul>
+        <p>Darf ich Ihnen das in einem kurzen Gespräch (15 Minuten) zeigen? Ich rufe Sie gern
+          <span class="slot">am … / diese Woche</span> an — oder nennen Sie mir einen passenden Zeitpunkt.</p>
+        <p>Freundliche Grüße<br><span class="slot">Name · Brisco · Telefon · markt.brisco.ch</span></p>
+      </div>
+    </div>
+
+    <div class="mail">
+      <div class="mh"><b>E-Mail · English version (rest of Europe)</b><span>for FR / IT / ES / UK / PL / CZ / Nordics</span></div>
+      <div class="mb">
+        <div class="subject">Subject: <b>Founding partner wanted for a new marketplace for oils &amp; metalworking fluids</b></div>
+        <p>Hello <span class="slot">Mr/Ms …</span>,</p>
+        <p>I'm reaching out to <span class="slot">company</span> because you're an established distributor of
+          <span class="slot">industrial oils / metalworking fluids</span> in <span class="slot">country</span>.</p>
+        <p>We're building <b>Brisco</b> — the first <b>neutral online marketplace</b> for industrial oils, coolants
+          and lubricants. Buyers search there for specific products and find verified sellers like you. For the launch
+          we're looking for <b>30 founding distributors</b> to be on board from day one.</p>
+        <p>What's in it for you: <b>free</b> during the launch phase, <b>no setup effort</b> (we help you list your
+          first offers — the product catalogue is already there), and a <b>permanent founding-member advantage</b> on terms.</p>
+        <p>Could I show you in a short 15-minute call? I'd be glad to call you <span class="slot">this week</span>
+          — or just suggest a time that suits you.</p>
+        <p>Best regards,<br><span class="slot">Name · Brisco · phone · markt.brisco.ch</span></p>
+      </div>
+    </div>
+
+    <div class="two">
+      <div class="mini">
+        <h4>📞 Telefon-Einstieg (30 Sekunden)</h4>
+        <ul>
+          <li>„Guten Tag, <span class="slot">Name</span> von Brisco. Ich habe Ihnen letzte Woche kurz geschrieben — passt es gerade 2 Minuten?“</li>
+          <li>„Wir bauen einen neutralen Marktplatz für Öle und KSS und suchen 30 Gründungs-Händler. <span class="slot">Firma</span> würde perfekt passen.“</li>
+          <li>„Kostet Sie am Anfang nichts, und die Angebote richten wir für Sie ein. Darf ich Ihnen das kurz zeigen?“</li>
+        </ul>
+      </div>
+      <div class="mini">
+        <h4>↩️ Nachfass-Mail (nach 4–5 Tagen)</h4>
+        <p>„Guten Tag <span class="slot">Name</span>, ich wollte kurz nachhören, ob mein Vorschlag für Sie interessant
+          ist. Die Gründungs-Plätze sind begrenzt — ich halte gern einen für <span class="slot">Firma</span> frei.
+          Ein 15-Minuten-Termin genügt. Passt Ihnen <span class="slot">Tag A</span> oder <span class="slot">Tag B</span>?“</p>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:20px"><p><strong>Wichtig zum sauberen Vorgehen:</strong> B2B-Erstkontakt
+      geht an die <b>Firmen-Geschäftsadresse</b> (info@ / kontakt@) mit klarem Bezug zum Geschäft und einer
+      Abmeldemöglichkeit. Am saubersten und wirksamsten ist ohnehin der persönliche Weg: <b>erst kurz anrufen oder
+      schreiben, dann das Gespräch.</b> So bleibt es seriös — genau das Bild, das ein neuer Marktplatz braucht.</p></div>
+  </section>
+
+  <p class="note"><strong>Zur Liste:</strong> 85 Firmen, alle per Websuche als real und aktiv geprüft (Stand Juli 2026).
+    Reine Marken-Hersteller (Fuchs, Klüber, Castrol, TotalEnergies, Motorex, Blaser, Oemeta …) sind bewusst
+    <em>nicht</em> als Reseller gelistet — sie sind die Lieferanten dieser Händler und kämen erst später als
+    Hersteller-Ebene infrage. Prüfe vor der Ansprache jede Firma noch kurz selbst (aktuelle Website, Ansprechpartner);
+    bei einigen kleineren Firmen war der genaue Sitz oder das Markenportfolio nicht abschließend bestätigbar.</p>
+
+</div>

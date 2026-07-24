@@ -26,7 +26,7 @@ import { withBasePath } from "@/lib/base-path";
 import { useLocale } from "@/components/LocaleProvider";
 import { fill } from "@/lib/i18n";
 
-const chemistries = ["MINERAL", "SYNTHETIC", "SEMI_SYNTHETIC", "ESTER", "PAG", "OTHER"] as const;
+const chemistries = ["MINERAL", "SYNTHETIC", "SEMI_SYNTHETIC", "ESTER", "PAG", "GTL", "OTHER"] as const;
 const packagings = ["DRUM", "IBC", "TANK", "CANISTER", "BULK", "OTHER"] as const;
 
 // Vorschlags-Vokabulare für die Echtzeit-Felder

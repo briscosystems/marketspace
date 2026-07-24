@@ -10,7 +10,7 @@
 
 import { prisma } from "@/lib/prisma";
 
-type ChemistryBase = "MINERAL" | "SEMI_SYNTHETIC" | "SYNTHETIC" | "ESTER" | "PAG" | "OTHER" | null;
+type ChemistryBase = "MINERAL" | "SEMI_SYNTHETIC" | "SYNTHETIC" | "ESTER" | "PAG" | "GTL" | "OTHER" | null;
 type ProductCategory =
   | "COOLANT_WATER_MIX"
   | "COOLANT_NEAT"
@@ -67,9 +67,10 @@ export function inferIngredients(p: ProductForRec): {
   if (p.chemistry === "MINERAL" || p.chemistry === "SEMI_SYNTHETIC") {
     add("mineral-oil", "Mineralöl als Basisflüssigkeit oder Bestandteil (chemistry MINERAL/SEMI_SYNTHETIC).");
   }
-  if (p.chemistry === "SYNTHETIC") {
-    // Pauschalannahme: PAO-basiert — verhält sich wie Mineralöl gegenüber Elastomeren
-    add("mineral-oil", "PAO-Synthetik verhält sich gegenüber Dichtungen ähnlich Mineralöl.");
+  if (p.chemistry === "SYNTHETIC" || p.chemistry === "GTL") {
+    // PAO- bzw. GTL-Synthetik (paraffinisch, Gruppe III+) verhält sich gegenüber
+    // Elastomeren ähnlich wie Mineralöl — unpolar, dichtungsverträglich.
+    add("mineral-oil", "PAO-/GTL-Synthetik verhält sich gegenüber Dichtungen ähnlich Mineralöl.");
   }
   if (p.chemistry === "ESTER") {
     add("ester-oil", "Ester-Basisöl (chemistry ESTER).");
