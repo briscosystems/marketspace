@@ -250,13 +250,21 @@ async function computeSealWarning(product: {
       containsMineralOil: product.containsMineralOil,
       containsChlorine: product.containsChlorine,
     });
+    // Positiv formulierte Auswahlhilfe: das Produkt wird ja EMPFOHLEN — der
+    // Hinweis sagt, welche Dichtungswerkstoffe beim Umstieg passen und welche
+    // nicht. Die Matrix ist eine Worst-Case-Abschätzung aus typischen
+    // Inhaltsstoff-Klassen, keine Aussage über die konkrete Rezeptur.
+    const suitable = recommendations
+      .filter((r) => r.worstRating === "RECOMMENDED" || r.worstRating === "COMPATIBLE")
+      .map((r) => r.materialShortName);
     const unsuitable = recommendations.filter((r) => r.worstRating === "UNSUITABLE").map((r) => r.materialShortName);
     const caution = recommendations.filter((r) => r.worstRating === "CAUTION").map((r) => r.materialShortName);
     const parts: string[] = [];
-    if (unsuitable.length > 0)
-      parts.push(`Greift ${unsuitable.join(", ")} an — ungeeignet als Dichtungsmaterial`);
-    if (caution.length > 0) parts.push(`Mit Vorsicht bei ${caution.join(", ")}`);
-    return parts.length > 0 ? parts.join(". ") : null;
+    if (suitable.length > 0) parts.push(`Geeignete Dichtungswerkstoffe: ${suitable.slice(0, 5).join(", ")}`);
+    if (caution.length > 0) parts.push(`mit Vorsicht: ${caution.join(", ")}`);
+    if (unsuitable.length > 0) parts.push(`besser meiden: ${unsuitable.join(", ")}`);
+    if (parts.length === 0) return null;
+    return `${parts.join(" · ")} (Worst-Case-Abschätzung nach typischen Inhaltsstoffen — Herstellerfreigabe maßgeblich)`;
   } catch (e) {
     console.warn("Seal warning failed:", e);
     return null;
