@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
 import { getT } from "@/lib/i18n-server";
 import { SearchInput } from "@/components/SearchInput";
+import { ExpandableText } from "@/components/ExpandableText";
 import { ProductImage } from "@/components/ProductImage";
 import { packagingForProduct } from "@/lib/product-packaging";
 import {
@@ -189,7 +190,11 @@ export default async function WissenPage({ searchParams }: { searchParams: Searc
                   )}
                 </div>
 
-                <p className="text-sm text-slate-600 line-clamp-3">{it.description}</p>
+                <ExpandableText
+                  text={it.description}
+                  moreLabel={t("know.showMore")}
+                  lessLabel={t("know.showLess")}
+                />
 
                 {it.symptoms.length > 0 && (
                   <div className="flex flex-wrap gap-1">
