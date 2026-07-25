@@ -145,8 +145,16 @@ export async function POST(req: Request) {
   let aiAllowed = false;
   const session = await getServerSession(authOptions);
 
-  if (hasKey && topCandidates.length > 0 && !aiTemporarilyDisabled()) {
-    if (session?.user?.id) {
+  // Der Nutzer soll IMMER den echten Grund sehen, warum die Heuristik lief
+  // (creditNotice wird in beiden UIs angezeigt) — keine irreführende Key-Meldung.
+  if (topCandidates.length > 0) {
+    if (!hasKey) {
+      creditNotice =
+        "KI-Begründung nicht verfügbar: Auf dem Server ist kein ANTHROPIC_API_KEY hinterlegt — heuristische Auswahl gezeigt.";
+    } else if (aiTemporarilyDisabled()) {
+      creditNotice =
+        "KI kurz pausiert (mehrere Fehler in Folge) — heuristische Auswahl gezeigt. Gleich erneut versuchen.";
+    } else if (session?.user?.id) {
       const charge = await chargeForAiAction(session.user.id, "kssWizard");
       if (charge.ok) {
         aiAllowed = true;
@@ -291,7 +299,7 @@ async function heuristicFallback(
   );
   return {
     recommendations: recs,
-    summary: `${top3.length} Vorschläge aus heuristischer Filterung. Für KI-gestützte Begründung ANTHROPIC_API_KEY setzen.`,
+    summary: `${top3.length} Vorschläge aus heuristischer Filterung.`,
   };
 }
 

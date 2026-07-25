@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ChangeEvent } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import Link from "next/link";
 import { Sparkles, Loader2, CheckCircle2, AlertTriangle, Brain, Upload, FileText, X, Globe } from "lucide-react";
 import { withBasePath } from "@/lib/base-path";
@@ -35,6 +35,7 @@ type ApiResult = {
   recommendations: Recommendation[];
   summary: string;
   source: string;
+  creditNotice?: string | null;
   webSummary?: string | null;
   webSources?: WebSource[];
 };
@@ -113,6 +114,15 @@ export function KssAiAnalysis({
 
   const [webLoading, setWebLoading] = useState(false);
   const [webError, setWebError] = useState<string | null>(null);
+  const [webSeconds, setWebSeconds] = useState(0);
+
+  // Sekundenzähler während der Web-Recherche — zeigt sichtbar, dass sie läuft.
+  useEffect(() => {
+    if (!webLoading) return;
+    setWebSeconds(0);
+    const id = setInterval(() => setWebSeconds((s) => s + 1), 1000);
+    return () => clearInterval(id);
+  }, [webLoading]);
 
   /** Web-Prüfung auf Knopfdruck: Empfehlungen gegen Foren/Herstellerseiten prüfen. */
   async function runWebCheck() {
@@ -289,6 +299,12 @@ export function KssAiAnalysis({
             {result.summary}
           </p>
 
+          {result.creditNotice && (
+            <div className="rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+              {result.creditNotice}
+            </div>
+          )}
+
           {result.recommendations.length === 0 ? (
             <div className="rounded border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
               Keine klare Alternative gefunden. Beschreibe das Problem genauer oder weiche die
@@ -341,15 +357,33 @@ export function KssAiAnalysis({
 
           {result.recommendations.length > 0 && !result.webSummary && (
             <div>
-              <button
-                type="button"
-                onClick={runWebCheck}
-                disabled={webLoading}
-                className="inline-flex items-center gap-1.5 rounded-md border border-purple-300 bg-white px-3 py-1.5 text-sm font-semibold text-purple-700 hover:bg-purple-50 disabled:opacity-60"
-              >
-                {webLoading ? <Loader2 size={14} className="animate-spin" /> : <Globe size={14} />}
-                {webLoading ? "Prüfe im Web…" : "Im Web prüfen (Foren & Hersteller)"}
-              </button>
+              {webLoading ? (
+                <div className="rounded-lg border border-purple-200 bg-purple-50/70 p-3">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-purple-800">
+                    <Loader2 size={16} className="animate-spin text-purple-600" />
+                    Web-Recherche läuft … {webSeconds}s
+                  </div>
+                  <p className="mt-1 text-xs text-purple-700">
+                    Durchsucht Foren, Herstellerseiten und Fachartikel zu den {result.recommendations.length} Empfehlungen —
+                    dauert typischerweise 20–40 Sekunden. Bitte offen lassen.
+                  </p>
+                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-purple-100">
+                    <div
+                      className="h-full rounded-full bg-purple-500 transition-all duration-1000"
+                      style={{ width: `${Math.min(95, (webSeconds / 40) * 100)}%` }}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={runWebCheck}
+                  className="inline-flex items-center gap-1.5 rounded-md border border-purple-300 bg-white px-3 py-1.5 text-sm font-semibold text-purple-700 hover:bg-purple-50"
+                >
+                  <Globe size={14} />
+                  Im Web prüfen (Foren & Hersteller)
+                </button>
+              )}
               {webError && <p className="mt-1 text-xs text-red-600">{webError}</p>}
             </div>
           )}

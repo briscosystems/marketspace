@@ -63,6 +63,7 @@ export function KssWizardDialog({ onClose }: { onClose: () => void }) {
     recommendations: Recommendation[];
     summary: string;
     source: string;
+    creditNotice?: string | null;
     webSummary?: string | null;
     webSources?: WizardWebSource[];
   } | null>(null);
@@ -646,6 +647,7 @@ function ResultView({
     recommendations: Recommendation[];
     summary: string;
     source: string;
+    creditNotice?: string | null;
     webSummary?: string | null;
     webSources?: WizardWebSource[];
   };
@@ -654,6 +656,14 @@ function ResultView({
   webLoading: boolean;
   webError: string | null;
 }) {
+  // Sekundenzähler während der Web-Recherche — zeigt sichtbar, dass sie läuft.
+  const [webSeconds, setWebSeconds] = useState(0);
+  useEffect(() => {
+    if (!webLoading) return;
+    setWebSeconds(0);
+    const id = setInterval(() => setWebSeconds((s) => s + 1), 1000);
+    return () => clearInterval(id);
+  }, [webLoading]);
   return (
     <div className="space-y-4">
       <div className="flex items-baseline justify-between gap-3">
@@ -663,6 +673,12 @@ function ResultView({
         </span>
       </div>
       <p className="rounded bg-slate-50 p-3 text-sm text-slate-700">{result.summary}</p>
+
+      {result.creditNotice && (
+        <div className="rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+          {result.creditNotice}
+        </div>
+      )}
 
       {result.recommendations.length === 0 ? (
         <div className="rounded border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
@@ -725,15 +741,33 @@ function ResultView({
 
       {result.recommendations.length > 0 && !result.webSummary && (
         <div>
-          <button
-            type="button"
-            onClick={onWebCheck}
-            disabled={webLoading}
-            className="inline-flex items-center gap-1.5 rounded-md border border-purple-300 bg-white px-3 py-1.5 text-sm font-semibold text-purple-700 hover:bg-purple-50 disabled:opacity-60"
-          >
-            {webLoading ? <Loader2 size={14} className="animate-spin" /> : <Globe size={14} />}
-            {webLoading ? "Prüfe im Web…" : "Im Web prüfen (Foren & Hersteller)"}
-          </button>
+          {webLoading ? (
+            <div className="rounded-lg border border-purple-200 bg-purple-50/70 p-3">
+              <div className="flex items-center gap-2 text-sm font-semibold text-purple-800">
+                <Loader2 size={16} className="animate-spin text-purple-600" />
+                Web-Recherche läuft … {webSeconds}s
+              </div>
+              <p className="mt-1 text-xs text-purple-700">
+                Durchsucht Foren, Herstellerseiten und Fachartikel zu den {result.recommendations.length} Empfehlungen —
+                dauert typischerweise 20–40 Sekunden. Bitte offen lassen.
+              </p>
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-purple-100">
+                <div
+                  className="h-full rounded-full bg-purple-500 transition-all duration-1000"
+                  style={{ width: `${Math.min(95, (webSeconds / 40) * 100)}%` }}
+                />
+              </div>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={onWebCheck}
+              className="inline-flex items-center gap-1.5 rounded-md border border-purple-300 bg-white px-3 py-1.5 text-sm font-semibold text-purple-700 hover:bg-purple-50"
+            >
+              <Globe size={14} />
+              Im Web prüfen (Foren & Hersteller)
+            </button>
+          )}
           {webError && <p className="mt-1 text-xs text-red-600">{webError}</p>}
         </div>
       )}
