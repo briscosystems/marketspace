@@ -276,7 +276,7 @@ export function KssAiAnalysis({
         className="mt-2 inline-flex items-center gap-1.5 rounded-md bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-1.5 text-sm font-semibold text-white hover:from-purple-700 hover:to-blue-700 disabled:opacity-60"
       >
         {loading ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
-        {loading ? "Analysiere…" : "Kritisch analysieren & Alternativen finden"}
+        {loading ? "Analysiere…" : "Kritisch analysieren & Alternativen finden · 1 Credit"}
       </button>
 
       {error && (
@@ -381,7 +381,7 @@ export function KssAiAnalysis({
                   className="inline-flex items-center gap-1.5 rounded-md border border-purple-300 bg-white px-3 py-1.5 text-sm font-semibold text-purple-700 hover:bg-purple-50"
                 >
                   <Globe size={14} />
-                  Im Web prüfen (Foren & Hersteller)
+                  Im Web prüfen (Foren & Hersteller) · 2 Credits
                 </button>
               )}
               {webError && <p className="mt-1 text-xs text-red-600">{webError}</p>}

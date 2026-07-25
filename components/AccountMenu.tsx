@@ -38,7 +38,11 @@ const NAV_LINKS: { href: string; labelKey: string; icon: typeof Search }[] = [
  * Avatar + Begrüßung + Name als Auslöser, darunter ein Menü mit Profil,
  * Dashboard, Mitgliedschaft, ggf. Admin und Abmelden. Labels über i18n.
  */
-export function AccountMenu({ user }: { user: { name: string; isAdmin?: boolean } }) {
+export function AccountMenu({
+  user,
+}: {
+  user: { name: string; isAdmin?: boolean; credits?: number | null };
+}) {
   const { t } = useLocale();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -89,6 +93,17 @@ export function AccountMenu({ user }: { user: { name: string; isAdmin?: boolean 
             {user.name}
           </span>
         </span>
+        {typeof user.credits === "number" && (
+          <span
+            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-bold ${
+              user.credits > 0 ? "bg-brand-400/90 text-slate-900" : "bg-amber-400/90 text-slate-900"
+            }`}
+            title={t("account.creditsTitle")}
+          >
+            <Sparkles size={10} />
+            {user.credits}
+          </span>
+        )}
         <ChevronDown size={14} className={`text-slate-400 transition ${open ? "rotate-180" : ""}`} />
       </button>
 
@@ -103,6 +118,19 @@ export function AccountMenu({ user }: { user: { name: string; isAdmin?: boolean 
               <div className="truncate text-sm font-semibold text-slate-800">{user.name}</div>
             </div>
           </div>
+
+          {typeof user.credits === "number" && (
+            <Link
+              href="/mitgliedschaft"
+              className="mx-1 mt-1 flex items-center justify-between gap-2 rounded-lg bg-brand-50 px-3 py-2 text-sm hover:bg-brand-100"
+            >
+              <span className="flex items-center gap-2 font-medium text-slate-800">
+                <Sparkles size={15} className="text-brand-600" />
+                {user.credits} {t("account.creditsLabel")}
+              </span>
+              <span className="text-xs font-semibold text-brand-700">{t("account.creditsTopUp")}</span>
+            </Link>
+          )}
 
           <div className="py-1">
             <Link href={`/profile/${user.name}`} className={itemClass}>

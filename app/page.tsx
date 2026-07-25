@@ -18,6 +18,7 @@ import {
   MessageSquare,
   Inbox,
   Plus,
+  Sparkles,
 } from "lucide-react";
 
 export default async function HomePage() {
@@ -225,7 +226,7 @@ function DiscoverTile({
 }
 
 async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudonym: string }) {
-  const [unreadConversations, openRfqsForMe, freshListings, openOffersToMe] = await Promise.all([
+  const [unreadConversations, openRfqsForMe, freshListings, openOffersToMe, me] = await Promise.all([
     prisma.conversation.findMany({
       where: { OR: [{ buyerId: userId }, { sellerId: userId }] },
       include: {
@@ -261,7 +262,9 @@ async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudo
     prisma.rfqOffer.count({
       where: { status: "PENDING", rfq: { buyerId: userId } },
     }),
+    prisma.user.findUnique({ where: { id: userId }, select: { creditBalance: true } }),
   ]);
+  const creditBalance = me?.creditBalance ?? 0;
 
   return (
     <div className="space-y-8">
@@ -281,6 +284,12 @@ async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudo
         </div>
         <div className="flex flex-wrap gap-2">
           <Link
+            href="/kss-finder"
+            className="btn bg-purple-600 font-semibold text-white shadow-soft hover:bg-purple-700"
+          >
+            <Sparkles size={16} className="mr-1" /> KSS-Berater (KI)
+          </Link>
+          <Link
             href="/listings/new"
             className="btn bg-blue-600 font-semibold text-white shadow-soft hover:bg-blue-700"
           >
@@ -295,7 +304,33 @@ async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudo
         </div>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-3">
+      {/* KSS-Berater — das Aushängeschild-Feature, prominent auf der Startseite */}
+      <section>
+        <Link
+          href="/kss-finder"
+          className="group flex flex-wrap items-center justify-between gap-4 rounded-2xl border-2 border-purple-200 bg-gradient-to-r from-purple-50 via-white to-purple-50 p-5 shadow-soft transition hover:border-purple-300 hover:shadow-lift"
+        >
+          <div className="flex items-center gap-4">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-purple-600 text-white">
+              <Sparkles className="h-6 w-6" />
+            </span>
+            <div>
+              <div className="text-base font-bold text-slate-900">
+                KSS-Berater — finde den passenden Kühlschmierstoff
+              </div>
+              <div className="text-sm text-slate-600">
+                KI-gestützt: Problem beschreiben oder Filter wählen, Alternativen mit Begründung
+                erhalten — inkl. Dichtungs-Check und Web-Recherche.
+              </div>
+            </div>
+          </div>
+          <span className="btn bg-purple-600 font-semibold text-white group-hover:bg-purple-700">
+            Jetzt starten →
+          </span>
+        </Link>
+      </section>
+
+      <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <QuickStat
           href="/dashboard"
           icon={<LayoutDashboard className="h-5 w-5" />}
@@ -316,6 +351,13 @@ async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudo
           label="Eingegangene Angebote"
           value={String(openOffersToMe)}
           hint="auf deine Anfragen, offen"
+        />
+        <QuickStat
+          href="/mitgliedschaft"
+          icon={<Sparkles className="h-5 w-5" />}
+          label="Credits"
+          value={String(creditBalance)}
+          hint="für KI-Funktionen · aufladen"
         />
       </section>
 

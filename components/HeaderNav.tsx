@@ -16,7 +16,11 @@ import { Plus, Heart } from "lucide-react";
 // sich schlecht erst anmelden.
 
 /** Zeile 1: Sprache und Konto. */
-export function HeaderNav({ user }: { user: { name: string; isAdmin?: boolean } | null }) {
+export function HeaderNav({
+  user,
+}: {
+  user: { name: string; isAdmin?: boolean; credits?: number | null } | null;
+}) {
   const { t } = useLocale();
   return (
     <nav className="flex items-center gap-2 text-sm">

@@ -76,6 +76,17 @@ export default async function RootLayout({
   }
 
   const session = await getServerSession(authOptions);
+  // Credit-Guthaben für die Kopfzeile (immer sichtbar, damit der Nutzer weiß,
+  // wie viele KI-Aktionen er noch hat).
+  let headerCredits: number | null = null;
+  if (session?.user?.id) {
+    const { prisma } = await import("@/lib/prisma");
+    const u = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { creditBalance: true },
+    });
+    headerCredits = u?.creditBalance ?? 0;
+  }
   return (
     <html lang={locale}>
       <body>
@@ -107,7 +118,11 @@ export default async function RootLayout({
                   <HeaderNav
                     user={
                       session?.user
-                        ? { name: session.user.name ?? "", isAdmin: session.user.role === "ADMIN" }
+                        ? {
+                            name: session.user.name ?? "",
+                            isAdmin: session.user.role === "ADMIN",
+                            credits: headerCredits,
+                          }
                         : null
                     }
                   />

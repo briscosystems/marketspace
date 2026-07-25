@@ -302,7 +302,7 @@ export function AlternativeSearchPanel({ initialQuery }: { initialQuery?: string
                 className="inline-flex items-center gap-2 rounded-lg bg-purple-600 px-3 py-2 text-sm font-semibold text-white hover:bg-purple-700 disabled:opacity-50"
               >
                 {webLoading ? <Loader2 size={15} className="animate-spin" /> : <Globe size={15} />}
-                Im Web nach Erfahrungen suchen
+                Im Web nach Erfahrungen suchen · 2 Credits
               </button>
               <button
                 type="button"
