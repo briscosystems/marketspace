@@ -112,12 +112,15 @@ export async function setFreeMembership(formData: FormData) {
   await assertOwner();
 
   const userId = String(formData.get("userId") ?? "");
-  const raw = Number(formData.get("years") ?? 0);
+  const raw = Number(formData.get("months") ?? 0);
   if (!userId || !Number.isFinite(raw)) return;
 
-  const years = Math.max(0, Math.min(10, Math.round(raw)));
-  const membershipValidUntil =
-    years > 0 ? new Date(Date.now() + years * 365 * 24 * 60 * 60 * 1000) : null;
+  const months = Math.max(0, Math.min(120, Math.round(raw)));
+  let membershipValidUntil: Date | null = null;
+  if (months > 0) {
+    membershipValidUntil = new Date();
+    membershipValidUntil.setMonth(membershipValidUntil.getMonth() + months);
+  }
   await prisma.user.update({ where: { id: userId }, data: { membershipValidUntil } });
 
   revalidatePath("/admin");

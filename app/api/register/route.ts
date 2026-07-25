@@ -4,6 +4,10 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { findPseudonymLeak } from "@/lib/pseudonym";
 import { getAllSettings, grantCredits } from "@/lib/credits";
+import { sendEmail } from "@/lib/mailer";
+
+// Betreiber-Benachrichtigung bei jeder Registrierung
+const ADMIN_NOTIFY_EMAIL = "jgosch@brisco.ch";
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -100,6 +104,32 @@ export async function POST(req: Request) {
       `Neukunde geworben: ${user.pseudonym}`,
     );
   }
+
+  // Betreiber-Benachrichtigung — fire-and-forget, darf die Registrierung nie blockieren
+  void sendEmail({
+    userId: user.id,
+    kind: "ADMIN_NEW_USER",
+    to: ADMIN_NOTIFY_EMAIL,
+    subject: `Neue Registrierung: ${user.pseudonym} (${role})`,
+    body: [
+      "Neuer Nutzer auf markt.brisco.ch:",
+      "",
+      `Pseudonym: ${user.pseudonym}`,
+      `E-Mail:    ${email.toLowerCase()}`,
+      `Rolle:     ${role}`,
+      `Firma:     ${companyName}`,
+      `Land:      ${country.toUpperCase()}`,
+      vatId ? `USt-ID:    ${vatId}` : "",
+      referrer ? `Geworben von: ${referrer.pseudonym}` : "",
+      `Trial bis: ${trialEndsAt.toLocaleDateString("de-CH")}`,
+      "",
+      "→ Admin: https://markt.brisco.ch/admin",
+    ]
+      .filter(Boolean)
+      .join("\n"),
+  }).catch((e) => {
+    console.error("[Registrierung] Admin-Benachrichtigung fehlgeschlagen (ignoriert):", e);
+  });
 
   return NextResponse.json(user, { status: 201 });
 }

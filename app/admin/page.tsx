@@ -1125,21 +1125,23 @@ export default async function AdminPage() {
                   <form action={setFreeMembership} className="mt-1 flex items-center gap-1">
                     <input type="hidden" name="userId" value={u.id} />
                     <select
-                      name="years"
-                      defaultValue="1"
+                      name="months"
+                      defaultValue="12"
                       className="rounded-md border border-emerald-300 bg-emerald-50 px-1.5 py-1 text-xs text-emerald-900"
                     >
-                      <option value="1">1 Jahr</option>
-                      <option value="2">2 Jahre</option>
-                      <option value="3">3 Jahre</option>
-                      <option value="5">5 Jahre</option>
-                      <option value="10">10 Jahre</option>
+                      <option value="1">1 Monat</option>
+                      <option value="2">2 Monate</option>
+                      <option value="3">3 Monate</option>
+                      <option value="6">6 Monate</option>
+                      <option value="12">12 Monate</option>
+                      <option value="24">24 Monate</option>
+                      <option value="36">36 Monate</option>
                       <option value="0">entfernen</option>
                     </select>
                     <button
                       type="submit"
                       className="rounded-md bg-emerald-600 px-2 py-1 text-xs font-semibold text-white hover:bg-emerald-700"
-                      title="Gratis-Konto: Mitgliedschaft ab heute auf X Jahre setzen (entfernen = Abo-Datum löschen — Achtung, gilt auch für bezahlte Abos)"
+                      title="Gratis-Konto: Mitgliedschaft ab heute auf X Monate setzen (entfernen = Abo-Datum löschen — Achtung, gilt auch für bezahlte Abos)"
                     >
                       Gratis
                     </button>
