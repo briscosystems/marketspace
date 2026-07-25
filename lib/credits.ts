@@ -51,6 +51,7 @@ export const AI_ACTION_COSTS = {
   kssWizard: 1, // Haiku, ~CHF 0.015
   alternatives: 1, // Haiku + SDS-Vergleich, ~CHF 0.035
   alternativesWeb: 2, // Sonnet + Websuche, ~CHF 0.07
+  kssWizardWeb: 2, // Sonnet + Websuche (Empfehlungen gegen Foren/Hersteller prüfen)
 } as const;
 
 export type AiAction = keyof typeof AI_ACTION_COSTS;
@@ -60,6 +61,7 @@ export const AI_ACTION_LABEL: Record<AiAction, string> = {
   kssWizard: "KSS-Wizard-Analyse",
   alternatives: "KI-Alternativen (SDS-Vergleich)",
   alternativesWeb: "KI-Alternativsuche mit Web-Recherche",
+  kssWizardWeb: "KSS-Wizard Web-Prüfung",
 };
 
 // ---------- Einstellungen (AppSetting) ----------

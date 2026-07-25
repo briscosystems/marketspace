@@ -18,7 +18,6 @@ import { prisma } from "@/lib/prisma";
 import { recommendMaterialsForProduct } from "@/lib/seal-recommendations";
 import { chargeForAiAction, refundAiAction } from "@/lib/credits";
 import { sponsoredManufacturerIds } from "@/lib/storefront";
-import { webVerifyRecommendations, type WebSource } from "@/lib/web-research";
 
 type WizardAnswers = {
   satisfied?: boolean | null;
@@ -45,8 +44,6 @@ type Recommendation = {
   reason: string;
   matchScore: number; // 0-100
   sealWarning?: string;
-  /** Anmerkung aus der Web-Recherche (Foren/Hersteller) zu genau diesem Produkt. */
-  webNote?: string;
   // true = Hersteller mit aktiver Marke-Stufe (gesponsert). MUSS in der UI
   // klar gekennzeichnet werden (P2B-VO 2019/1150, Art. 5).
   sponsored?: boolean;
@@ -145,8 +142,6 @@ export async function POST(req: Request) {
   let summary: string;
   let source: "anthropic-claude" | "heuristic-fallback";
   let creditNotice: string | null = null;
-  let webSummary: string | null = null;
-  let webSources: WebSource[] = [];
   let aiAllowed = false;
   const session = await getServerSession(authOptions);
 
@@ -212,22 +207,6 @@ export async function POST(req: Request) {
       summary = claude.summary;
       source = "anthropic-claude";
       noteAiSuccess();
-
-      // Web-Recherche: Empfehlungen gegen reale Erfahrungen (Foren, Hersteller-
-      // seiten) prüfen — mit Quellen + Glaubwürdigkeit. Fehler sind nicht fatal.
-      const web = await webVerifyRecommendations({
-        context: body.problemDescription ?? "",
-        items: recommendations.map((r) => ({ manufacturer: r.manufacturer, name: r.productName })),
-        usageFeature: "kss_wizard_web",
-      });
-      if (web) {
-        recommendations = recommendations.map((r, i) => ({
-          ...r,
-          webNote: web.notesByIndex.get(i + 1) ?? r.webNote,
-        }));
-        webSummary = web.summary || null;
-        webSources = web.sources;
-      }
     } catch (e) {
       noteAiFailure();
       console.warn("Anthropic-Call failed, fallback:", e);
@@ -248,8 +227,6 @@ export async function POST(req: Request) {
     summary,
     source,
     creditNotice,
-    webSummary,
-    webSources,
     candidatePoolSize: candidatePool.length,
     consideredTop: topCandidates.length,
   });

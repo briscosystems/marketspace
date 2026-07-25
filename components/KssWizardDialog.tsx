@@ -113,6 +113,51 @@ export function KssWizardDialog({ onClose }: { onClose: () => void }) {
     }
   }
 
+  const [webLoading, setWebLoading] = useState(false);
+  const [webError, setWebError] = useState<string | null>(null);
+
+  /** Web-Prüfung auf Knopfdruck (Sonnet + Websuche, kostet Credits). */
+  async function runWebCheck() {
+    if (!result || result.recommendations.length === 0) return;
+    setWebLoading(true);
+    setWebError(null);
+    try {
+      const resp = await fetch(withBasePath("/api/kss-wizard/web-check"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          context: state.problemDescription || undefined,
+          items: result.recommendations.map((r) => ({
+            manufacturer: r.manufacturer,
+            name: r.productName,
+          })),
+        }),
+      });
+      const data = await resp.json();
+      if (!resp.ok) {
+        setWebError(data?.error ?? `HTTP ${resp.status}`);
+        return;
+      }
+      setResult((prev) =>
+        prev
+          ? {
+              ...prev,
+              webSummary: data.summary || null,
+              webSources: data.sources ?? [],
+              recommendations: prev.recommendations.map((r, i) => ({
+                ...r,
+                webNote: data.notes?.[String(i + 1)] ?? r.webNote,
+              })),
+            }
+          : prev,
+      );
+    } catch (e) {
+      setWebError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setWebLoading(false);
+    }
+  }
+
   // ESC-Taste schliesst Dialog
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -156,7 +201,13 @@ export function KssWizardDialog({ onClose }: { onClose: () => void }) {
         {/* Body */}
         <div className="px-5 py-4">
           {result ? (
-            <ResultView result={result} onClose={onClose} />
+            <ResultView
+              result={result}
+              onClose={onClose}
+              onWebCheck={runWebCheck}
+              webLoading={webLoading}
+              webError={webError}
+            />
           ) : (
             <>
               {step === 1 && (
@@ -587,6 +638,9 @@ function Step6Issues({
 function ResultView({
   result,
   onClose,
+  onWebCheck,
+  webLoading,
+  webError,
 }: {
   result: {
     recommendations: Recommendation[];
@@ -596,6 +650,9 @@ function ResultView({
     webSources?: WizardWebSource[];
   };
   onClose: () => void;
+  onWebCheck: () => void;
+  webLoading: boolean;
+  webError: string | null;
 }) {
   return (
     <div className="space-y-4">
@@ -663,6 +720,21 @@ function ResultView({
               )}
             </div>
           ))}
+        </div>
+      )}
+
+      {result.recommendations.length > 0 && !result.webSummary && (
+        <div>
+          <button
+            type="button"
+            onClick={onWebCheck}
+            disabled={webLoading}
+            className="inline-flex items-center gap-1.5 rounded-md border border-purple-300 bg-white px-3 py-1.5 text-sm font-semibold text-purple-700 hover:bg-purple-50 disabled:opacity-60"
+          >
+            {webLoading ? <Loader2 size={14} className="animate-spin" /> : <Globe size={14} />}
+            {webLoading ? "Prüfe im Web…" : "Im Web prüfen (Foren & Hersteller)"}
+          </button>
+          {webError && <p className="mt-1 text-xs text-red-600">{webError}</p>}
         </div>
       )}
 

@@ -111,6 +111,51 @@ export function KssAiAnalysis({
     }
   }
 
+  const [webLoading, setWebLoading] = useState(false);
+  const [webError, setWebError] = useState<string | null>(null);
+
+  /** Web-Prüfung auf Knopfdruck: Empfehlungen gegen Foren/Herstellerseiten prüfen. */
+  async function runWebCheck() {
+    if (!result || result.recommendations.length === 0) return;
+    setWebLoading(true);
+    setWebError(null);
+    try {
+      const resp = await fetch(withBasePath("/api/kss-wizard/web-check"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          context: text || undefined,
+          items: result.recommendations.map((r) => ({
+            manufacturer: r.manufacturer,
+            name: r.productName,
+          })),
+        }),
+      });
+      const data = await resp.json();
+      if (!resp.ok) {
+        setWebError(data?.error ?? `HTTP ${resp.status}`);
+        return;
+      }
+      setResult((prev) =>
+        prev
+          ? {
+              ...prev,
+              webSummary: data.summary || null,
+              webSources: data.sources ?? [],
+              recommendations: prev.recommendations.map((r, i) => ({
+                ...r,
+                webNote: data.notes?.[String(i + 1)] ?? r.webNote,
+              })),
+            }
+          : prev,
+      );
+    } catch (e) {
+      setWebError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setWebLoading(false);
+    }
+  }
+
   async function analyze() {
     setLoading(true);
     setError(null);
@@ -291,6 +336,21 @@ export function KssAiAnalysis({
                   )}
                 </div>
               ))}
+            </div>
+          )}
+
+          {result.recommendations.length > 0 && !result.webSummary && (
+            <div>
+              <button
+                type="button"
+                onClick={runWebCheck}
+                disabled={webLoading}
+                className="inline-flex items-center gap-1.5 rounded-md border border-purple-300 bg-white px-3 py-1.5 text-sm font-semibold text-purple-700 hover:bg-purple-50 disabled:opacity-60"
+              >
+                {webLoading ? <Loader2 size={14} className="animate-spin" /> : <Globe size={14} />}
+                {webLoading ? "Prüfe im Web…" : "Im Web prüfen (Foren & Hersteller)"}
+              </button>
+              {webError && <p className="mt-1 text-xs text-red-600">{webError}</p>}
             </div>
           )}
 
