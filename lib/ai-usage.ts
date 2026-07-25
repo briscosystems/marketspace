@@ -43,6 +43,7 @@ export const AI_FEATURE_LABEL: Record<string, string> = {
   contact_filter: "Kontakt-Filter",
   alternatives: "Alternativen (Katalog)",
   alt_search: "Alternativen (Web-Suche)",
+  kss_wizard_web: "KSS-Wizard (Web-Recherche)",
 };
 
 export type TokenCounts = {

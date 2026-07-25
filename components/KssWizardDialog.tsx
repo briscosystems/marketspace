@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { X, Mic, MicOff, Sparkles, ChevronRight, ChevronLeft, Loader2, CheckCircle2, AlertTriangle } from "lucide-react";
+import { X, Mic, MicOff, Sparkles, ChevronRight, ChevronLeft, Loader2, CheckCircle2, AlertTriangle, Globe } from "lucide-react";
 import {
   APPLICATION_AREAS,
   MATERIALS,
@@ -37,7 +37,21 @@ type Recommendation = {
   reason: string;
   matchScore: number;
   sealWarning?: string;
+  webNote?: string;
   sponsored?: boolean;
+};
+
+type WizardWebSource = {
+  title: string;
+  url: string;
+  credibility?: "hoch" | "mittel" | "niedrig";
+  credibilityNote?: string;
+};
+
+const WIZARD_CRED_BADGE: Record<string, { label: string; cls: string }> = {
+  hoch: { label: "Glaubwürdigkeit: hoch", cls: "bg-emerald-100 text-emerald-800" },
+  mittel: { label: "Glaubwürdigkeit: mittel", cls: "bg-amber-100 text-amber-800" },
+  niedrig: { label: "Glaubwürdigkeit: niedrig", cls: "bg-slate-200 text-slate-600" },
 };
 
 const TOTAL_STEPS = 6;
@@ -49,6 +63,8 @@ export function KssWizardDialog({ onClose }: { onClose: () => void }) {
     recommendations: Recommendation[];
     summary: string;
     source: string;
+    webSummary?: string | null;
+    webSources?: WizardWebSource[];
   } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -572,7 +588,13 @@ function ResultView({
   result,
   onClose,
 }: {
-  result: { recommendations: Recommendation[]; summary: string; source: string };
+  result: {
+    recommendations: Recommendation[];
+    summary: string;
+    source: string;
+    webSummary?: string | null;
+    webSources?: WizardWebSource[];
+  };
   onClose: () => void;
 }) {
   return (
@@ -623,6 +645,14 @@ function ResultView({
                 <CheckCircle2 size={14} className="mt-0.5 shrink-0 text-emerald-600" />
                 {r.reason}
               </p>
+              {r.webNote && (
+                <p className="mt-2 flex items-start gap-2 rounded bg-purple-50 px-2 py-1 text-xs text-purple-900">
+                  <Globe size={12} className="mt-0.5 shrink-0 text-purple-600" />
+                  <span>
+                    <span className="font-semibold">Web-Recherche:</span> {r.webNote}
+                  </span>
+                </p>
+              )}
               {r.sealWarning && (
                 <p className="mt-2 flex items-start gap-2 rounded bg-amber-50 px-2 py-1 text-xs text-amber-900">
                   <AlertTriangle size={12} className="mt-0.5 shrink-0 text-amber-600" />
@@ -633,6 +663,36 @@ function ResultView({
               )}
             </div>
           ))}
+        </div>
+      )}
+
+      {result.webSummary && (
+        <div className="rounded-lg border border-purple-200 bg-purple-50/60 p-3 text-sm text-slate-700">
+          <Globe size={14} className="mr-1 inline text-purple-600" />
+          <span className="font-semibold">Web-Recherche:</span> {result.webSummary}
+        </div>
+      )}
+
+      {result.webSources && result.webSources.length > 0 && (
+        <div className="rounded-lg border border-slate-200 bg-white p-3">
+          <div className="mb-1.5 text-xs font-semibold text-slate-600">Quellen aus dem Web</div>
+          <ul className="space-y-1.5 text-xs">
+            {result.webSources.slice(0, 8).map((s, i) => (
+              <li key={i} className="flex flex-wrap items-center gap-1.5">
+                <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-purple-700 hover:underline">
+                  {s.title}
+                </a>
+                {s.credibility && (
+                  <span
+                    className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${WIZARD_CRED_BADGE[s.credibility].cls}`}
+                    title={s.credibilityNote}
+                  >
+                    {WIZARD_CRED_BADGE[s.credibility].label}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 

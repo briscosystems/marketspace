@@ -2,7 +2,7 @@
 
 import { useState, type ChangeEvent } from "react";
 import Link from "next/link";
-import { Sparkles, Loader2, CheckCircle2, AlertTriangle, Brain, Upload, FileText, X } from "lucide-react";
+import { Sparkles, Loader2, CheckCircle2, AlertTriangle, Brain, Upload, FileText, X, Globe } from "lucide-react";
 import { withBasePath } from "@/lib/base-path";
 import { sdsFlagChips } from "@/lib/sds-summary";
 
@@ -21,12 +21,28 @@ type Recommendation = {
   reason: string;
   matchScore: number;
   sealWarning?: string;
+  webNote?: string;
+};
+
+type WebSource = {
+  title: string;
+  url: string;
+  credibility?: "hoch" | "mittel" | "niedrig";
+  credibilityNote?: string;
 };
 
 type ApiResult = {
   recommendations: Recommendation[];
   summary: string;
   source: string;
+  webSummary?: string | null;
+  webSources?: WebSource[];
+};
+
+const CRED_BADGE: Record<string, { label: string; cls: string }> = {
+  hoch: { label: "Glaubwürdigkeit: hoch", cls: "bg-emerald-100 text-emerald-800" },
+  mittel: { label: "Glaubwürdigkeit: mittel", cls: "bg-amber-100 text-amber-800" },
+  niedrig: { label: "Glaubwürdigkeit: niedrig", cls: "bg-slate-200 text-slate-600" },
 };
 
 /**
@@ -257,6 +273,14 @@ export function KssAiAnalysis({
                     <CheckCircle2 size={13} className="mt-0.5 shrink-0 text-emerald-600" />
                     {r.reason}
                   </p>
+                  {r.webNote && (
+                    <p className="mt-2 flex items-start gap-1.5 rounded bg-purple-50 px-2 py-1 text-[11px] text-purple-900">
+                      <Globe size={11} className="mt-0.5 shrink-0 text-purple-600" />
+                      <span>
+                        <span className="font-semibold">Web-Recherche:</span> {r.webNote}
+                      </span>
+                    </p>
+                  )}
                   {r.sealWarning && (
                     <p className="mt-2 flex items-start gap-1.5 rounded bg-amber-50 px-2 py-1 text-[11px] text-amber-900">
                       <AlertTriangle size={11} className="mt-0.5 shrink-0 text-amber-600" />
@@ -267,6 +291,41 @@ export function KssAiAnalysis({
                   )}
                 </div>
               ))}
+            </div>
+          )}
+
+          {result.webSummary && (
+            <div className="rounded-lg border border-purple-200 bg-purple-50/60 p-3 text-sm text-slate-700">
+              <Globe size={14} className="mr-1 inline text-purple-600" />
+              <span className="font-semibold">Web-Recherche:</span> {result.webSummary}
+            </div>
+          )}
+
+          {result.webSources && result.webSources.length > 0 && (
+            <div className="rounded-lg border border-slate-200 bg-white p-3">
+              <div className="mb-1.5 text-xs font-semibold text-slate-600">Quellen aus dem Web</div>
+              <ul className="space-y-1.5 text-xs">
+                {result.webSources.slice(0, 8).map((s, i) => (
+                  <li key={i} className="flex flex-wrap items-center gap-1.5">
+                    <a
+                      href={s.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-purple-700 hover:underline"
+                    >
+                      {s.title}
+                    </a>
+                    {s.credibility && (
+                      <span
+                        className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${CRED_BADGE[s.credibility].cls}`}
+                        title={s.credibilityNote}
+                      >
+                        {CRED_BADGE[s.credibility].label}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
         </div>

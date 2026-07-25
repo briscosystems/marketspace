@@ -948,9 +948,10 @@ function SealCompatibilitySection({
         ISM/Trelleborg/Parker bewertet. Vor Anwendung Praxisversuche bei Einsatztemperatur empfohlen.
       </p>
 
-      {/* Empfehlungs-Chips, nach Severität gruppiert */}
+      {/* Empfehlungs-Chips, nach Severität gruppiert — Positives zuerst:
+          der Abschnitt ist eine Auswahlhilfe, keine Warnliste. */}
       <div className="mt-4 space-y-3">
-        {(["UNSUITABLE", "CAUTION", "COMPATIBLE", "RECOMMENDED"] as const).map((bucket) => {
+        {(["RECOMMENDED", "COMPATIBLE", "CAUTION", "UNSUITABLE"] as const).map((bucket) => {
           const items = groups[bucket];
           if (items.length === 0) return null;
           const s = SEAL_RATING_STYLE[bucket];

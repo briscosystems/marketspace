@@ -15,6 +15,7 @@
  */
 import Anthropic from "@anthropic-ai/sdk";
 import { createAnthropic, clampText, AI_LIMITS, aiTemporarilyDisabled, noteAiSuccess, noteAiFailure } from "@/lib/ai-client";
+import { mergeSourceCredibility, SOURCES_JSON_INSTRUCTION, type WebSource } from "@/lib/web-research";
 import { recordAiUsage } from "@/lib/ai-usage";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
@@ -79,7 +80,7 @@ export type AltSearchResult = {
   candidatesConsidered: number;
   modelUsed: "rule-based" | "claude-web";
   reasoning?: string;
-  webSources?: { title: string; url: string }[];
+  webSources?: WebSource[];
   webSummary?: string;
 };
 
@@ -523,7 +524,9 @@ export async function searchAlternativesWeb(input: AltSearchInput): Promise<AltS
       "Produkt anhand der Web-Recherche ein und nenne in der summary, welche Produktarten,",
       "Spezifikationen oder Marken als gleichwertige Alternative in Frage kommen.",
       "Antworte mit einem JSON-Objekt:",
-      '{"summary":"2-3 Sätze Gesamteinschätzung","ranking":[{"n":1,"verdict":"empfohlen|brauchbar|eher nicht","note":"1 Satz aus den gefundenen Erfahrungen"}]}',
+      '{"summary":"2-3 Sätze Gesamteinschätzung","ranking":[{"n":1,"verdict":"empfohlen|brauchbar|eher nicht","note":"1 Satz aus den gefundenen Erfahrungen"}],' +
+        SOURCES_JSON_INSTRUCTION +
+        "}",
       "ranking darf leer sein, wenn es keine Kandidaten gibt. Nur JSON am Ende, davor darf die Web-Suche laufen.",
     ].join("\n");
 
@@ -547,7 +550,7 @@ export async function searchAlternativesWeb(input: AltSearchInput): Promise<AltS
 
     recordAiUsage("alt_search", resp.model, resp.usage);
 
-    const webSources = extractWebSources(resp.content);
+    let webSources: WebSource[] = extractWebSources(resp.content);
 
     // Letzten Text-Block als JSON parsen.
     const texts = resp.content.filter((b): b is Anthropic.Messages.TextBlock => b.type === "text");
@@ -560,11 +563,14 @@ export async function searchAlternativesWeb(input: AltSearchInput): Promise<AltS
         const parsed = JSON.parse(jsonMatch[0]) as {
           summary?: string;
           ranking?: { n: number; verdict: string; note: string }[];
+          quellen?: { url?: string; titel?: string; glaubwuerdigkeit?: string; warum?: string }[];
         };
         summary = parsed.summary;
         for (const r of parsed.ranking ?? []) {
           verdictByN.set(r.n, { verdict: r.verdict, note: r.note });
         }
+        // Glaubwürdigkeits-Einstufung der Quellen aus der Modell-Antwort übernehmen
+        webSources = mergeSourceCredibility(webSources, parsed.quellen);
       } catch {
         // JSON nicht parsebar — wir liefern trotzdem Quellen + Basis.
       }

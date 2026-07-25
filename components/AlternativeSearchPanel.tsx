@@ -49,8 +49,14 @@ type AltResult = {
   creditNotice?: string | null;
   creditsCharged?: number;
   reasoning?: string;
-  webSources?: { title: string; url: string }[];
+  webSources?: { title: string; url: string; credibility?: "hoch" | "mittel" | "niedrig"; credibilityNote?: string }[];
   webSummary?: string;
+};
+
+const ALT_CRED_BADGE: Record<string, { label: string; cls: string }> = {
+  hoch: { label: "Glaubwürdigkeit: hoch", cls: "bg-emerald-100 text-emerald-800" },
+  mittel: { label: "Glaubwürdigkeit: mittel", cls: "bg-amber-100 text-amber-800" },
+  niedrig: { label: "Glaubwürdigkeit: niedrig", cls: "bg-slate-200 text-slate-600" },
 };
 
 const CATEGORY_LABEL: Record<string, string> = {
@@ -376,12 +382,20 @@ export function AlternativeSearchPanel({ initialQuery }: { initialQuery?: string
               {result.webSources && result.webSources.length > 0 && (
                 <div className="rounded-lg border border-slate-200 bg-white p-3">
                   <div className="mb-1 text-xs font-semibold text-slate-600">Quellen aus dem Web</div>
-                  <ul className="space-y-0.5 text-xs">
+                  <ul className="space-y-1.5 text-xs">
                     {result.webSources.slice(0, 8).map((s, i) => (
-                      <li key={i}>
+                      <li key={i} className="flex flex-wrap items-center gap-1.5">
                         <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-purple-700 hover:underline">
                           {s.title}
                         </a>
+                        {s.credibility && (
+                          <span
+                            className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${ALT_CRED_BADGE[s.credibility].cls}`}
+                            title={s.credibilityNote}
+                          >
+                            {ALT_CRED_BADGE[s.credibility].label}
+                          </span>
+                        )}
                       </li>
                     ))}
                   </ul>
