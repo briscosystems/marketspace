@@ -33,5 +33,14 @@ export async function POST(req: Request) {
       { status: 400 },
     );
   }
-  return NextResponse.json({ ok: true, credits: result.credits, balance: result.balance });
+  return NextResponse.json({
+    ok: true,
+    credits: result.credits,
+    trialDays: result.trialDays,
+    balance: result.balance,
+    message:
+      `${result.credits} Credits gutgeschrieben` +
+      (result.trialDays > 0 ? ` + Kennenlernphase um ${result.trialDays} Tage verlängert` : "") +
+      ".",
+  });
 }

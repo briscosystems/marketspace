@@ -237,6 +237,8 @@ export function generateReferralCodeString(): string {
 export async function createReferralCode(params: {
   createdById: string;
   credits: number;
+  /** Verlängert beim Einlösen zusätzlich die Kennenlernphase um N Tage. */
+  trialDays?: number;
   maxUses?: number;
   expiresAt?: Date | null;
   note?: string;
@@ -247,6 +249,7 @@ export async function createReferralCode(params: {
     data: {
       code,
       credits: params.credits,
+      trialDays: params.trialDays ?? 0,
       maxUses: params.maxUses ?? 1,
       expiresAt: params.expiresAt ?? null,
       note: params.note,
@@ -256,7 +259,7 @@ export async function createReferralCode(params: {
 }
 
 export type RedeemCodeResult =
-  | { ok: true; credits: number; balance: number }
+  | { ok: true; credits: number; trialDays: number; balance: number }
   | { ok: false; reason: "not_found" | "expired" | "exhausted" | "already_redeemed" };
 
 /** Code für einen Nutzer einlösen — atomar, verhindert Doppel-Einlösung/Überbuchung. */
@@ -282,6 +285,15 @@ export async function redeemReferralCode(userId: string, rawCode: string): Promi
   });
   if (claimed.count === 0) return { ok: false, reason: "exhausted" };
 
+  // Trial-Verlängerung: ab JETZT oder ab dem bestehenden Ende (was später ist),
+  // damit ein Code nie eine laufende Phase verkürzt.
+  let newTrialEndsAt: Date | undefined;
+  if (referralCode.trialDays > 0) {
+    const u = await prisma.user.findUnique({ where: { id: userId }, select: { trialEndsAt: true } });
+    const base = Math.max(Date.now(), u?.trialEndsAt?.getTime() ?? 0);
+    newTrialEndsAt = new Date(base + referralCode.trialDays * 24 * 60 * 60 * 1000);
+  }
+
   try {
     await prisma.$transaction([
       prisma.referralCodeRedemption.create({
@@ -289,10 +301,20 @@ export async function redeemReferralCode(userId: string, rawCode: string): Promi
       }),
       prisma.user.update({
         where: { id: userId },
-        data: { creditBalance: { increment: referralCode.credits } },
+        data: {
+          creditBalance: { increment: referralCode.credits },
+          ...(newTrialEndsAt && { trialEndsAt: newTrialEndsAt }),
+        },
       }),
       prisma.creditTransaction.create({
-        data: { userId, amount: referralCode.credits, kind: "CODE", note: `Code eingelöst: ${code}` },
+        data: {
+          userId,
+          amount: referralCode.credits,
+          kind: "CODE",
+          note:
+            `Code eingelöst: ${code}` +
+            (referralCode.trialDays > 0 ? ` (+${referralCode.trialDays} Tage Kennenlernphase)` : ""),
+        },
       }),
     ]);
   } catch {
@@ -302,5 +324,10 @@ export async function redeemReferralCode(userId: string, rawCode: string): Promi
   }
 
   const user = await prisma.user.findUnique({ where: { id: userId }, select: { creditBalance: true } });
-  return { ok: true, credits: referralCode.credits, balance: user?.creditBalance ?? 0 };
+  return {
+    ok: true,
+    credits: referralCode.credits,
+    trialDays: referralCode.trialDays,
+    balance: user?.creditBalance ?? 0,
+  };
 }

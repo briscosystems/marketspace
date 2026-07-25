@@ -26,7 +26,11 @@ export function RedeemCodeBox() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Code konnte nicht eingelöst werden.");
-      setSuccess(`+${data.credits} Credits gutgeschrieben. Neuer Stand: ${data.balance}.`);
+      setSuccess(
+        `+${data.credits} Credits gutgeschrieben` +
+          (data.trialDays > 0 ? ` und Kennenlernphase um ${data.trialDays} Tage verlängert` : "") +
+          `. Neuer Stand: ${data.balance}.`,
+      );
       setCode("");
       router.refresh();
     } catch (e) {

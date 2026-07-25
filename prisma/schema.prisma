@@ -753,6 +753,9 @@ model ReferralCode {
   id          String   @id @default(cuid())
   code        String   @unique // z.B. "WILLKOMMEN2026" — vom Admin frei wählbar
   credits     Int
+  // Verlängert beim Einlösen zusätzlich die Kennenlernphase um N Tage
+  // (z.B. GRUENDER30 = 90 Tage + 50 Credits). 0 = nur Credits.
+  trialDays   Int      @default(0)
   maxUses     Int      @default(1)
   usedCount   Int      @default(0)
   active      Boolean  @default(true)

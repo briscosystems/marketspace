@@ -103,6 +103,27 @@ export async function setTrialDays(formData: FormData) {
 }
 
 /**
+ * „Gratis-Konto": setzt die Mitgliedschaft eines Nutzers auf X Jahre ab heute
+ * (0 = Gratis-Mitgliedschaft entfernen). Gedacht für Gründungs-Händler und
+ * Partner, die nichts zahlen sollen — der Nutzer hat damit vollen Zugang,
+ * ohne Abo und ohne Trial-Ablauf.
+ */
+export async function setFreeMembership(formData: FormData) {
+  await assertOwner();
+
+  const userId = String(formData.get("userId") ?? "");
+  const raw = Number(formData.get("years") ?? 0);
+  if (!userId || !Number.isFinite(raw)) return;
+
+  const years = Math.max(0, Math.min(10, Math.round(raw)));
+  const membershipValidUntil =
+    years > 0 ? new Date(Date.now() + years * 365 * 24 * 60 * 60 * 1000) : null;
+  await prisma.user.update({ where: { id: userId }, data: { membershipValidUntil } });
+
+  revalidatePath("/admin");
+}
+
+/**
  * Referral-/Gutschein-Code generieren. Nur der Eigentümer sieht diesen
  * Bereich in /admin. Ein leeres "code"-Feld erzeugt einen Zufalls-Code.
  */
@@ -113,6 +134,7 @@ export async function createReferralCodeAction(formData: FormData) {
 
   const codeRaw = String(formData.get("code") ?? "").trim();
   const credits = Math.max(1, Math.min(10000, Math.round(Number(formData.get("credits") ?? 0))));
+  const trialDays = Math.max(0, Math.min(730, Math.round(Number(formData.get("trialDays") ?? 0))));
   const maxUses = Math.max(1, Math.min(100000, Math.round(Number(formData.get("maxUses") ?? 1))));
   const expiresRaw = String(formData.get("expiresAt") ?? "").trim();
   const note = String(formData.get("note") ?? "").trim() || undefined;
@@ -121,6 +143,7 @@ export async function createReferralCodeAction(formData: FormData) {
   await createReferralCode({
     createdById: adminId,
     credits,
+    trialDays,
     maxUses,
     expiresAt: expiresRaw ? new Date(expiresRaw) : null,
     note,
