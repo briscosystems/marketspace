@@ -18,6 +18,7 @@ import { prisma } from "@/lib/prisma";
 import { recommendMaterialsForProduct } from "@/lib/seal-recommendations";
 import { chargeForAiAction, refundAiAction } from "@/lib/credits";
 import { sponsoredManufacturerIds } from "@/lib/storefront";
+import { recordRecommendations } from "@/lib/recommendation-stats";
 
 type WizardAnswers = {
   satisfied?: boolean | null;
@@ -229,6 +230,13 @@ export async function POST(req: Request) {
     ({ recommendations, summary } = await heuristicFallback(topCandidates));
     source = "heuristic-fallback";
   }
+
+  // Empfehlungs-Statistik (fire-and-forget) — Grundlage für Sponsoring-Akquise
+  recordRecommendations({
+    productIds: recommendations.map((r) => r.productId),
+    feature: "kss_wizard",
+    source,
+  });
 
   return NextResponse.json({
     recommendations,

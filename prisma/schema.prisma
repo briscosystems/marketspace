@@ -678,6 +678,27 @@ model UsageEvent {
 }
 
 // ============================================================
+// Empfehlungs-Ereignisse — jedes Mal, wenn die Plattform (Wizard, KI-Analyse,
+// Alternativsuche) ein Produkt vorschlägt, ein Datensatz. Grundlage für die
+// Admin-Statistik "welche Hersteller profitieren von unseren Empfehlungen"
+// (Sponsoring-Akquise). Fire-and-forget geschrieben, darf nie werfen.
+// ============================================================
+model RecommendationEvent {
+  id             String   @id @default(cuid())
+  productId      String
+  manufacturerId String?
+  // Quelle: "kss_wizard" | "alt_search"
+  feature        String
+  // "anthropic-claude" | "heuristic-fallback" | "rule-based" | "claude-web"
+  source         String?
+  createdAt      DateTime @default(now())
+
+  @@index([manufacturerId, createdAt])
+  @@index([productId, createdAt])
+  @@index([createdAt])
+}
+
+// ============================================================
 // KI-Token-Verbrauch — echte Token-Zahlen aus den Anthropic-Antworten
 // (für die Kosten-/Nutzungsübersicht im Admin-Bereich). Ein Datensatz je
 // Claude-Aufruf; wird "fire-and-forget" geschrieben und darf nie werfen.

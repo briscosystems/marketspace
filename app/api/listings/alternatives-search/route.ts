@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { searchAlternatives, searchAlternativesWeb } from "@/lib/alternative-search";
 import { chargeForAiAction, refundAiAction, AI_ACTION_COSTS } from "@/lib/credits";
+import { recordRecommendations } from "@/lib/recommendation-stats";
 
 const schema = z.object({
   mode: z.enum(["product", "requirements"]).default("product"),
@@ -77,6 +78,15 @@ export async function POST(req: Request) {
       charged = 0;
       creditNotice = "Web-Recherche vorübergehend nicht verfügbar — Credits erstattet.";
     }
+
+    // Empfehlungs-Statistik (fire-and-forget) — Grundlage für Sponsoring-Akquise
+    // Nur die Top 5: die Echtzeit-Suche feuert bei jedem Tastendruck — so bleibt
+    // die Statistik ein brauchbares Maß für "prominent angezeigt".
+    recordRecommendations({
+      productIds: result.alternatives.slice(0, 5).map((a) => a.productId),
+      feature: "alt_search",
+      source: result.modelUsed,
+    });
 
     return NextResponse.json({ ...result, creditsCharged: charged, creditNotice });
   } catch (e) {

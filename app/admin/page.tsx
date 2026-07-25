@@ -213,6 +213,53 @@ export default async function AdminPage() {
   const dailySeries = [...dailyMap.entries()].map(([day, v]) => ({ day, ...v }));
   const dailyMaxEur = Math.max(0.0001, ...dailySeries.map((d) => d.eur));
 
+  // ── Empfehlungs-Statistik: wie oft wurden welche Produkte/Hersteller
+  //    vorgeschlagen? (Argumentationsbasis für Hersteller-Sponsoring) ──
+  const [recPairsAll, recPairs30d] = await Promise.all([
+    prisma.recommendationEvent.groupBy({
+      by: ["manufacturerId", "productId"],
+      _count: { _all: true },
+    }),
+    prisma.recommendationEvent.groupBy({
+      by: ["manufacturerId", "productId"],
+      _count: { _all: true },
+      where: { createdAt: { gte: since30d } },
+    }),
+  ]);
+  const pair30d = new Map(recPairs30d.map((p) => [`${p.manufacturerId}|${p.productId}`, p._count._all]));
+  const recByManu = new Map<string, { total: number; d30: number; products: Set<string> }>();
+  const recByProd = new Map<string, { total: number; d30: number; manufacturerId: string | null }>();
+  for (const p of recPairsAll) {
+    const d30 = pair30d.get(`${p.manufacturerId}|${p.productId}`) ?? 0;
+    if (p.manufacturerId) {
+      const m = recByManu.get(p.manufacturerId) ?? { total: 0, d30: 0, products: new Set<string>() };
+      m.total += p._count._all;
+      m.d30 += d30;
+      m.products.add(p.productId);
+      recByManu.set(p.manufacturerId, m);
+    }
+    const pr = recByProd.get(p.productId) ?? { total: 0, d30: 0, manufacturerId: p.manufacturerId };
+    pr.total += p._count._all;
+    pr.d30 += d30;
+    recByProd.set(p.productId, pr);
+  }
+  const topManuIds = [...recByManu.entries()].sort((a, b) => b[1].total - a[1].total).slice(0, 15);
+  const topProdIds = [...recByProd.entries()].sort((a, b) => b[1].total - a[1].total).slice(0, 15);
+  const [recManuNames, recProdNames] = await Promise.all([
+    prisma.manufacturer.findMany({
+      where: { id: { in: topManuIds.map(([id]) => id) } },
+      select: { id: true, name: true },
+    }),
+    prisma.product.findMany({
+      where: { id: { in: topProdIds.map(([id]) => id) } },
+      select: { id: true, name: true, manufacturer: { select: { name: true } } },
+    }),
+  ]);
+  const manuName = new Map(recManuNames.map((m) => [m.id, m.name]));
+  const prodInfo = new Map(recProdNames.map((p) => [p.id, { name: p.name, manu: p.manufacturer.name }]));
+  const recTotal = recPairsAll.reduce((a, p) => a + p._count._all, 0);
+  const rec30dTotal = recPairs30d.reduce((a, p) => a + p._count._all, 0);
+
   const usedCredits = Math.abs(usageAgg._sum.amount ?? 0);
   const purchasedCredits = purchaseAgg._sum.amount ?? 0;
   const revenueBySellerId = new Map(
@@ -764,6 +811,95 @@ export default async function AdminPage() {
                 </tbody>
               </table>
             </div>
+          </>
+        )}
+      </section>
+
+      {/* ============ Empfehlungs-Statistik (Sponsoring-Akquise) ============ */}
+      <section className="card">
+        <h2 className="section-title">Empfehlungs-Statistik (KI-Vorschläge)</h2>
+        <p className="mt-1 max-w-2xl text-sm text-slate-600">
+          Wie oft Wizard, KI-Analyse und Alternativsuche Produkte vorgeschlagen haben —
+          deine Argumentationsbasis, um Hersteller auf ein bezahltes Sponsoring anzusprechen
+          („Ihr Produkt wurde N-mal empfohlen").
+        </p>
+
+        {recTotal === 0 ? (
+          <p className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-500">
+            Noch keine Empfehlungen gezählt — die Zählung läuft ab jetzt bei jeder
+            Wizard-Analyse und Alternativsuche automatisch mit.
+          </p>
+        ) : (
+          <>
+            <div className="mt-4 flex flex-wrap gap-4">
+              <div>
+                <div className="stat-value">{recTotal.toLocaleString("de-CH")}</div>
+                <div className="text-xs text-slate-500">Empfehlungen gesamt</div>
+              </div>
+              <div>
+                <div className="stat-value">{rec30dTotal.toLocaleString("de-CH")}</div>
+                <div className="text-xs text-slate-500">letzte 30 Tage</div>
+              </div>
+            </div>
+
+            <div className="mt-5 grid gap-6 lg:grid-cols-2">
+              <div className="overflow-x-auto">
+                <div className="eyebrow mb-2">Top-Hersteller</div>
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500">
+                      <th className="py-1.5 pr-2">Hersteller</th>
+                      <th className="py-1.5 pr-2 text-right">Produkte</th>
+                      <th className="py-1.5 pr-2 text-right">30 Tage</th>
+                      <th className="py-1.5 text-right">Gesamt</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {topManuIds.map(([id, v]) => (
+                      <tr key={id} className="border-b border-slate-100">
+                        <td className="py-1.5 pr-2 font-medium text-slate-800">
+                          {manuName.get(id) ?? id}
+                        </td>
+                        <td className="py-1.5 pr-2 text-right tabular-nums">{v.products.size}</td>
+                        <td className="py-1.5 pr-2 text-right tabular-nums">{v.d30.toLocaleString("de-CH")}</td>
+                        <td className="py-1.5 text-right font-semibold tabular-nums">{v.total.toLocaleString("de-CH")}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="overflow-x-auto">
+                <div className="eyebrow mb-2">Top-Produkte</div>
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500">
+                      <th className="py-1.5 pr-2">Produkt</th>
+                      <th className="py-1.5 pr-2">Hersteller</th>
+                      <th className="py-1.5 pr-2 text-right">30 Tage</th>
+                      <th className="py-1.5 text-right">Gesamt</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {topProdIds.map(([id, v]) => (
+                      <tr key={id} className="border-b border-slate-100">
+                        <td className="py-1.5 pr-2 font-medium text-slate-800">
+                          {prodInfo.get(id)?.name ?? id}
+                        </td>
+                        <td className="py-1.5 pr-2 text-slate-500">{prodInfo.get(id)?.manu ?? "—"}</td>
+                        <td className="py-1.5 pr-2 text-right tabular-nums">{v.d30.toLocaleString("de-CH")}</td>
+                        <td className="py-1.5 text-right font-semibold tabular-nums">{v.total.toLocaleString("de-CH")}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <p className="mt-3 text-xs text-slate-400">
+              Zählweise: Wizard/KI-Analyse = jede ausgespielte Empfehlung (Top 3);
+              Alternativsuche = die 5 obersten Treffer je Anzeige. Gesponserte Treffer sind enthalten.
+            </p>
           </>
         )}
       </section>
