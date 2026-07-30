@@ -30,6 +30,7 @@ suchen aktiv neue Lieferanten. Wer jetzt mit Ware sichtbar ist, gewinnt diese Ku
 | 2 | Zielliste Reseller (85) + Ansprache | Wen ansprechen + fertige Texte | [marketing/zielliste-reseller.html](marketing/zielliste-reseller.html) | https://claude.ai/code/artifact/21326d5d-0f26-4613-8565-04c302b065e6 |
 | 3 | One-Pager / Flyer (Gründungspartner) | Anhang zur Mail + Gesprächsgrundlage | [marketing/flyer-gruendungspartner.html](marketing/flyer-gruendungspartner.html) | https://claude.ai/code/artifact/16b65a21-e4d8-472a-9c7f-89fe371e8fa2 |
 | 4 | Werbe-Visitenkarten (2 Motive) | Plattform + 30-Händler bewerben | [marketing/visitenkarten.html](marketing/visitenkarten.html) | https://claude.ai/code/artifact/8e3fc749-2607-48fe-8d5a-58aa61e59b99 |
+| 4b | **Fact Sheet Plattform (A4)** | Neutrales Übergabe-Blatt für Interessenten/Kunden (beide Seiten) | [marketing/factsheet-plattform.html](marketing/factsheet-plattform.html) | https://claude.ai/code/artifact/85307942-cab2-41d8-8156-34ed51e78ca2 |
 | 5 | Vertraulichkeit & Sperrfrist (Entwurf) | Reseller vor Launch binden | siehe [Abschnitt 5](#5-vertraulichkeit--sperrfrist-nda-entwurf) unten | — |
 
 > Die HTML-Dateien sind **eigenständig** (Logo als Bilddaten eingebettet). Zum Versenden im Browser
