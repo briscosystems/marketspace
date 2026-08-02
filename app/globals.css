@@ -96,22 +96,44 @@ body::before {
    Auf Touch-Geräten (kein Hover möglich) immer sichtbar.
    ============================================================ */
 .hover-hint {
-  max-height: 0;
+  /* Der Hinweis liegt ÜBER der Karte, statt sie aufzuklappen: die Kachel behält
+     ihre Größe, das Raster springt nicht. Er sitzt am unteren Rand, deckt dort
+     kurz den Inhalt ab und verschwindet wieder. */
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  padding: 0.6rem 1.25rem 0.75rem;
+  background: rgba(255, 255, 255, 0.97);
+  border-top: 1px solid rgb(226 232 240);
+  border-radius: 0 0 1rem 1rem;
+  box-shadow: 0 -6px 16px -12px rgb(15 23 42 / 0.35);
   opacity: 0;
-  margin-top: 0;
-  overflow: hidden;
-  transition: max-height 0.25s ease, opacity 0.25s ease, margin-top 0.25s ease;
+  transform: translateY(0.35rem);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+/* Die Karte muss der Bezugsrahmen sein, sonst landet der Hinweis am Seitenrand. */
+.group:has(.hover-hint) {
+  position: relative;
 }
 .group:hover .hover-hint,
 .group:focus-within .hover-hint {
-  max-height: 4rem;
   opacity: 1;
-  margin-top: 0.25rem;
+  transform: translateY(0);
 }
+/* Touch-Geräte können nicht „darüberfahren" — dort steht der Text fest in der
+   Karte (im Fluss, nicht überlagert), sonst wäre er nie erreichbar. */
 @media (hover: none) {
   .hover-hint {
-    max-height: none;
+    position: static;
     opacity: 1;
+    transform: none;
+    padding: 0;
     margin-top: 0.25rem;
+    background: none;
+    border: 0;
+    box-shadow: none;
   }
 }

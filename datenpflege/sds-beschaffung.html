@@ -1,0 +1,1214 @@
+<title>Datenblätter &amp; Sicherheitsdatenblätter beschaffen — Brisco Marketplace</title>
+<style>
+:root{
+  --ground:#FAFAF6; --surface:#FFFFFF; --ink:#16190F; --ink-2:#4A503E; --ink-3:#767C66;
+  --line:#E3E6D8; --line-2:#EFF1E8; --accent:#5C7A16; --accent-soft:#EDF3DC;
+  --login:#9A5B0B; --login-bg:#FCF1E2; --bot:#3F5266; --bot-bg:#EDF2F7; --offen:#186B45; --offen-bg:#E6F3EC;
+  --shadow:0 1px 2px rgb(22 25 15/.05), 0 8px 24px -18px rgb(22 25 15/.35);
+}
+@media (prefers-color-scheme:dark){
+  :root{ --ground:#121410; --surface:#1B1E17; --ink:#F1F3EA; --ink-2:#C3C8B5; --ink-3:#8C9280;
+    --line:#2C3126; --line-2:#242820; --accent:#A9CC4E; --accent-soft:#232A16;
+    --login:#E0A360; --login-bg:#2E2114; --bot:#9EB6CC; --bot-bg:#1A222A; --offen:#79C79E; --offen-bg:#13251C;
+    --shadow:0 1px 2px rgb(0 0 0/.4), 0 10px 28px -20px rgb(0 0 0/.9); }
+}
+:root[data-theme="dark"]{ --ground:#121410; --surface:#1B1E17; --ink:#F1F3EA; --ink-2:#C3C8B5; --ink-3:#8C9280;
+  --line:#2C3126; --line-2:#242820; --accent:#A9CC4E; --accent-soft:#232A16;
+  --login:#E0A360; --login-bg:#2E2114; --bot:#9EB6CC; --bot-bg:#1A222A; --offen:#79C79E; --offen-bg:#13251C;
+  --shadow:0 1px 2px rgb(0 0 0/.4), 0 10px 28px -20px rgb(0 0 0/.9); }
+:root[data-theme="light"]{ --ground:#FAFAF6; --surface:#FFFFFF; --ink:#16190F; --ink-2:#4A503E; --ink-3:#767C66;
+  --line:#E3E6D8; --line-2:#EFF1E8; --accent:#5C7A16; --accent-soft:#EDF3DC;
+  --login:#9A5B0B; --login-bg:#FCF1E2; --bot:#3F5266; --bot-bg:#EDF2F7; --offen:#186B45; --offen-bg:#E6F3EC;
+  --shadow:0 1px 2px rgb(22 25 15/.05), 0 8px 24px -18px rgb(22 25 15/.35); }
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:60rem;margin:0 auto;padding:2.5rem 1.25rem 5rem;display:flex;flex-direction:column;gap:1.75rem}
+a{color:var(--accent)}
+h1{font-size:clamp(1.6rem,1.2rem + 1.6vw,2.3rem);line-height:1.15;margin:0;letter-spacing:-.02em;text-wrap:balance}
+.eyebrow{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.72rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 .55rem}
+.lead{margin:.85rem 0 0;color:var(--ink-2);max-width:44rem}
+.tally{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.25rem}
+.tally b{font-variant-numeric:tabular-nums}
+.stat{display:flex;align-items:baseline;gap:.45rem;padding:.4rem .75rem;border-radius:999px;
+  border:1px solid var(--line);background:var(--surface);font-size:.85rem;color:var(--ink-2)}
+.stat b{font-size:1rem;color:var(--ink)}
+.legend{display:grid;gap:.6rem;padding:1.1rem 1.25rem;background:var(--surface);
+  border:1px solid var(--line);border-radius:.9rem;box-shadow:var(--shadow)}
+.legend p{margin:0;font-size:.9rem;color:var(--ink-2)}
+.legend .pill{margin-right:.5rem}
+.bar{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;position:sticky;top:0;z-index:9;
+  padding:.7rem 0;background:linear-gradient(var(--ground) 78%,transparent)}
+.filter{font:inherit;font-size:.85rem;padding:.35rem .8rem;border-radius:999px;cursor:pointer;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink-2)}
+.filter[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+.filter:focus-visible,.copy:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mfr{background:var(--surface);border:1px solid var(--line);border-radius:.9rem;
+  box-shadow:var(--shadow);overflow:hidden}
+.mfr[hidden]{display:none}
+.mfr-head{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;padding:.9rem 1.1rem;
+  border-bottom:1px solid var(--line-2)}
+.mfr-head h2{font-size:1.02rem;margin:0;letter-spacing:-.01em;flex:0 0 auto}
+.count{font-size:.8rem;color:var(--ink-3);margin-left:auto;font-variant-numeric:tabular-nums}
+.site,.copy{font-size:.78rem;text-decoration:none;border:1px solid var(--line);background:transparent;
+  color:var(--ink-2);padding:.25rem .6rem;border-radius:.45rem;cursor:pointer;font-family:inherit}
+.site:hover,.copy:hover{border-color:var(--accent);color:var(--accent)}
+.pill{font-size:.72rem;font-weight:600;padding:.2rem .55rem;border-radius:.4rem;white-space:nowrap}
+.pill.login{background:var(--login-bg);color:var(--login)}
+.pill.bot{background:var(--bot-bg);color:var(--bot)}
+.pill.offen{background:var(--offen-bg);color:var(--offen)}
+.pill.unklar{background:var(--line-2);color:var(--ink-3)}
+.portal{display:flex;flex-wrap:wrap;gap:.4rem .5rem;margin:0;padding:.7rem 1.1rem;
+  background:var(--accent-soft);border-bottom:1px solid var(--line-2);font-size:.83rem}
+.portal a{display:inline-block;text-decoration:none;font-weight:600;padding:.2rem .55rem;
+  border:1px solid color-mix(in srgb, var(--accent) 40%, transparent);border-radius:.4rem;background:var(--surface)}
+.portal a:hover{border-color:var(--accent)}
+.portal.none{background:var(--line-2);color:var(--ink-3);font-weight:400}
+.portal.none a{border:0;background:none;padding:0;font-weight:600}
+.rows{list-style:none;margin:0;padding:0}
+.rows li{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1rem;
+  padding:.55rem 1.1rem;border-top:1px solid var(--line-2);font-size:.9rem}
+.rows li:first-child{border-top:0}
+.row{display:flex;align-items:center;gap:.6rem;flex:1 1 22rem;min-width:0;cursor:pointer}
+.row input{width:1.05rem;height:1.05rem;accent-color:var(--accent);flex:0 0 auto;cursor:pointer}
+.pname{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.86rem;
+  color:var(--ink);overflow-wrap:anywhere}
+.row input:checked ~ .pname{text-decoration:line-through;color:var(--ink-3)}
+.cat{font-size:.7rem;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);
+  border:1px solid var(--line);border-radius:.35rem;padding:.05rem .4rem;white-space:nowrap}
+.links{display:flex;gap:.8rem;font-size:.82rem;margin-left:auto}
+.links a{text-decoration:none;border-bottom:1px solid transparent}
+.links a:hover{border-bottom-color:var(--accent)}
+footer{font-size:.82rem;color:var(--ink-3);border-top:1px solid var(--line);padding-top:1rem}
+@media (prefers-reduced-motion:no-preference){.copy{transition:border-color .15s,color .15s}}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Arbeitsliste · Stand 2. August 2026</p>
+    <h1>Datenblätter und Sicherheitsdatenblätter beschaffen</h1>
+    <p class="lead">Zu diesen 201 Produkten fehlt im Marktplatz noch ein Sicherheitsdatenblatt.
+      Jede Zeile führt direkt auf die geprüfte Herstellerseite. Abgehakte Zeilen bleiben in diesem
+      Browser gespeichert — du kannst die Liste also in mehreren Sitzungen abarbeiten.</p>
+    <div class="tally">
+      <span class="stat"><b>201</b> Produkte</span>
+      <span class="stat"><b>33</b> Hersteller</span>
+      <span class="stat"><b>127</b> hinter Anmeldung</span>
+      <span class="stat"><b>37</b> nur Bot-Sperre</span>
+      <span class="stat"><b>34</b> frei zugänglich</span>
+    </div>
+  </header>
+
+  <div class="legend">
+    <p><span class="pill login">Anmeldung nötig</span> Der Hersteller gibt Datenblätter nur an registrierte
+      Kunden heraus. Hier lohnt ein Geschäftskonto — meist genügt eine Firmen-Mailadresse.</p>
+    <p><span class="pill bot">Kein Login — nur Bot-Sperre</span> Die Dokumente sind öffentlich, der Server
+      hat aber unseren automatischen Abruf abgewiesen. <strong>In deinem Browser funktioniert der Link.</strong>
+      Diese Gruppe ist am schnellsten erledigt.</p>
+    <p><span class="pill offen">Frei zugänglich</span> Öffentlich abrufbar; das Sicherheitsdatenblatt lag
+      nur nicht direkt neben dem Produkt. Meist ein bis zwei Klicks entfernt.</p>
+  </div>
+
+  <div class="bar">
+    <button class="filter" type="button" data-f="alle" aria-pressed="true">Alle</button>
+    <button class="filter" type="button" data-f="login" aria-pressed="false">Anmeldung nötig</button>
+    <button class="filter" type="button" data-f="bot" aria-pressed="false">Nur Bot-Sperre</button>
+    <button class="filter" type="button" data-f="offen" aria-pressed="false">Frei zugänglich</button>
+    <button class="filter" type="button" data-f="offen-todo" aria-pressed="false">Nur unerledigte</button>
+  </div>
+
+  <section class="mfr" data-status="login">
+  <header class="mfr-head">
+    <h2>Fuchs</h2>
+    <span class="pill login">Anmeldung nötig</span>
+    <span class="count"><b class="n">32</b> offen</span>
+    <button class="copy" type="button" data-links="https://www.fuchs.com/us/en/product/product/113131-anticorit-cpx-3373/
+https://www.fuchs.com/us/en/product/product/11940-ANTICORIT-DFW-6101/
+https://www.fuchs.com/de/de/produkt/product/147308-ANTICORIT-RP-4107-A/
+https://www.fuchs.com/us/en/product/product/116907-CASSIDA-CHAIN-OIL-HT-220/
+https://www.fuchs.com/de/en/product/product/147473-CASSIDA-CHAIN-OIL-HTE/
+https://www.fuchs.com/de/en/product/product/147475-CASSIDA-CHAIN-OIL-HTX/
+https://www.fuchs.com/us/en/product/product/12742-CASSIDA-CHAIN-OIL-XTE/
+https://www.fuchs.com/fileadmin/in/Company/ECOCOOL_-_ECOCUT_-_RATAK_-_RENOFORM.pdf
+https://www.fuchs.com/fileadmin/uk/Media/Brochures/Industrial/FUCHS_ECOCOOL_GLOBAL_10.pdf
+https://www.fuchs.com/fileadmin/uk/Media/TDS/TDS_ECOCOOL_R_AFC_1515_JLR.pdf
+https://static-content.cromwell.co.uk/pdfs/s/Medusa_Attachments/Fuchs/FCH7403003F_TDS.pdf
+https://www.fuchs.com/ca/en/product/product/123482-ECOCUT-30-EDM/
+https://www.fuchs.com/de/de/produkt/product/147952-ecocut-hs/
+https://www.fuchs.com/de/en/product/product/148737-RENEP-CGLP-220/
+https://www.fuchs.com/de/en/product/product/148739-RENEP-CGLP-68/
+https://www.fuchs.com/de/de/produkt/product/148757-RENISO-KC-68/
+https://www.fuchs.com/de/de/produkt/product/148780-RENISO-S-68/
+https://www.fuchs.com/de/de/produkt/product/148811-RENISO-UltraCool-68/
+https://www.fuchs.com/de/de/produkt/product/153250-RENOCAST-RA-3107/
+https://www.fuchs.com/de/de/produkt/product/153216-RENOCAST-RA-4830-AQUA/
+https://www.fuchs.com/de/de/produkt/product/148847-RENOCLEAN-FXM-4005/
+https://www.fuchs.com
+https://www.fuchs.com/fi/en/product/product/136809-RENOFORM-MZAN-51/
+https://www.fuchs.com/de/en/product/product/149001-RENOLIN-504/
+https://www.fuchs.com/ca/en/product/product/128461-RENOLIN-SPINDLE-OIL-10/
+https://www.fuchs.com/de/en/product/product/149343-RENOLIN-THERM-250/
+https://www.fuchs.com/de/en/product/product/149345-RENOLIN-THERM-320/
+https://www.fuchs.com/de/en/product/product/149347-RENOLIN-THERM-330-S/
+https://www.fuchs.com/de/en/product/product/149361-RENOLIN-UNISYN-OL-100/
+https://www.fuchs.com/us/en/product/product/122667-renolin-zaf-b-ht-plus-low-viscosity-series/
+https://www.fuchs.com/de/en/product/product/126702-thermisol-qh-10-mc/
+https://www.fuchs.com/de/en/product/product/149840-THERMISOL-QH-35-MC/">Links kopieren</button>
+  </header>
+  <p class="portal"><a href="https://www.fuchs.com/de/de/produkte/download-center/kategorie/download-category/1328-sicherheitsdatenblaetter/" target="_blank" rel="noopener">Sicherheitsdatenblätter im Download-Center ↗</a><a href="https://www.fuchs.com/de/de/produkte/download-center/login/" target="_blank" rel="noopener">Anmelden / Konto anlegen ↗</a></p>
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Fuchs::ANTICORIT CPX 3373">
+        <span class="pname">ANTICORIT CPX 3373</span>
+        <span class="cat">Korrosionsschutz</span></label>
+        <span class="links"><a href="https://www.fuchs.com/us/en/product/product/113131-anticorit-cpx-3373/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::ANTICORIT DFW 6101">
+        <span class="pname">ANTICORIT DFW 6101</span>
+        <span class="cat">Korrosionsschutz</span></label>
+        <span class="links"><a href="https://www.fuchs.com/us/en/product/product/11940-ANTICORIT-DFW-6101/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::ANTICORIT RP 4107 A">
+        <span class="pname">ANTICORIT RP 4107 A</span>
+        <span class="cat">Korrosionsschutz</span></label>
+        <span class="links"><a href="https://www.fuchs.com/de/de/produkt/product/147308-ANTICORIT-RP-4107-A/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::CASSIDA CHAIN OIL HT 220">
+        <span class="pname">CASSIDA CHAIN OIL HT 220</span>
+        <span class="cat">Kettenöl</span></label>
+        <span class="links"><a href="https://www.fuchs.com/us/en/product/product/116907-CASSIDA-CHAIN-OIL-HT-220/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::CASSIDA CHAIN OIL HTE">
+        <span class="pname">CASSIDA CHAIN OIL HTE</span>
+        <span class="cat">Kettenöl</span></label>
+        <span class="links"><a href="https://www.fuchs.com/de/en/product/product/147473-CASSIDA-CHAIN-OIL-HTE/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::CASSIDA CHAIN OIL HTX">
+        <span class="pname">CASSIDA CHAIN OIL HTX</span>
+        <span class="cat">Kettenöl</span></label>
+        <span class="links"><a href="https://www.fuchs.com/de/en/product/product/147475-CASSIDA-CHAIN-OIL-HTX/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::CASSIDA CHAIN OIL XTE">
+        <span class="pname">CASSIDA CHAIN OIL XTE</span>
+        <span class="cat">Kettenöl</span></label>
+        <span class="links"><a href="https://www.fuchs.com/us/en/product/product/12742-CASSIDA-CHAIN-OIL-XTE/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::ECOCOOL 711">
+        <span class="pname">ECOCOOL 711</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.fuchs.com/fileadmin/in/Company/ECOCOOL_-_ECOCUT_-_RATAK_-_RENOFORM.pdf" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::ECOCOOL Global 10">
+        <span class="pname">ECOCOOL Global 10</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.fuchs.com/fileadmin/uk/Media/Brochures/Industrial/FUCHS_ECOCOOL_GLOBAL_10.pdf" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::ECOCOOL R-AFC 1515 JLR">
+        <span class="pname">ECOCOOL R-AFC 1515 JLR</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.fuchs.com/fileadmin/uk/Media/TDS/TDS_ECOCOOL_R_AFC_1515_JLR.pdf" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.fuchs.com/fileadmin/uk/Media/TDS/TDS_ECOCOOL_R_AFC_1515_JLR.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::ECOCOOL S-CO 5">
+        <span class="pname">ECOCOOL S-CO 5</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://static-content.cromwell.co.uk/pdfs/s/Medusa_Attachments/Fuchs/FCH7403003F_TDS.pdf" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://static-content.cromwell.co.uk/pdfs/s/Medusa_Attachments/Fuchs/FCH7403003F_TDS.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::ECOCUT 30 EDM">
+        <span class="pname">ECOCUT 30 EDM</span>
+        <span class="cat">EDM</span></label>
+        <span class="links"><a href="https://www.fuchs.com/ca/en/product/product/123482-ECOCUT-30-EDM/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::ECOCUT HS">
+        <span class="pname">ECOCUT HS</span>
+        <span class="cat">Schleiföl</span></label>
+        <span class="links"><a href="https://www.fuchs.com/de/de/produkt/product/147952-ecocut-hs/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::RENEP CGLP 220">
+        <span class="pname">RENEP CGLP 220</span>
+        <span class="cat">Bettbahnöl</span></label>
+        <span class="links"><a href="https://www.fuchs.com/de/en/product/product/148737-RENEP-CGLP-220/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.fuchs.com/fileadmin/in/Company/FUCHS-RENEP-Slideway-Oils.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::RENEP CGLP 68">
+        <span class="pname">RENEP CGLP 68</span>
+        <span class="cat">Bettbahnöl</span></label>
+        <span class="links"><a href="https://www.fuchs.com/de/en/product/product/148739-RENEP-CGLP-68/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.fuchs.com/fileadmin/in/Company/FUCHS-RENEP-Slideway-Oils.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::RENISO KC 68">
+        <span class="pname">RENISO KC 68</span>
+        <span class="cat">Kälteöl</span></label>
+        <span class="links"><a href="https://www.fuchs.com/de/de/produkt/product/148757-RENISO-KC-68/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::RENISO S 68">
+        <span class="pname">RENISO S 68</span>
+        <span class="cat">Kälteöl</span></label>
+        <span class="links"><a href="https://www.fuchs.com/de/de/produkt/product/148780-RENISO-S-68/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::RENISO UltraCool 68">
+        <span class="pname">RENISO UltraCool 68</span>
+        <span class="cat">Kälteöl</span></label>
+        <span class="links"><a href="https://www.fuchs.com/de/de/produkt/product/148811-RENISO-UltraCool-68/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::RENOCAST RA 3107">
+        <span class="pname">RENOCAST RA 3107</span>
+        <span class="cat">Trennmittel</span></label>
+        <span class="links"><a href="https://www.fuchs.com/de/de/produkt/product/153250-RENOCAST-RA-3107/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::RENOCAST RA 4830 AQUA">
+        <span class="pname">RENOCAST RA 4830 AQUA</span>
+        <span class="cat">Trennmittel</span></label>
+        <span class="links"><a href="https://www.fuchs.com/de/de/produkt/product/153216-RENOCAST-RA-4830-AQUA/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::RENOCLEAN FXM 4005">
+        <span class="pname">RENOCLEAN FXM 4005</span>
+        <span class="cat">Additiv</span></label>
+        <span class="links"><a href="https://www.fuchs.com/de/de/produkt/product/148847-RENOCLEAN-FXM-4005/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::RENOFORM">
+        <span class="pname">RENOFORM</span>
+        <span class="cat">Umform</span></label>
+        <span class="links"><a href="https://www.fuchs.com" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::RENOFORM MZAN 51">
+        <span class="pname">RENOFORM MZAN 51</span>
+        <span class="cat">Umform</span></label>
+        <span class="links"><a href="https://www.fuchs.com/fi/en/product/product/136809-RENOFORM-MZAN-51/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::RENOLIN 504 VDL 100">
+        <span class="pname">RENOLIN 504 VDL 100</span>
+        <span class="cat">Kompressoröl</span></label>
+        <span class="links"><a href="https://www.fuchs.com/de/en/product/product/149001-RENOLIN-504/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::RENOLIN SPINDLE OIL #10">
+        <span class="pname">RENOLIN SPINDLE OIL #10</span>
+        <span class="cat">Spindelöl</span></label>
+        <span class="links"><a href="https://www.fuchs.com/ca/en/product/product/128461-RENOLIN-SPINDLE-OIL-10/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::RENOLIN THERM 250">
+        <span class="pname">RENOLIN THERM 250</span>
+        <span class="cat">Wärmeträger</span></label>
+        <span class="links"><a href="https://www.fuchs.com/de/en/product/product/149343-RENOLIN-THERM-250/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::RENOLIN THERM 320">
+        <span class="pname">RENOLIN THERM 320</span>
+        <span class="cat">Wärmeträger</span></label>
+        <span class="links"><a href="https://www.fuchs.com/de/en/product/product/149345-RENOLIN-THERM-320/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::RENOLIN THERM 330 S">
+        <span class="pname">RENOLIN THERM 330 S</span>
+        <span class="cat">Wärmeträger</span></label>
+        <span class="links"><a href="https://www.fuchs.com/de/en/product/product/149347-RENOLIN-THERM-330-S/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::RENOLIN UNISYN OL 100">
+        <span class="pname">RENOLIN UNISYN OL 100</span>
+        <span class="cat">Kompressoröl</span></label>
+        <span class="links"><a href="https://www.fuchs.com/de/en/product/product/149361-RENOLIN-UNISYN-OL-100/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::RENOLIN ZAF B HT PLUS Low Viscosity Series">
+        <span class="pname">RENOLIN ZAF B HT PLUS Low Viscosity Series</span>
+        <span class="cat">Spindelöl</span></label>
+        <span class="links"><a href="https://www.fuchs.com/us/en/product/product/122667-renolin-zaf-b-ht-plus-low-viscosity-series/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::RENOQUENCH QH 10 MC">
+        <span class="pname">RENOQUENCH QH 10 MC</span>
+        <span class="cat">Härteöl</span></label>
+        <span class="links"><a href="https://www.fuchs.com/de/en/product/product/126702-thermisol-qh-10-mc/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Fuchs::RENOQUENCH QH 35 MC">
+        <span class="pname">RENOQUENCH QH 35 MC</span>
+        <span class="cat">Härteöl</span></label>
+        <span class="links"><a href="https://www.fuchs.com/de/en/product/product/149840-THERMISOL-QH-35-MC/" target="_blank" rel="noopener">Produktseite ↗</a></span></li></ul></section><section class="mfr" data-status="login">
+  <header class="mfr-head">
+    <h2>Zeller+Gmelin</h2>
+    <span class="pill login">Anmeldung nötig</span>
+    <span class="count"><b class="n">16</b> offen</span>
+    <button class="copy" type="button" data-links="https://zeller-gmelin.de/products/divinol-b-classic/
+https://zeller-gmelin.de/sbu/woodpanel-2/hochtemperaturkettenoele/
+https://www.zeller-gmelin.de/zgSite/de/Chemie/Oberfl%C3%A4chenbehandlung/Vorbehandlung-Metalle/Divinol-Cleaner-9337/p/09337
+https://zeller-gmelin.de/en/products/multicor-dw-3-ultra/
+https://zeller-gmelin.de/en/products/multicor-lf-30/
+https://www.zeller-gmelin.de/zgSite/de/Industrieschmierstoffe/Maschinenschmierung/F%C3%BChrungs--und-Gleitbahn%C3%B6le/Divinol-T-7-EP-ISO-68/p/21660
+https://zeller-gmelin.de/en/products/multicut-grind-8/
+https://zeller-gmelin.de/en/products/multicut-grind-hsg-9/
+https://zeller-gmelin.de/wp-content/uploads/2023/11/Multicut_deutsch_0320_WEB_DpS.pdf
+https://zeller-gmelin.de/products/multidraw-alm-250/
+https://zeller-gmelin.de/en/products/multidraw-cu-gwz-2/
+https://zeller-gmelin.de/en/products/multidraw-cu-mfe/
+https://www.zeller-gmelin.de/zgSite/de/Lubricants/Draht/Drahtzug/Multidraw-CU-SY/p/97220
+https://zeller-gmelin.de/en/products/multidraw-drylube-e-1/
+https://zeller-gmelin.de/products/multidraw-ktl-n-20/
+https://zeller-gmelin.de/en/products/zubora-rf/">Links kopieren</button>
+  </header>
+  <p class="portal"><a href="https://zeller-gmelin.de/login/" target="_blank" rel="noopener">Anmelden / Konto anlegen ↗</a></p>
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Zeller+Gmelin::Divinol B Classic">
+        <span class="pname">Divinol B Classic</span>
+        <span class="cat">Trennmittel</span></label>
+        <span class="links"><a href="https://zeller-gmelin.de/products/divinol-b-classic/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Zeller+Gmelin::Divinol Chain Lube 260 CPS">
+        <span class="pname">Divinol Chain Lube 260 CPS</span>
+        <span class="cat">Kettenöl</span></label>
+        <span class="links"><a href="https://zeller-gmelin.de/sbu/woodpanel-2/hochtemperaturkettenoele/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Zeller+Gmelin::Divinol Cleaner 9337">
+        <span class="pname">Divinol Cleaner 9337</span>
+        <span class="cat">Reiniger</span></label>
+        <span class="links"><a href="https://www.zeller-gmelin.de/zgSite/de/Chemie/Oberfl%C3%A4chenbehandlung/Vorbehandlung-Metalle/Divinol-Cleaner-9337/p/09337" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Zeller+Gmelin::Divinol Multicor DW 3 Ultra">
+        <span class="pname">Divinol Multicor DW 3 Ultra</span>
+        <span class="cat">Korrosionsschutz</span></label>
+        <span class="links"><a href="https://zeller-gmelin.de/en/products/multicor-dw-3-ultra/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Zeller+Gmelin::Divinol Multicor LF 30">
+        <span class="pname">Divinol Multicor LF 30</span>
+        <span class="cat">Korrosionsschutz</span></label>
+        <span class="links"><a href="https://zeller-gmelin.de/en/products/multicor-lf-30/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Zeller+Gmelin::Divinol T 7 EP ISO 68">
+        <span class="pname">Divinol T 7 EP ISO 68</span>
+        <span class="cat">Bettbahnöl</span></label>
+        <span class="links"><a href="https://www.zeller-gmelin.de/zgSite/de/Industrieschmierstoffe/Maschinenschmierung/F%C3%BChrungs--und-Gleitbahn%C3%B6le/Divinol-T-7-EP-ISO-68/p/21660" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Zeller+Gmelin::Multicut Grind 8">
+        <span class="pname">Multicut Grind 8</span>
+        <span class="cat">Schleiföl</span></label>
+        <span class="links"><a href="https://zeller-gmelin.de/en/products/multicut-grind-8/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://zeller-gmelin.de/wp-content/uploads/2023/11/Multicut_deutsch_0320_WEB_DpS.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Zeller+Gmelin::Multicut Grind HSG 9">
+        <span class="pname">Multicut Grind HSG 9</span>
+        <span class="cat">Schleiföl</span></label>
+        <span class="links"><a href="https://zeller-gmelin.de/en/products/multicut-grind-hsg-9/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://zeller-gmelin.de/wp-content/uploads/2023/11/Multicut_deutsch_0320_WEB_DpS.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Zeller+Gmelin::Multicut Honolit 4">
+        <span class="pname">Multicut Honolit 4</span>
+        <span class="cat">Honöl</span></label>
+        <span class="links"><a href="https://zeller-gmelin.de/wp-content/uploads/2023/11/Multicut_deutsch_0320_WEB_DpS.pdf" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://zeller-gmelin.de/wp-content/uploads/2023/11/Multicut_deutsch_0320_WEB_DpS.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Zeller+Gmelin::Multidraw ALM 250">
+        <span class="pname">Multidraw ALM 250</span>
+        <span class="cat">Umform</span></label>
+        <span class="links"><a href="https://zeller-gmelin.de/products/multidraw-alm-250/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Zeller+Gmelin::Multidraw CU GWZ">
+        <span class="pname">Multidraw CU GWZ</span>
+        <span class="cat">Drahtzug</span></label>
+        <span class="links"><a href="https://zeller-gmelin.de/en/products/multidraw-cu-gwz-2/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Zeller+Gmelin::Multidraw CU MFE">
+        <span class="pname">Multidraw CU MFE</span>
+        <span class="cat">Umform</span></label>
+        <span class="links"><a href="https://zeller-gmelin.de/en/products/multidraw-cu-mfe/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Zeller+Gmelin::Multidraw CU SY">
+        <span class="pname">Multidraw CU SY</span>
+        <span class="cat">Drahtzug</span></label>
+        <span class="links"><a href="https://www.zeller-gmelin.de/zgSite/de/Lubricants/Draht/Drahtzug/Multidraw-CU-SY/p/97220" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Zeller+Gmelin::Multidraw Drylube E 1">
+        <span class="pname">Multidraw Drylube E 1</span>
+        <span class="cat">Umform</span></label>
+        <span class="links"><a href="https://zeller-gmelin.de/en/products/multidraw-drylube-e-1/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Zeller+Gmelin::Multidraw KTL N 20">
+        <span class="pname">Multidraw KTL N 20</span>
+        <span class="cat">Umform</span></label>
+        <span class="links"><a href="https://zeller-gmelin.de/products/multidraw-ktl-n-20/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Zeller+Gmelin::Zubora RF">
+        <span class="pname">Zubora RF</span>
+        <span class="cat">Additiv</span></label>
+        <span class="links"><a href="https://zeller-gmelin.de/en/products/zubora-rf/" target="_blank" rel="noopener">Produktseite ↗</a></span></li></ul></section><section class="mfr" data-status="login">
+  <header class="mfr-head">
+    <h2>Carl Bechem</h2>
+    <span class="pill login">Anmeldung nötig</span>
+    <span class="count"><b class="n">11</b> offen</span>
+    <button class="copy" type="button" data-links="https://www.bechem.com
+https://www.bechem.com
+https://www.bechem.com/de/produkte/umformschmierstoffe/bechem-unopol-al-570.html
+https://www.bechem.com/de/produkte/umformschmierstoffe/bechem-unopol-g-560.html
+https://www.bechem.com/de/produkte/umformschmierstoffe/bechem-unopol-s-621.html
+https://www.bechem.com/de/produkte/umformschmierstoffe/berudraw-zd-818-neu.html
+https://www.bechem.com/de/produkte/umformschmierstoffe/berudraw-2291-1.html
+https://www.bechem.com/de/produkte/umformschmierstoffe/berudraw-3955.html
+https://www.bechem.com/de/produkte/umformschmierstoffe/beruforge-100.html
+https://www.bechem.us/en/products/corrosion-inhibitor/beruprotect-dw-20-m.html
+https://pdf.directindustry.de/pdf/carl-bechem/kuehlschmierstoffe/37339-308005.html">Links kopieren</button>
+  </header>
+  <p class="portal"><a href="https://www.bechem.com/de/sicherheitsdatenblaetter.html" target="_blank" rel="noopener">Sicherheitsdatenblätter ↗</a><a href="https://www.bechem.com/de/downloads.html" target="_blank" rel="noopener">Downloads ↗</a><a href="https://www.bechem.com/de/login.html" target="_blank" rel="noopener">Anmelden ↗</a></p>
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Carl Bechem::Avantin 433">
+        <span class="pname">Avantin 433</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.bechem.com" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.bechem.com/_Resources/Persistent/c/4/6/1/c461ec46ef229652e1ecb2e47749f02539706e85/BECHEM_Avantin_433_DE.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Carl Bechem::Avantin 524">
+        <span class="pname">Avantin 524</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.bechem.com" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.bechem.com/_Resources/Persistent/5/d/2/c/5d2c8f4cabd201ffdb0f84f67d193858c3d3aff2/BECHEM_Avantin_524_DE.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Carl Bechem::BECHEM Unopol AL 570">
+        <span class="pname">BECHEM Unopol AL 570</span>
+        <span class="cat">Drahtzug</span></label>
+        <span class="links"><a href="https://www.bechem.com/de/produkte/umformschmierstoffe/bechem-unopol-al-570.html" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Carl Bechem::BECHEM Unopol G 560">
+        <span class="pname">BECHEM Unopol G 560</span>
+        <span class="cat">Drahtzug</span></label>
+        <span class="links"><a href="https://www.bechem.com/de/produkte/umformschmierstoffe/bechem-unopol-g-560.html" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Carl Bechem::BECHEM Unopol S 621">
+        <span class="pname">BECHEM Unopol S 621</span>
+        <span class="cat">Drahtzug</span></label>
+        <span class="links"><a href="https://www.bechem.com/de/produkte/umformschmierstoffe/bechem-unopol-s-621.html" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Carl Bechem::BERUDRAW ZD 818 NEU">
+        <span class="pname">BERUDRAW ZD 818 NEU</span>
+        <span class="cat">Drahtzug</span></label>
+        <span class="links"><a href="https://www.bechem.com/de/produkte/umformschmierstoffe/berudraw-zd-818-neu.html" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Carl Bechem::Berudraw 2291-1">
+        <span class="pname">Berudraw 2291-1</span>
+        <span class="cat">Umform</span></label>
+        <span class="links"><a href="https://www.bechem.com/de/produkte/umformschmierstoffe/berudraw-2291-1.html" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Carl Bechem::Berudraw 3955">
+        <span class="pname">Berudraw 3955</span>
+        <span class="cat">Umform</span></label>
+        <span class="links"><a href="https://www.bechem.com/de/produkte/umformschmierstoffe/berudraw-3955.html" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Carl Bechem::Beruforge 100">
+        <span class="pname">Beruforge 100</span>
+        <span class="cat">Umform</span></label>
+        <span class="links"><a href="https://www.bechem.com/de/produkte/umformschmierstoffe/beruforge-100.html" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Carl Bechem::Beruprotect DW 20 M">
+        <span class="pname">Beruprotect DW 20 M</span>
+        <span class="cat">Korrosionsschutz</span></label>
+        <span class="links"><a href="https://www.bechem.us/en/products/corrosion-inhibitor/beruprotect-dw-20-m.html" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Carl Bechem::Entschäumer FB">
+        <span class="pname">Entschäumer FB</span>
+        <span class="cat">Additiv</span></label>
+        <span class="links"><a href="https://pdf.directindustry.de/pdf/carl-bechem/kuehlschmierstoffe/37339-308005.html" target="_blank" rel="noopener">Produktseite ↗</a></span></li></ul></section><section class="mfr" data-status="login">
+  <header class="mfr-head">
+    <h2>oelheld</h2>
+    <span class="pill login">Anmeldung nötig</span>
+    <span class="count"><b class="n">10</b> offen</span>
+    <button class="copy" type="button" data-links="https://www.oelheld.com/en/products/metalworking-lubricants/dielectric/ecospark-dielectric-for-die-sinking-edm/
+https://www.oelheld.com/en/products/metalworking-lubricants/dielectric/ime-series-dielectric-for-die-sinking-edm/
+https://www.oelheld.com/en/products/metalworking-lubricants/dielectric/ionofil-dielectric-for-wire-edm/
+https://www.oelheld.com/en/products/metalworking-lubricants/dielectric/ionogrind-2-in-1-multifunctional-fluid/
+https://www.oelheld.com/en/products/metalworking-lubricants/dielectric/ionovit-dielectric-for-fast-hole-edm-drilling/
+https://tri-gemini.com/dielectric-fluids/oelheldionovit-s/
+https://www.oelheld.com/en/products/metalworking-lubricants/grinding-oil/sintogrind-grinding-oil/
+https://www.oelheld.com/en/products/metalworking-lubricants/grinding-oil/sintogrind-grinding-oil/
+https://www.oelheld.com/en/products/metalworking-lubricants/grinding-oil/sintogrind-grinding-oil/
+https://www.oelheld.com/de/produkte/schmierstoffe-metallbearbeitung/schleifoel/toolgrind-schleifoel/">Links kopieren</button>
+  </header>
+  <p class="portal none">Kein öffentliches Dokumentenportal auffindbar — Datenblätter direkt beim Hersteller anfragen (<a href="https://www.oelheld.de" target="_blank" rel="noopener">Website</a>).</p>
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="oelheld::EcoSpark 105">
+        <span class="pname">EcoSpark 105</span>
+        <span class="cat">EDM</span></label>
+        <span class="links"><a href="https://www.oelheld.com/en/products/metalworking-lubricants/dielectric/ecospark-dielectric-for-die-sinking-edm/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.oelheld.com/fileadmin/content/Broschueren/DE/Dielektrika_-BR-__DE_.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="oelheld::IME 82">
+        <span class="pname">IME 82</span>
+        <span class="cat">EDM</span></label>
+        <span class="links"><a href="https://www.oelheld.com/en/products/metalworking-lubricants/dielectric/ime-series-dielectric-for-die-sinking-edm/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.oelheld.com/fileadmin/content/Broschueren/DE/Dielektrika_-BR-__DE_.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="oelheld::IonoFil 100">
+        <span class="pname">IonoFil 100</span>
+        <span class="cat">EDM</span></label>
+        <span class="links"><a href="https://www.oelheld.com/en/products/metalworking-lubricants/dielectric/ionofil-dielectric-for-wire-edm/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.oelheld.com/fileadmin/content/Broschueren/DE/Dielektrika_-BR-__DE_.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="oelheld::IonoGrind 165">
+        <span class="pname">IonoGrind 165</span>
+        <span class="cat">EDM</span></label>
+        <span class="links"><a href="https://www.oelheld.com/en/products/metalworking-lubricants/dielectric/ionogrind-2-in-1-multifunctional-fluid/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.oelheld.com/fileadmin/content/Broschueren/DE/Dielektrika_-BR-__DE_.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="oelheld::IonoVit 0">
+        <span class="pname">IonoVit 0</span>
+        <span class="cat">EDM</span></label>
+        <span class="links"><a href="https://www.oelheld.com/en/products/metalworking-lubricants/dielectric/ionovit-dielectric-for-fast-hole-edm-drilling/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.oelheld.com/fileadmin/content/Broschueren/DE/Dielektrika_-BR-__DE_.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="oelheld::IonoVit S">
+        <span class="pname">IonoVit S</span>
+        <span class="cat">EDM</span></label>
+        <span class="links"><a href="https://tri-gemini.com/dielectric-fluids/oelheldionovit-s/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://tri-gemini.com/wp-content/uploads/2020/06/IonoVit_-BR-_EN.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="oelheld::SintoGrind HSS-X 1400">
+        <span class="pname">SintoGrind HSS-X 1400</span>
+        <span class="cat">Schleiföl</span></label>
+        <span class="links"><a href="https://www.oelheld.com/en/products/metalworking-lubricants/grinding-oil/sintogrind-grinding-oil/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.oelheld.com/fileadmin/content/Broschueren/DE/Schleifoele_-BR-__DE_.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="oelheld::SintoGrind TC-X 630">
+        <span class="pname">SintoGrind TC-X 630</span>
+        <span class="cat">Schleiföl</span></label>
+        <span class="links"><a href="https://www.oelheld.com/en/products/metalworking-lubricants/grinding-oil/sintogrind-grinding-oil/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.oelheld.com/fileadmin/content/Broschueren/DE/Schleifoele_-BR-__DE_.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="oelheld::SintoGrind TTK">
+        <span class="pname">SintoGrind TTK</span>
+        <span class="cat">Schleiföl</span></label>
+        <span class="links"><a href="https://www.oelheld.com/en/products/metalworking-lubricants/grinding-oil/sintogrind-grinding-oil/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.oelheld.com/fileadmin/content/Broschueren/DE/Schleifoele_-BR-__DE_.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="oelheld::ToolGrind TC-X 620">
+        <span class="pname">ToolGrind TC-X 620</span>
+        <span class="cat">Schleiföl</span></label>
+        <span class="links"><a href="https://www.oelheld.com/de/produkte/schmierstoffe-metallbearbeitung/schleifoel/toolgrind-schleifoel/" target="_blank" rel="noopener">Produktseite ↗</a></span></li></ul></section><section class="mfr" data-status="login">
+  <header class="mfr-head">
+    <h2>Blaser Swisslube</h2>
+    <span class="pill login">Anmeldung nötig</span>
+    <span class="count"><b class="n">9</b> offen</span>
+    <button class="copy" type="button" data-links="https://blaser.com/measuring-the-coolant-concentration/
+https://blaser.com/de/systemreiniger-fuer-gute-startbedingungen/
+https://www.lastuamisnesteet.fi/wp-content/uploads/2017/02/Blasocut2000-esite-eng.pdf
+https://blaser.com/our-metalworking-solutions/water-miscible-fluids/
+https://blaser.com/blasogrind-gtc-7/
+https://blaser.com/blasogrind-gtm-15-hfp/
+https://blaser.com/blasogrind-gts-15/
+https://blaser.com/blasosparkgt250
+https://www.lastuamisnesteet.fi/wp-content/uploads/2019/12/Synergy-735-Esite.pdf">Links kopieren</button>
+  </header>
+  <p class="portal"><a href="https://blaser.com/de/sicherheitsdatenblaetter/" target="_blank" rel="noopener">Sicherheitsdatenblätter ↗</a><a href="https://blaser.com/de/downloads/" target="_blank" rel="noopener">Downloads ↗</a></p>
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Blaser Swisslube::B-Cool 755">
+        <span class="pname">B-Cool 755</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://blaser.com/measuring-the-coolant-concentration/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.lastuamisnesteet.fi/wp-content/uploads/2020/05/B-cool-755-Esite.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Blaser Swisslube::Blasoclean AF">
+        <span class="pname">Blasoclean AF</span>
+        <span class="cat">Additiv</span></label>
+        <span class="links"><a href="https://blaser.com/de/systemreiniger-fuer-gute-startbedingungen/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://blaser.com/wp-content/uploads/Blaser_College_Wassermischbare_KSS_Reinigung_Befu%CC%88llung_von-Maschinen_de-2.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Blaser Swisslube::Blasocut 2000 CF">
+        <span class="pname">Blasocut 2000 CF</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.lastuamisnesteet.fi/wp-content/uploads/2017/02/Blasocut2000-esite-eng.pdf" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.lastuamisnesteet.fi/wp-content/uploads/2017/02/Blasocut2000-esite-eng.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Blaser Swisslube::Blasocut BC 25 MD">
+        <span class="pname">Blasocut BC 25 MD</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://blaser.com/our-metalworking-solutions/water-miscible-fluids/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://static.brw.ch/pdf/520026_de.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Blaser Swisslube::Blasogrind GTC 7">
+        <span class="pname">Blasogrind GTC 7</span>
+        <span class="cat">Schleiföl</span></label>
+        <span class="links"><a href="https://blaser.com/blasogrind-gtc-7/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://blaser.com/wp-content/uploads/blaser_blasogrind_GTC_7_14.500_en.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Blaser Swisslube::Blasogrind GTM 15 HFP">
+        <span class="pname">Blasogrind GTM 15 HFP</span>
+        <span class="cat">Schleiföl</span></label>
+        <span class="links"><a href="https://blaser.com/blasogrind-gtm-15-hfp/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Blaser Swisslube::Blasogrind GTS 15">
+        <span class="pname">Blasogrind GTS 15</span>
+        <span class="cat">Schleiföl</span></label>
+        <span class="links"><a href="https://blaser.com/blasogrind-gts-15/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Blaser Swisslube::Blasospark GT 250">
+        <span class="pname">Blasospark GT 250</span>
+        <span class="cat">EDM</span></label>
+        <span class="links"><a href="https://blaser.com/blasosparkgt250" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://blaser.com/wp-content/uploads/2021/06/blaser_blasospark_gt_250_10.130_en_us.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Blaser Swisslube::Synergy 735">
+        <span class="pname">Synergy 735</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.lastuamisnesteet.fi/wp-content/uploads/2019/12/Synergy-735-Esite.pdf" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.lastuamisnesteet.fi/wp-content/uploads/2019/12/Synergy-735-Esite.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li></ul></section><section class="mfr" data-status="login">
+  <header class="mfr-head">
+    <h2>Petrofer</h2>
+    <span class="pill login">Anmeldung nötig</span>
+    <span class="count"><b class="n">9</b> offen</span>
+    <button class="copy" type="button" data-links="https://www.petrofer.com
+https://www.petrofer.com/products/metal-cutting-fluids/
+https://www.petrofer.co.uk/product-ranges/heat-treatment
+https://petrofer.com/products/heat-treatment/
+https://petrofer.com/products/heat-treatment/
+https://www.petrofer.com
+https://www.petrofer.com
+https://petrofer.com/products/heat-treatment/
+https://www.petrofer.co.uk/product-ranges/heat-treatment">Links kopieren</button>
+  </header>
+  <p class="portal none">Kein öffentliches Dokumentenportal auffindbar — Datenblätter direkt beim Hersteller anfragen (<a href="https://www.petrofer.com" target="_blank" rel="noopener">Website</a>).</p>
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Petrofer::Feroform">
+        <span class="pname">Feroform</span>
+        <span class="cat">Umform</span></label>
+        <span class="links"><a href="https://www.petrofer.com" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Petrofer::ISOCUT VG 15 G">
+        <span class="pname">ISOCUT VG 15 G</span>
+        <span class="cat">Schleiföl</span></label>
+        <span class="links"><a href="https://www.petrofer.com/products/metal-cutting-fluids/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Petrofer::ISOMAX 150">
+        <span class="pname">ISOMAX 150</span>
+        <span class="cat">Härteöl</span></label>
+        <span class="links"><a href="https://www.petrofer.co.uk/product-ranges/heat-treatment" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://petroferbyhongdang.vn/vnt_upload/product/10_2023/Petrofer_Quenching_Oils.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Petrofer::ISORAPID 277">
+        <span class="pname">ISORAPID 277</span>
+        <span class="cat">Härteöl</span></label>
+        <span class="links"><a href="https://petrofer.com/products/heat-treatment/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://petroferbyhongdang.vn/vnt_upload/product/10_2023/Petrofer_Quenching_Oils.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Petrofer::ISORAPID 455">
+        <span class="pname">ISORAPID 455</span>
+        <span class="cat">Härteöl</span></label>
+        <span class="links"><a href="https://petrofer.com/products/heat-treatment/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://petroferbyhongdang.vn/vnt_upload/product/10_2023/Petrofer_Quenching_Oils.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Petrofer::Isocut">
+        <span class="pname">Isocut</span>
+        <span class="cat">Schneidöl</span></label>
+        <span class="links"><a href="https://www.petrofer.com" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Petrofer::Isogrind">
+        <span class="pname">Isogrind</span>
+        <span class="cat">Schleiföl</span></label>
+        <span class="links"><a href="https://www.petrofer.com" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Petrofer::MARQUENCH 722">
+        <span class="pname">MARQUENCH 722</span>
+        <span class="cat">Härteöl</span></label>
+        <span class="links"><a href="https://petrofer.com/products/heat-treatment/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://petroferbyhongdang.vn/vnt_upload/product/10_2023/Petrofer_Quenching_Oils.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Petrofer::VACUQUENCH 305">
+        <span class="pname">VACUQUENCH 305</span>
+        <span class="cat">Härteöl</span></label>
+        <span class="links"><a href="https://www.petrofer.co.uk/product-ranges/heat-treatment" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://petroferbyhongdang.vn/vnt_upload/product/10_2023/Petrofer_Quenching_Oils.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li></ul></section><section class="mfr" data-status="login">
+  <header class="mfr-head">
+    <h2>Klüber Lubrication</h2>
+    <span class="pill login">Anmeldung nötig</span>
+    <span class="count"><b class="n">8</b> offen</span>
+    <button class="copy" type="button" data-links="https://www.klueber.com/us/en/products-service/products/klueber-summit-hysyn-fg-46/9923/
+https://www.klueber.com/us/en/products-service/products/klueber-summit-rht-68/304207/
+https://www.klueber.com/us/en/products-service/products/klueber-summit-sh-46/9885/
+https://www.klueber.com/us/en/products-service/products/klueberfood-nh1-ch-2-220/9954/
+https://www.klueber.com/us/en/products-service/products/klueberfood-nh1-ch-2-220-plus/9830/
+https://www.klueber.com/us/en/products-service/products/klueberoil-y-f-100/9882/
+https://www.klueber.com/de/de/produkte-service/produkte/kluebersynth-ch-2-100/10747/
+https://www.klueber.com/us/en/products-service/products/lamora-d-68/9957/">Links kopieren</button>
+  </header>
+  <p class="portal"><a href="https://www.klueber.com/de/de/downloads/" target="_blank" rel="noopener">Download-Bereich ↗</a><a href="https://www.klueber.com/de/de/konto/login/" target="_blank" rel="noopener">Anmelden / Konto anlegen ↗</a></p>
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Klüber Lubrication::Klüber Summit HySyn FG 46">
+        <span class="pname">Klüber Summit HySyn FG 46</span>
+        <span class="cat">Kompressoröl</span></label>
+        <span class="links"><a href="https://www.klueber.com/us/en/products-service/products/klueber-summit-hysyn-fg-46/9923/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Klüber Lubrication::Klüber Summit RHT 68">
+        <span class="pname">Klüber Summit RHT 68</span>
+        <span class="cat">Kälteöl</span></label>
+        <span class="links"><a href="https://www.klueber.com/us/en/products-service/products/klueber-summit-rht-68/304207/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Klüber Lubrication::Klüber Summit SH 46">
+        <span class="pname">Klüber Summit SH 46</span>
+        <span class="cat">Kompressoröl</span></label>
+        <span class="links"><a href="https://www.klueber.com/us/en/products-service/products/klueber-summit-sh-46/9885/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Klüber Lubrication::Klüberfood NH1 CH 2-220">
+        <span class="pname">Klüberfood NH1 CH 2-220</span>
+        <span class="cat">Kettenöl</span></label>
+        <span class="links"><a href="https://www.klueber.com/us/en/products-service/products/klueberfood-nh1-ch-2-220/9954/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Kluber/Kl%C3%BCberfood_NH1_CH_2-150_CH_2-220_EN_en.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Klüber Lubrication::Klüberfood NH1 CH 2-220 Plus">
+        <span class="pname">Klüberfood NH1 CH 2-220 Plus</span>
+        <span class="cat">Kettenöl</span></label>
+        <span class="links"><a href="https://www.klueber.com/us/en/products-service/products/klueberfood-nh1-ch-2-220-plus/9830/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Klüber Lubrication::Klüberoil Y F 100">
+        <span class="pname">Klüberoil Y F 100</span>
+        <span class="cat">Kettenöl</span></label>
+        <span class="links"><a href="https://www.klueber.com/us/en/products-service/products/klueberoil-y-f-100/9882/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Klüber Lubrication::Klübersynth CH 2-100">
+        <span class="pname">Klübersynth CH 2-100</span>
+        <span class="cat">Kettenöl</span></label>
+        <span class="links"><a href="https://www.klueber.com/de/de/produkte-service/produkte/kluebersynth-ch-2-100/10747/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Klüber Lubrication::LAMORA D 68">
+        <span class="pname">LAMORA D 68</span>
+        <span class="cat">Bettbahnöl</span></label>
+        <span class="links"><a href="https://www.klueber.com/us/en/products-service/products/lamora-d-68/9957/" target="_blank" rel="noopener">Produktseite ↗</a></span></li></ul></section><section class="mfr" data-status="login">
+  <header class="mfr-head">
+    <h2>Master Fluid Solutions</h2>
+    <span class="pill login">Anmeldung nötig</span>
+    <span class="count"><b class="n">7</b> offen</span>
+    <button class="copy" type="button" data-links="https://www.masterfluids.com/ap/en-ap/data-sheet/di.php?pid=C115
+https://industrialfluidsmfg.twinoils.com/Asset/Trim%20E206.pdf
+https://www.masterfluids.com/ap/en-ap/data-sheet/di.php?pid=E860
+https://www.masterfluids.com/na/en-us/data-sheet/di.php?pid=MIST
+https://www.masterfluids.com/eu/en/data-sheet/di.php?pid=MS515
+https://industrialfluidsmfg.twinoils.com/Asset/Trim%20SC536.pdf
+https://www.masterfluids.com/na/en-us/data-sheet/di.php?pid=SOL">Links kopieren</button>
+  </header>
+  <p class="portal"><a href="https://www.masterfluidsolutions.com/na/en-us/ct/login/signIn.php" target="_blank" rel="noopener">Anmelden ↗</a></p>
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Master Fluid Solutions::TRIM C115">
+        <span class="pname">TRIM C115</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.masterfluids.com/ap/en-ap/data-sheet/di.php?pid=C115" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.masterfluids.com/ap/en-ap/data-sheet/di.php?pid=C115" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Master Fluid Solutions::TRIM E206">
+        <span class="pname">TRIM E206</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://industrialfluidsmfg.twinoils.com/Asset/Trim%20E206.pdf" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.masterfluids.com/na/en-us/data-sheet/di.php?pid=E206N" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Master Fluid Solutions::TRIM E860">
+        <span class="pname">TRIM E860</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.masterfluids.com/ap/en-ap/data-sheet/di.php?pid=E860" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.masterfluids.com/na/en-us/data-sheet/di.php?pid=E860" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Master Fluid Solutions::TRIM MIST">
+        <span class="pname">TRIM MIST</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.masterfluids.com/na/en-us/data-sheet/di.php?pid=MIST" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.masterfluids.com/na/en-us/data-sheet/di.php?pid=MIST" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Master Fluid Solutions::TRIM MicroSol 515">
+        <span class="pname">TRIM MicroSol 515</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.masterfluids.com/eu/en/data-sheet/di.php?pid=MS515" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.masterfluids.com/eu/en/data-sheet/di.php?pid=MS515" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Master Fluid Solutions::TRIM SC536">
+        <span class="pname">TRIM SC536</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://industrialfluidsmfg.twinoils.com/Asset/Trim%20SC536.pdf" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.masterfluids.com/na/en-us/data-sheet/di.php?pid=SC536" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Master Fluid Solutions::TRIM SOL">
+        <span class="pname">TRIM SOL</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.masterfluids.com/na/en-us/data-sheet/di.php?pid=SOL" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.masterfluids.com/na/en-us/data-sheet/di.php?pid=SOL" target="_blank" rel="noopener">Datenblatt ↗</a></span></li></ul></section><section class="mfr" data-status="login">
+  <header class="mfr-head">
+    <h2>Rhenus Lub</h2>
+    <span class="pill login">Anmeldung nötig</span>
+    <span class="count"><b class="n">7</b> offen</span>
+    <button class="copy" type="button" data-links="https://www.rhenuslub.de/produkt/rhenus-ep-11-m/
+https://www.rhenuslub.de/produkt/rhenus-gp-20-m/
+https://www.rhenuslub.de/produkt/rhenus-gp-6/
+https://www.rhenuslub.de/wp-content/uploads/2022/06/Pflegemassnahmen_KSS_bei_langen_Anlagenstillstaenden.pdf
+https://www.rhenuslub.de/wp-content/uploads/2022/06/Pflegemassnahmen_KSS_bei_langen_Anlagenstillstaenden.pdf
+https://www.rhenuslub.de/wp-content/uploads/2022/06/Pflegemassnahmen_KSS_bei_langen_Anlagenstillstaenden.pdf
+https://www.rhenuslub.de/produktfinder/">Links kopieren</button>
+  </header>
+  <p class="portal"><a href="https://www.rhenuslubshop.com/site/login.aspx" target="_blank" rel="noopener">Shop-Anmeldung (Datenblätter) ↗</a></p>
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Rhenus Lub::rhenus EP 11 M">
+        <span class="pname">rhenus EP 11 M</span>
+        <span class="cat">Schleiföl</span></label>
+        <span class="links"><a href="https://www.rhenuslub.de/produkt/rhenus-ep-11-m/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Rhenus Lub::rhenus GP 20 M">
+        <span class="pname">rhenus GP 20 M</span>
+        <span class="cat">Schleiföl</span></label>
+        <span class="links"><a href="https://www.rhenuslub.de/produkt/rhenus-gp-20-m/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Rhenus Lub::rhenus GP 6">
+        <span class="pname">rhenus GP 6</span>
+        <span class="cat">Schleiföl</span></label>
+        <span class="links"><a href="https://www.rhenuslub.de/produkt/rhenus-gp-6/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Rhenus Lub::rhenus ZC 944">
+        <span class="pname">rhenus ZC 944</span>
+        <span class="cat">Additiv</span></label>
+        <span class="links"><a href="https://www.rhenuslub.de/wp-content/uploads/2022/06/Pflegemassnahmen_KSS_bei_langen_Anlagenstillstaenden.pdf" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Rhenus Lub::rhenus ZC 948">
+        <span class="pname">rhenus ZC 948</span>
+        <span class="cat">Additiv</span></label>
+        <span class="links"><a href="https://www.rhenuslub.de/wp-content/uploads/2022/06/Pflegemassnahmen_KSS_bei_langen_Anlagenstillstaenden.pdf" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Rhenus Lub::rhenus ZI 923">
+        <span class="pname">rhenus ZI 923</span>
+        <span class="cat">Additiv</span></label>
+        <span class="links"><a href="https://www.rhenuslub.de/wp-content/uploads/2022/06/Pflegemassnahmen_KSS_bei_langen_Anlagenstillstaenden.pdf" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Rhenus Lub::rhenus ZW 977">
+        <span class="pname">rhenus ZW 977</span>
+        <span class="cat">Additiv</span></label>
+        <span class="links"><a href="https://www.rhenuslub.de/produktfinder/" target="_blank" rel="noopener">Produktseite ↗</a></span></li></ul></section><section class="mfr" data-status="login">
+  <header class="mfr-head">
+    <h2>Oemeta</h2>
+    <span class="pill login">Anmeldung nötig</span>
+    <span class="count"><b class="n">6</b> offen</span>
+    <button class="copy" type="button" data-links="https://www.oemeta.com/us/products-services/control-additives
+https://www.oemeta.com/us/products-services/two-component-metalworking-fluid
+https://www.oemeta.com/us/products-services/two-component-metalworking-fluid
+https://www.oemeta.com/us/products-services/two-component-metalworking-fluid
+https://www.oemeta.com/us/products-services/product?tx_lfmproducts_productdetail%5Bproduct%5D=180
+https://www.oemeta.com/us/products-services/two-component-metalworking-fluid">Links kopieren</button>
+  </header>
+  <p class="portal"><a href="https://www.oemeta.com/the-coolant-people/downloads" target="_blank" rel="noopener">Download-Bereich ↗</a></p>
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Oemeta::ADDI-PROX LC">
+        <span class="pname">ADDI-PROX LC</span>
+        <span class="cat">Additiv</span></label>
+        <span class="links"><a href="https://www.oemeta.com/us/products-services/control-additives" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Oemeta::HYCUT CF 21 + ADDITIV AE">
+        <span class="pname">HYCUT CF 21 + ADDITIV AE</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.oemeta.com/us/products-services/two-component-metalworking-fluid" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.chemiehandel.ch/images/HYCUT_CF_21_TDS_deutsch.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Oemeta::HYCUT CF 21 + ADDITIV BF">
+        <span class="pname">HYCUT CF 21 + ADDITIV BF</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.oemeta.com/us/products-services/two-component-metalworking-fluid" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.chemiehandel.ch/images/HYCUT_CF_21_TDS_deutsch.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Oemeta::HYCUT CF 21 + ADDITIV MG">
+        <span class="pname">HYCUT CF 21 + ADDITIV MG</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.oemeta.com/us/products-services/two-component-metalworking-fluid" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.chemiehandel.ch/images/HYCUT_CF_21_TDS_deutsch.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Oemeta::HYCUT ET 46 + ADDITIV ET">
+        <span class="pname">HYCUT ET 46 + ADDITIV ET</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.oemeta.com/us/products-services/product?tx_lfmproducts_productdetail%5Bproduct%5D=180" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.chemiehandel.ch/images/HYCUT_ET_46_TDS_deutsch.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Oemeta::HYCUT SE 12">
+        <span class="pname">HYCUT SE 12</span>
+        <span class="cat">Schleiföl</span></label>
+        <span class="links"><a href="https://www.oemeta.com/us/products-services/two-component-metalworking-fluid" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://cdn.shopify.com/s/files/1/0470/9065/files/Hycut_SE_12.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li></ul></section><section class="mfr" data-status="login">
+  <header class="mfr-head">
+    <h2>Cimcool</h2>
+    <span class="pill login">Anmeldung nötig</span>
+    <span class="count"><b class="n">5</b> offen</span>
+    <button class="copy" type="button" data-links="https://cimcool.com
+https://cimcool.com.au/PIFs/Cimstar/CIMSTAR_585_AUSPIF.pdf
+https://products.duboischemicals.com/signature-collection/metalworking-fluids/cimstar-60c-hfp
+https://dtsindustrial.com/cimstar-66.html
+https://cimcool.com">Links kopieren</button>
+  </header>
+  <p class="portal none">Kein öffentliches Dokumentenportal auffindbar — Datenblätter direkt beim Hersteller anfragen (<a href="https://www.cimcool.com" target="_blank" rel="noopener">Website</a>).</p>
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Cimcool::Cimperial 1010">
+        <span class="pname">Cimperial 1010</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://cimcool.com" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://web.archive.org/web/20130930194601id_/http://www.cimcool.com:80/wp-content/uploads/manage-msds-pif/pif/CIMPERIAL%201010.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Cimcool::Cimstar 585">
+        <span class="pname">Cimstar 585</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://cimcool.com.au/PIFs/Cimstar/CIMSTAR_585_AUSPIF.pdf" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://cimcool.com.au/PIFs/Cimstar/CIMSTAR_585_AUSPIF.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Cimcool::Cimstar 60C-HFP">
+        <span class="pname">Cimstar 60C-HFP</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://products.duboischemicals.com/signature-collection/metalworking-fluids/cimstar-60c-hfp" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://cdn.mscdirect.com/global/images/ProductDataSheet/pds_sku_1188523_technicaldatasheet_technicalspecifications_spec.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Cimcool::Cimstar 66">
+        <span class="pname">Cimstar 66</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://dtsindustrial.com/cimstar-66.html" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Cimcool::Cimtech 320">
+        <span class="pname">Cimtech 320</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://cimcool.com" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://s3-us-east-2.amazonaws.com/milacron-website-media-offload/wp-content/uploads/2016/04/12194649/cimtech-320.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li></ul></section><section class="mfr" data-status="login">
+  <header class="mfr-head">
+    <h2>Condat</h2>
+    <span class="pill login">Anmeldung nötig</span>
+    <span class="count"><b class="n">5</b> offen</span>
+    <button class="copy" type="button" data-links="https://condatcorp.com/press-article/higher-drawing-stability-vicafil-senja
+https://www.condat-lubricants.com/product/wire-drawing-lubricants-soaps/soluble-lubricants-wet-wire-drawing/
+https://www.condat-lubricants.com/product/wire-drawing-lubricants-soaps/soluble-lubricants-wet-wire-drawing/
+https://www.condat-lubricants.com/product/wire-drawing-lubricants-soaps/wire-drawing-oils-greases/
+https://www.condat-lubricants.com/product/wire-drawing-lubricants-soaps/wire-drawing-oils-greases/">Links kopieren</button>
+  </header>
+  <p class="portal"><a href="https://www.condat-lubricants.com/downloads/" target="_blank" rel="noopener">Download-Bereich ↗</a></p>
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Condat::VICAFIL SENJA">
+        <span class="pname">VICAFIL SENJA</span>
+        <span class="cat">Umform</span></label>
+        <span class="links"><a href="https://condatcorp.com/press-article/higher-drawing-stability-vicafil-senja" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Condat::VICAFIL SL">
+        <span class="pname">VICAFIL SL</span>
+        <span class="cat">Drahtzug</span></label>
+        <span class="links"><a href="https://www.condat-lubricants.com/product/wire-drawing-lubricants-soaps/soluble-lubricants-wet-wire-drawing/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Condat::VICAFIL SP">
+        <span class="pname">VICAFIL SP</span>
+        <span class="cat">Drahtzug</span></label>
+        <span class="links"><a href="https://www.condat-lubricants.com/product/wire-drawing-lubricants-soaps/soluble-lubricants-wet-wire-drawing/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Condat::VICAFIL TFG">
+        <span class="pname">VICAFIL TFG</span>
+        <span class="cat">Drahtzug</span></label>
+        <span class="links"><a href="https://www.condat-lubricants.com/product/wire-drawing-lubricants-soaps/wire-drawing-oils-greases/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Condat::VICAFIL TFH">
+        <span class="pname">VICAFIL TFH</span>
+        <span class="cat">Drahtzug</span></label>
+        <span class="links"><a href="https://www.condat-lubricants.com/product/wire-drawing-lubricants-soaps/wire-drawing-oils-greases/" target="_blank" rel="noopener">Produktseite ↗</a></span></li></ul></section><section class="mfr" data-status="login">
+  <header class="mfr-head">
+    <h2>SurTec</h2>
+    <span class="pill login">Anmeldung nötig</span>
+    <span class="count"><b class="n">2</b> offen</span>
+    <button class="copy" type="button" data-links="https://www.surtec.com/de/produkte-services/surtec-085/
+https://www.surtec.com/de/produkte-services/surtec-089/">Links kopieren</button>
+  </header>
+  <p class="portal"><a href="https://www.surtec.com/de/registrierung/login/" target="_blank" rel="noopener">Anmelden / Registrieren ↗</a></p>
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="SurTec::SurTec 085">
+        <span class="pname">SurTec 085</span>
+        <span class="cat">Reiniger</span></label>
+        <span class="links"><a href="https://www.surtec.com/de/produkte-services/surtec-085/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="SurTec::SurTec 089">
+        <span class="pname">SurTec 089</span>
+        <span class="cat">Reiniger</span></label>
+        <span class="links"><a href="https://www.surtec.com/de/produkte-services/surtec-089/" target="_blank" rel="noopener">Produktseite ↗</a></span></li></ul></section><section class="mfr" data-status="bot">
+  <header class="mfr-head">
+    <h2>Castrol</h2>
+    <span class="pill bot">Kein Login — nur Bot-Sperre</span>
+    <span class="count"><b class="n">16</b> offen</span>
+    <button class="copy" type="button" data-links="https://thelubricantoracle.castrol.com/product/hyspin-spindle-oil-10/industrial/en-US
+https://thelubricantoracle.castrol.com/product/hyspin-spindle-oil-2/oil-gas/en-BR
+https://msdspds.castrol.com/bpglis/FusionPDS.nsf/Files/53AC56A6A08A16BD802585CA004E175D/$File/wepp-bsr4pk.pdf
+https://www.unilub.eu/en/webshop/soluble-metalworking-fluids/castrol-hysol/castrol-hysol-rd
+https://www.unilub.eu/en/webshop/soluble-metalworking-fluids/castrol-hysol-sl-45/castrol-hysol-sl-45-xbb
+https://www.unilub.eu/en/webshop/soluble-metalworking-fluids/castrol-hysol-t/castrol-hysol-t-15
+https://www.unilub.eu/en/webshop/soluble-metalworking-fluids/castrol-hysol/castrol-hysol-xf
+https://msdspds.castrol.com/bpglis/FusionPDS.nsf/Files/3DF1E96601B3758280257D27003E0AB2/$File/BPXE-8KMMTL_0.pdf
+https://www.castrol.com/en_za/south-africa/home/products/industrial/metalworking/quenching-fluids.html
+https://www.castrol.com/en_us/united-states/home/products/industrial/metalworking/corrosion-preventives.html
+https://www.castrol.com/en_us/united-states/home/products/industrial/metalworking/corrosion-preventives.html
+https://www.unilub.eu/en/webshop/soluble-metalworking-fluids/castrol-syntilo-75/castrol-syntilo-75-ef
+https://www.unilub.eu/en/webshop/soluble-metalworking-fluids/castrol-syntilo/castrol-syntilo-9913
+https://www.unilub.eu/en/webshop/soluble-metalworking-fluids/castrol-syntilo/castrol-syntilo-9954
+https://www.castrol.com/en_us/united-states/home/products/industrial/metalworking/cleaners.html
+https://www.castrol.com/en_us/united-states/home/products/our-brands/industrial/techniclean-xbc.html">Links kopieren</button>
+  </header>
+  <p class="portal"><a href="https://msdspds.castrol.com/msdspds/msdspds.nsf/CastrolSearch?OpenForm&amp;c=Germany%20(DE)&amp;l=German%20(DE)&amp;sitelang=DE&amp;output=Full" target="_blank" rel="noopener">MSDS-/PDS-Suche Deutschland (ohne Login) ↗</a></p>
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Castrol::Castrol Hyspin Spindle Oil 10">
+        <span class="pname">Castrol Hyspin Spindle Oil 10</span>
+        <span class="cat">Spindelöl</span></label>
+        <span class="links"><a href="https://thelubricantoracle.castrol.com/product/hyspin-spindle-oil-10/industrial/en-US" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://msdspds.castrol.com/bpglis/fusionpds.nsf/files/bc6d0aceb9d32cfb80257796002fd4ae/$file/460393_gb_en.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Castrol::Castrol Hyspin Spindle Oil 2">
+        <span class="pname">Castrol Hyspin Spindle Oil 2</span>
+        <span class="cat">Spindelöl</span></label>
+        <span class="links"><a href="https://thelubricantoracle.castrol.com/product/hyspin-spindle-oil-2/oil-gas/en-BR" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://ctacnc.ca/wp-content/uploads/2023/06/Castrol-Hyspin-Spindle-Oil-2_Data-sheet.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Castrol::Castrol Magnaglide D 220">
+        <span class="pname">Castrol Magnaglide D 220</span>
+        <span class="cat">Bettbahnöl</span></label>
+        <span class="links"><a href="https://msdspds.castrol.com/bpglis/FusionPDS.nsf/Files/53AC56A6A08A16BD802585CA004E175D/$File/wepp-bsr4pk.pdf" target="_blank" rel="noopener">Produktseite ↗</a> <a href="http://www.salube.net/downloads/tds/magnaglide-d68-slideway-oil.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Castrol::Hysol RD">
+        <span class="pname">Hysol RD</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.unilub.eu/en/webshop/soluble-metalworking-fluids/castrol-hysol/castrol-hysol-rd" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://msdspds.castrol.com/bpglis/FusionPDS.nsf/Files/4B815924439643F180257796002FCA3D/$File/452287_XI_en.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Castrol::Hysol SL 45 XBB">
+        <span class="pname">Hysol SL 45 XBB</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.unilub.eu/en/webshop/soluble-metalworking-fluids/castrol-hysol-sl-45/castrol-hysol-sl-45-xbb" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://msdspds.castrol.com/bpglis/FusionPDS.nsf/Files/F84567E75DBD8427802582AD0033AFB8/$File/BPXE-B23UDS.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Castrol::Hysol T 15">
+        <span class="pname">Hysol T 15</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.unilub.eu/en/webshop/soluble-metalworking-fluids/castrol-hysol-t/castrol-hysol-t-15" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://msdspds.castrol.com/bpglis/FusionPDS.nsf/Files/79D9B568CECADA60802582CF00351AE5/$File/BPXE-B2XURL.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Castrol::Hysol XF">
+        <span class="pname">Hysol XF</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.unilub.eu/en/webshop/soluble-metalworking-fluids/castrol-hysol/castrol-hysol-xf" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://msdspds.castrol.com/bpglis/FusionPDS.nsf/Files/0E2C1E9E0C423193802588EE0027C7BB/$File/WEPP-CKSCJ7.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Castrol::Iloform FST 8">
+        <span class="pname">Iloform FST 8</span>
+        <span class="cat">Umform</span></label>
+        <span class="links"><a href="https://msdspds.castrol.com/bpglis/FusionPDS.nsf/Files/3DF1E96601B3758280257D27003E0AB2/$File/BPXE-8KMMTL_0.pdf" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://msdspds.castrol.com/bpglis/FusionPDS.nsf/Files/3DF1E96601B3758280257D27003E0AB2/$File/BPXE-8KMMTL_0.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Castrol::Iloquench 32">
+        <span class="pname">Iloquench 32</span>
+        <span class="cat">Härteöl</span></label>
+        <span class="links"><a href="https://www.castrol.com/en_za/south-africa/home/products/industrial/metalworking/quenching-fluids.html" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://industrialfluidsmfg.twinoils.com/Asset/Iloquench%2032.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Castrol::Rustilo DW 330">
+        <span class="pname">Rustilo DW 330</span>
+        <span class="cat">Korrosionsschutz</span></label>
+        <span class="links"><a href="https://www.castrol.com/en_us/united-states/home/products/industrial/metalworking/corrosion-preventives.html" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://msdspds.castrol.com/bpglis/FusionPDS.nsf/Files/84BFFCE11083F608802584A2005603A6/$File/BPXE-BHKFX9.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Castrol::Rustilo DWX 32">
+        <span class="pname">Rustilo DWX 32</span>
+        <span class="cat">Korrosionsschutz</span></label>
+        <span class="links"><a href="https://www.castrol.com/en_us/united-states/home/products/industrial/metalworking/corrosion-preventives.html" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://msdspds.castrol.com/bpglis/FusionPDS.nsf/Files/62279A681547662680257C13002B1116/$File/Rustilo%20DWX%2032.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Castrol::Syntilo 75 EF">
+        <span class="pname">Syntilo 75 EF</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.unilub.eu/en/webshop/soluble-metalworking-fluids/castrol-syntilo-75/castrol-syntilo-75-ef" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Castrol::Syntilo 9913">
+        <span class="pname">Syntilo 9913</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.unilub.eu/en/webshop/soluble-metalworking-fluids/castrol-syntilo/castrol-syntilo-9913" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://msdspds.castrol.com/bpglis/FusionPDS.nsf/Files/72A764F9AE9A10F98025779600303D88/$File/455241_AT_de.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Castrol::Syntilo 9954">
+        <span class="pname">Syntilo 9954</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.unilub.eu/en/webshop/soluble-metalworking-fluids/castrol-syntilo/castrol-syntilo-9954" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://msdspds.castrol.com/bpglis/FusionPDS.nsf/Files/18D4B222E221496E8025779600303EA9/$File/458285_AT_de.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Castrol::Techniclean MTC 43">
+        <span class="pname">Techniclean MTC 43</span>
+        <span class="cat">Additiv</span></label>
+        <span class="links"><a href="https://www.castrol.com/en_us/united-states/home/products/industrial/metalworking/cleaners.html" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://msdspds.castrol.com/bpglis/FusionPDS.nsf/Files/14A56E0E968AF61280257FFF00520BC3/$File/BPXE-ACJ4VV.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Castrol::Techniclean XBC">
+        <span class="pname">Techniclean XBC</span>
+        <span class="cat">Additiv</span></label>
+        <span class="links"><a href="https://www.castrol.com/en_us/united-states/home/products/our-brands/industrial/techniclean-xbc.html" target="_blank" rel="noopener">Produktseite ↗</a></span></li></ul></section><section class="mfr" data-status="bot">
+  <header class="mfr-head">
+    <h2>Mobil</h2>
+    <span class="pill bot">Kein Login — nur Bot-Sperre</span>
+    <span class="count"><b class="n">10</b> offen</span>
+    <button class="copy" type="button" data-links="https://www.mobil.com/en/lubricants/for-businesses/industrial/lubricants/products/products/mobil-eal-arctic-68
+https://www.mobil.com/en/lubricants/for-businesses/industrial/lubricants/products/products/mobil-rarus-827
+https://www.mobil.com/en/sap/our-products/product-series/vacmul-edm-2-3
+https://www.mobil.com/en/sap/lubricants/product-series/mobil-vactra-oil-numbered-series
+https://www.mobil.com/en/lubricants/for-businesses/industrial/lubricants/products/products/mobil-vactra-oil-no-2
+https://www.mobil.com/en/sap/lubricants/product-series/mobil-vactra-oil-numbered-series
+https://www.mobil.com/en/sap/our-products/product-series/mobil-velocite-oil-no-series
+https://www.mobil.com/en/sap/our-products/product-series/mobil-velocite-oil-no-series
+https://www.mobil.com/en/sap/our-products/products/mobil-velocite-oil-no-6
+https://www.mobil.com/en/lubricants/for-businesses/industrial/lubricants/products/products/mobilarma-524">Links kopieren</button>
+  </header>
+  <p class="portal"><a href="https://www.mobil.com/en/lubricants/for-businesses/pds-and-sds-search" target="_blank" rel="noopener">PDS- &amp; SDS-Suche (403 für Skripte, im Browser offen) ↗</a><a href="https://sds.exxonmobil.com/" target="_blank" rel="noopener">ExxonMobil SDS-Portal (Anmeldung) ↗</a></p>
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Mobil::Mobil EAL Arctic 68">
+        <span class="pname">Mobil EAL Arctic 68</span>
+        <span class="cat">Kälteöl</span></label>
+        <span class="links"><a href="https://www.mobil.com/en/lubricants/for-businesses/industrial/lubricants/products/products/mobil-eal-arctic-68" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Mobil::Mobil Rarus 827">
+        <span class="pname">Mobil Rarus 827</span>
+        <span class="cat">Kompressoröl</span></label>
+        <span class="links"><a href="https://www.mobil.com/en/lubricants/for-businesses/industrial/lubricants/products/products/mobil-rarus-827" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Mobil::Mobil Vacmul EDM 2">
+        <span class="pname">Mobil Vacmul EDM 2</span>
+        <span class="cat">EDM</span></label>
+        <span class="links"><a href="https://www.mobil.com/en/sap/our-products/product-series/vacmul-edm-2-3" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Mobil::Mobil Vactra Oil No. 1">
+        <span class="pname">Mobil Vactra Oil No. 1</span>
+        <span class="cat">Bettbahnöl</span></label>
+        <span class="links"><a href="https://www.mobil.com/en/sap/lubricants/product-series/mobil-vactra-oil-numbered-series" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.mobil.com/en-us/industrial/pds/gl-xx-mobil-vactra-oil-numbered-series" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Mobil::Mobil Vactra Oil No. 2">
+        <span class="pname">Mobil Vactra Oil No. 2</span>
+        <span class="cat">Bettbahnöl</span></label>
+        <span class="links"><a href="https://www.mobil.com/en/lubricants/for-businesses/industrial/lubricants/products/products/mobil-vactra-oil-no-2" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.mobil.com/en-us/industrial/pds/gl-xx-mobil-vactra-oil-numbered-series" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Mobil::Mobil Vactra Oil No. 4">
+        <span class="pname">Mobil Vactra Oil No. 4</span>
+        <span class="cat">Bettbahnöl</span></label>
+        <span class="links"><a href="https://www.mobil.com/en/sap/lubricants/product-series/mobil-vactra-oil-numbered-series" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.mobil.com/en-us/industrial/pds/gl-xx-mobil-vactra-oil-numbered-series" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Mobil::Mobil Velocite Oil No. 3">
+        <span class="pname">Mobil Velocite Oil No. 3</span>
+        <span class="cat">Spindelöl</span></label>
+        <span class="links"><a href="https://www.mobil.com/en/sap/our-products/product-series/mobil-velocite-oil-no-series" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Mobil::Mobil Velocite Oil No. 4">
+        <span class="pname">Mobil Velocite Oil No. 4</span>
+        <span class="cat">Spindelöl</span></label>
+        <span class="links"><a href="https://www.mobil.com/en/sap/our-products/product-series/mobil-velocite-oil-no-series" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Mobil::Mobil Velocite Oil No. 6">
+        <span class="pname">Mobil Velocite Oil No. 6</span>
+        <span class="cat">Spindelöl</span></label>
+        <span class="links"><a href="https://www.mobil.com/en/sap/our-products/products/mobil-velocite-oil-no-6" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Mobil::Mobilarma 524">
+        <span class="pname">Mobilarma 524</span>
+        <span class="cat">Korrosionsschutz</span></label>
+        <span class="links"><a href="https://www.mobil.com/en/lubricants/for-businesses/industrial/lubricants/products/products/mobilarma-524" target="_blank" rel="noopener">Produktseite ↗</a></span></li></ul></section><section class="mfr" data-status="bot">
+  <header class="mfr-head">
+    <h2>Quaker Houghton</h2>
+    <span class="pill bot">Kein Login — nur Bot-Sperre</span>
+    <span class="count"><b class="n">5</b> offen</span>
+    <button class="copy" type="button" data-links="https://store.quakerhoughton.com/edm-244-na
+https://store.quakerhoughton.com/ferrocote-6130-na
+https://home.quakerhoughton.com/wp-content/hub/Files/TDS_HOUGHTO-CLEAN%20138%20AT_EN.pdf
+https://home.quakerhoughton.com/wp-content/uploads/2022/09/plc_heat_treatment_A4_EN_EU.pdf
+https://home.quakerhoughton.com/wp-content/uploads/2022/09/plc_heat_treatment_A4_EN_EU.pdf">Links kopieren</button>
+  </header>
+  <p class="portal"><a href="https://store.quakerhoughton.com/customer/account/login/" target="_blank" rel="noopener">Shop-Anmeldung (TDS/SDS je Produkt) ↗</a></p>
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Quaker Houghton::EDM 244">
+        <span class="pname">EDM 244</span>
+        <span class="cat">EDM</span></label>
+        <span class="links"><a href="https://store.quakerhoughton.com/edm-244-na" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Quaker Houghton::FERROCOTE 6130">
+        <span class="pname">FERROCOTE 6130</span>
+        <span class="cat">Umform</span></label>
+        <span class="links"><a href="https://store.quakerhoughton.com/ferrocote-6130-na" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Quaker Houghton::HOUGHTO-CLEAN 138 AT">
+        <span class="pname">HOUGHTO-CLEAN 138 AT</span>
+        <span class="cat">Reiniger</span></label>
+        <span class="links"><a href="https://home.quakerhoughton.com/wp-content/hub/Files/TDS_HOUGHTO-CLEAN%20138%20AT_EN.pdf" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://home.quakerhoughton.com/wp-content/hub/Files/TDS_HOUGHTO-CLEAN%20138%20AT_EN.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Quaker Houghton::HOUGHTO-QUENCH C 1203">
+        <span class="pname">HOUGHTO-QUENCH C 1203</span>
+        <span class="cat">Härteöl</span></label>
+        <span class="links"><a href="https://home.quakerhoughton.com/wp-content/uploads/2022/09/plc_heat_treatment_A4_EN_EU.pdf" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://home.quakerhoughton.com/wp-content/uploads/2022/09/plc_heat_treatment_A4_EN_EU.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Quaker Houghton::MAR-TEMP H 340">
+        <span class="pname">MAR-TEMP H 340</span>
+        <span class="cat">Härteöl</span></label>
+        <span class="links"><a href="https://home.quakerhoughton.com/wp-content/uploads/2022/09/plc_heat_treatment_A4_EN_EU.pdf" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://home.quakerhoughton.com/wp-content/uploads/2022/09/plc_heat_treatment_A4_EN_EU.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li></ul></section><section class="mfr" data-status="bot">
+  <header class="mfr-head">
+    <h2>Motorex</h2>
+    <span class="pill bot">Kein Login — nur Bot-Sperre</span>
+    <span class="count"><b class="n">3</b> offen</span>
+    <button class="copy" type="button" data-links="https://motorex.com/en-us/cs-cleaner--17854
+https://motorex.com/en/swisscare-antifoam-water--53810
+https://motorex.com/en-us/swissgrind-zoom-xl--38366">Links kopieren</button>
+  </header>
+  <p class="portal none">Kein öffentliches Dokumentenportal auffindbar — Datenblätter direkt beim Hersteller anfragen.</p>
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Motorex::CS-CLEANER">
+        <span class="pname">CS-CLEANER</span>
+        <span class="cat">Additiv</span></label>
+        <span class="links"><a href="https://motorex.com/en-us/cs-cleaner--17854" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://motorex.com/Pdf/TI/Motorex/Additive/SWISSCARE/CS-CLEANER/CS-CLEANER_EN.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Motorex::SWISSCARE ANTIFOAM WATER">
+        <span class="pname">SWISSCARE ANTIFOAM WATER</span>
+        <span class="cat">Additiv</span></label>
+        <span class="links"><a href="https://motorex.com/en/swisscare-antifoam-water--53810" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Motorex::SWISSGRIND ZOOM XL">
+        <span class="pname">SWISSGRIND ZOOM XL</span>
+        <span class="cat">Schleiföl</span></label>
+        <span class="links"><a href="https://motorex.com/en-us/swissgrind-zoom-xl--38366" target="_blank" rel="noopener">Produktseite ↗</a></span></li></ul></section><section class="mfr" data-status="bot">
+  <header class="mfr-head">
+    <h2>Henkel</h2>
+    <span class="pill bot">Kein Login — nur Bot-Sperre</span>
+    <span class="count"><b class="n">2</b> offen</span>
+    <button class="copy" type="button" data-links="https://next.henkel-adhesives.com/us/en/products/industrial-cleaners/central-pdp.html/bonderite-c-ak-470/BP000000232751.html
+https://next.henkel-adhesives.com/us/en/products/industrial-cleaners/central-pdp.html/bonderite-c-ne-5088/BP000000160188.html">Links kopieren</button>
+  </header>
+  <p class="portal none">Portal noch nicht geprüft — <a href="https://www.henkel.com" target="_blank" rel="noopener">Website</a>.</p>
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Henkel::BONDERITE C-AK 470">
+        <span class="pname">BONDERITE C-AK 470</span>
+        <span class="cat">Reiniger</span></label>
+        <span class="links"><a href="https://next.henkel-adhesives.com/us/en/products/industrial-cleaners/central-pdp.html/bonderite-c-ak-470/BP000000232751.html" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Henkel::BONDERITE C-NE 5088">
+        <span class="pname">BONDERITE C-NE 5088</span>
+        <span class="cat">Reiniger</span></label>
+        <span class="links"><a href="https://next.henkel-adhesives.com/us/en/products/industrial-cleaners/central-pdp.html/bonderite-c-ne-5088/BP000000160188.html" target="_blank" rel="noopener">Produktseite ↗</a></span></li></ul></section><section class="mfr" data-status="bot">
+  <header class="mfr-head">
+    <h2>Atlas Copco</h2>
+    <span class="pill bot">Kein Login — nur Bot-Sperre</span>
+    <span class="count"><b class="n">1</b> offen</span>
+    <button class="copy" type="button" data-links="https://www.atlascopco.com/en-us/compressors/service/parts/compressor-oil/2901170000-rotoxtend">Links kopieren</button>
+  </header>
+  
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Atlas Copco::Atlas Copco Roto-Xtend Duty Fluid">
+        <span class="pname">Atlas Copco Roto-Xtend Duty Fluid</span>
+        <span class="cat">Kompressoröl</span></label>
+        <span class="links"><a href="https://www.atlascopco.com/en-us/compressors/service/parts/compressor-oil/2901170000-rotoxtend" target="_blank" rel="noopener">Produktseite ↗</a></span></li></ul></section><section class="mfr" data-status="offen">
+  <header class="mfr-head">
+    <h2>TotalEnergies</h2>
+    <span class="pill offen">Frei zugänglich</span>
+    <span class="count"><b class="n">9</b> offen</span>
+    <button class="copy" type="button" data-links="https://lubricants.catalog.totalenergies.com/catalog-id/en_ID/hey_diel-ms-7000
+https://lubricants.catalog.totalenergies.com/catalog-sg/en_SG/fpw-jarytherm-dbt
+https://lubricants.catalog.totalenergies.com/corporate/en_UK/qe8_martol-ep-100-cf
+https://lubricants.catalog.totalenergies.com/corporate/en_UK/a4d_martol-vb-68
+https://lubricants.catalog.totalenergies.com/catalog-sg/en_SG/6ec_nevastane-chain-oil-xt
+https://lubricants.catalog.totalenergies.com/corporate/en_UK/eel_osyris-y-4000
+https://lubricants.catalog.totalenergies.com/catalog-ch/de_CH/ggz_planetelf-acd-68
+https://lubricants.catalog.totalenergies.com/catalog-za/en_UK/b38_seriola-1510
+https://lubricants.catalog.totalenergies.com/catalog-za/en_UK/1kt_dacnis-sh-46">Links kopieren</button>
+  </header>
+  <p class="portal"><a href="https://lubricants.catalog.totalenergies.com/" target="_blank" rel="noopener">Produktkatalog mit Datenblättern ↗</a></p>
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="TotalEnergies::DIEL MS 7000">
+        <span class="pname">DIEL MS 7000</span>
+        <span class="cat">EDM</span></label>
+        <span class="links"><a href="https://lubricants.catalog.totalenergies.com/catalog-id/en_ID/hey_diel-ms-7000" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="TotalEnergies::JARYTHERM DBT">
+        <span class="pname">JARYTHERM DBT</span>
+        <span class="cat">Wärmeträger</span></label>
+        <span class="links"><a href="https://lubricants.catalog.totalenergies.com/catalog-sg/en_SG/fpw-jarytherm-dbt" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="TotalEnergies::MARTOL EP 100 CF">
+        <span class="pname">MARTOL EP 100 CF</span>
+        <span class="cat">Umform</span></label>
+        <span class="links"><a href="https://lubricants.catalog.totalenergies.com/corporate/en_UK/qe8_martol-ep-100-cf" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="TotalEnergies::MARTOL VB 68">
+        <span class="pname">MARTOL VB 68</span>
+        <span class="cat">Umform</span></label>
+        <span class="links"><a href="https://lubricants.catalog.totalenergies.com/corporate/en_UK/a4d_martol-vb-68" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="TotalEnergies::NEVASTANE CHAIN OIL XT">
+        <span class="pname">NEVASTANE CHAIN OIL XT</span>
+        <span class="cat">Kettenöl</span></label>
+        <span class="links"><a href="https://lubricants.catalog.totalenergies.com/catalog-sg/en_SG/6ec_nevastane-chain-oil-xt" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="TotalEnergies::OSYRIS Y 4000">
+        <span class="pname">OSYRIS Y 4000</span>
+        <span class="cat">Korrosionsschutz</span></label>
+        <span class="links"><a href="https://lubricants.catalog.totalenergies.com/corporate/en_UK/eel_osyris-y-4000" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="TotalEnergies::PLANETELF ACD 68">
+        <span class="pname">PLANETELF ACD 68</span>
+        <span class="cat">Kälteöl</span></label>
+        <span class="links"><a href="https://lubricants.catalog.totalenergies.com/catalog-ch/de_CH/ggz_planetelf-acd-68" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="TotalEnergies::SERIOLA 1510">
+        <span class="pname">SERIOLA 1510</span>
+        <span class="cat">Wärmeträger</span></label>
+        <span class="links"><a href="https://lubricants.catalog.totalenergies.com/catalog-za/en_UK/b38_seriola-1510" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="TotalEnergies::TotalEnergies Dacnis SH 46">
+        <span class="pname">TotalEnergies Dacnis SH 46</span>
+        <span class="cat">Kompressoröl</span></label>
+        <span class="links"><a href="https://lubricants.catalog.totalenergies.com/catalog-za/en_UK/1kt_dacnis-sh-46" target="_blank" rel="noopener">Produktseite ↗</a></span></li></ul></section><section class="mfr" data-status="offen">
+  <header class="mfr-head">
+    <h2>Shell</h2>
+    <span class="pill offen">Frei zugänglich</span>
+    <span class="count"><b class="n">6</b> offen</span>
+    <button class="copy" type="button" data-links="https://www.shell.com/business-customers/industrial-lubricants-and-specialty-fluids-for-business/products/shell-corena-compressor-oils.html
+https://www.shell.com/content/dam/shell/assets/en/business-functions/shell-lubricants/documents/morlina-family-brochure.pdf
+https://www.shell.com/business-customers/industrial-lubricants-and-specialty-fluids-for-business/products/shell-morlina-bearing-circulating-oils.html
+https://www.shell.com/content/dam/shell/assets/en/business-functions/shell-lubricants/documents/morlina-family-brochure.pdf
+https://www.shell.us/business/fuels-and-lubricants/lubricants-for-business/products/shell-tonna-slideways-oils.html
+https://www.shell.us/business/fuels-and-lubricants/lubricants-for-business/products/shell-tonna-slideways-oils.html">Links kopieren</button>
+  </header>
+  <p class="portal"><a href="https://www.shell.com/business-customers/lubricants-for-business/safety-data-sheets.html" target="_blank" rel="noopener">Sicherheitsdatenblatt-Suche ↗</a></p>
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Shell::Shell Corena S3 R 46">
+        <span class="pname">Shell Corena S3 R 46</span>
+        <span class="cat">Kompressoröl</span></label>
+        <span class="links"><a href="https://www.shell.com/business-customers/industrial-lubricants-and-specialty-fluids-for-business/products/shell-corena-compressor-oils.html" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.shell-livedocs.com/data/published/en-US/dc6df9c2-06a8-4400-9ee2-fb21567f3405.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Shell::Shell Morlina S2 BL 10">
+        <span class="pname">Shell Morlina S2 BL 10</span>
+        <span class="cat">Spindelöl</span></label>
+        <span class="links"><a href="https://www.shell.com/content/dam/shell/assets/en/business-functions/shell-lubricants/documents/morlina-family-brochure.pdf" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Shell::Shell Morlina S2 BL 22">
+        <span class="pname">Shell Morlina S2 BL 22</span>
+        <span class="cat">Spindelöl</span></label>
+        <span class="links"><a href="https://www.shell.com/business-customers/industrial-lubricants-and-specialty-fluids-for-business/products/shell-morlina-bearing-circulating-oils.html" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.shell-livedocs.com/data/published/en-US/9611876a-728f-41be-9364-c1af80d08390.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Shell::Shell Morlina S2 BL 5">
+        <span class="pname">Shell Morlina S2 BL 5</span>
+        <span class="cat">Spindelöl</span></label>
+        <span class="links"><a href="https://www.shell.com/content/dam/shell/assets/en/business-functions/shell-lubricants/documents/morlina-family-brochure.pdf" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Shell::Shell Tonna S3 M 220">
+        <span class="pname">Shell Tonna S3 M 220</span>
+        <span class="cat">Bettbahnöl</span></label>
+        <span class="links"><a href="https://www.shell.us/business/fuels-and-lubricants/lubricants-for-business/products/shell-tonna-slideways-oils.html" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Shell::Shell Tonna S3 M 68">
+        <span class="pname">Shell Tonna S3 M 68</span>
+        <span class="cat">Bettbahnöl</span></label>
+        <span class="links"><a href="https://www.shell.us/business/fuels-and-lubricants/lubricants-for-business/products/shell-tonna-slideways-oils.html" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://hand.net.pl/wp-content/uploads/2014/02/GPCDOC_GTDS_Shell_Tonna_S3_M_68_en_TDS.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li></ul></section><section class="mfr" data-status="offen">
+  <header class="mfr-head">
+    <h2>Addinol</h2>
+    <span class="pill offen">Frei zugänglich</span>
+    <span class="count"><b class="n">3</b> offen</span>
+    <button class="copy" type="button" data-links="https://addinol.de/en/products/product-finder/addinol-gleitbahnoel-xg-68/
+https://addinol.de/en/products/industrial-lubricants/compressor-oils/vdl-100/
+https://addinol.de/en/products/industrial-lubricants/compressor-oils/vdl-150/">Links kopieren</button>
+  </header>
+  
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Addinol::ADDINOL Gleitbahnöl XG 68">
+        <span class="pname">ADDINOL Gleitbahnöl XG 68</span>
+        <span class="cat">Bettbahnöl</span></label>
+        <span class="links"><a href="https://addinol.de/en/products/product-finder/addinol-gleitbahnoel-xg-68/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Addinol::ADDINOL VDL 100">
+        <span class="pname">ADDINOL VDL 100</span>
+        <span class="cat">Kompressoröl</span></label>
+        <span class="links"><a href="https://addinol.de/en/products/industrial-lubricants/compressor-oils/vdl-100/" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Addinol::ADDINOL VDL 150">
+        <span class="pname">ADDINOL VDL 150</span>
+        <span class="cat">Kompressoröl</span></label>
+        <span class="links"><a href="https://addinol.de/en/products/industrial-lubricants/compressor-oils/vdl-150/" target="_blank" rel="noopener">Produktseite ↗</a></span></li></ul></section><section class="mfr" data-status="offen">
+  <header class="mfr-head">
+    <h2>Eastman</h2>
+    <span class="pill offen">Frei zugänglich</span>
+    <span class="count"><b class="n">3</b> offen</span>
+    <button class="copy" type="button" data-links="https://www.eastman.com/en/products/product-detail/71093438/therminol-66-heat-transfer-fluid
+https://www.eastman.com/en/products/product-detail/71093459/therminol-vp-1-heat-transfer-fluid
+https://www.eastman.com/en/products/product-detail/71093461/therminol-xp-heat-transfer-fluid">Links kopieren</button>
+  </header>
+  
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Eastman::Therminol 66">
+        <span class="pname">Therminol 66</span>
+        <span class="cat">Wärmeträger</span></label>
+        <span class="links"><a href="https://www.eastman.com/en/products/product-detail/71093438/therminol-66-heat-transfer-fluid" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Eastman::Therminol VP-1">
+        <span class="pname">Therminol VP-1</span>
+        <span class="cat">Wärmeträger</span></label>
+        <span class="links"><a href="https://www.eastman.com/en/products/product-detail/71093459/therminol-vp-1-heat-transfer-fluid" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://productcatalog.eastman.com/tds/ProdDatasheet.aspx?product=71093459" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Eastman::Therminol XP">
+        <span class="pname">Therminol XP</span>
+        <span class="cat">Wärmeträger</span></label>
+        <span class="links"><a href="https://www.eastman.com/en/products/product-detail/71093461/therminol-xp-heat-transfer-fluid" target="_blank" rel="noopener">Produktseite ↗</a></span></li></ul></section><section class="mfr" data-status="offen">
+  <header class="mfr-head">
+    <h2>ACMOS CHEMIE</h2>
+    <span class="pill offen">Frei zugänglich</span>
+    <span class="count"><b class="n">2</b> offen</span>
+    <button class="copy" type="button" data-links="https://www.acmos.com/produkte-anwendungen/guss
+https://www.acmos.com/produkte-anwendungen/guss">Links kopieren</button>
+  </header>
+  
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="ACMOS CHEMIE::ACMOS 118-222">
+        <span class="pname">ACMOS 118-222</span>
+        <span class="cat">Trennmittel</span></label>
+        <span class="links"><a href="https://www.acmos.com/produkte-anwendungen/guss" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="ACMOS CHEMIE::ACMOScoat 118-6078">
+        <span class="pname">ACMOScoat 118-6078</span>
+        <span class="cat">Trennmittel</span></label>
+        <span class="links"><a href="https://www.acmos.com/produkte-anwendungen/guss" target="_blank" rel="noopener">Produktseite ↗</a></span></li></ul></section><section class="mfr" data-status="offen">
+  <header class="mfr-head">
+    <h2>BITZER</h2>
+    <span class="pill offen">Frei zugänglich</span>
+    <span class="count"><b class="n">2</b> offen</span>
+    <button class="copy" type="button" data-links="https://www.bitzer.de/shared_media/html/kt-500/de-DE/265588619265592587.html
+https://www.bitzer.de/shared_media/html/kt-500/de-DE/265588619265592587.html">Links kopieren</button>
+  </header>
+  
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="BITZER::BSE32">
+        <span class="pname">BSE32</span>
+        <span class="cat">Kälteöl</span></label>
+        <span class="links"><a href="https://www.bitzer.de/shared_media/html/kt-500/de-DE/265588619265592587.html" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="BITZER::BSE55">
+        <span class="pname">BSE55</span>
+        <span class="cat">Kälteöl</span></label>
+        <span class="links"><a href="https://www.bitzer.de/shared_media/html/kt-500/de-DE/265588619265592587.html" target="_blank" rel="noopener">Produktseite ↗</a></span></li></ul></section><section class="mfr" data-status="offen">
+  <header class="mfr-head">
+    <h2>Busch</h2>
+    <span class="pill offen">Frei zugänglich</span>
+    <span class="count"><b class="n">2</b> offen</span>
+    <button class="copy" type="button" data-links="https://www.buschvacuum.com/global/en/products/genuine-oils-vm-032-150.html
+https://www.buschvacuum.com/global/en/products/genuine-oils-vsi-100.html">Links kopieren</button>
+  </header>
+  
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Busch::Busch VM 100">
+        <span class="pname">Busch VM 100</span>
+        <span class="cat">Vakuumöl</span></label>
+        <span class="links"><a href="https://www.buschvacuum.com/global/en/products/genuine-oils-vm-032-150.html" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Busch::Busch VSI 100">
+        <span class="pname">Busch VSI 100</span>
+        <span class="cat">Vakuumöl</span></label>
+        <span class="links"><a href="https://www.buschvacuum.com/global/en/products/genuine-oils-vsi-100.html" target="_blank" rel="noopener">Produktseite ↗</a></span></li></ul></section><section class="mfr" data-status="offen">
+  <header class="mfr-head">
+    <h2>Chem-Trend</h2>
+    <span class="pill offen">Frei zugänglich</span>
+    <span class="count"><b class="n">2</b> offen</span>
+    <button class="copy" type="button" data-links="https://de.chemtrend.com/wp-content/uploads/sites/5/2019/05/Trennmittel_Lusin_04.17-web.pdf
+https://de.chemtrend.com/wp-content/uploads/sites/5/2019/05/Trennmittel_Lusin_04.17-web.pdf">Links kopieren</button>
+  </header>
+  
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Chem-Trend::Lusin Alro O 153 S">
+        <span class="pname">Lusin Alro O 153 S</span>
+        <span class="cat">Trennmittel</span></label>
+        <span class="links"><a href="https://de.chemtrend.com/wp-content/uploads/sites/5/2019/05/Trennmittel_Lusin_04.17-web.pdf" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://de.chemtrend.com/wp-content/uploads/sites/5/2019/05/Trennmittel_Lusin_04.17-web.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Chem-Trend::Lusin Alro OL 202 F">
+        <span class="pname">Lusin Alro OL 202 F</span>
+        <span class="cat">Trennmittel</span></label>
+        <span class="links"><a href="https://de.chemtrend.com/wp-content/uploads/sites/5/2019/05/Trennmittel_Lusin_04.17-web.pdf" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://de.chemtrend.com/wp-content/uploads/sites/5/2019/05/Trennmittel_Lusin_04.17-web.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li></ul></section><section class="mfr" data-status="offen">
+  <header class="mfr-head">
+    <h2>Cortec</h2>
+    <span class="pill offen">Frei zugänglich</span>
+    <span class="count"><b class="n">2</b> offen</span>
+    <button class="copy" type="button" data-links="https://www.cortecvci.com/products/vpci-high-performance-coatings/vpci-368/
+https://www.cortecvci.com/products/vpci-369/">Links kopieren</button>
+  </header>
+  
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Cortec::VpCI-368">
+        <span class="pname">VpCI-368</span>
+        <span class="cat">Korrosionsschutz</span></label>
+        <span class="links"><a href="https://www.cortecvci.com/products/vpci-high-performance-coatings/vpci-368/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.cortecvci.com/Publications/PDS/VpCI-368.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="Cortec::VpCI-369">
+        <span class="pname">VpCI-369</span>
+        <span class="cat">Korrosionsschutz</span></label>
+        <span class="links"><a href="https://www.cortecvci.com/products/vpci-369/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://www.cortecvci.com/Publications/PDS/VpCI-369.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li></ul></section><section class="mfr" data-status="offen">
+  <header class="mfr-head">
+    <h2>BANDELIN electronic</h2>
+    <span class="pill offen">Frei zugänglich</span>
+    <span class="count"><b class="n">1</b> offen</span>
+    <button class="copy" type="button" data-links="https://bandelin.com/en/shop/cleaning-and-disinfecting-preparations/tickopur-cleaning-preparations-2/tickopur-r-33-universal-cleaner-for-ultrasonic-cleaning-concentrate/">Links kopieren</button>
+  </header>
+  
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="BANDELIN electronic::TICKOPUR R 33">
+        <span class="pname">TICKOPUR R 33</span>
+        <span class="cat">Reiniger</span></label>
+        <span class="links"><a href="https://bandelin.com/en/shop/cleaning-and-disinfecting-preparations/tickopur-cleaning-preparations-2/tickopur-r-33-universal-cleaner-for-ultrasonic-cleaning-concentrate/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://bandelin.com/chemie_Dr_STAMM/Produktinformation/TICKOPUR_R_33_DE_STAMM.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li></ul></section><section class="mfr" data-status="offen">
+  <header class="mfr-head">
+    <h2>CPI Fluid Engineering</h2>
+    <span class="pill offen">Frei zugänglich</span>
+    <span class="count"><b class="n">1</b> offen</span>
+    <button class="copy" type="button" data-links="https://climalife.com/product/cpi-solest-series/">Links kopieren</button>
+  </header>
+  
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="CPI Fluid Engineering::Solest 68">
+        <span class="pname">Solest 68</span>
+        <span class="cat">Kälteöl</span></label>
+        <span class="links"><a href="https://climalife.com/product/cpi-solest-series/" target="_blank" rel="noopener">Produktseite ↗</a> <a href="https://climalife.com/wp-content/uploads/2022/09/uploadsproductmediadocumentsolest-68-v1.pdf" target="_blank" rel="noopener">Datenblatt ↗</a></span></li></ul></section><section class="mfr" data-status="offen">
+  <header class="mfr-head">
+    <h2>Sodick</h2>
+    <span class="pill offen">Frei zugänglich</span>
+    <span class="count"><b class="n">1</b> offen</span>
+    <button class="copy" type="button" data-links="https://www.sodick.co.jp/en/product/supplies/chemicals/v-wxcoat.html">Links kopieren</button>
+  </header>
+  
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="Sodick::V-WX">
+        <span class="pname">V-WX</span>
+        <span class="cat">EDM</span></label>
+        <span class="links"><a href="https://www.sodick.co.jp/en/product/supplies/chemicals/v-wxcoat.html" target="_blank" rel="noopener">Produktseite ↗</a></span></li></ul></section><section class="mfr" data-status="unklar">
+  <header class="mfr-head">
+    <h2>ML Lubrication</h2>
+    <span class="pill unklar">Noch nicht geprüft</span>
+    <span class="count"><b class="n">2</b> offen</span>
+    <button class="copy" type="button" data-links="https://www.ml-lubrication.com
+https://www.ml-lubrication.com">Links kopieren</button>
+  </header>
+  <p class="portal none">Portal noch nicht geprüft — <a href="https://www.ml-lubrication.com" target="_blank" rel="noopener">Website</a>.</p>
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="ML Lubrication::ML-Serie nicht wassermischbar (allgemein)">
+        <span class="pname">ML-Serie nicht wassermischbar (allgemein)</span>
+        <span class="cat">Schneidöl</span></label>
+        <span class="links"><a href="https://www.ml-lubrication.com" target="_blank" rel="noopener">Produktseite ↗</a></span></li><li><label class="row"><input type="checkbox" data-id="ML Lubrication::ML-Serie wassermischbar (allgemein)">
+        <span class="pname">ML-Serie wassermischbar (allgemein)</span>
+        <span class="cat">KSS (wassermischbar)</span></label>
+        <span class="links"><a href="https://www.ml-lubrication.com" target="_blank" rel="noopener">Produktseite ↗</a></span></li></ul></section><section class="mfr" data-status="unklar">
+  <header class="mfr-head">
+    <h2>DOW</h2>
+    <span class="pill unklar">Noch nicht geprüft</span>
+    <span class="count"><b class="n">1</b> offen</span>
+    <button class="copy" type="button" data-links="https://www.dow.com/en-us/pdp.dowtherm-a-heat-transfer-fluid.238000z.html">Links kopieren</button>
+  </header>
+  
+  <ul class="rows"><li><label class="row"><input type="checkbox" data-id="DOW::DOWTHERM A">
+        <span class="pname">DOWTHERM A</span>
+        <span class="cat">Wärmeträger</span></label>
+        <span class="links"><a href="https://www.dow.com/en-us/pdp.dowtherm-a-heat-transfer-fluid.238000z.html" target="_blank" rel="noopener">Produktseite ↗</a></span></li></ul></section>
+
+  <footer>Sobald du ein Dokument hast: PDF im Marktplatz unter dem Produkt hochladen oder mir die
+    Sammlung geben — ich hänge sie an die Produkte. Quelle jeder Zeile ist die Hersteller-Produktseite,
+    die bei der Recherche tatsächlich abgerufen wurde.</footer>
+</div>
+
+<script>
+(function(){
+  var KEY='brisco-sds-todo';
+  var done={};
+  try{ done=JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){}
+  var boxes=document.querySelectorAll('input[type=checkbox]');
+  boxes.forEach(function(b){
+    if(done[b.dataset.id]) b.checked=true;
+    b.addEventListener('change',function(){
+      if(b.checked) done[b.dataset.id]=1; else delete done[b.dataset.id];
+      try{ localStorage.setItem(KEY,JSON.stringify(done)); }catch(e){}
+      refresh();
+    });
+  });
+  function refresh(){
+    document.querySelectorAll('.mfr').forEach(function(s){
+      var open=s.querySelectorAll('input[type=checkbox]:not(:checked)').length;
+      s.querySelector('.n').textContent=open;
+    });
+    apply();
+  }
+  var mode='alle';
+  function apply(){
+    document.querySelectorAll('.mfr').forEach(function(s){
+      var byStatus = (mode==='alle'||mode==='offen-todo') || s.dataset.status===mode;
+      var hasOpen = s.querySelectorAll('input[type=checkbox]:not(:checked)').length>0;
+      s.hidden = !byStatus || (mode==='offen-todo' && !hasOpen);
+    });
+  }
+  document.querySelectorAll('.filter').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      mode=btn.dataset.f;
+      document.querySelectorAll('.filter').forEach(function(b){
+        b.setAttribute('aria-pressed', String(b===btn));
+      });
+      apply();
+    });
+  });
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var t=btn.dataset.links;
+      var done=function(){ var o=btn.textContent; btn.textContent='Kopiert'; setTimeout(function(){btn.textContent=o;},1400); };
+      if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(done,function(){}); }
+      else { var ta=document.createElement('textarea'); ta.value=t; document.body.appendChild(ta); ta.select();
+             try{document.execCommand('copy');done();}catch(e){} document.body.removeChild(ta); }
+    });
+  });
+  refresh();
+})();
+</script>
