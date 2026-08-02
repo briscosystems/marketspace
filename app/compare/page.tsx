@@ -8,6 +8,7 @@ import { CompareRemoveButton } from "@/components/compare/CompareToggle";
 import { AiAnalysisPanel } from "@/components/compare/AiAnalysisPanel";
 import { BrandLogo } from "@/components/BrandLogo";
 import { getCachedAnalysis } from "@/lib/comparison-analysis";
+import { detectCategoriesFromText } from "@/lib/product-category-detect";
 import { getMonthlyMedianHistory, getCurrentPricesBatch } from "@/lib/price-aggregation";
 import { MultiPriceHistoryChart, type PriceSeries } from "@/components/MultiPriceHistoryChart";
 import { TcoComparePanel } from "@/components/TcoCalculator";
@@ -336,9 +337,17 @@ export default async function ComparePage({
 
   const total = sortedListings.length + sortedProducts.length;
 
-  // KI-Bewertung: Cache vor-laden (synchron mit Page-Render), Mixed-Type-Check
+  // KI-Bewertung: Cache vor-laden (synchron mit Page-Render), Mixed-Type-Check.
+  //
+  // Verglichen wird die PRODUKTART, nicht der Freitext des Typ-Felds: „Hydrauliköl"
+  // und „Hydrauliköl (HLPD, detergierend)" sind beides Hydrauliköle und dürfen
+  // selbstverständlich verglichen werden (nur Hydrauliköl gegen KSS ist unsinnig).
+  // Vorher blockierte schon eine abweichende Schreibweise den Vergleich.
+  const familyOf = (productType: string) =>
+    detectCategoriesFromText(productType).join("|") || productType.trim().toLowerCase();
   const listingTypes = new Set(sortedListings.map((l) => l.productType));
-  const aiEligible = sortedListings.length >= 2 && listingTypes.size === 1;
+  const listingFamilies = new Set(sortedListings.map((l) => familyOf(l.productType)));
+  const aiEligible = sortedListings.length >= 2 && listingFamilies.size === 1;
   const cachedAnalysis =
     aiEligible ? await getCachedAnalysis(sortedListings.map((l) => l.id)) : null;
   const listingMap: Record<string, { productName: string; manufacturer: string }> = {};
@@ -380,8 +389,8 @@ export default async function ComparePage({
 
           {/* Mixed-Type Warnbanner */}
           {(() => {
-            const types = new Set(sortedListings.map((l) => l.productType));
-            if (types.size > 1) {
+            const types = listingTypes;
+            if (listingFamilies.size > 1) {
               return (
                 <div className="flex items-start gap-2 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
                   <AlertTriangle size={16} className="mt-0.5 shrink-0" />
