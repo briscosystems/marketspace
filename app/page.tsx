@@ -388,16 +388,20 @@ async function PersonalDashboard({ userId }: { userId: string }) {
           <Link
             key={a.href}
             href={a.href}
-            className={`group flex items-center gap-4 rounded-2xl border-2 bg-white p-5 shadow-soft transition hover:shadow-lift ${a.cls}`}
+            className={`group flex items-center gap-4 rounded-2xl border-2 bg-white p-5 shadow-soft transition duration-200 hover:-translate-y-1 hover:shadow-lift ${a.cls}`}
           >
-            <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-white ${a.iconBg}`}>
+            <span
+              className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-white transition duration-200 group-hover:scale-110 ${a.iconBg}`}
+            >
               {a.icon}
             </span>
             <div className="min-w-0 flex-1">
               <div className="text-base font-bold text-slate-900">{a.title}</div>
               <div className="text-sm text-slate-600">{a.text}</div>
             </div>
-            <ArrowRight className={`h-5 w-5 shrink-0 ${a.linkCls}`} />
+            <ArrowRight
+              className={`h-5 w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-1.5 ${a.linkCls}`}
+            />
           </Link>
         ))}
       </section>
