@@ -20,6 +20,7 @@ import { recordAiUsage } from "@/lib/ai-usage";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { normalizeForSearch } from "@/lib/normalize-search";
+import { detectCategoriesFromText } from "@/lib/product-category-detect";
 
 export type AltSearchInput = {
   /** "product": query ist ein vorhandener Produktname. "requirements": freie Anforderungen. */
@@ -360,17 +361,36 @@ export async function searchAlternatives(input: AltSearchInput): Promise<AltSear
   };
 
   // Kandidaten holen: gleiche Produktart bevorzugt; sonst über Suchbegriff.
+  // Saubere Produkttyp-Abgrenzung: Wer „Gleitbahnöl" sucht, darf keine
+  // Kühlschmierstoffe als Alternative sehen — deshalb wird die Produktart
+  // notfalls aus dem Freitext erkannt und HART gefiltert.
   const where: Prisma.ProductWhereInput = {};
   if (source) where.id = { not: source.id };
   if (target.category) {
     where.category = target.category as Prisma.ProductWhereInput["category"];
   } else if (input.query) {
-    const norm = normalizeForSearch(input.query);
-    where.OR = [
-      { searchTokens: { contains: norm } },
-      { name: { contains: input.query, mode: "insensitive" } },
-      { description: { contains: input.query, mode: "insensitive" } },
-    ];
+    const detected = detectCategoriesFromText(input.query);
+    if (detected.length > 0) {
+      where.category = { in: detected as Prisma.ProductWhereInput["category"][] } as Prisma.ProductWhereInput["category"];
+      // Textsuche zusätzlich, aber nur INNERHALB der erkannten Produktart —
+      // wenn der Begriff reine Typ-Beschreibung ist („Gleitbahnöl 68"),
+      // liefert der Kategorie-Filter allein die Kandidaten.
+      const norm = normalizeForSearch(input.query);
+      const textOr: Prisma.ProductWhereInput[] = [
+        { searchTokens: { contains: norm } },
+        { name: { contains: input.query, mode: "insensitive" } },
+        { description: { contains: input.query, mode: "insensitive" } },
+      ];
+      const textMatches = await prisma.product.count({ where: { ...where, OR: textOr } });
+      if (textMatches > 0) where.OR = textOr;
+    } else {
+      const norm = normalizeForSearch(input.query);
+      where.OR = [
+        { searchTokens: { contains: norm } },
+        { name: { contains: input.query, mode: "insensitive" } },
+        { description: { contains: input.query, mode: "insensitive" } },
+      ];
+    }
   }
 
   const candidates = await prisma.product.findMany({
