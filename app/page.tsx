@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ListingCard } from "@/components/ListingCard";
 import { AdSlot } from "@/components/AdSlot";
-import { OilBarrels } from "@/components/OilBarrels";
+import { OilBarrels, SearchCanister } from "@/components/OilBarrels";
 import { ApplicationEntry } from "@/components/ApplicationEntry";
 import { getT } from "@/lib/i18n-server";
 import { fill } from "@/lib/i18n";
@@ -162,7 +162,7 @@ async function PublicLanding() {
           <div className="absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-amber-600 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
             {t("home.seekBadge")}
           </div>
-          <div className="text-3xl">🔎</div>
+          <SearchCanister className="h-11 w-auto" />
           <h2 className="mt-2 text-xl font-bold text-slate-900 group-hover:text-amber-700">
             {t("home.seekTitle")}
           </h2>
