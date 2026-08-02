@@ -43,7 +43,10 @@ const DEFAULT_OP: Operating = {
 };
 
 const DEFAULT_CONC = 8; // % — üblicher Mittelwert wassermischbarer KSS
-const DEFAULT_SUMP_WEEKS = 8;
+// Standard-Standzeit, wenn das Produkt keinen Katalogwert hat: 48 Wochen
+// ≈ 1 Tankwechsel pro Betriebsjahr — realistischer Praxis-Normalfall bei
+// gepflegten Emulsionen (früher 8 Wochen = 6 Wechsel/Jahr, viel zu hoch).
+const DEFAULT_SUMP_WEEKS = 48;
 
 export type TcoResult = {
   refillsPerYear: number;
@@ -193,7 +196,9 @@ export function TcoCalculator({ product }: { product: TcoProductInput }) {
             className="mt-0.5 w-full rounded-md border border-slate-300 px-2 py-1.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-200"
           />
           <span className="text-[10px] text-slate-400">
-            {product.sumpLifeWeeks != null ? "typischer Praxiswert" : `Standardwert ${DEFAULT_SUMP_WEEKS} Wo.`}
+            {product.sumpLifeWeeks != null
+              ? "Katalog-/Herstellerangabe — an euren Betrieb anpassen"
+              : `Standardannahme ${DEFAULT_SUMP_WEEKS} Wo. (≈ 1 Wechsel/Jahr)`}
           </span>
         </label>
       </div>
@@ -241,8 +246,15 @@ export function TcoCalculator({ product }: { product: TcoProductInput }) {
 
       <p className="mt-2 flex items-start gap-1.5 text-[11px] text-slate-400">
         <Info size={12} className="mt-0.5 shrink-0" />
-        Vereinfachte Rechnung ohne Systemreiniger, Pflegeaufwand und Stillstandskosten —
-        als Vergleichsbasis zwischen Produkten gedacht, nicht als Angebot.
+        <span>
+          Vereinfachte Rechnung ohne Systemreiniger, Pflegeaufwand und Stillstandskosten —
+          als Vergleichsbasis zwischen Produkten gedacht, nicht als Angebot.{" "}
+          <strong className="font-semibold text-slate-500">Woher kommen die Vorgabewerte?</strong>{" "}
+          Preis = beobachteter Marktpreis (falls vorhanden), Konzentration = Herstellerempfehlung
+          (sonst {DEFAULT_CONC} %), Standzeit = Katalog-/Herstellerangabe (sonst Standardannahme{" "}
+          {DEFAULT_SUMP_WEEKS} Wochen ≈ 1 Tankwechsel/Jahr). Alle Felder sind editierbar —
+          maßgeblich sind eure eigenen Betriebswerte.
+        </span>
       </p>
     </section>
   );

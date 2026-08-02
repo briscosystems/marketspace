@@ -37,10 +37,9 @@ async function PublicLanding() {
     getSettingInt("trialDays"),
     getSettingInt("welcomeCredits"),
   ]);
-  const [listingCount, userCount, sdsCount, manufacturerCount, freshListings] =
+  const [listingCount, sdsCount, manufacturerCount, freshListings] =
     await Promise.all([
       prisma.listing.count({ where: { status: "ACTIVE" } }),
-      prisma.user.count(),
       prisma.safetyDataSheet.count(),
       prisma.manufacturer.count(),
       prisma.listing.findMany({
@@ -53,9 +52,6 @@ async function PublicLanding() {
 
   return (
     <div className="space-y-10">
-      {/* Werbeplatzierung */}
-      <AdSlot placement="HOME" />
-
       {/* Hero — ruhig, weiß, Lime nur als Akzent */}
       <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-8 shadow-soft md:p-10">
         <div className="eyebrow text-brand-700">{t("home.eyebrow")}</div>
@@ -80,6 +76,59 @@ async function PublicLanding() {
           {fill(t("home.ctaRegisterHint"), { c: welcomeCredits })}
         </p>
       </section>
+
+      {/* Für wen? — die drei Zielgruppen werden direkt abgeholt:
+          Reseller → viele Produkte anbieten; Einkäufer/Endkunden → KI-Suche +
+          Anfragen; Hersteller → Marke & Katalog. */}
+      <section>
+        <h2 className="section-title mb-3">{t("home.groupsTitle")}</h2>
+        <div className="grid gap-4 md:grid-cols-3">
+          <Link
+            href="/register"
+            className="group rounded-2xl border-t-4 border border-slate-200 border-t-blue-600 bg-white p-5 shadow-soft transition hover:shadow-lift"
+          >
+            <div className="text-xs font-bold uppercase tracking-wide text-blue-700">
+              {t("home.groupResellerBadge")}
+            </div>
+            <h3 className="mt-1.5 text-lg font-bold text-slate-900">{t("home.groupResellerTitle")}</h3>
+            <p className="mt-1 text-sm text-slate-600">{t("home.groupResellerText")}</p>
+            <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-blue-700">
+              {t("home.groupResellerCta")} <ArrowRight className="h-4 w-4" />
+            </div>
+          </Link>
+
+          <Link
+            href="/kss-finder"
+            className="group rounded-2xl border-t-4 border border-slate-200 border-t-amber-500 bg-white p-5 shadow-soft transition hover:shadow-lift"
+          >
+            <div className="text-xs font-bold uppercase tracking-wide text-amber-700">
+              {t("home.groupBuyerBadge")}
+            </div>
+            <h3 className="mt-1.5 text-lg font-bold text-slate-900">{t("home.groupBuyerTitle")}</h3>
+            <p className="mt-1 text-sm text-slate-600">{t("home.groupBuyerText")}</p>
+            <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-amber-700">
+              {t("home.groupBuyerCta")} <ArrowRight className="h-4 w-4" />
+            </div>
+          </Link>
+
+          <Link
+            href="/register"
+            className="group rounded-2xl border-t-4 border border-slate-200 border-t-brand-500 bg-white p-5 shadow-soft transition hover:shadow-lift"
+          >
+            <div className="text-xs font-bold uppercase tracking-wide text-brand-700">
+              {t("home.groupMfrBadge")}
+            </div>
+            <h3 className="mt-1.5 text-lg font-bold text-slate-900">{t("home.groupMfrTitle")}</h3>
+            <p className="mt-1 text-sm text-slate-600">{t("home.groupMfrText")}</p>
+            <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand-700">
+              {t("home.groupMfrCta")} <ArrowRight className="h-4 w-4" />
+            </div>
+          </Link>
+        </div>
+      </section>
+
+      {/* Werbeplatzierung — kompakt, unterhalb der Kern-Inhalte */}
+      <AdSlot placement="HOME" />
 
       {/* Anbieten / Suchen — feste Konvention: Anbieten blau, Suchen amber */}
       <section className="grid gap-4 md:grid-cols-2">
@@ -174,23 +223,6 @@ async function PublicLanding() {
         </section>
       )}
 
-      {/* Kennzahlen */}
-      <section className="grid gap-4 sm:grid-cols-3">
-        <div className="card">
-          <div className="stat-value text-brand-600">{listingCount}</div>
-          <div className="mt-0.5 text-sm text-slate-600">{t("home.statOffers")}</div>
-        </div>
-        <div className="card">
-          <div className="stat-value text-brand-600">{userCount}</div>
-          <div className="mt-0.5 text-sm text-slate-600">{t("home.statResellers")}</div>
-        </div>
-        <div className="card">
-          <div className="stat-value text-brand-600">
-            {sdsCount.toLocaleString("de-CH")}
-          </div>
-          <div className="mt-0.5 text-sm text-slate-600">{t("home.tileSdsTitle")}</div>
-        </div>
-      </section>
     </div>
   );
 }
@@ -262,15 +294,81 @@ async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudo
     prisma.rfqOffer.count({
       where: { status: "PENDING", rfq: { buyerId: userId } },
     }),
-    prisma.user.findUnique({ where: { id: userId }, select: { creditBalance: true } }),
+    prisma.user.findUnique({ where: { id: userId }, select: { creditBalance: true, role: true } }),
   ]);
   const creditBalance = me?.creditBalance ?? 0;
+  const role = me?.role ?? "RESELLER";
+
+  // Rollenbasierte Haupt-Aktionen: jede Zielgruppe wird direkt abgeholt.
+  //   RESELLER   → viele Produkte anbieten + offene Anfragen bedienen
+  //   ENDKUNDE   → KI-Alternative finden + Anfrage einstellen
+  //   OEM        → Produkte anbieten + Marke präsentieren
+  const actions =
+    role === "ENDKUNDE"
+      ? [
+          {
+            href: "/kss-finder",
+            cls: "border-purple-200 hover:border-purple-400",
+            iconBg: "bg-purple-600",
+            icon: <Sparkles className="h-6 w-6" />,
+            title: "Alternative finden (KI)",
+            text: "Produkt oder Problem eingeben — die KI schlägt passende Alternativen vor, inkl. Dichtungs-Check.",
+            linkCls: "text-purple-700",
+          },
+          {
+            href: "/rfqs/new",
+            cls: "border-amber-200 hover:border-amber-400",
+            iconBg: "bg-amber-500",
+            icon: <Plus className="h-6 w-6" />,
+            title: "Anfrage einstellen",
+            text: "Bedarf beschreiben — Händler melden sich mit Angeboten. Kostenlos und ohne Verpflichtung.",
+            linkCls: "text-amber-700",
+          },
+        ]
+      : role === "OEM"
+        ? [
+            {
+              href: "/listings/new",
+              cls: "border-blue-200 hover:border-blue-400",
+              iconBg: "bg-blue-600",
+              icon: <Plus className="h-6 w-6" />,
+              title: "Produkte anbieten",
+              text: "Bestände und Katalogware einstellen — Käufer finden dich über die Suche.",
+              linkCls: "text-blue-700",
+            },
+            {
+              href: "/mitgliedschaft",
+              cls: "border-brand-200 hover:border-brand-400",
+              iconBg: "bg-brand-600",
+              icon: <Building2 className="h-6 w-6" />,
+              title: "Marke präsentieren",
+              text: "Herstellerprofil und Produkte prominent zeigen — dort, wo Einkäufer suchen.",
+              linkCls: "text-brand-700",
+            },
+          ]
+        : [
+            {
+              href: "/listings/new",
+              cls: "border-blue-200 hover:border-blue-400",
+              iconBg: "bg-blue-600",
+              icon: <Plus className="h-6 w-6" />,
+              title: "Produkte anbieten",
+              text: "Je mehr Angebote online sind, desto öfter wirst du gefunden — Bestände schnell in Aufträge verwandeln.",
+              linkCls: "text-blue-700",
+            },
+            {
+              href: "/rfqs",
+              cls: "border-amber-200 hover:border-amber-400",
+              iconBg: "bg-amber-500",
+              icon: <Inbox className="h-6 w-6" />,
+              title: "Anfragen bedienen",
+              text: "Offene Käufer-Anfragen ansehen und Angebote abgeben — direkte Verkaufschancen.",
+              linkCls: "text-amber-700",
+            },
+          ];
 
   return (
     <div className="space-y-8">
-      {/* Werbeplatzierung */}
-      <AdSlot placement="HOME" />
-
       <section className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="page-title">Willkommen zurück, {pseudonym}</h1>
@@ -282,52 +380,34 @@ async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudo
             })}
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        {role !== "ENDKUNDE" && (
           <Link
             href="/kss-finder"
-            className="btn bg-purple-600 font-semibold text-white shadow-soft hover:bg-purple-700"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-purple-700 hover:underline"
           >
-            <Sparkles size={16} className="mr-1" /> KSS-Berater (KI)
+            <Sparkles size={15} /> KSS-Berater (KI) öffnen
           </Link>
-          <Link
-            href="/listings/new"
-            className="btn bg-blue-600 font-semibold text-white shadow-soft hover:bg-blue-700"
-          >
-            <Plus size={16} className="mr-1" /> Anbieten
-          </Link>
-          <Link
-            href="/rfqs/new"
-            className="btn bg-amber-500 font-semibold text-white shadow-soft hover:bg-amber-600"
-          >
-            <Plus size={16} className="mr-1" /> Suchen
-          </Link>
-        </div>
+        )}
       </section>
 
-      {/* KSS-Berater — das Aushängeschild-Feature, prominent auf der Startseite */}
-      <section>
-        <Link
-          href="/kss-finder"
-          className="group flex flex-wrap items-center justify-between gap-4 rounded-2xl border-2 border-purple-200 bg-gradient-to-r from-purple-50 via-white to-purple-50 p-5 shadow-soft transition hover:border-purple-300 hover:shadow-lift"
-        >
-          <div className="flex items-center gap-4">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-purple-600 text-white">
-              <Sparkles className="h-6 w-6" />
+      {/* Die zwei wichtigsten Aktionen für DIESE Rolle — groß und eindeutig */}
+      <section className="grid gap-4 md:grid-cols-2">
+        {actions.map((a) => (
+          <Link
+            key={a.href}
+            href={a.href}
+            className={`group flex items-center gap-4 rounded-2xl border-2 bg-white p-5 shadow-soft transition hover:shadow-lift ${a.cls}`}
+          >
+            <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-white ${a.iconBg}`}>
+              {a.icon}
             </span>
-            <div>
-              <div className="text-base font-bold text-slate-900">
-                KSS-Berater — finde den passenden Kühlschmierstoff
-              </div>
-              <div className="text-sm text-slate-600">
-                KI-gestützt: Problem beschreiben oder Filter wählen, Alternativen mit Begründung
-                erhalten — inkl. Dichtungs-Check und Web-Recherche.
-              </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-base font-bold text-slate-900">{a.title}</div>
+              <div className="text-sm text-slate-600">{a.text}</div>
             </div>
-          </div>
-          <span className="btn bg-purple-600 font-semibold text-white group-hover:bg-purple-700">
-            Jetzt starten →
-          </span>
-        </Link>
+            <ArrowRight className={`h-5 w-5 shrink-0 ${a.linkCls}`} />
+          </Link>
+        ))}
       </section>
 
       <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -360,6 +440,9 @@ async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudo
           hint="für KI-Funktionen · aufladen"
         />
       </section>
+
+      {/* Werbeplatzierung — kompakt, unterhalb der eigenen Kennzahlen */}
+      <AdSlot placement="HOME" />
 
       {openRfqsForMe.length > 0 && (
         <section>

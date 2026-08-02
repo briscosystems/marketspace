@@ -58,17 +58,30 @@ export default async function ListingsPage({ searchParams }: { searchParams: Sea
   const facetDims = Object.keys(facetSel) as FacetDim[];
   const activeDims = facetDims.filter((d) => facetSel[d].length > 0);
 
+  // Wort-für-Wort-Suche: jedes Wort darf in einem ANDEREN Feld stehen
+  // („Avia 46" = Hersteller Avia UND ISO VG 46). Füllwörter wie „iso"/„vg"
+  // werden ignoriert — „Avia ISO 46" fand sonst nichts, obwohl das Produkt
+  // da ist. Umlaute bleiben erhalten (Feldinhalte sind nicht normalisiert).
+  const qTokens = (q ?? "")
+    .toLowerCase()
+    .split(/[\s,;]+/)
+    .map((t) => t.replace(/[^a-z0-9äöüß.-]/gi, ""))
+    .filter((t) => t.length >= 2 && !["iso", "vg"].includes(t));
+
   const where: import("@prisma/client").Prisma.ListingWhereInput = {
     status: "ACTIVE",
     ...(productType && { productType: { equals: productType } }),
-    ...(q && {
-      OR: [
-        { productName: { contains: q, mode: "insensitive" } },
-        { manufacturer: { contains: q, mode: "insensitive" } },
-        { description: { contains: q, mode: "insensitive" } },
-        { applicationArea: { contains: q, mode: "insensitive" } },
-        { productType: { contains: q, mode: "insensitive" } },
-      ],
+    ...(qTokens.length > 0 && {
+      AND: qTokens.map((tok) => ({
+        OR: [
+          { productName: { contains: tok, mode: "insensitive" as const } },
+          { manufacturer: { contains: tok, mode: "insensitive" as const } },
+          { description: { contains: tok, mode: "insensitive" as const } },
+          { applicationArea: { contains: tok, mode: "insensitive" as const } },
+          { productType: { contains: tok, mode: "insensitive" as const } },
+          { isoViscosity: { contains: tok, mode: "insensitive" as const } },
+        ],
+      })),
     }),
   };
 

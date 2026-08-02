@@ -118,8 +118,25 @@ export function ConceptBrowseGrid({ listings }: { listings: BrowseListing[] }) {
       </div>
 
       {displayed.length === 0 && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-500">
-          Keine Angebote gefunden.
+        <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center">
+          <p className="font-medium text-slate-700">Keine Angebote gefunden.</p>
+          <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">
+            Zurzeit bietet kein Händler dieses Produkt an. Zwei Wege führen trotzdem zum Ziel:
+          </p>
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
+            <a
+              href="/kss-finder#alternativen"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-purple-600 px-3.5 py-2 text-sm font-semibold text-white hover:bg-purple-700"
+            >
+              ✦ Alternative finden (KI)
+            </a>
+            <a
+              href="/rfqs/new"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-amber-500 px-3.5 py-2 text-sm font-semibold text-white hover:bg-amber-600"
+            >
+              + Anfrage einstellen — Händler melden sich
+            </a>
+          </div>
         </div>
       )}
 

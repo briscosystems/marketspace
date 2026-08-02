@@ -86,6 +86,23 @@ const TASKS: Task[] = [
     },
   },
   {
+    // Tester-Fund 2026-08-02: Das Demo-Angebot „Renolin MR 520" war als
+    // „Kühlschmierstoff (Emulsion, wassermischbar)" etikettiert — RENOLIN MR
+    // ist aber ein detergierendes Mehrbereichs-/Hydrauliköl (HLPD). Wer das
+    // in den Gleitbahn-/Hydraulikkontext gießt, braucht korrekte Angaben.
+    name: "Angebots-Korrektur: Renolin MR 520 ist Hydrauliköl, keine Emulsion",
+    run: async () => {
+      const r = await prisma.listing.updateMany({
+        where: {
+          productName: { contains: "Renolin MR 520", mode: "insensitive" },
+          productType: { contains: "Emulsion", mode: "insensitive" },
+        },
+        data: { productType: "Hydrauliköl (HLPD, detergierend)" },
+      });
+      return r.count ? `${r.count} Angebot(e) korrigiert` : "nichts zu tun (bereits korrekt)";
+    },
+  },
+  {
     // 43 verifizierte Produkte für unterversorgte Gruppen: Gleitbahnöle,
     // Umform-/Drahtziehprodukte, Additive/Systempflege (Recherche 2026-08-02).
     // Upsert über (manufacturerId, slug) — idempotent, überschreibt nichts.

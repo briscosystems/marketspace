@@ -39,6 +39,11 @@ export function buildSearchTokens(parts: {
  * Jeder Token wird einzeln als AND-Filter angewandt — User-Reihenfolge egal.
  * Tokens kürzer als 2 Zeichen werden verworfen (zu unspezifisch).
  */
+// Füllwörter, die in Produktsuchen nichts eingrenzen, aber als Pflicht-Token
+// alles leeren würden: „Avia ISO 46" fand sonst nichts, weil "iso" in keinem
+// searchTokens-Feld vorkommt (die VG steht als nackte Zahl drin).
+const QUERY_STOPWORDS = new Set(["iso", "vg", "din"]);
+
 export function tokenizeQuery(input: string | null | undefined): string[] {
   if (!input) return [];
   return input
@@ -47,7 +52,7 @@ export function tokenizeQuery(input: string | null | undefined): string[] {
     .replace(/[̀-ͯ]/g, "")
     .split(/[\s,;]+/)
     .map((t) => t.replace(/[^a-z0-9]/g, ""))
-    .filter((t) => t.length >= 2);
+    .filter((t) => t.length >= 2 && !QUERY_STOPWORDS.has(t));
 }
 
 /**
