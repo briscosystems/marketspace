@@ -10,9 +10,7 @@ import { getT } from "@/lib/i18n-server";
 import { fill } from "@/lib/i18n";
 import { getSettingInt } from "@/lib/credits";
 import {
-  FlaskConical,
   Building2,
-  TrendingUp,
   ArrowRight,
   LayoutDashboard,
   MessageSquare,
@@ -37,9 +35,10 @@ async function PublicLanding() {
     getSettingInt("trialDays"),
     getSettingInt("welcomeCredits"),
   ]);
-  const [listingCount, sdsCount, manufacturerCount, freshListings] =
+  const [listingCount, rfqCount, sdsCount, manufacturerCount, freshListings] =
     await Promise.all([
       prisma.listing.count({ where: { status: "ACTIVE" } }),
+      prisma.rfq.count({ where: { status: "OPEN" } }),
       prisma.safetyDataSheet.count(),
       prisma.manufacturer.count(),
       prisma.listing.findMany({
@@ -58,7 +57,29 @@ async function PublicLanding() {
         <h1 className="mt-2 max-w-2xl text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
           {t("home.title")}
         </h1>
-        <p className="mt-3 max-w-2xl text-slate-600">{t("home.lead")}</p>
+        {/* Muster erfolgreicher Marktplätze: Zahlen als Vertrauenssignal statt
+            Erklärabsatz — der Text dahinter erscheint nirgendwo mehr. */}
+        <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-sm text-slate-600">
+          <Link href="/listings" className="hover:text-brand-700 hover:underline">
+            <strong className="font-bold text-slate-900">{listingCount.toLocaleString("de-CH")}</strong>{" "}
+            {t("home.heroStatOffers")}
+          </Link>
+          <Link href="/sds" className="hover:text-brand-700 hover:underline">
+            <strong className="font-bold text-slate-900">{sdsCount.toLocaleString("de-CH")}</strong>{" "}
+            {t("home.heroStatSds")}
+          </Link>
+          <Link href="/rfqs" className="hover:text-brand-700 hover:underline">
+            <strong className="font-bold text-slate-900">{rfqCount.toLocaleString("de-CH")}</strong>{" "}
+            {t("home.heroStatRfqs")}
+          </Link>
+          <Link href="/manufacturers" className="hover:text-brand-700 hover:underline">
+            <strong className="font-bold text-slate-900">{manufacturerCount.toLocaleString("de-CH")}</strong>{" "}
+            {t("home.heroStatMfr")}
+          </Link>
+          <Link href="/prices" className="hover:text-brand-700 hover:underline">
+            {t("home.tilePriceTitle")}
+          </Link>
+        </div>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
             href="/listings"
@@ -77,100 +98,55 @@ async function PublicLanding() {
         </p>
       </section>
 
-      {/* Für wen? — die drei Zielgruppen werden direkt abgeholt:
-          Reseller → viele Produkte anbieten; Einkäufer/Endkunden → KI-Suche +
-          Anfragen; Hersteller → Marke & Katalog. */}
-      <section>
-        <h2 className="section-title mb-3">{t("home.groupsTitle")}</h2>
-        <div className="grid gap-4 md:grid-cols-3">
-          <Link
-            href="/register"
-            className="group rounded-2xl border-t-4 border border-slate-200 border-t-blue-600 bg-white p-5 shadow-soft transition hover:shadow-lift"
-          >
-            <div className="text-xs font-bold uppercase tracking-wide text-blue-700">
-              {t("home.groupResellerBadge")}
-            </div>
-            <h3 className="mt-1.5 text-lg font-bold text-slate-900">{t("home.groupResellerTitle")}</h3>
-            <p className="hover-hint text-sm text-slate-600">{t("home.groupResellerText")}</p>
-            <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-blue-700">
-              {t("home.groupResellerCta")} <ArrowRight className="h-4 w-4" />
-            </div>
-          </Link>
-
-          <Link
-            href="/kss-finder"
-            className="group rounded-2xl border-t-4 border border-slate-200 border-t-amber-500 bg-white p-5 shadow-soft transition hover:shadow-lift"
-          >
-            <div className="text-xs font-bold uppercase tracking-wide text-amber-700">
-              {t("home.groupBuyerBadge")}
-            </div>
-            <h3 className="mt-1.5 text-lg font-bold text-slate-900">{t("home.groupBuyerTitle")}</h3>
-            <p className="hover-hint text-sm text-slate-600">{t("home.groupBuyerText")}</p>
-            <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-amber-700">
-              {t("home.groupBuyerCta")} <ArrowRight className="h-4 w-4" />
-            </div>
-          </Link>
-
-          <Link
-            href="/register"
-            className="group rounded-2xl border-t-4 border border-slate-200 border-t-brand-500 bg-white p-5 shadow-soft transition hover:shadow-lift"
-          >
-            <div className="text-xs font-bold uppercase tracking-wide text-brand-700">
-              {t("home.groupMfrBadge")}
-            </div>
-            <h3 className="mt-1.5 text-lg font-bold text-slate-900">{t("home.groupMfrTitle")}</h3>
-            <p className="hover-hint text-sm text-slate-600">{t("home.groupMfrText")}</p>
-            <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand-700">
-              {t("home.groupMfrCta")} <ArrowRight className="h-4 w-4" />
-            </div>
-          </Link>
-        </div>
-      </section>
-
-      {/* Werbeplatzierung — kompakt, unterhalb der Kern-Inhalte */}
-      <AdSlot placement="HOME" />
-
-      {/* Anbieten / Suchen — feste Konvention: Anbieten blau, Suchen amber */}
-      <section className="grid gap-4 md:grid-cols-2">
+      {/* EIN Karten-Block statt zwei: „Für wen?" und „Anbieten/Suchen" sagten
+          dasselbe zweimal. Jetzt drei Wege — Anbieten (blau), Suchen (amber),
+          Hersteller (Marke) — mit Bild, Titel, Knopf. Der Erklärsatz erscheint
+          erst beim Darüberfahren. */}
+      <section className="grid gap-4 md:grid-cols-3">
         <Link
           href="/listings"
-          className="group relative overflow-hidden rounded-2xl border border-blue-200 bg-white p-6 shadow-soft transition hover:border-blue-400 hover:shadow-lift"
+          className="group rounded-2xl border-t-4 border border-slate-200 border-t-blue-600 bg-white p-5 shadow-soft transition duration-200 hover:-translate-y-1 hover:shadow-lift"
         >
-          <div className="absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-blue-600 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
-            {t("home.offerBadge")}
-          </div>
-          <OilBarrels className="h-11 w-auto" />
-          <h2 className="mt-2 text-xl font-bold text-slate-900 group-hover:text-blue-700">
-            {t("home.offerTitle")}
-          </h2>
-          <p className="hover-hint text-sm text-slate-600">
-            {t("home.offerText")}{" "}
-            {t(listingCount === 1 ? "home.activeOffers.one" : "home.activeOffers.other").replace(
-              "{n}",
-              String(listingCount),
-            )}
-          </p>
+          <OilBarrels className="h-10 w-auto transition duration-200 group-hover:scale-105" />
+          <h3 className="mt-2 text-lg font-bold text-slate-900 group-hover:text-blue-700">
+            {t("home.groupResellerTitle")}
+          </h3>
+          <p className="hover-hint text-sm text-slate-600">{t("home.groupResellerText")}</p>
           <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-blue-700">
-            {t("home.offerLink")} <ArrowRight className="h-4 w-4" />
+            {t("home.offerLink")}{" "}
+            <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
           </div>
         </Link>
 
         <Link
-          href="/rfqs"
-          className="group relative overflow-hidden rounded-2xl border border-amber-200 bg-white p-6 shadow-soft transition hover:border-amber-400 hover:shadow-lift"
+          href="/kss-finder"
+          className="group rounded-2xl border-t-4 border border-slate-200 border-t-amber-500 bg-white p-5 shadow-soft transition duration-200 hover:-translate-y-1 hover:shadow-lift"
         >
-          <div className="absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-amber-600 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
-            {t("home.seekBadge")}
-          </div>
-          <SearchCanister className="h-11 w-auto" />
-          <h2 className="mt-2 text-xl font-bold text-slate-900 group-hover:text-amber-700">
-            {t("home.seekTitle")}
-          </h2>
-          <p className="hover-hint text-sm text-slate-600">
-            {t("home.seekText")}
-          </p>
+          <SearchCanister className="h-10 w-auto transition duration-200 group-hover:scale-105" />
+          <h3 className="mt-2 text-lg font-bold text-slate-900 group-hover:text-amber-700">
+            {t("home.groupBuyerTitle")}
+          </h3>
+          <p className="hover-hint text-sm text-slate-600">{t("home.groupBuyerText")}</p>
           <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-amber-700">
-            {t("home.seekLink")} <ArrowRight className="h-4 w-4" />
+            {t("home.groupBuyerCta")}{" "}
+            <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+          </div>
+        </Link>
+
+        <Link
+          href="/register"
+          className="group rounded-2xl border-t-4 border border-slate-200 border-t-brand-500 bg-white p-5 shadow-soft transition duration-200 hover:-translate-y-1 hover:shadow-lift"
+        >
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand-50 text-brand-700 transition duration-200 group-hover:scale-105">
+            <Building2 className="h-5 w-5" />
+          </span>
+          <h3 className="mt-2 text-lg font-bold text-slate-900 group-hover:text-brand-700">
+            {t("home.groupMfrTitle")}
+          </h3>
+          <p className="hover-hint text-sm text-slate-600">{t("home.groupMfrText")}</p>
+          <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand-700">
+            {t("home.groupMfrCta")}{" "}
+            <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
           </div>
         </Link>
       </section>
@@ -178,30 +154,8 @@ async function PublicLanding() {
       {/* Einstieg über die Aufgabe statt über den Produktnamen */}
       <ApplicationEntry />
 
-      {/* Entdecken — Wissensbasis */}
-      <section className="grid gap-4 sm:grid-cols-3">
-        <DiscoverTile
-          href="/sds"
-          icon={<FlaskConical className="h-5 w-5" />}
-          value={sdsCount.toLocaleString("de-CH")}
-          title={t("home.tileSdsTitle")}
-          hint={t("home.tileSdsHint")}
-        />
-        <DiscoverTile
-          href="/manufacturers"
-          icon={<Building2 className="h-5 w-5" />}
-          value={String(manufacturerCount)}
-          title={t("home.tileMfrTitle")}
-          hint={t("home.tileMfrHint")}
-        />
-        <DiscoverTile
-          href="/prices"
-          icon={<TrendingUp className="h-5 w-5" />}
-          value={t("home.tilePriceValue")}
-          title={t("home.tilePriceTitle")}
-          hint={t("home.tilePriceHint")}
-        />
-      </section>
+      {/* Werbeplatzierung — kompakt, unterhalb der Kern-Inhalte */}
+      <AdSlot placement="HOME" />
 
       {/* Neu im Markt */}
       {freshListings.length > 0 && (
@@ -224,36 +178,6 @@ async function PublicLanding() {
       )}
 
     </div>
-  );
-}
-
-function DiscoverTile({
-  href,
-  icon,
-  value,
-  title,
-  hint,
-}: {
-  href: string;
-  icon: React.ReactNode;
-  value: string;
-  title: string;
-  hint: string;
-}) {
-  return (
-    <Link
-      href={href}
-      className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-soft transition hover:border-brand-400 hover:shadow-lift"
-    >
-      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-700">
-        {icon}
-      </span>
-      <div className="min-w-0">
-        <div className="text-lg font-bold text-slate-900">{value}</div>
-        <div className="text-sm font-medium text-slate-700">{title}</div>
-        <div className="hover-hint text-xs text-slate-500">{hint}</div>
-      </div>
-    </Link>
   );
 }
 

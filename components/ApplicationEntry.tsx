@@ -55,8 +55,9 @@ export async function ApplicationEntry() {
 
   return (
     <section>
+      {/* Der Erklärsatz unter der Überschrift ist entfallen — die Kacheln
+          erklären sich selbst (Muster großer Marktplätze: Kategorien statt Fließtext). */}
       <h2 className="section-title">{t("appEntry.title")}</h2>
-      <p className="mt-1 text-sm text-slate-600">{t("appEntry.lead")}</p>
       <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         {tiles.map(({ facet, count }) => (
           <Link

@@ -102,6 +102,10 @@ export const MESSAGES: Record<Locale, Dict> = {
     "home.title": "Der B2B-Marktplatz für Industrieöle, KSS & Schmierstoffe",
     "home.lead":
       "Was dem einen fehlt, hat der andere im Lager. Öl-Händler gleichen Überschuss und Engpässe direkt untereinander aus — anonym, geprüft und sicher bezahlt.",
+    "home.heroStatOffers": "Angebote",
+    "home.heroStatRfqs": "offene Anfragen",
+    "home.heroStatSds": "Datenblätter",
+    "home.heroStatMfr": "Hersteller",
     "home.ctaBrowse": "Angebote entdecken",
     "home.ctaRegister": "{n} Tage kostenlos testen",
     "home.ctaRegisterHint": "Ohne Abo, ohne Kreditkarte — inkl. {c} KI-Credits.",
@@ -1178,6 +1182,10 @@ export const MESSAGES: Record<Locale, Dict> = {
     "home.title": "The B2B marketplace for industrial oils, coolants & lubricants",
     "home.lead":
       "What one is short of, another has on the shelf. Oil traders balance surplus and shortages directly between them — anonymously, verified and safely paid.",
+    "home.heroStatOffers": "offers",
+    "home.heroStatRfqs": "open requests",
+    "home.heroStatSds": "data sheets",
+    "home.heroStatMfr": "manufacturers",
     "home.ctaBrowse": "Browse offers",
     "home.ctaRegister": "Try {n} days free",
     "home.ctaRegisterHint": "No subscription, no credit card — includes {c} AI credits.",
@@ -2244,6 +2252,10 @@ export const MESSAGES: Record<Locale, Dict> = {
     "home.title": "De B2B-marktplaats voor industriële oliën, koelsmeermiddelen & smeermiddelen",
     "home.lead":
       "Wat de één tekortkomt, heeft de ander op voorraad. Oliehandelaren wisselen overschot en tekorten rechtstreeks onderling uit — anoniem, geverifieerd en veilig betaald.",
+    "home.heroStatOffers": "aanbiedingen",
+    "home.heroStatRfqs": "open aanvragen",
+    "home.heroStatSds": "veiligheidsbladen",
+    "home.heroStatMfr": "fabrikanten",
     "home.ctaBrowse": "Aanbiedingen ontdekken",
     "home.ctaRegister": "{n} dagen gratis proberen",
     "home.ctaRegisterHint": "Geen abonnement, geen creditcard — inclusief {c} AI-credits.",
