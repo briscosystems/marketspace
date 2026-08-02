@@ -88,3 +88,30 @@ body::before {
 .stat-value {
   @apply text-3xl font-bold text-slate-900;
 }
+
+/* ============================================================
+   Hover-Hinweis: kleine Erklärtexte auf Kachel-Karten sind
+   standardmäßig eingeklappt und erscheinen erst, wenn die Maus
+   über die Karte (.group) fährt — hält die Seiten ruhig.
+   Auf Touch-Geräten (kein Hover möglich) immer sichtbar.
+   ============================================================ */
+.hover-hint {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease, opacity 0.25s ease, margin-top 0.25s ease;
+}
+.group:hover .hover-hint,
+.group:focus-within .hover-hint {
+  max-height: 4rem;
+  opacity: 1;
+  margin-top: 0.25rem;
+}
+@media (hover: none) {
+  .hover-hint {
+    max-height: none;
+    opacity: 1;
+    margin-top: 0.25rem;
+  }
+}

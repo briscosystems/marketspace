@@ -71,7 +71,7 @@ export async function ApplicationEntry() {
               <div className="truncate text-sm font-semibold text-slate-900 group-hover:text-brand-700">
                 {t(facet.labelKey)}
               </div>
-              <div className="text-xs text-slate-500">
+              <div className="hover-hint text-xs text-slate-500">
                 {fill(t(count === 1 ? "appEntry.offers.one" : "appEntry.offers.other"), { n: count })}
               </div>
             </div>

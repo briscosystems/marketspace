@@ -91,7 +91,7 @@ async function PublicLanding() {
               {t("home.groupResellerBadge")}
             </div>
             <h3 className="mt-1.5 text-lg font-bold text-slate-900">{t("home.groupResellerTitle")}</h3>
-            <p className="mt-1 text-sm text-slate-600">{t("home.groupResellerText")}</p>
+            <p className="hover-hint text-sm text-slate-600">{t("home.groupResellerText")}</p>
             <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-blue-700">
               {t("home.groupResellerCta")} <ArrowRight className="h-4 w-4" />
             </div>
@@ -105,7 +105,7 @@ async function PublicLanding() {
               {t("home.groupBuyerBadge")}
             </div>
             <h3 className="mt-1.5 text-lg font-bold text-slate-900">{t("home.groupBuyerTitle")}</h3>
-            <p className="mt-1 text-sm text-slate-600">{t("home.groupBuyerText")}</p>
+            <p className="hover-hint text-sm text-slate-600">{t("home.groupBuyerText")}</p>
             <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-amber-700">
               {t("home.groupBuyerCta")} <ArrowRight className="h-4 w-4" />
             </div>
@@ -119,7 +119,7 @@ async function PublicLanding() {
               {t("home.groupMfrBadge")}
             </div>
             <h3 className="mt-1.5 text-lg font-bold text-slate-900">{t("home.groupMfrTitle")}</h3>
-            <p className="mt-1 text-sm text-slate-600">{t("home.groupMfrText")}</p>
+            <p className="hover-hint text-sm text-slate-600">{t("home.groupMfrText")}</p>
             <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand-700">
               {t("home.groupMfrCta")} <ArrowRight className="h-4 w-4" />
             </div>
@@ -143,7 +143,7 @@ async function PublicLanding() {
           <h2 className="mt-2 text-xl font-bold text-slate-900 group-hover:text-blue-700">
             {t("home.offerTitle")}
           </h2>
-          <p className="mt-1 text-sm text-slate-600">
+          <p className="hover-hint text-sm text-slate-600">
             {t("home.offerText")}{" "}
             {t(listingCount === 1 ? "home.activeOffers.one" : "home.activeOffers.other").replace(
               "{n}",
@@ -166,7 +166,7 @@ async function PublicLanding() {
           <h2 className="mt-2 text-xl font-bold text-slate-900 group-hover:text-amber-700">
             {t("home.seekTitle")}
           </h2>
-          <p className="mt-1 text-sm text-slate-600">
+          <p className="hover-hint text-sm text-slate-600">
             {t("home.seekText")}
           </p>
           <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-amber-700">
@@ -251,7 +251,7 @@ function DiscoverTile({
       <div className="min-w-0">
         <div className="text-lg font-bold text-slate-900">{value}</div>
         <div className="text-sm font-medium text-slate-700">{title}</div>
-        <div className="text-xs text-slate-500">{hint}</div>
+        <div className="hover-hint text-xs text-slate-500">{hint}</div>
       </div>
     </Link>
   );
@@ -397,7 +397,7 @@ async function PersonalDashboard({ userId }: { userId: string }) {
             </span>
             <div className="min-w-0 flex-1">
               <div className="text-base font-bold text-slate-900">{a.title}</div>
-              <div className="text-sm text-slate-600">{a.text}</div>
+              <div className="hover-hint text-sm text-slate-600">{a.text}</div>
             </div>
             <ArrowRight
               className={`h-5 w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-1.5 ${a.linkCls}`}
@@ -574,7 +574,7 @@ function QuickStat({
       <div className="min-w-0">
         <div className="eyebrow">{label}</div>
         <div className="mt-0.5 stat-value leading-none">{value}</div>
-        <div className="mt-1 text-xs text-slate-500">{hint}</div>
+        <div className="hover-hint text-xs text-slate-500">{hint}</div>
       </div>
     </Link>
   );
