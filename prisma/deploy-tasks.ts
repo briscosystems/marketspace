@@ -26,6 +26,7 @@
 import { prisma } from "@/lib/prisma";
 import { PRODUCT_DELETIONS, ISSUE_DELETIONS, PRODUCT_PATCHES } from "./fix-datenqualitaet-2026-07-15";
 import { applyCorrections2026_07_18 } from "./fix-datenqualitaet-2026-07-18";
+import { applyProduktErweiterung2026_08_02 } from "./add-produkte-2026-08-02";
 
 type Task = {
   name: string;
@@ -83,6 +84,13 @@ const TASKS: Task[] = [
       });
       return r.count ? "Eyebrow korrigiert" : "nichts zu tun (bereits korrekt/bearbeitet)";
     },
+  },
+  {
+    // 43 verifizierte Produkte für unterversorgte Gruppen: Gleitbahnöle,
+    // Umform-/Drahtziehprodukte, Additive/Systempflege (Recherche 2026-08-02).
+    // Upsert über (manufacturerId, slug) — idempotent, überschreibt nichts.
+    name: "Produkt-Erweiterung 2026-08-02 (Gleitbahn, Umform/Drahtzieh, Additive)",
+    run: () => applyProduktErweiterung2026_08_02(),
   },
 ];
 
