@@ -23,23 +23,6 @@ const FOCUS_LABEL: Record<string, string> = {
   ADDITIVE: "Additive",
 };
 
-const CATEGORY_LABEL: Record<string, string> = {
-  COOLANT_WATER_MIX: "KSS (wassermischbar)",
-  COOLANT_NEAT: "Schneidöl",
-  GRINDING_OIL: "Schleiföl",
-  EDM_FLUID: "Erodier-Dielektrikum",
-  HYDRAULIC_OIL: "Hydrauliköl",
-  GEAR_OIL: "Getriebeöl",
-  COMPRESSOR_OIL: "Kompressoröl",
-  SLIDEWAY_OIL: "Bettbahnöl",
-  FORMING_OIL: "Umformöl",
-  CLEANER: "Reiniger",
-  CORROSION_PROTECTION: "Korrosionsschutz",
-  GREASE: "Fett",
-  SPECIALTY: "Spezial",
-  ADDITIVE: "Additiv",
-  OTHER: "Sonstiges",
-};
 
 export default async function ManufacturerDetailPage({
   params,

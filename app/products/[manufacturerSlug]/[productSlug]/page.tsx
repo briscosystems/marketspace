@@ -16,23 +16,6 @@ import { TcoCalculator } from "@/components/TcoCalculator";
 import { ComplianceBadges } from "@/components/ComplianceBadges";
 import { Droplets, Beaker, FileText, ExternalLink, AlertTriangle, Shield, AlertOctagon, CheckCircle2, FileSearch, TrendingUp, Sparkles } from "lucide-react";
 
-const CATEGORY_LABEL: Record<string, string> = {
-  COOLANT_WATER_MIX: "KSS (wassermischbar)",
-  COOLANT_NEAT: "Schneidöl (nicht wassermischbar)",
-  GRINDING_OIL: "Schleiföl",
-  EDM_FLUID: "Erodier-Dielektrikum",
-  HYDRAULIC_OIL: "Hydrauliköl",
-  GEAR_OIL: "Getriebeöl",
-  COMPRESSOR_OIL: "Kompressoröl",
-  SLIDEWAY_OIL: "Bettbahnöl",
-  FORMING_OIL: "Umform-/Stanzöl",
-  CLEANER: "Reiniger",
-  CORROSION_PROTECTION: "Korrosionsschutz",
-  GREASE: "Fett",
-  SPECIALTY: "Spezial",
-  ADDITIVE: "Additiv",
-  OTHER: "Sonstiges",
-};
 
 const CHEMISTRY_LABEL: Record<string, string> = {
   MINERAL: "Mineralölbasiert (Soluble Oil)",

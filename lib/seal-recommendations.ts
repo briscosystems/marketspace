@@ -11,22 +11,9 @@
 import { prisma } from "@/lib/prisma";
 
 type ChemistryBase = "MINERAL" | "SEMI_SYNTHETIC" | "SYNTHETIC" | "ESTER" | "PAG" | "GTL" | "OTHER" | null;
-type ProductCategory =
-  | "COOLANT_WATER_MIX"
-  | "COOLANT_NEAT"
-  | "GRINDING_OIL"
-  | "EDM_FLUID"
-  | "HYDRAULIC_OIL"
-  | "GEAR_OIL"
-  | "COMPRESSOR_OIL"
-  | "SLIDEWAY_OIL"
-  | "FORMING_OIL"
-  | "CLEANER"
-  | "CORROSION_PROTECTION"
-  | "GREASE"
-  | "SPECIALTY"
-  | "ADDITIVE"
-  | "OTHER";
+// Die Produktarten kommen zentral aus lib/product-categories.ts — sonst muss
+// jede neue Art an zwei Stellen nachgetragen werden.
+import type { ProductCategory } from "@/lib/product-categories";
 
 export type ProductForRec = {
   category: ProductCategory;

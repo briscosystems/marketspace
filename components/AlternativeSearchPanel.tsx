@@ -17,6 +17,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { withBasePath } from "@/lib/base-path";
+import { PRODUCT_CATEGORY_LABEL, categoryLabel } from "@/lib/product-categories";
 
 type Availability = {
   available: boolean;
@@ -59,23 +60,6 @@ const ALT_CRED_BADGE: Record<string, { label: string; cls: string }> = {
   niedrig: { label: "Glaubwürdigkeit: niedrig", cls: "bg-slate-200 text-slate-600" },
 };
 
-const CATEGORY_LABEL: Record<string, string> = {
-  COOLANT_WATER_MIX: "KSS wassermischbar",
-  COOLANT_NEAT: "Schneidöl (nicht wassermischbar)",
-  GRINDING_OIL: "Schleiföl",
-  EDM_FLUID: "Erodieröl",
-  HYDRAULIC_OIL: "Hydrauliköl",
-  GEAR_OIL: "Getriebeöl",
-  COMPRESSOR_OIL: "Kompressorenöl",
-  SLIDEWAY_OIL: "Bettbahnöl",
-  FORMING_OIL: "Umformöl",
-  CLEANER: "Reiniger",
-  CORROSION_PROTECTION: "Korrosionsschutz",
-  GREASE: "Fett",
-  SPECIALTY: "Spezialschmierstoff",
-  ADDITIVE: "Additiv",
-  OTHER: "Andere",
-};
 const CHEMISTRY_LABEL: Record<string, string> = {
   MINERAL: "Mineralöl",
   SYNTHETIC: "Vollsynthetisch",
@@ -264,7 +248,7 @@ export function AlternativeSearchPanel({ initialQuery }: { initialQuery?: string
                 <label className="label">Produktart</label>
                 <select className="input" value={category} onChange={(e) => setCategory(e.target.value)}>
                   <option value="">— beliebig —</option>
-                  {Object.entries(CATEGORY_LABEL).map(([v, l]) => (
+                  {Object.entries(PRODUCT_CATEGORY_LABEL).map(([v, l]) => (
                     <option key={v} value={v}>{l}</option>
                   ))}
                 </select>
@@ -509,7 +493,7 @@ function AltDetailSlideOver({ alt, onClose }: { alt: AltMatch; onClose: () => vo
             <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Produkt-Daten</div>
             <dl className="space-y-1.5 text-sm">
               <DetailRow label="Hersteller" value={alt.manufacturer} />
-              {alt.category && <DetailRow label="Kategorie" value={CATEGORY_LABEL[alt.category] ?? alt.category} />}
+              {alt.category && <DetailRow label="Kategorie" value={categoryLabel(alt.category)} />}
               {alt.chemistry && <DetailRow label="Chemie" value={CHEMISTRY_LABEL[alt.chemistry] ?? alt.chemistry} />}
               {alt.viscosityIso && <DetailRow label="Viskosität" value={`ISO VG ${alt.viscosityIso}`} />}
               <DetailRow

@@ -140,6 +140,9 @@ enum SdsLanguage {
   OTHER
 }
 
+// Produktarten. Reihenfolge/Beschriftung zentral in lib/product-categories.ts,
+// Stichwort-Erkennung in lib/product-category-detect.ts. Erweiterung 2026-08-02:
+// zehn eigenständige Arten, die vorher unter SPECIALTY/OTHER verschwanden.
 enum ProductCategory {
   COOLANT_WATER_MIX     // wassermischbarer KSS-Konzentrat
   COOLANT_NEAT          // nicht wassermischbares Schneidöl
@@ -149,7 +152,17 @@ enum ProductCategory {
   GEAR_OIL
   COMPRESSOR_OIL
   SLIDEWAY_OIL          // Bettbahnöl
+  SPINDLE_OIL           // Spindelöl (ISO VG 2–10, Hochfrequenzspindeln)
+  TURBINE_OIL           // Turbinenöl (DIN 51515 TD/TG)
+  CHAIN_OIL             // Ketten-/Hochtemperatur-Kettenöl
+  REFRIGERATION_OIL     // Kältemaschinenöl (POE/PAG/Mineral)
+  VACUUM_PUMP_OIL       // Vakuumpumpenöl
   FORMING_OIL           // Stanz-/Umform-/Tiefziehöl
+  WIRE_DRAWING          // Drahtzieh-Schmierstoff (Ziehseife, Ziehfett, Nassziehmittel)
+  RELEASE_AGENT         // Trennmittel (Druckguss, Gummi, Kunststoff), Schalungsöl
+  HEAT_TRANSFER_OIL     // Wärmeträgeröl / Thermalöl (DIN 51522)
+  QUENCHING_OIL         // Härteöl / Abschrecköl (Wärmebehandlung)
+  TRANSFORMER_OIL       // Isolieröl / Transformatorenöl (IEC 60296)
   CLEANER               // Reiniger / Entfetter
   CORROSION_PROTECTION
   GREASE
