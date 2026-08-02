@@ -27,7 +27,7 @@ export default async function HomePage() {
   if (!session?.user?.id) {
     return <PublicLanding />;
   }
-  return <PersonalDashboard userId={session.user.id} pseudonym={session.user.name ?? ""} />;
+  return <PersonalDashboard userId={session.user.id} />;
 }
 
 async function PublicLanding() {
@@ -257,7 +257,7 @@ function DiscoverTile({
   );
 }
 
-async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudonym: string }) {
+async function PersonalDashboard({ userId }: { userId: string }) {
   const [unreadConversations, openRfqsForMe, freshListings, openOffersToMe, me] = await Promise.all([
     prisma.conversation.findMany({
       where: { OR: [{ buyerId: userId }, { sellerId: userId }] },
@@ -369,26 +369,18 @@ async function PersonalDashboard({ userId, pseudonym }: { userId: string; pseudo
 
   return (
     <div className="space-y-8">
-      <section className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="page-title">Willkommen zurück, {pseudonym}</h1>
-          <p className="text-sm text-slate-500">
-            {new Date().toLocaleDateString("de-DE", {
-              weekday: "long",
-              day: "numeric",
-              month: "long",
-            })}
-          </p>
-        </div>
-        {role !== "ENDKUNDE" && (
+      {/* Kein „Willkommen zurück"-Block mehr — der Anmelde-Status steht oben
+          rechts im Kopf (AccountMenu); die Seite beginnt direkt mit den Aktionen. */}
+      {role !== "ENDKUNDE" && (
+        <section className="flex justify-end">
           <Link
             href="/kss-finder"
             className="inline-flex items-center gap-1.5 text-sm font-semibold text-purple-700 hover:underline"
           >
             <Sparkles size={15} /> KSS-Berater (KI) öffnen
           </Link>
-        )}
-      </section>
+        </section>
+      )}
 
       {/* Die zwei wichtigsten Aktionen für DIESE Rolle — groß und eindeutig */}
       <section className="grid gap-4 md:grid-cols-2">

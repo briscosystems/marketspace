@@ -84,11 +84,18 @@ export function AccountMenu({
             : "border-white/25 hover:border-white/40 hover:bg-white/10"
         }`}
       >
-        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-400 text-xs font-bold text-slate-900">
+        {/* Grüner Punkt = angemeldet — sichtbarer Status statt Begrüßungstext auf der Seite */}
+        <span className="relative flex h-7 w-7 items-center justify-center rounded-full bg-brand-400 text-xs font-bold text-slate-900">
           {initial}
+          <span
+            className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-slate-900 bg-emerald-400"
+            aria-hidden
+          />
         </span>
         <span className="hidden text-left leading-tight sm:block">
-          <span className="block text-[10px] text-slate-400">{t("account.greeting")}</span>
+          <span className="flex items-center gap-1 text-[10px] font-medium text-emerald-400">
+            {t("account.greeting")}
+          </span>
           <span className="block max-w-[8rem] truncate text-xs font-semibold text-white">
             {user.name}
           </span>

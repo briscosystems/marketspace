@@ -43,7 +43,7 @@ type Dict = Record<string, string>;
 
 export const MESSAGES: Record<Locale, Dict> = {
   de: {
-    "account.greeting": "Hallo,",
+    "account.greeting": "Angemeldet",
     "account.menu": "Konto",
     "account.signedInAs": "Angemeldet als",
     "account.creditsTitle": "Dein Credit-Guthaben für KI-Funktionen",
@@ -1119,7 +1119,7 @@ export const MESSAGES: Record<Locale, Dict> = {
     "txn.reviewAfterCompletion": "Bewertung möglich nach Abschluss der Transaktion (Status COMPLETED).",
   },
   en: {
-    "account.greeting": "Hello,",
+    "account.greeting": "Signed in",
     "account.menu": "Account",
     "account.signedInAs": "Signed in as",
     "account.creditsTitle": "Your credit balance for AI features",
@@ -2185,7 +2185,7 @@ export const MESSAGES: Record<Locale, Dict> = {
     "txn.reviewAfterCompletion": "Review possible once the transaction is completed (status COMPLETED).",
   },
   nl: {
-    "account.greeting": "Hallo,",
+    "account.greeting": "Aangemeld",
     "account.menu": "Account",
     "account.signedInAs": "Aangemeld als",
     "account.creditsTitle": "Je credittegoed voor AI-functies",
