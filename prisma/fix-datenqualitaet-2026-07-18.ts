@@ -127,7 +127,7 @@ export const CORRECTIONS_2026_07_18: Patch[] = [
       id,
       name: "Mobil Velocite No 3/6/10",
       data: {
-        category: "HYDRAULIC_OIL",
+        category: "SPINDLE_OIL",
         description: "Spindelöl (Spindle & Hydraulic Oil) für hochtourige Spindeln — kein Bettbahnöl.",
       },
       grund: "PDS: „Spindle and Hydraulic Oils“ — war fälschlich als Bettbahnöl geführt.",
@@ -191,7 +191,10 @@ export const CORRECTIONS_2026_07_18: Patch[] = [
       id,
       name: "Eni OTE (Turbinenöl)",
       data: {
-        category: "SPECIALTY",
+        // Seit 2026-08-02 gibt es die Produktart TURBINE_OIL; vorher musste
+        // „Spezial" herhalten. Ohne diese Anpassung hängen zwei Deploy-Aufgaben
+        // dasselbe Produkt bei jedem Start hin und her.
+        category: "TURBINE_OIL",
         description: "Turbinenöl (DIN 51515 / DIN 51502 L-TD) — kein Hydrauliköl.",
       },
       grund: "OTE ist ein Turbinenöl, war als Standard-HM-Hydrauliköl geführt.",

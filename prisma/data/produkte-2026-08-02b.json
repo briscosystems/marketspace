@@ -1,0 +1,3046 @@
+[
+ {
+  "manufacturer": "Klüber Lubrication",
+  "name": "Klüberoil Y F 100",
+  "category": "CHAIN_OIL",
+  "chemistry": "PAG",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Hochtemperatur-Kettenöl auf Basis von Polyalkylenglykol mit Festschmierstoff-Anteilen. Es benetzt gut und kriecht ausgezeichnet in die Kettengelenke ein und ist für Ketten ausgelegt, die bei sehr hohen Temperaturen laufen. Typische Einsätze sind Plattenträgerketten in Backöfen sowie Antriebs- und Steuerketten an Schmelzöfen.",
+  "applicationAreas": [
+   "Ofenketten",
+   "Backöfen",
+   "Transportketten",
+   "Hochtemperatur"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.klueber.com/us/en/products-service/products/klueberoil-y-f-100/9882/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Klüber Lubrication",
+  "name": "Klübersynth CH 2-100",
+  "category": "CHAIN_OIL",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Synthetisches Hochtemperatur-Kettenöl, das auch bei hohen Betriebstemperaturen zuverlässig schmiert. Eine spezielle Wirkstoffkombination sorgt für hohe Druckbeständigkeit und guten Verschleißschutz bei zugleich geringen Verdampfungsverlusten und hoher Oxidationsstabilität. Eingesetzt wird es an Transport-, Antriebs- und Steuerketten unter thermischer Belastung.",
+  "applicationAreas": [
+   "Transportketten",
+   "Antriebsketten",
+   "Steuerketten",
+   "Hochtemperatur"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.klueber.com/de/de/produkte-service/produkte/kluebersynth-ch-2-100/10747/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Klüber Lubrication",
+  "name": "Klüberfood NH1 CH 2-220",
+  "category": "CHAIN_OIL",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Synthetisches Hochtemperatur-Kettenöl für die Lebensmittelverarbeitung mit Additiven für sehr guten Verschleißschutz. Es zeigt auch bei hoher Temperatur geringe Verdampfungsverluste. Entwickelt für Anwendungen mit möglichem unbeabsichtigtem Produktkontakt in der Lebensmittel-, Kosmetik-, Pharma- und Futtermittelindustrie.",
+  "applicationAreas": [
+   "Lebensmittelindustrie",
+   "Ofenketten",
+   "Backöfen",
+   "Transportketten"
+  ],
+  "certifications": [
+   "NSF H1",
+   "ISO 21469",
+   "FDA 21 CFR 178.3570"
+  ],
+  "sourceUrl": "https://www.klueber.com/us/en/products-service/products/klueberfood-nh1-ch-2-220/9954/",
+  "dataSheetUrl": "https://www.qualitybearingsonline.com/content/Lubricants/MSDS%20and%20TDS%20PDFs/Kluber/Kl%C3%BCberfood_NH1_CH_2-150_CH_2-220_EN_en.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Klüber Lubrication",
+  "name": "Klüberfood NH1 CH 2-220 Plus",
+  "category": "CHAIN_OIL",
+  "chemistry": "ESTER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Synthetisches Hochtemperatur-Kettenöl auf Esterbasis mit Spezialadditiven für Verschleißschutz und Oxidationsstabilität, ausgelegt für die Lebensmittelproduktion. Die Rezeptur zielt auf geringe Verdampfungsverluste, niedrigeren Ölverbrauch und längere Kettenlebensdauer. NSF-H1-registriert und ISO-21469-zertifiziert.",
+  "applicationAreas": [
+   "Lebensmittelindustrie",
+   "Backöfen",
+   "Ofenketten",
+   "Hochtemperatur"
+  ],
+  "certifications": [
+   "NSF H1",
+   "ISO 21469",
+   "FDA 21 CFR 178.3570"
+  ],
+  "sourceUrl": "https://www.klueber.com/us/en/products-service/products/klueberfood-nh1-ch-2-220-plus/9830/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Fuchs",
+  "name": "CASSIDA CHAIN OIL XTE",
+  "category": "CHAIN_OIL",
+  "chemistry": "ESTER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Vollsynthetisches Hochtemperatur-Kettenöl auf Esterbasis für die Lebensmittelindustrie, ausgelegt auf Ofentemperaturen bis +300 °C. Es zeichnet sich durch sehr geringe Verdampfungsverluste und stark reduzierte Rückstandsbildung aus. Anwendbar über Pinsel, Tauchbad oder automatische Schmiersysteme, lösemittelfrei.",
+  "applicationAreas": [
+   "Lebensmittelindustrie",
+   "Ofenketten",
+   "Transportketten",
+   "Antriebsketten"
+  ],
+  "certifications": [
+   "NSF H1",
+   "ISO 21469",
+   "Kosher",
+   "Halal"
+  ],
+  "sourceUrl": "https://www.fuchs.com/us/en/product/product/12742-CASSIDA-CHAIN-OIL-XTE/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Fuchs",
+  "name": "CASSIDA CHAIN OIL HT 220",
+  "category": "CHAIN_OIL",
+  "chemistry": "ESTER",
+  "viscosityIso": "220",
+  "viscosityKv40": null,
+  "description": "Synthetisches Hochtemperatur-Kettenöl auf Esterbasis in ISO VG 220 für Anlagen der Lebensmittel- und Getränkeindustrie. Es bietet hohe Thermo- und Oxidationsstabilität, geringen Verdampfungsverlust sowie gute Verschleiß- und EP-Eigenschaften. Typisch eingesetzt an Ofenketten und Wälzlagern in kontinuierlichen Gär- und Backanlagen.",
+  "applicationAreas": [
+   "Lebensmittelindustrie",
+   "Backöfen",
+   "Ofenketten",
+   "Wälzlager"
+  ],
+  "certifications": [
+   "NSF H1"
+  ],
+  "sourceUrl": "https://www.fuchs.com/us/en/product/product/116907-CASSIDA-CHAIN-OIL-HT-220/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Fuchs",
+  "name": "CASSIDA CHAIN OIL HTE",
+  "category": "CHAIN_OIL",
+  "chemistry": "ESTER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Synthetisches Hochtemperatur-Kettenöl auf Esterbasis für Antriebs- und Transportketten in der Lebensmittelindustrie, thermisch stabil bis +240 °C. Es haftet sehr gut und reduziert dadurch Abschleudern und Abwaschen. Die Rezeptur ist lösemittelfrei.",
+  "applicationAreas": [
+   "Lebensmittelindustrie",
+   "Transportketten",
+   "Antriebsketten",
+   "Verpackungsanlagen"
+  ],
+  "certifications": [
+   "NSF H1",
+   "ISO 21469",
+   "Kosher",
+   "Halal"
+  ],
+  "sourceUrl": "https://www.fuchs.com/de/en/product/product/147473-CASSIDA-CHAIN-OIL-HTE/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Fuchs",
+  "name": "CASSIDA CHAIN OIL HTX",
+  "category": "CHAIN_OIL",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Synthetisches Kettenöl für extreme Temperaturen mit Festschmierstoffen, entwickelt für die Lebensmittel- und Getränkeindustrie. Bei sehr hohen Temperaturen wirkt es als Trockenfilm und verhindert das Anhaften von Produktresten, bei Umgebungs- und Tieftemperatur schmiert es als Nassfilm. Lösemittelfrei, geruchs- und geschmacksneutral.",
+  "applicationAreas": [
+   "Lebensmittelindustrie",
+   "Transportketten",
+   "Antriebsketten",
+   "Extremtemperatur"
+  ],
+  "certifications": [
+   "NSF H1",
+   "Kosher",
+   "Halal"
+  ],
+  "sourceUrl": "https://www.fuchs.com/de/en/product/product/147475-CASSIDA-CHAIN-OIL-HTX/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "TotalEnergies",
+  "name": "NEVASTANE CHAIN OIL XT",
+  "category": "CHAIN_OIL",
+  "chemistry": "ESTER",
+  "viscosityIso": "220",
+  "viscosityKv40": null,
+  "description": "Hochleistungs-Kettenöl auf Basis komplexer Neopolyolester in ISO VG 220 für Steuer-, Antriebs- und Transportketten unter hoher Temperatur- und Lastbeanspruchung. Geringe Verdampfung und hoher Flammpunkt ermöglichen verlängerte Schmierintervalle. Eingesetzt in Bäckereien, Schlachtbetrieben und der Getränkeindustrie.",
+  "applicationAreas": [
+   "Lebensmittelindustrie",
+   "Bäckereien",
+   "Transportketten",
+   "Getränkeindustrie"
+  ],
+  "certifications": [
+   "NSF H1",
+   "NSF 3H",
+   "DIN 51502 ESTER",
+   "FDA 21 CFR",
+   "Halal",
+   "Kosher"
+  ],
+  "sourceUrl": "https://lubricants.catalog.totalenergies.com/catalog-sg/en_SG/6ec_nevastane-chain-oil-xt",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Carl Bechem",
+  "name": "Berusynth CU 250",
+  "category": "CHAIN_OIL",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Synthetisches Kettenöl der Berusynth-Reihe für Hochtemperatur-Anwendungen. Es fällt durch sein sehr gutes Verdampfungsverhalten auf und blieb im Test bei 210 °C nahezu unverändert. Reduziert Reibung und Verschleiß und haftet stark an den Kettenelementen.",
+  "applicationAreas": [
+   "Hochtemperatur",
+   "Transportketten",
+   "Trockner",
+   "Ofenketten"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.bechem.com/en/lubricants/lubricating-oils/chain-oils.html",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Zeller+Gmelin",
+  "name": "Divinol Chain Lube 260 CPS",
+  "category": "CHAIN_OIL",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Vollsynthetisches Hochtemperatur-Kettenöl für Pressenanlagen der Holzwerkstoffindustrie. Es ist auf Rollenketten und Biegebalken unter extremer thermischer Belastung ausgelegt und zeigt sehr geringe Verdampfungsverluste bei hohen Temperaturen. Gutes Kriechverhalten sorgt für die zuverlässige Schmierung der Kettenelemente.",
+  "applicationAreas": [
+   "Holzwerkstoffindustrie",
+   "Pressenanlagen",
+   "Rollenketten",
+   "Hochtemperatur"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://zeller-gmelin.de/sbu/woodpanel-2/hochtemperaturkettenoele/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Mobil",
+  "name": "Mobil Velocite Oil No. 3",
+  "category": "SPINDLE_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "2",
+  "viscosityKv40": null,
+  "description": "Sehr niedrigviskoses Spindelöl der Velocite-Reihe in ISO VG 2 auf Mineralölbasis. Es ist für Spindellagerungen mit extrem engen Spielen ausgelegt, bei denen ein dünnflüssiger Ölfilm und gute Durchflusseigenschaften nötig sind. Additive sorgen für Oxidations-, Rost- und Korrosionsschutz.",
+  "applicationAreas": [
+   "Werkzeugmaschinenspindeln",
+   "Hochgeschwindigkeitsspindeln",
+   "Feinmechanik"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.mobil.com/en/sap/our-products/product-series/mobil-velocite-oil-no-series",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Mobil",
+  "name": "Mobil Velocite Oil No. 4",
+  "category": "SPINDLE_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "5",
+  "viscosityKv40": null,
+  "description": "Spindelöl der Velocite-Reihe in ISO VG 5 auf Mineralölbasis, ausgelegt für schnelllaufende Spindellager in Präzisionsmaschinen. Die niedrige Viskosität hält Reibungswärme und Leistungsaufnahme gering. Additive schützen gegen Oxidation, Rost und Korrosion.",
+  "applicationAreas": [
+   "Werkzeugmaschinenspindeln",
+   "Präzisionsmaschinen",
+   "Hochgeschwindigkeitsspindeln"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.mobil.com/en/sap/our-products/product-series/mobil-velocite-oil-no-series",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Mobil",
+  "name": "Mobil Velocite Oil No. 6",
+  "category": "SPINDLE_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "10",
+  "viscosityKv40": null,
+  "description": "Spindelöl in ISO VG 10 auf Basis ausgewählter niedrigviskoser Mineralöle, primär für schnelllaufende Spindeln in Werkzeugmaschinen. Es wird außerdem in kritischen Hydrauliken, Umlaufsystemen und Leitungsölern eingesetzt. Typische Anwendungen sind Präzisionsschleifmaschinen, Drehmaschinen und Koordinatenbohrwerke.",
+  "applicationAreas": [
+   "Werkzeugmaschinenspindeln",
+   "Hydraulik",
+   "Umlaufschmierung",
+   "Schleifmaschinen"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.mobil.com/en/sap/our-products/products/mobil-velocite-oil-no-6",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Shell",
+  "name": "Shell Morlina S2 BL 5",
+  "category": "SPINDLE_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "5",
+  "viscosityKv40": null,
+  "description": "Niedrigviskoses Mineralöl mit zinkfreien Additiven in ISO VG 5 für schnelllaufende Werkzeugmaschinenspindeln. Das Rost- und Oxidationsinhibitor-Paket sorgt für lange Ölstandzeiten, auch in warmer und feuchter Umgebung. Der Verschleißschutz greift dabei die weicheren Lagerwerkstoffe nicht an.",
+  "applicationAreas": [
+   "Werkzeugmaschinenspindeln",
+   "Hochgeschwindigkeitsspindeln",
+   "Umlaufschmierung",
+   "Lager"
+  ],
+  "certifications": [
+   "Fives Group Machine P-62"
+  ],
+  "sourceUrl": "https://www.shell.com/content/dam/shell/assets/en/business-functions/shell-lubricants/documents/morlina-family-brochure.pdf",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Shell",
+  "name": "Shell Morlina S2 BL 10",
+  "category": "SPINDLE_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "10",
+  "viscosityKv40": null,
+  "description": "Zinkfrei additiviertes Mineralöl in ISO VG 10 aus der Morlina-BL-Reihe für Hochgeschwindigkeitsspindeln in Werkzeugmaschinen. Es kombiniert langen Ölwechselintervallen mit zuverlässigem Verschleiß- und Korrosionsschutz. Auch für ölgeschmierte Gleit- und Wälzlager in Umlaufsystemen geeignet.",
+  "applicationAreas": [
+   "Werkzeugmaschinenspindeln",
+   "Hochgeschwindigkeitsspindeln",
+   "Umlaufschmierung",
+   "Lager"
+  ],
+  "certifications": [
+   "Fives Group Machine P-62"
+  ],
+  "sourceUrl": "https://www.shell.com/content/dam/shell/assets/en/business-functions/shell-lubricants/documents/morlina-family-brochure.pdf",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Shell",
+  "name": "Shell Morlina S2 BL 22",
+  "category": "SPINDLE_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "22",
+  "viscosityKv40": null,
+  "description": "Spezielles niedrigviskoses Mineralöl mit zinkfreien Additiven in ISO VG 22 für Hochgeschwindigkeitsspindeln von Werkzeugmaschinen. Das Additivpaket ist beständig gegen Oxidation und gegen den Abbau durch Metallkatalysatoren wie Kupfer. Zusätzlich wird es in Lager- und Umlaufschmiersystemen eingesetzt.",
+  "applicationAreas": [
+   "Werkzeugmaschinenspindeln",
+   "Hochgeschwindigkeitsspindeln",
+   "Umlaufschmierung",
+   "Lager"
+  ],
+  "certifications": [
+   "Fives Group Cincinnati P-45"
+  ],
+  "sourceUrl": "https://www.shell.com/business-customers/industrial-lubricants-and-specialty-fluids-for-business/products/shell-morlina-bearing-circulating-oils.html",
+  "dataSheetUrl": "https://www.shell-livedocs.com/data/published/en-US/9611876a-728f-41be-9364-c1af80d08390.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Castrol",
+  "name": "Castrol Hyspin Spindle Oil 2",
+  "category": "SPINDLE_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "2",
+  "viscosityKv40": null,
+  "description": "Sehr dünnflüssiges Spindelöl (2 mm²/s bei 40 °C) aus hochraffiniertem Mineralöl mit Rost- und Oxidationsinhibitoren. Es ist speziell für die Schmierung schnelllaufender und präziser Werkzeugmaschinen-Spindellager formuliert. Verträglich mit Dichtungen aus Nitril, Silikon und Fluorpolymeren.",
+  "applicationAreas": [
+   "Werkzeugmaschinenspindeln",
+   "Hochgeschwindigkeitsspindeln",
+   "Präzisionslager"
+  ],
+  "certifications": [
+   "DIN 51502 HL",
+   "ISO 6743-4 Typ HL",
+   "ISO 6743-2 Typ FC"
+  ],
+  "sourceUrl": "https://thelubricantoracle.castrol.com/product/hyspin-spindle-oil-2/oil-gas/en-BR",
+  "dataSheetUrl": "https://ctacnc.ca/wp-content/uploads/2023/06/Castrol-Hyspin-Spindle-Oil-2_Data-sheet.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Castrol",
+  "name": "Castrol Hyspin Spindle Oil 10",
+  "category": "SPINDLE_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "10",
+  "viscosityKv40": null,
+  "description": "Spindelöl mit 10 mm²/s bei 40 °C aus hochraffiniertem Mineralöl, additiviert mit Rost- und Oxidationsinhibitoren (R&O). Ausgelegt für alle Arten von Spindellagern einschließlich schnelllaufender Ausführungen. Gute Verträglichkeit mit gängigen Dichtungswerkstoffen.",
+  "applicationAreas": [
+   "Werkzeugmaschinenspindeln",
+   "Hochgeschwindigkeitsspindeln",
+   "Präzisionslager"
+  ],
+  "certifications": [
+   "DIN 51502 HL",
+   "ISO 6743-4 Typ HL",
+   "ISO 6743-2 Typ FC"
+  ],
+  "sourceUrl": "https://thelubricantoracle.castrol.com/product/hyspin-spindle-oil-10/industrial/en-US",
+  "dataSheetUrl": "https://msdspds.castrol.com/bpglis/fusionpds.nsf/files/bc6d0aceb9d32cfb80257796002fd4ae/$file/460393_gb_en.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Fuchs",
+  "name": "RENOLIN ZAF B HT PLUS Low Viscosity Series",
+  "category": "SPINDLE_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "2",
+  "viscosityKv40": null,
+  "description": "Zink- und aschefreie Spindelöl- und Hydraulikflüssigkeitsreihe auf Basis ausgewählter Mineralöle mit Phosphor-Schwefel-Additivtechnologie. Entwickelt für rotierende Spindeln von Werkzeug- und Schleifmaschinen; VG 2 wird für Spindellager mit engen Toleranzen empfohlen. Ab VG 5 übertreffen die Öle die Anforderungen an HLP-Hydrauliköle nach DIN 51524 Teil 2.",
+  "applicationAreas": [
+   "Werkzeugmaschinenspindeln",
+   "Schleifmaschinen",
+   "Hydraulik",
+   "Metallbearbeitung"
+  ],
+  "certifications": [
+   "DIN 51524-2"
+  ],
+  "sourceUrl": "https://www.fuchs.com/us/en/product/product/122667-renolin-zaf-b-ht-plus-low-viscosity-series/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Fuchs",
+  "name": "RENOLIN SPINDLE OIL #10",
+  "category": "SPINDLE_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "10",
+  "viscosityKv40": null,
+  "description": "Spindelöl in ISO VG 10 für schnelllaufende Spindeln, eingesetzt in der Textilindustrie und im Werkzeugmaschinenbau. Es bietet guten Verschleißschutz, schnelle Luftabscheidung, Schaumkontrolle sowie Oxidations- und Korrosionsschutz. Kann auch als Hydraulikflüssigkeit verwendet werden, wo ein ISO-VG-10-Produkt gefordert ist.",
+  "applicationAreas": [
+   "Textilspindeln",
+   "Werkzeugmaschinenspindeln",
+   "Hydraulik"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.fuchs.com/ca/en/product/product/128461-RENOLIN-SPINDLE-OIL-10/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Fuchs",
+  "name": "RENISO UltraCool 68",
+  "category": "REFRIGERATION_OIL",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": "68",
+  "viscosityKv40": null,
+  "description": "Kältemaschinenöl auf Basis synthetischer Kohlenwasserstoffe, das speziell für Ammoniak-Anwendungen (NH3) entwickelt wurde. Es zeichnet sich durch hohe thermische Stabilität und geringe Verdampfungsneigung aus. Eingesetzt wird es in industriellen Kälteanlagen mit NH3-Verdichtern.",
+  "applicationAreas": [
+   "Ammoniak-Kälteanlagen",
+   "Industriekälte",
+   "Kältekompressoren"
+  ],
+  "certifications": [
+   "DIN 51503 KAA"
+  ],
+  "sourceUrl": "https://www.fuchs.com/de/de/produkt/product/148811-RENISO-UltraCool-68/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Fuchs",
+  "name": "RENISO KC 68",
+  "category": "REFRIGERATION_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "68",
+  "viscosityKv40": null,
+  "description": "Kältemaschinenöl aus naphthenischen Sonderraffinaten mit hoher Alterungsbeständigkeit und niedrigem Pourpoint. Es zeigt ein sehr günstiges Kälteverhalten und eignet sich für Ammoniak, HFCKW (z. B. R22) und Kohlenwasserstoffe wie Propan (R290). Empfohlen unter anderem für Turboverdichter sowie Anwendungen mit hohen Verflüssigungstemperaturen.",
+  "applicationAreas": [
+   "Ammoniak-Kälteanlagen",
+   "R22-Anlagen",
+   "Kohlenwasserstoff-Kältemittel",
+   "Turboverdichter",
+   "Wärmepumpen"
+  ],
+  "certifications": [
+   "DIN 51503 KAA",
+   "DIN 51503 KC",
+   "DIN 51503 KE"
+  ],
+  "sourceUrl": "https://www.fuchs.com/de/de/produkt/product/148757-RENISO-KC-68/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Fuchs",
+  "name": "RENISO S 68",
+  "category": "REFRIGERATION_OIL",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": "68",
+  "viscosityKv40": null,
+  "description": "Kältemaschinenöl auf Alkylbenzol-Basis ohne Verschleißschutz-Additive. Es ist sowohl für R22- als auch für NH3-Anwendungen geeignet und wird bei HFCKW-Kältemitteln und Ammoniak eingesetzt. Die Viskosität bei 40 °C beträgt 68 mm²/s.",
+  "applicationAreas": [
+   "R22-Anlagen",
+   "Ammoniak-Kälteanlagen",
+   "Kohlenwasserstoff-Kältemittel"
+  ],
+  "certifications": [
+   "DIN 51503 KAA",
+   "DIN 51503 KC",
+   "DIN 51503 KE"
+  ],
+  "sourceUrl": "https://www.fuchs.com/de/de/produkt/product/148780-RENISO-S-68/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Mobil",
+  "name": "Mobil EAL Arctic 68",
+  "category": "REFRIGERATION_OIL",
+  "chemistry": "ESTER",
+  "viscosityIso": "68",
+  "viscosityKv40": null,
+  "description": "Vollsynthetisches Kältemaschinenöl auf Basis von Polyolestern (POE) mit einem speziellen Additivsystem. Es ist für Kälteverdichter und -anlagen mit HFKW-, HFO- sowie HFO/HFKW-Gemischkältemitteln (A1- und A2L-Klassifizierung) ausgelegt und wachsfrei. Nicht geeignet für Ammoniak-Anlagen.",
+  "applicationAreas": [
+   "HFKW-Kältemittel",
+   "HFO-Kältemittel",
+   "Gewerbekälte",
+   "Industriekälte",
+   "HVAC"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.mobil.com/en/lubricants/for-businesses/industrial/lubricants/products/products/mobil-eal-arctic-68",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Shell",
+  "name": "Shell Refrigeration Oil S4 FR-F 68",
+  "category": "REFRIGERATION_OIL",
+  "chemistry": "ESTER",
+  "viscosityIso": "68",
+  "viscosityKv40": null,
+  "description": "Synthetisches Kältemaschinenöl mit Polyolester-Grundflüssigkeit, entwickelt für R134a und weitere HFKW-Kältemittel (früher Shell Clavus Oil R). Es ist für offene, halbhermetische und hermetische Verdichter in Haushalts-, Gewerbe- und Industriekälteanlagen freigegeben und über den gesamten üblichen Kältetemperaturbereich mischbar. Hohe Hochtemperatur- und Oxidationsstabilität sorgen für lange Standzeiten.",
+  "applicationAreas": [
+   "HFKW-Kältemittel",
+   "R134a",
+   "Hubkolbenverdichter",
+   "Rotationsverdichter",
+   "Gewerbekälte",
+   "Industriekälte"
+  ],
+  "certifications": [
+   "DIN 51503 KD"
+  ],
+  "sourceUrl": "https://www.shell-livedocs.com/data/published/en-HK/a681eef8-310b-457a-ac88-4e0945aeee07.pdf",
+  "dataSheetUrl": "https://www.shell-livedocs.com/data/published/en-HK/a681eef8-310b-457a-ac88-4e0945aeee07.pdf",
+  "sdsUrl": "https://www.epc.shell.com/DocumentManagement/BlobDocumentDownload?DocId=156863821",
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Klüber Lubrication",
+  "name": "Klüber Summit RHT 68",
+  "category": "REFRIGERATION_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "68",
+  "viscosityKv40": null,
+  "description": "Kältemaschinenöl auf Basis hochraffinierter, hydrierter paraffinischer Mineralöle, das speziell für Ammoniak-Kälteverdichter entwickelt wurde. Es hat eine geringe Löslichkeit in Ammoniak, führt zu weniger Ölablagerungen und ermöglicht lange Ölwechselintervalle. Es ist mischbar mit Mineralölen, Alkylbenzolen und PAO-Kälteölen und verträglich mit den üblichen Chloropren-/Neopren-Dichtungen.",
+  "applicationAreas": [
+   "Ammoniak-Kälteanlagen",
+   "Industriekälte",
+   "Kältekompressoren"
+  ],
+  "certifications": [
+   "DIN 51503 KAA"
+  ],
+  "sourceUrl": "https://www.klueber.com/us/en/products-service/products/klueber-summit-rht-68/304207/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "BITZER",
+  "name": "BSE32",
+  "category": "REFRIGERATION_OIL",
+  "chemistry": "ESTER",
+  "viscosityIso": "32",
+  "viscosityKv40": null,
+  "description": "Polyolester-Kältemaschinenöl von BITZER für Hubkolbenverdichter mit chlorfreien Kältemitteln. Freigegeben unter anderem für R134a, R404A, R407A/C/F, R450A, R507A, R513A, R1234yf, R448A, R449A und R452A. Viskosität 32 cSt bei 40 °C; BITZER schreibt für die Erstbefüllung ausdrücklich die eigenen Polyolesteröle vor.",
+  "applicationAreas": [
+   "HFKW-Kältemittel",
+   "HFO-Kältemittel",
+   "Hubkolbenverdichter",
+   "Wärmepumpen",
+   "Klimaanlagen"
+  ],
+  "certifications": [
+   "DIN 51503 KD"
+  ],
+  "sourceUrl": "https://www.bitzer.de/shared_media/html/kt-500/de-DE/265588619265592587.html",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "BITZER",
+  "name": "BSE55",
+  "category": "REFRIGERATION_OIL",
+  "chemistry": "ESTER",
+  "viscosityIso": "55",
+  "viscosityKv40": null,
+  "description": "Polyolester-Kältemaschinenöl von BITZER mit 55 cSt bei 40 °C für Verdichter mit HFKW- und HFO-Kältemitteln. Freigegeben unter anderem für R1234ze(E), R134a, R513A, R1234yf, R450A, R407C und R410A. Es wird für Anwendungen mit höherem Viskositätsbedarf gegenüber BSE32 eingesetzt.",
+  "applicationAreas": [
+   "HFO-Kältemittel",
+   "HFKW-Kältemittel",
+   "Hubkolbenverdichter",
+   "Wärmepumpen"
+  ],
+  "certifications": [
+   "DIN 51503 KD"
+  ],
+  "sourceUrl": "https://www.bitzer.de/shared_media/html/kt-500/de-DE/265588619265592587.html",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "CPI Fluid Engineering",
+  "name": "Solest 68",
+  "category": "REFRIGERATION_OIL",
+  "chemistry": "ESTER",
+  "viscosityIso": "68",
+  "viscosityKv40": null,
+  "description": "Synthetisches Polyolester-Kältemaschinenöl der ISO-VG-Klasse 68 für gewerbliche und industrielle Kälte- und Klimaverdichter. Es bietet gegenüber Standard-HFKW-Ölen höhere Filmfestigkeit und besseren Lagerschutz und wirkt verschleißmindernd auf Stahl- und Aluminiumoberflächen. Geeignet für Hubkolben-, Schrauben-, Rotations-, Turbo- und Scrollverdichter.",
+  "applicationAreas": [
+   "HFKW-Kältemittel",
+   "HCFKW-Kältemittel",
+   "HFO-Kältemittel",
+   "Schraubenverdichter",
+   "Turboverdichter",
+   "Scrollverdichter",
+   "Industriekälte"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://climalife.com/product/cpi-solest-series/",
+  "dataSheetUrl": "https://climalife.com/wp-content/uploads/2022/09/uploadsproductmediadocumentsolest-68-v1.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "TotalEnergies",
+  "name": "PLANETELF ACD 68",
+  "category": "REFRIGERATION_OIL",
+  "chemistry": "ESTER",
+  "viscosityIso": "68",
+  "viscosityKv40": null,
+  "description": "Synthetisches Kältemaschinenöl auf Polyolester-Basis mit sehr gutem Verhalten bei hohen Temperaturen in Gegenwart von Kältemittel, Wasser und metallischen Bauteilen. Es ist für HFKW-Kältemittel wie R134a, R404A, R407C, R410A und R507 geeignet und wird in Hubkolben-, Schrauben- und Rotationsverdichtern eingesetzt. Die gute Mischbarkeit mit dem Kältemittel sichert einen zuverlässigen Ölrücktransport.",
+  "applicationAreas": [
+   "HFKW-Kältemittel",
+   "Hubkolbenverdichter",
+   "Schraubenverdichter",
+   "Rotationsverdichter",
+   "Gewerbekälte"
+  ],
+  "certifications": [
+   "ISO 6743-3 DRD"
+  ],
+  "sourceUrl": "https://lubricants.catalog.totalenergies.com/catalog-ch/de_CH/ggz_planetelf-acd-68",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Sika",
+  "name": "Sika Separol W-320",
+  "category": "RELEASE_AGENT",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Gebrauchsfertiges, lösemittelfreies Schalungstrennmittel auf Basis veredelter, mit Wasser emulgierter Mineralöle. Es ist niedrigviskos, verläuft nach dem Sprühen selbsttätig und wirkt stark porenmindernd, ohne brennbare Dämpfe zu bilden. Einsetzbar auf Baustellen und im Fertigteilwerk, auch auf beheizten Schalungen bis +70 °C.",
+  "applicationAreas": [
+   "Betonschalung",
+   "Fertigteilwerk",
+   "Baustelle",
+   "beheizte Schalung",
+   "Stahlschalung"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://aut.sika.com/de/bau/betonherstellung/spezialprodukte-hilfsmittelundessentials/schaltrennmittel/sika-separol-w-320.html",
+  "dataSheetUrl": "https://aut.sika.com/content/dam/dms/at01/r/sika_separol_w-320.pdf",
+  "sdsUrl": "https://aut.sika.com/dam/dms/at01/c/sds-sika-separolw-320.pdf",
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Sika",
+  "name": "Sika Separol-710 BIO",
+  "category": "RELEASE_AGENT",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Selbstverlaufende Trennmittel-Emulsion auf pflanzlicher Basis, vollständig biologisch abbaubar. Sie eignet sich für alle Schalungsarten und besonders für Sicht- und Farbbeton, sowohl auf saugenden Holzschalungen als auch auf glatten Stahl- und Kunststoffschalungen. Die leichte biologische Abbaubarkeit nach OECD 301F liegt über 60 %.",
+  "applicationAreas": [
+   "Sichtbeton",
+   "Farbbeton",
+   "Holzschalung",
+   "Stahlschalung",
+   "Kunststoffschalung",
+   "vertikale Schalung"
+  ],
+  "certifications": [
+   "OECD 301F > 60 % (leichte biologische Abbaubarkeit)",
+   "ecobau / Minergie-(A-/P-)ECO"
+  ],
+  "sourceUrl": "https://che.sika.com/de/construction/beton-und-moertelherstellung/hilfs-und-nebenprodukte/trenn-und-geraeteschutzmittel/sika-separol-710bio.html",
+  "dataSheetUrl": "https://che.sika.com/dam/dms/ch01/k/sika_separol_-710bio.pdf",
+  "sdsUrl": "https://che.sika.com/dam/dms/ch01/v/sds-sikaa-separola-710bio.pdf",
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Sika",
+  "name": "Sika Separol-33 Universal",
+  "category": "RELEASE_AGENT",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Wirtschaftliches Universal-Trennmittel auf Mineralölbasis für alle Schalungsarten, zusätzlich als leichter Maschinen- und Geräteschutz einsetzbar. Der Trennfilm haftet auch an senkrechter Schalung gut und benötigt keine Ablüftzeit. Geeignet für saugende Holzschalungen, glatte Stahl- und Kunststoffschalungen sowie beheizte Schalungen bis +80 °C.",
+  "applicationAreas": [
+   "Betonschalung",
+   "Holzschalung",
+   "Stahlschalung",
+   "beheizte Schalung",
+   "Mischerschutz",
+   "Geräteschutz"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://che.sika.com/de/construction/beton-und-moertelherstellung/hilfs-und-nebenprodukte/trenn-und-geraeteschutzmittel/sika-separol-33universal.html",
+  "dataSheetUrl": "https://che.sika.com/dam/dms/ch01/8/sika_separol_-33universal.pdf",
+  "sdsUrl": "https://che.sika.com/dam/dms/ch01/5/sds-sika-separola-33universal-1.pdf",
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Zeller+Gmelin",
+  "name": "Divinol B Classic",
+  "category": "RELEASE_AGENT",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Universaltrennmittel für alle Arten von Schalungen, das zusätzlich als Mischerschutz eingesetzt werden kann. Es verhindert den direkten Kontakt zwischen Schalung und Betonoberfläche und reduziert so Oberflächenschäden und Nacharbeit. Aufgetragen wird es durch Sprühen, Streichen oder Rollen.",
+  "applicationAreas": [
+   "Phenolharzschalung",
+   "vorbehandelte Holzschalung",
+   "kunststoffbeschichtete Schalhaut",
+   "Betonwaren",
+   "Pflastersteine",
+   "Mischerschutz"
+  ],
+  "certifications": [
+   "GISCODE BTM 20",
+   "DGNB Qualitätsstufe 1-2"
+  ],
+  "sourceUrl": "https://zeller-gmelin.de/products/divinol-b-classic/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Fuchs",
+  "name": "RENOCAST RA 4830 AQUA",
+  "category": "RELEASE_AGENT",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Gebrauchsfertiges, lösemittelfreies Betontrennmittel auf wässriger Emulsionsbasis mit erhöhtem Korrosionsschutz (früher SOK AQUA KS). Es ist besonders für korrosionsempfindliche Stahlschalungen sowie für die Filigrandeckenproduktion geeignet und wird horizontal wie vertikal eingesetzt. Die Ergiebigkeit liegt bei rund 1 Liter je 60-130 m², die Schalungstemperatur darf bis 70 °C betragen.",
+  "applicationAreas": [
+   "Stahlschalung",
+   "Filigrandecken",
+   "Fertigteilwerk",
+   "Decken- und Wandproduktion",
+   "Rüttelverdichtung"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.fuchs.com/de/de/produkt/product/153216-RENOCAST-RA-4830-AQUA/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Fuchs",
+  "name": "RENOCAST RA 3107",
+  "category": "RELEASE_AGENT",
+  "chemistry": "ESTER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "EU-Ecolabel-zertifiziertes Betontrennmittel auf Esterölbasis (früher SOK ECO 107), mineralöl- und lösemittelfrei sowie leicht biologisch abbaubar. Es wird für Decken und Wände, Schleuderbeton und Direktausschalung eingesetzt und eignet sich für Holz-, kunststoffbeschichtete Holz- und Stahlschalungen. Es vermeidet Porenbildung und beeinträchtigt die Haftung von Putz, Kleber oder Anstrich nicht.",
+  "applicationAreas": [
+   "Decken- und Wandproduktion",
+   "Schleuderbeton",
+   "Direktausschalung",
+   "Betonfertigteile",
+   "Holzschalung",
+   "Stahlschalung"
+  ],
+  "certifications": [
+   "EU Ecolabel (DE/027/288B)",
+   "ACT (Circular Economy Initiative)"
+  ],
+  "sourceUrl": "https://www.fuchs.com/de/de/produkt/product/153250-RENOCAST-RA-3107/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Chem-Trend",
+  "name": "Lusin Alro OL 202 F",
+  "category": "RELEASE_AGENT",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Silikonfreies Trennmittel für die Thermoplastverarbeitung, erhältlich als Spray. Es wird für Spritzguss, Blasformen, Extrusion und Compoundierung eingesetzt und ist für Formteile geeignet, die nach der Entformung lackiert, bedruckt oder anderweitig weiterbehandelt werden. Für den Einsatzbereich bis 200 °C ausgewiesen und für Anwendungen mit strengen hygienischen Vorschriften NSF-registriert.",
+  "applicationAreas": [
+   "Spritzguss",
+   "Blasformen",
+   "Extrusion",
+   "Compoundierung",
+   "Polyolefine",
+   "technische Kunstharze"
+  ],
+  "certifications": [
+   "NSF-registriert",
+   "EU 10/2011 konform"
+  ],
+  "sourceUrl": "https://de.chemtrend.com/wp-content/uploads/sites/5/2019/05/Trennmittel_Lusin_04.17-web.pdf",
+  "dataSheetUrl": "https://de.chemtrend.com/wp-content/uploads/sites/5/2019/05/Trennmittel_Lusin_04.17-web.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Chem-Trend",
+  "name": "Lusin Alro O 153 S",
+  "category": "RELEASE_AGENT",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Silikonhaltiges Trennmittel für die Thermoplastverarbeitung, erhältlich als Spray und als Großpackung. Silikonhaltige Lusin-Alro-Produkte bieten lange Taktzeiten und sehr gute Trenneigenschaften bei Spritzguss, Blasformen, Extrusion und Compoundierung. Das Produkt ist NSF-registriert und nach EU 10/2011 konform.",
+  "applicationAreas": [
+   "Spritzguss",
+   "Blasformen",
+   "Extrusion",
+   "Compoundierung",
+   "Hochtemperaturharze",
+   "technische Kunstharze"
+  ],
+  "certifications": [
+   "NSF-registriert",
+   "EU 10/2011 konform"
+  ],
+  "sourceUrl": "https://de.chemtrend.com/wp-content/uploads/sites/5/2019/05/Trennmittel_Lusin_04.17-web.pdf",
+  "dataSheetUrl": "https://de.chemtrend.com/wp-content/uploads/sites/5/2019/05/Trennmittel_Lusin_04.17-web.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "ACMOS CHEMIE",
+  "name": "ACMOScoat 118-6078",
+  "category": "RELEASE_AGENT",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Semipermanente Spezialbeschichtung für die Kern- und Formenherstellung in der Gießerei. Sie verhindert Sandanhaftungen an den Werkzeugen auch unter mechanischer Beanspruchung. Damit reduziert sie Reinigungsaufwand und Ausschuss in der Kernfertigung.",
+  "applicationAreas": [
+   "Gießerei",
+   "Kernherstellung",
+   "Formenherstellung",
+   "Kernschießmaschinen"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.acmos.com/produkte-anwendungen/guss",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "ACMOS CHEMIE",
+  "name": "ACMOS 118-222",
+  "category": "RELEASE_AGENT",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Trennmittel für die Gießereiindustrie zur Verwendung mit Nassgusssand (Grünsand). Es sorgt für eine saubere Entformung der Sandformen und schützt die Modelleinrichtung. Teil der ACMOS-Trennmittelreihe für Formstoffe (118-222, 118-230, 118-239).",
+  "applicationAreas": [
+   "Gießerei",
+   "Nassgusssand",
+   "Grünsand",
+   "Formherstellung",
+   "Modelleinrichtungen"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.acmos.com/produkte-anwendungen/guss",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Carl Bechem",
+  "name": "BERUDRAW 3955",
+  "category": "WIRE_DRAWING",
+  "chemistry": "ESTER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Wassermischbare Ziehpaste auf Basis nativer Ester und oberflächenaktiver Substanzen, mineralölfrei. Eingesetzt beim Ziehen von Stahldraht in Ziehkästen, Nassziehmaschinen und als wässrige Lösung in Tauchziehanlagen. Frei von PFAS, Aktivschwefel, Chlorverbindungen, Komplexbildnern und Silikonen.",
+  "applicationAreas": [
+   "Stahldrahtzug",
+   "Nassziehmaschine",
+   "Ziehkasten",
+   "Tauchziehanlage"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.bechem.com/de/produkte/umformschmierstoffe/berudraw-3955.html",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Carl Bechem",
+  "name": "BERUDRAW ZD 818 NEU",
+  "category": "WIRE_DRAWING",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Nicht wassermischbares Ziehöl auf Mineralölbasis für den Drahtzug im Mittel- und Feinzugbereich von Stahl und Edelstahl. Die kräftige AW/EP-Additivierung ermöglicht hohe Standzeiten der Ziehsteine. Kinematische Viskosität 30 mm²/s bei 40 °C, Flammpunkt 180 °C; frei von Chlor- und Schwermetallzusätzen sowie PFAS.",
+  "applicationAreas": [
+   "Stahldrahtzug",
+   "Edelstahldraht",
+   "Mittelzug",
+   "Feinzug"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.bechem.com/de/produkte/umformschmierstoffe/berudraw-zd-818-neu.html",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Carl Bechem",
+  "name": "BERUDRAW 2291-1",
+  "category": "WIRE_DRAWING",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Chlor- und schwermetallfreie, wassermischbare Ziehpaste zum Ziehen von Stahldraht. Besonders geeignet für Einzelzüge nach einer Trägerbeschichtung sowie als Seifenlösung in den Endzügen. Bietet Korrosionsschutz, gutes Spülverhalten und geringe Rückstände.",
+  "applicationAreas": [
+   "Stahldrahtzug",
+   "Ziehpaste",
+   "Endzug",
+   "Trägerbeschichtung"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.bechem.com/de/produkte/umformschmierstoffe/berudraw-2291-1.html",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Carl Bechem",
+  "name": "BECHEM Unopol S 621",
+  "category": "WIRE_DRAWING",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Mineralölfreier, vollsynthetischer Hochleistungs-Ziehschmierstoff für Draht aus Kupfer und Kupferlegierungen. Geeignet für blanke, verzinnte, versilberte und vernickelte Kupferdrähte im Mittel- und Feinzug sowie auf Mehrdrahtmaschinen bis Enddurchmesser 0,10 mm (teilweise 0,07 mm). Schaumarm, sehr gute Reinigungswirkung, lange Standzeiten.",
+  "applicationAreas": [
+   "Kupferdrahtzug",
+   "Feinzug",
+   "Mehrdrahtmaschine",
+   "Lackdrahtproduktion"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.bechem.com/de/produkte/umformschmierstoffe/bechem-unopol-s-621.html",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Carl Bechem",
+  "name": "BECHEM Unopol G 560",
+  "category": "WIRE_DRAWING",
+  "chemistry": "SEMI_SYNTHETIC",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Halbsynthetischer, wassermischbarer Hochleistungs-Ziehschmierstoff (ca. 27 % Mineralöl) für Kupfer und Kupferlegierungen. Einsatz im Grobzug bis Enddurchmesser 1,8 mm und im Mittelzug bis 0,2 mm, auf Ein- und Mehrdrahtmaschinen sowie beim Pilgern von Kupferrohren. Sehr gute Reinigungswirkung und lange Emulsionsstandzeit.",
+  "applicationAreas": [
+   "Kupferdrahtzug",
+   "Grobzug",
+   "Mittelzug",
+   "Rohrpilgern"
+  ],
+  "certifications": [
+   "TRGS 611"
+  ],
+  "sourceUrl": "https://www.bechem.com/de/produkte/umformschmierstoffe/bechem-unopol-g-560.html",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Carl Bechem",
+  "name": "BECHEM Unopol AL 570",
+  "category": "WIRE_DRAWING",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Wassermischbare Ziehemulsion für Draht aus Aluminium und Aluminiumlegierungen (ca. 38 % Mineralöl). Ausgelegt für Eingangsdurchmesser um 3,5 mm und Enddurchmesser von 0,10 bis 0,80 mm auf Ein- und Mehrdrahtmaschinen mit kontinuierlicher Glühe. Gutes Spülverhalten, hohe Standzeiten, PFAS-frei.",
+  "applicationAreas": [
+   "Aluminiumdrahtzug",
+   "Mehrdrahtmaschine",
+   "Kontiglühe",
+   "Feinzug"
+  ],
+  "certifications": [
+   "TRGS 611"
+  ],
+  "sourceUrl": "https://www.bechem.com/de/produkte/umformschmierstoffe/bechem-unopol-al-570.html",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Zeller+Gmelin",
+  "name": "Multidraw CU SY",
+  "category": "WIRE_DRAWING",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Vollsynthetisches, wasserlösliches Drahtziehmittel für Kupfer im Mittel-, Fein- und Feinstzug auf Basis anionischer und nichtionischer Schmierkomponenten. Sehr gutes Benetzungs- und Filtrierverhalten, saubere Maschinen und lackierfähige Drahtoberflächen. Geeignet für Inline- und Mehrfachziehmaschinen sowie den Glühbereich.",
+  "applicationAreas": [
+   "Kupferdrahtzug",
+   "Feinstzug",
+   "Inline-Ziehmaschine",
+   "Glühbereich"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.zeller-gmelin.de/zgSite/de/Lubricants/Draht/Drahtzug/Multidraw-CU-SY/p/97220",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Zeller+Gmelin",
+  "name": "Multidraw CU MFE",
+  "category": "WIRE_DRAWING",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Wassermischbares Kupferdraht-Ziehmittel, entwickelt für das Ziehen von Magnetdraht auf Inline-Lackdrahtanlagen bis zu Durchmessern von 0,07 mm. Hält die Drahtoberfläche sauber für das anschließende Lackieren, verlängert die Emulsionsstandzeit und ist mit üblicher Papierbandfiltration verträglich.",
+  "applicationAreas": [
+   "Kupferdrahtzug",
+   "Magnetdraht",
+   "Lackdrahtanlage",
+   "Feinstzug"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://zeller-gmelin.de/en/products/multidraw-cu-mfe/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Zeller+Gmelin",
+  "name": "Multidraw CU GWZ",
+  "category": "WIRE_DRAWING",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Wassermischbarer Glühwasser-Zusatz für die kontinuierliche Glühe im Kupferdrahtzug. Geeignet für blanke sowie verzinnte, verzinkte, versilberte und vermessingte Drähte; schützt vor Korrosion und Anlaufen und wirkt als Schmierstoff beim Auf- und Abspulen. Wirksam bereits in sehr niedrigen Konzentrationen.",
+  "applicationAreas": [
+   "Kupferdrahtzug",
+   "Kontiglühe",
+   "Glühwasserzusatz",
+   "Korrosionsschutz"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://zeller-gmelin.de/en/products/multidraw-cu-gwz-2/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Condat",
+  "name": "VICAFIL SL",
+  "category": "WIRE_DRAWING",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Wasserlösliche Nassziehmittel-Reihe für den Feinzug, insbesondere für verkupferte und verzinkte Drähte. Verfügbar als milchige Emulsion (höchste Schmierwirkung), opaleszente Mikroemulsion (Balance aus Sauberkeit und Leistung) und klare synthetische Lösung für feinste Drähte. Eingesetzt bei Schweißdraht, Kabeldraht, Stahlcord, Federdraht und galvanisierten Drähten.",
+  "applicationAreas": [
+   "Nassziehen",
+   "Schweißdraht",
+   "Federdraht",
+   "verzinkter Draht"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.condat-lubricants.com/product/wire-drawing-lubricants-soaps/soluble-lubricants-wet-wire-drawing/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Condat",
+  "name": "VICAFIL SP",
+  "category": "WIRE_DRAWING",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Wasserlösliche Ziehpasten, die unverdünnt eingesetzt werden und für Einzelzüge eine wirksame Schmierung liefern. Da sie löslich sind, lassen sie sich leicht abreinigen und hinterlassen eine sehr saubere Drahtoberfläche.",
+  "applicationAreas": [
+   "Nassziehen",
+   "Einzelzug",
+   "Ziehpaste",
+   "Kabeldraht"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.condat-lubricants.com/product/wire-drawing-lubricants-soaps/soluble-lubricants-wet-wire-drawing/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Condat",
+  "name": "VICAFIL TFH",
+  "category": "WIRE_DRAWING",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Ziehöl-Reihe für das Ziehen metallischer Drähte, erhältlich in mehreren Viskositäten auf mineralischer, synthetischer oder nativer Grundöl-Basis mit angepasster Additivierung. Eingesetzt für ACSR-Leiterseile, Aluclad-Drähte, Schweißdrähte, Kaltumformdrähte und Federdrähte aus Kupfer, Aluminium, Kohlenstoff- und Edelstahl.",
+  "applicationAreas": [
+   "Drahtziehöl",
+   "ACSR-Leiterseile",
+   "Schweißdraht",
+   "Federdraht"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.condat-lubricants.com/product/wire-drawing-lubricants-soaps/wire-drawing-oils-greases/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Condat",
+  "name": "VICAFIL TFG",
+  "category": "WIRE_DRAWING",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Hochviskose Ziehfette für besonders anspruchsvolle Umformoperationen. Werden typischerweise im Einzelzug vor nachgelagerten Kaltumformschritten eingesetzt; die Formulierung wird an den zu ziehenden Werkstoff angepasst.",
+  "applicationAreas": [
+   "Ziehfett",
+   "Einzelzug",
+   "Kaltumformung"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.condat-lubricants.com/product/wire-drawing-lubricants-soaps/wire-drawing-oils-greases/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Condat",
+  "name": "VICAFIL SENJA",
+  "category": "WIRE_DRAWING",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Trockenziehseife mit reduziertem Boraxgehalt und ohne Nitrite, formuliert für erhöhte Scher- und Temperaturbeständigkeit. Eingesetzt bei Stahlcord-Prozessen, im Zug phosphatierter Spannstahldrähte (PC-Draht) und bei Schweißdraht; in Kombination mit VICAFIL TN 1548 sind besonders hohe Ziehgeschwindigkeiten möglich.",
+  "applicationAreas": [
+   "Trockenziehen",
+   "Ziehseife",
+   "Stahlcord",
+   "Spannstahldraht",
+   "Schweißdraht"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.condat-lubricants.com/press-article/higher-drawing-stability-vicafil-senja/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Eastman",
+  "name": "Therminol 66",
+  "category": "HEAT_TRANSFER_OIL",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Synthetisches Wärmeträgeröl für den Flüssigphasenbetrieb bei hohen Temperaturen bis rund 345 °C. Es bleibt auch bei niedrigen Temperaturen pumpfähig und ist gezielt darauf ausgelegt, Feststoffbildung und Verschmutzung der Anlage zu verhindern. Wird weltweit in tausenden Wärmeträgeranlagen eingesetzt.",
+  "applicationAreas": [
+   "Chemieanlagen",
+   "Raffinerie",
+   "Kunststoff- und Polymerherstellung",
+   "Lebensmittel- und Getränkeindustrie",
+   "Solarthermie (CSP)",
+   "Abwärmenutzung"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.eastman.com/en/products/product-detail/71093438/therminol-66-heat-transfer-fluid",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Eastman",
+  "name": "Therminol VP-1",
+  "category": "HEAT_TRANSFER_OIL",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Synthetisches Hochtemperatur-Wärmeträgermedium aus einer eutektischen Mischung von Diphenyloxid und Biphenyl für den Einsatzbereich 12 °C bis 400 °C. Es lässt sich sowohl flüssig als auch in der Dampfphase (siedend/kondensierend) betreiben und bietet damit sehr genaue Temperaturführung. Der Kristallisationspunkt bei 12 °C erfordert in kalten Umgebungen eine Begleitheizung.",
+  "applicationAreas": [
+   "Chemieindustrie",
+   "Raffinerie",
+   "Polyesterherstellung",
+   "Solarthermie",
+   "Destillation",
+   "Biodiesel- und Bioalkoholherstellung"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.eastman.com/en/products/product-detail/71093459/therminol-vp-1-heat-transfer-fluid",
+  "dataSheetUrl": "https://productcatalog.eastman.com/tds/ProdDatasheet.aspx?product=71093459",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Eastman",
+  "name": "Therminol XP",
+  "category": "HEAT_TRANSFER_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Wärmeträgeröl auf Basis eines besonders reinen Weißöls für Betriebstemperaturen bis 315 °C. Durch die hohe Reinheit entstehen kaum Oxidations- und Zersetzungsablagerungen. Das Produkt ist praktisch ungiftig und erfüllt FDA-Reinheitsanforderungen sowie eine NSF-Registrierung, weshalb es besonders in der Lebensmittelverarbeitung eingesetzt wird.",
+  "applicationAreas": [
+   "Lebensmittel- und Getränkeverarbeitung",
+   "Biodiesel- und Bioalkoholherstellung",
+   "Polyester- und Spezialchemie",
+   "Klebstoffherstellung",
+   "Trocknerbeheizung"
+  ],
+  "certifications": [
+   "FDA-Reinheitsanforderungen",
+   "NSF-Registrierung"
+  ],
+  "sourceUrl": "https://www.eastman.com/en/products/product-detail/71093461/therminol-xp-heat-transfer-fluid",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Fuchs",
+  "name": "RENOLIN THERM 250",
+  "category": "HEAT_TRANSFER_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "10",
+  "viscosityKv40": null,
+  "description": "Niedrigviskoses Wärmeträgeröl auf Mineralölbasis mit hoher thermischer Stabilität und guten Wärmeübergangswerten. Es ist für Filmtemperaturen von -20 °C bis 250 °C freigegeben und lässt sich dank des sehr tiefen Pourpoints (unter -42 °C) auch kalt gut umwälzen. Kinematische Viskosität bei 40 °C: 10,2 mm²/s, Flammpunkt 154 °C.",
+  "applicationAreas": [
+   "Stahl und Metall",
+   "Energieerzeugung",
+   "Schmieden",
+   "Gießerei",
+   "Metallbearbeitung"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.fuchs.com/de/en/product/product/149343-RENOLIN-THERM-250/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Fuchs",
+  "name": "RENOLIN THERM 320",
+  "category": "HEAT_TRANSFER_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "46",
+  "viscosityKv40": null,
+  "description": "Wärmeträgeröl auf Basis ausgewählter Mineralöle für geschlossene Anlagen mit Zwangsumlauf ohne Drucküberlagerung. Freigegeben für Filmtemperaturen von -10 °C bis 320 °C, kinematische Viskosität bei 40 °C 43,7 mm²/s, Flammpunkt 225 °C. Typisch für die indirekte Beheizung von Reaktoren, Trocknern, Wärmetauschern und Verarbeitungsmaschinen.",
+  "applicationAreas": [
+   "Reaktorbeheizung",
+   "Trockner",
+   "Wärmetauscher",
+   "Stahl und Metall",
+   "Energieerzeugung",
+   "Schmieden",
+   "Gießerei"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.fuchs.com/de/en/product/product/149345-RENOLIN-THERM-320/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Fuchs",
+  "name": "RENOLIN THERM 330 S",
+  "category": "HEAT_TRANSFER_OIL",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": "22",
+  "viscosityKv40": null,
+  "description": "Synthetisches Wärmeträgeröl mit sehr hoher thermischer Stabilität für Filmtemperaturen bis 320 °C. Die niedrige Viskosität von 21 mm²/s bei 40 °C und der extrem tiefe Pourpoint von -60 °C erlauben einen sehr weiten Betriebsbereich, auch bei Kaltstart. Flammpunkt über 190 °C.",
+  "applicationAreas": [
+   "Stahl und Metall",
+   "Energieerzeugung",
+   "Schmieden",
+   "Gießerei",
+   "Metallbearbeitung",
+   "Prozessbeheizung"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.fuchs.com/de/en/product/product/149347-RENOLIN-THERM-330-S/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Mobil",
+  "name": "Mobiltherm 605",
+  "category": "HEAT_TRANSFER_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "32",
+  "viscosityKv40": null,
+  "description": "Wärmeträgeröl aus hochraffinierten Mineralöl-Grundölen für geschlossene, indirekte Heizanlagen. Es widersteht thermischem Cracken und Oxidation und ist für Öltemperaturen bis 315 °C in geschlossenen Systemen bzw. bis 180 °C in offenen Systemen empfohlen. Kinematische Viskosität bei 40 °C 30,4 mm²/s, Flammpunkt 230 °C (COC).",
+  "applicationAreas": [
+   "Indirekte Prozessbeheizung",
+   "Prozesskühlung",
+   "Chemieanlagen",
+   "Industrieöfen"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.mobil.com/en/sap/our-products/products/mobiltherm-605",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "TotalEnergies",
+  "name": "SERIOLA 1510",
+  "category": "HEAT_TRANSFER_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "32",
+  "viscosityKv40": null,
+  "description": "Wärmeträgeröl auf Mineralölbasis für geschlossene Kreisläufe ohne Luftkontakt, ausgelegt auf gute thermische Stabilität, hohen Flammpunkt und hohen Viskositätsindex. Es entspricht der internationalen Klassifikation ISO 6743-12 L-QC. Laut Hersteller wird das Produkt durch SERIOLA 32 abgelöst.",
+  "applicationAreas": [
+   "Energieerzeugung",
+   "Chemieindustrie",
+   "Lebensmittelverarbeitung",
+   "Textilindustrie",
+   "Holz und Papier",
+   "Bergbau"
+  ],
+  "certifications": [
+   "ISO 6743-12 L-QC"
+  ],
+  "sourceUrl": "https://lubricants.catalog.totalenergies.com/catalog-za/en_UK/b38_seriola-1510",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "TotalEnergies",
+  "name": "JARYTHERM DBT",
+  "category": "HEAT_TRANSFER_OIL",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Vollsynthetisches Wärmeträgermedium aus einer Mischung von Dibenzyltoluol-Isomeren für Anlagen von 0 °C bis 350 °C im Bulk (bis 370 °C Filmtemperatur) ohne Luftkontakt. Es ist sehr beständig gegen thermisches Cracken, wodurch sich über lange Zeit keine Koksablagerungen im Kreislauf bilden. Hauptsächlich in der Chemie und der Kunststoffverarbeitung (Extruderzylinder) eingesetzt.",
+  "applicationAreas": [
+   "Chemieindustrie",
+   "Kunststoffverarbeitung",
+   "Extruderbeheizung",
+   "Prozessbeheizung Hochtemperatur"
+  ],
+  "certifications": [
+   "ISO 6743-12 L-QD-350",
+   "ASTM D6743",
+   "DIN 51528"
+  ],
+  "sourceUrl": "https://lubricants.catalog.totalenergies.com/catalog-sg/en_SG/fpw-jarytherm-dbt",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Dow",
+  "name": "DOWTHERM A",
+  "category": "HEAT_TRANSFER_OIL",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Synthetisches Wärmeträgermedium aus einer eutektischen Mischung von Biphenyl und Diphenyloxid für Betriebstemperaturen von etwa 15 °C bis 400 °C. Da beide Komponenten praktisch denselben Dampfdruck haben, verhält sich die Mischung wie ein einheitlicher Stoff und kann sowohl flüssig als auch in der Dampfphase gefahren werden. Seit Jahrzehnten ein Standardprodukt für indirekte Hochtemperatur-Wärmeübertragung.",
+  "applicationAreas": [
+   "Chemieindustrie",
+   "Dampfphasenbeheizung",
+   "Hochtemperatur-Prozesse",
+   "Solarthermie"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.dow.com/en-us/pdp.dowtherm-a-heat-transfer-fluid.238000z.html",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "recherchiert"
+ },
+ {
+  "manufacturer": "Petrofer",
+  "name": "ISORAPID 277",
+  "category": "QUENCHING_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "22",
+  "viscosityKv40": null,
+  "description": "Schnellhärteöl mit sehr guter Verdampfungsstabilität für Schutzgas- und Aufkohlungsatmosphären in geschlossenen Kammeröfen. Die Badtemperatur liegt üblicherweise bei 50–80 °C, maximal 130 °C; die Viskosität bei 40 °C beträgt 24 mm²/s. Geeignet für Einsatzstähle, Vergütungsstähle und bei Bedarf Werkzeugstähle.",
+  "applicationAreas": [
+   "Kammeröfen",
+   "Einsatzhärten",
+   "Vergüten",
+   "Werkzeugstahl",
+   "Schutzgasatmosphäre"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://petrofer.com/products/heat-treatment/",
+  "dataSheetUrl": "https://petroferbyhongdang.vn/vnt_upload/product/10_2023/Petrofer_Quenching_Oils.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Petrofer",
+  "name": "ISORAPID 455",
+  "category": "QUENCHING_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "46",
+  "viscosityKv40": null,
+  "description": "Schnellhärteöl mit hoher Verdampfungsstabilität und mittlerer Viskosität (49–50 mm²/s bei 40 °C) für das gesamte Prozessspektrum in Lohnhärtereien. Übliche Badtemperatur 50–100 °C, maximal 150 °C. Wird für Einsatzstähle, Vergütungsstähle und Werkzeugstähle eingesetzt.",
+  "applicationAreas": [
+   "Lohnhärterei",
+   "Einsatzhärten",
+   "Vergüten",
+   "Kammeröfen",
+   "Werkzeugstahl"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://petrofer.com/products/heat-treatment/",
+  "dataSheetUrl": "https://petroferbyhongdang.vn/vnt_upload/product/10_2023/Petrofer_Quenching_Oils.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Petrofer",
+  "name": "ISOMAX 150",
+  "category": "QUENCHING_OIL",
+  "chemistry": "GTL",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Niedrigviskoses Schnellhärteöl auf Basis moderner GTL-Grundöle (Gas-to-Liquid) mit extrem hoher Verdampfungsstabilität, geringer Geruchsbildung und sehr hohem Flammpunkt. Die Viskosität bei 40 °C beträgt 13 mm²/s, die übliche Badtemperatur 40–70 °C. Durch die sehr kurze Dampfphase kühlt es gleichmäßig und emissionsarm ab.",
+  "applicationAreas": [
+   "Offene Härtebäder",
+   "Schrauben und Verbindungselemente",
+   "Federn",
+   "Schmiedeteile",
+   "Direkthärtung nach dem Schmieden"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.petrofer.co.uk/product-ranges/heat-treatment",
+  "dataSheetUrl": "https://petroferbyhongdang.vn/vnt_upload/product/10_2023/Petrofer_Quenching_Oils.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Petrofer",
+  "name": "MARQUENCH 722",
+  "category": "QUENCHING_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Hochleistungs-Warmbadöl (Martempering) mit sehr hoher Alterungsbeständigkeit und einer Viskosität von 78 mm²/s bei 40 °C. Die übliche Badtemperatur liegt bei 60–150 °C, maximal 180 °C. Wird eingesetzt, um den Verzug an Zahnrädern, Wellen sowie Kugel- und Rollenlagern deutlich zu verringern.",
+  "applicationAreas": [
+   "Warmbadhärten",
+   "Martempering",
+   "Zahnräder",
+   "Wellen",
+   "Wälzlager",
+   "Verzugsarmes Härten"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://petrofer.com/products/heat-treatment/",
+  "dataSheetUrl": "https://petroferbyhongdang.vn/vnt_upload/product/10_2023/Petrofer_Quenching_Oils.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Petrofer",
+  "name": "VACUQUENCH 305",
+  "category": "QUENCHING_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "32",
+  "viscosityKv40": null,
+  "description": "Härteöl speziell für Vakuumöfen, gemeinsam mit Ofenherstellern entwickelt, mit hoher Reinheit und schnellem Entgasungsverhalten. Viskosität bei 40 °C 30 mm²/s, übliche Badtemperatur 40–80 °C. Die Auswahl innerhalb der Vacuquench-Reihe richtet sich nach der Härtbarkeit des jeweiligen Stahls.",
+  "applicationAreas": [
+   "Vakuumhärten",
+   "Vakuumöfen",
+   "Blankhärtung",
+   "Werkzeugstahl"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.petrofer.co.uk/product-ranges/heat-treatment",
+  "dataSheetUrl": "https://petroferbyhongdang.vn/vnt_upload/product/10_2023/Petrofer_Quenching_Oils.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Fuchs",
+  "name": "RENOQUENCH QH 35 MC",
+  "category": "QUENCHING_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Universelles Hochleistungs-Härteöl auf Hydrocracköl-Basis (früher THERMISOL QH 35 MC) für Badhärtung von Chargen und in Durchlauföfen, offen wie geschlossen. Es härtet unlegierte und legierte Einsatz-, Vergütungs- und Werkzeugstähle bei Badtemperaturen von 40–110 °C (max. 150 °C). Viskosität bei 40 °C 37 mm²/s, Flammpunkt 236 °C; das Produkt wurde gezielt auf ein deutlich reduziertes Flammverhalten entwickelt.",
+  "applicationAreas": [
+   "Badhärtung",
+   "Durchlauföfen",
+   "Einsatzstahl",
+   "Vergütungsstahl",
+   "Werkzeugstahl",
+   "Getriebeteile"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.fuchs.com/de/en/product/product/149840-THERMISOL-QH-35-MC/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Fuchs",
+  "name": "RENOQUENCH QH 10 MC",
+  "category": "QUENCHING_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Niedrigviskoses Hochleistungs-Härteöl auf Hydrocracköl-Basis (früher THERMISOL QH 10 MC) mit hoher Abschreckwirkung. Viskosität bei 40 °C 11,8 mm²/s, Flammpunkt 172 °C, Badtemperatur 40–80 °C. Geeignet für die Badhärtung von Chargen und für Durchlauföfen bei unlegierten und niedriglegierten Werkstoffen.",
+  "applicationAreas": [
+   "Badhärtung",
+   "Durchlauföfen",
+   "Einsatzstahl",
+   "Vergütungsstahl",
+   "Werkzeugstahl"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.fuchs.com/de/en/product/product/126702-thermisol-qh-10-mc/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Quaker Houghton",
+  "name": "HOUGHTO-QUENCH C 1203",
+  "category": "QUENCHING_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "22",
+  "viscosityKv40": null,
+  "description": "Kalthärteöl mit langer Standzeit und sehr gutem Arbeitsschutz- und Umweltprofil für mittellegierte Stähle. Viskosität bei 40 °C 22 mm²/s, Flammpunkt 228 °C, Badtemperatur von Umgebungstemperatur bis 100 °C. Für Öfen mit hoher thermischer Belastung geeignet.",
+  "applicationAreas": [
+   "Kalthärten",
+   "Mittellegierte Stähle",
+   "Chargenöfen",
+   "Durchlauföfen"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://home.quakerhoughton.com/wp-content/uploads/2022/09/plc_heat_treatment_A4_EN_EU.pdf",
+  "dataSheetUrl": "https://home.quakerhoughton.com/wp-content/uploads/2022/09/plc_heat_treatment_A4_EN_EU.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Quaker Houghton",
+  "name": "MAR-TEMP H 340",
+  "category": "QUENCHING_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "100",
+  "viscosityKv40": null,
+  "description": "Warmbadöl (Martempering) für niedrig- und mittellegierte Stähle mit Badtemperaturen von 100 °C bis 160 °C. Viskosität bei 40 °C 110 mm²/s, Flammpunkt 255 °C. Besonders geeignet für einsatzgehärtete Zahnräder, bei denen ein geringer Verzug gefordert ist.",
+  "applicationAreas": [
+   "Warmbadhärten",
+   "Martempering",
+   "Zahnräder",
+   "Einsatzhärten",
+   "Verzugsarmes Härten"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://home.quakerhoughton.com/wp-content/uploads/2022/09/plc_heat_treatment_A4_EN_EU.pdf",
+  "dataSheetUrl": "https://home.quakerhoughton.com/wp-content/uploads/2022/09/plc_heat_treatment_A4_EN_EU.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Castrol",
+  "name": "Iloquench 32",
+  "category": "QUENCHING_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "22",
+  "viscosityKv40": null,
+  "description": "Niedrigviskoses, beschleunigtes Härteöl aus lösungsmittelraffinierten Grundölen mit einem Additivpaket, das schneller abschreckt als reine Mineralöle. Viskosität bei 40 °C 22 mm²/s, Flammpunkt über 180 °C (COC), optimaler Badbereich 20–80 °C. Eingesetzt für das Durchhärten kleiner Teile aus unlegierten Kohlenstoffstählen, Verbindungselemente, Federdraht sowie für verzugsempfindliche Bauteile, aufgekohlte Getriebezahnräder, Kunststoffformen und Lagerteile aus legierten Stählen.",
+  "applicationAreas": [
+   "Kalthärten",
+   "Verbindungselemente",
+   "Federdraht",
+   "Getriebezahnräder",
+   "Kunststoffformen",
+   "Wälzlagerteile"
+  ],
+  "certifications": [
+   "ISO 9950 (Abkühlkurven-Prüfung)"
+  ],
+  "sourceUrl": "https://www.castrol.com/en_za/south-africa/home/products/industrial/metalworking/quenching-fluids.html",
+  "dataSheetUrl": "https://industrialfluidsmfg.twinoils.com/Asset/Iloquench%2032.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Fuchs",
+  "name": "ANTICORIT RP 4107 A",
+  "category": "CORROSION_PROTECTION",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": 15,
+  "description": "Mittelviskoses, nicht thixotropes Korrosionsschutzöl aus der ANTICORIT-RP-Reihe, ausgelegt als nicht-thixotrope Variante des RP 4107 S. Laut Hersteller schützt es bei Hallenlagerung 6-9 Monate und bei Schuppenlagerung 3-6 Monate; es wird gespritzt aufgetragen (ca. 0,010 l/m², Filmauflage ca. 9 g/m²) und hinterlässt einen öligen Film. Ohne VCI-Ausrüstung, Flammpunkt 130 °C.",
+  "applicationAreas": [
+   "Halblederzeug- und Halbzeugkonservierung",
+   "Stahl- und Metallverarbeitung",
+   "Zwischenkonservierung",
+   "Hallenlagerung",
+   "Spritzauftrag"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.fuchs.com/de/de/produkt/product/147308-ANTICORIT-RP-4107-A/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Fuchs",
+  "name": "ANTICORIT DFW 6101",
+  "category": "CORROSION_PROTECTION",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Niedrigviskoses, wasserverdrängendes und bariumfreies Korrosionsschutzmittel der DFW-Reihe für mittelfristigen Schutz von 3 bis 12 Monaten je nach Auftrag und Lagerbedingungen. Es entwässert Teile schnell und hinterlässt einen dünnen, fettig-wachsartigen Film mit kurzer Trockenzeit. Eingesetzt wird es für Metallteile, Werkzeuge, Maschinenelemente, Getriebe, Motoren und Ersatzteile; es ist mit gängigen Motor- und Getriebeölen verträglich und muss vor Inbetriebnahme nicht zwingend entfernt werden.",
+  "applicationAreas": [
+   "Wasserverdrängung",
+   "Ersatzteilkonservierung",
+   "Maschinenelemente",
+   "Werkzeuge",
+   "Getriebe und Motoren",
+   "Tauchen",
+   "Sprühen"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.fuchs.com/us/en/product/product/11940-ANTICORIT-DFW-6101/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Fuchs",
+  "name": "ANTICORIT CPX 3373",
+  "category": "CORROSION_PROTECTION",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Hochleistungs-Korrosionsschutz auf Polymerbasis für die Unterbodenkonservierung von Fahrzeugen im Spritzauftrag. Die lösemittel- und wasserfreie Technologie trocknet oxidativ, hat sehr niedrige VOC-Werte und geringe Migrationsneigung; der Rostschutz bleibt auch bei beschädigtem Film erhalten. Empfohlene Schichtdicke 50-200 µm, Auftrag über gängige Airless- oder luftunterstützte Spritzsysteme bei Raumtemperatur, bei Reparaturen auch mit dem Pinsel.",
+  "applicationAreas": [
+   "Fahrzeug-Unterbodenschutz",
+   "Hohlraum- und Rahmenkonservierung",
+   "Langzeitkonservierung",
+   "Airless-Spritzauftrag",
+   "Nutzfahrzeuge und mobile Arbeitsmaschinen"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.fuchs.com/us/en/product/product/113131-anticorit-cpx-3373/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Castrol",
+  "name": "Rustilo DWX 32",
+  "category": "CORROSION_PROTECTION",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Lösemittelbasiertes Korrosionsschutzmittel mit guten wasserverdrängenden Eigenschaften; nach dem Abdunsten des Lösemittels bleibt ein weicher, fettiger Schutzfilm von 4-6 µm zurück. Laut Datenblatt schützt es 18 Monate bei Innenlagerung und 9 Monate bei Außenlagerung (unter Abdeckung), Trockenzeit bei 20 °C rund 90 Minuten. Basis ist ein entaromatisiertes Kohlenwasserstoff-Lösemittel, frei von Schwermetallen wie Barium; die Entwässerungswirkung ist im Tauchbad am besten, Streichen und Sprühen sind ebenfalls möglich.",
+  "applicationAreas": [
+   "Zwischen- und Langzeitkonservierung",
+   "Bearbeitete Bauteile",
+   "Transportkonservierung",
+   "Tauchbad",
+   "Sprühen",
+   "Streichen",
+   "Fingerabdruck-Neutralisierung"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.castrol.com/en_us/united-states/home/products/industrial/metalworking/corrosion-preventives.html",
+  "dataSheetUrl": "https://msdspds.castrol.com/bpglis/FusionPDS.nsf/Files/62279A681547662680257C13002B1116/$File/Rustilo%20DWX%2032.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Castrol",
+  "name": "Rustilo DW 330",
+  "category": "CORROSION_PROTECTION",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Hochwertiges lösemittelbasiertes Korrosionsschutzmittel mit guter Wasserverdrängung (früher SafeCoat DW 33), das nach dem Abdunsten einen festen, fettigen Film von rund 7 µm hinterlässt. Das Datenblatt nennt 24 Monate Schutz bei Innenlagerung und 12 Monate bei Außenlagerung unter Abdeckung, Trockenzeit bei 20 °C etwa 120 Minuten. Basis ist ein geruchsarmes, entaromatisiertes Kohlenwasserstoff-Lösemittel ohne Schwermetalle; der Film lässt sich mit Petroleum-Lösemitteln oder alkalischen Reinigern wieder entfernen, Auftrag per Tauchen, Streichen oder Sprühen.",
+  "applicationAreas": [
+   "Langzeitkonservierung",
+   "Werkzeugmaschinen und Komponenten",
+   "Transportkonservierung",
+   "Tauchbad",
+   "Sprühen",
+   "Streichen"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.castrol.com/en_us/united-states/home/products/industrial/metalworking/corrosion-preventives.html",
+  "dataSheetUrl": "https://msdspds.castrol.com/bpglis/FusionPDS.nsf/Files/84BFFCE11083F608802584A2005603A6/$File/BPXE-BHKFX9.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Cortec",
+  "name": "VpCI-368",
+  "category": "CORROSION_PROTECTION",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Lösemittelbasierte, temporäre und wachsartige Beschichtung für Multimetallschutz unter harten Außenbedingungen; sie trocknet grifffest und lässt sich bei Bedarf mit alkalischem Reiniger wieder entfernen. Der Hersteller gibt bis zu 2 Jahre durchgehenden Korrosionsschutz an (Salzsprühtest ASTM B117 1500 h, Feuchtekammer ASTM D1748 2500 h) bei empfohlener Trockenschichtdicke von 50-75 µm. Auftrag per Sprühen, Rollen, Streichen oder Tauchen; typische Anwendungen sind Flansche, Rohrenden, bearbeitete Flächen und Anlagenkonservierung, auch für Seetransport.",
+  "applicationAreas": [
+   "Außenlagerung",
+   "Seetransport und Übersee-Versand",
+   "Flansche und Rohrenden",
+   "Anlagenkonservierung",
+   "Bearbeitete Flächen",
+   "Sprühen",
+   "Tauchen",
+   "Streichen"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.cortecvci.com/products/vpci-high-performance-coatings/vpci-368/",
+  "dataSheetUrl": "https://www.cortecvci.com/Publications/PDS/VpCI-368.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Cortec",
+  "name": "VpCI-369",
+  "category": "CORROSION_PROTECTION",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Ölbasierte temporäre Beschichtung, die in aggressiven Umgebungen sehr hohen Korrosionsschutz bietet und gleichzeitig schmierend wirkt; sie bleibt als Nassfilm bestehen und trocknet nicht durch. Der Feststoffgehalt liegt bei rund 99 %, der VOC-Wert bei 25 g/l, der Flammpunkt bei 120 °C; empfohlene Schichtdicke 25-75 µm. Laut Datenblatt kommerziell gleichwertig zu MIL-PRF-16173E (Grade 2), Prüfwerte 500 h Salzsprühtest (ASTM B117) und 4000 h Feuchtekammer (ASTM D1748).",
+  "applicationAreas": [
+   "Zwischen- und Langzeitkonservierung",
+   "Multimetallschutz",
+   "Aggressive Umgebungen",
+   "Ersatzteillagerung",
+   "Aerosol-Auftrag"
+  ],
+  "certifications": [
+   "MIL-PRF-16173E Grade 2 (kommerzielles Äquivalent)",
+   "NSN 8030-00-244-1295",
+   "NSN 8030-00-244-1297",
+   "NSN 8030-00-244-1298",
+   "NSN 8030-01-149-1731"
+  ],
+  "sourceUrl": "https://www.cortecvci.com/products/vpci-369/",
+  "dataSheetUrl": "https://www.cortecvci.com/Publications/PDS/VpCI-369.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Mobil",
+  "name": "Mobilarma 524",
+  "category": "CORROSION_PROTECTION",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": 88.4,
+  "description": "Korrosionsschutzöl, das gleichzeitig als Einlauf- und Konservierungsschmierstoff dient. Es verdrängt Wasser von Metalloberflächen und bildet feste, wasserbeständige Filme gegen Rost und Korrosion; anfallendes Wasser wird als Wasser-in-Öl-Emulsion aufgenommen, sodass die Schmierung erhalten bleibt. In den meisten Fällen muss der Restfilm vor der Wiederinbetriebnahme nicht ausgespült werden. Kinematische Viskosität 88,4 mm²/s bei 40 °C, Flammpunkt mindestens 218 °C.",
+  "applicationAreas": [
+   "Einlauföl",
+   "Innenkonservierung von Maschinen",
+   "Turbinen-Stillstandsschutz",
+   "Hydrauliksysteme",
+   "Motorenkonservierung"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.mobil.com/en/lubricants/for-businesses/industrial/lubricants/products/products/mobilarma-524",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Carl Bechem",
+  "name": "Beruprotect DW 20 M",
+  "category": "CORROSION_PROTECTION",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Lösemittelbasiertes Korrosionsschutzmittel ohne Aromaten und Schwermetalle mit guten wasserverdrängenden Eigenschaften. Es hinterlässt einen öligen, glänzenden Schutzfilm von etwa 3 µm; laut Hersteller schützt es 6-9 Monate bei Innenlagerung und 2-3 Monate bei Außenlagerung. Auftrag durch Tauchen, Sprühen oder Walzen; das Lösemittel ist nahezu geruchlos, die Rezeptur PFAS-frei (Flammpunkt ≥ 62 °C, Dichte 0,790 g/cm³ bei 20 °C).",
+  "applicationAreas": [
+   "Wasserverdrängung",
+   "Transport- und Lagerkonservierung",
+   "Fertigungsteile",
+   "Tauchen",
+   "Sprühen",
+   "Walzenauftrag"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.bechem.us/en/products/corrosion-inhibitor/beruprotect-dw-20-m.html",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "TotalEnergies",
+  "name": "OSYRIS Y 4000",
+  "category": "CORROSION_PROTECTION",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Korrosionsschutzöl für mittelfristigen Schutz mit zusätzlicher Schmierwirkung, entwickelt für die Metallverarbeitung. Es überzieht die Metalloberfläche mit einem dünnen, öligen und nicht trocknenden Schutzfilm und besitzt ein ausgeprägtes Wasserverdrängungsvermögen. Der Hersteller nennt rund 6 Monate Schutz bei Innenlagerung und rund 2 Monate bei geschützter Außenlagerung.",
+  "applicationAreas": [
+   "Stahlverarbeitung",
+   "Metallbearbeitung",
+   "Automobilfertigung",
+   "Zwischenkonservierung",
+   "Wasserverdrängung"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://lubricants.catalog.totalenergies.com/corporate/en_UK/eel_osyris-y-4000",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Zeller+Gmelin",
+  "name": "Divinol Multicor DW 3 Ultra",
+  "category": "CORROSION_PROTECTION",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Wasserverdrängendes Konservierungsmittel mit hohem Korrosionsschutz, das einen leicht öligen Film hinterlässt. Es unterwandert und verdrängt Wasser und Feuchtigkeit von Werkstückoberflächen und legt dabei einen sehr dünnen, geschlossenen Schutzfilm an; typische Aufgaben sind das Trocknen nasser Fertigungsteile, das Vermeiden von Wasserflecken und die Oberflächenkonservierung. Der Korrosionsschutz reicht laut Hersteller für Zwischenlagerung und Transport unter mitteleuropäischen Klimabedingungen bei üblicher Verpackung; Auftrag durch Tauchen, Sprühen oder Streichen.",
+  "applicationAreas": [
+   "Wasserverdrängung",
+   "Trocknen nasser Fertigungsteile",
+   "Zwischenkonservierung",
+   "Transportschutz",
+   "Tauchen",
+   "Sprühen",
+   "Streichen"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://zeller-gmelin.de/en/products/multicor-dw-3-ultra/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Zeller+Gmelin",
+  "name": "Divinol Multicor LF 30",
+  "category": "CORROSION_PROTECTION",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Mineralölhaltiges Korrosionsschutzöl mit niedriger Viskosität und handschweißneutralisierenden Additiven. Es dient der Konservierung von Innen- und Außenflächen von Halbzeugen, Maschinenelementen, Ersatzteilen und Werkzeugen bei Lagerung in geschützten Räumen. Auftrag durch Tauchen, Sprühen oder manuell mit dem Pinsel; das Produkt entspricht der Bosch-Negativliste hinsichtlich aromatenhaltiger Stoffe.",
+  "applicationAreas": [
+   "Halbzeugkonservierung",
+   "Maschinenelemente und Ersatzteile",
+   "Werkzeuge",
+   "Lagerung in geschützten Räumen",
+   "Handschweißneutralisierung",
+   "Tauchen",
+   "Sprühen"
+  ],
+  "certifications": [
+   "Bosch-Negativliste (aromatenhaltige Stoffe)"
+  ],
+  "sourceUrl": "https://zeller-gmelin.de/en/products/multicor-lf-30/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Klüber Lubrication",
+  "name": "Klüber Summit SH 46",
+  "category": "COMPRESSOR_OIL",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": "46",
+  "viscosityKv40": null,
+  "description": "Vollsynthetisches Kompressorenöl auf Basis synthetischer Kohlenwasserstoffe (PAO) für hoch belastete, öleingespritzte Schraubenkompressoren. Laut Hersteller sind Ölwechselintervalle bis 10.000 Betriebsstunden möglich; das Öl übertrifft die Anforderungen von DIN 51506 VDL und ISO 6743-3 L-DAJ. Mischbar mit Mineralölen und synthetischen Kohlenwasserstoffölen, jedoch nicht mit Polyglykolölen.",
+  "applicationAreas": [
+   "Schraubenkompressoren",
+   "öleingespritzt",
+   "Druckluft",
+   "Kolbenkompressoren",
+   "lange Wechselintervalle"
+  ],
+  "certifications": [
+   "DIN 51506 VDL",
+   "ISO 6743-3 L-DAJ"
+  ],
+  "sourceUrl": "https://www.klueber.com/us/en/products-service/products/klueber-summit-sh-46/9885/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Klüber Lubrication",
+  "name": "Klüber Summit HySyn FG 46",
+  "category": "COMPRESSOR_OIL",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": "46",
+  "viscosityKv40": null,
+  "description": "Synthetisches Kompressorenöl für die Lebensmittel-, Pharma- und Futtermittelindustrie, NSF-H1-registriert und konform zu FDA 21 CFR 178.3570 sowie ISO 21469. Die gute Oxidationsstabilität des synthetischen Grundöls erlaubt Ölwechselintervalle bis 4.000 Betriebsstunden in öleingespritzten Schraubenkompressoren und verlängert die Standzeit von Filtern und Abscheidern. Einsetzbar auch in Kolben- und Turbokompressoren sowie zur Getriebeschmierung ölfrei verdichtender Schraubenkompressoren.",
+  "applicationAreas": [
+   "Lebensmittelindustrie",
+   "Pharmaindustrie",
+   "Schraubenkompressoren",
+   "Kolbenkompressoren",
+   "H1-Schmierung"
+  ],
+  "certifications": [
+   "NSF H1",
+   "FDA 21 CFR 178.3570",
+   "ISO 21469"
+  ],
+  "sourceUrl": "https://www.klueber.com/us/en/products-service/products/klueber-summit-hysyn-fg-46/9923/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Fuchs",
+  "name": "RENOLIN 504 VDL 100",
+  "category": "COMPRESSOR_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "100",
+  "viscosityKv40": 100,
+  "description": "Klassisches Kompressorenöl auf Mineralölbasis der Schmierölgruppe VDL nach DIN 51506, ausgelegt für Verdichter-Endtemperaturen bis 220 °C. Es zeichnet sich durch sehr geringe Verkokungsneigung, hohe Alterungsbeständigkeit und gutes Wasserabscheidevermögen aus. Typwerte: kinematische Viskosität 100 mm²/s bei 40 °C, Viskositätsindex 90, Flammpunkt 280 °C, Pourpoint −21 °C.",
+  "applicationAreas": [
+   "Kolbenkompressoren",
+   "Schraubenkompressoren",
+   "Vielzellenverdichter",
+   "Hochtemperaturbetrieb"
+  ],
+  "certifications": [
+   "DIN 51506 VDL"
+  ],
+  "sourceUrl": "https://www.fuchs.com/de/en/product/product/149001-RENOLIN-504/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Fuchs",
+  "name": "RENOLIN UNISYN OL 100",
+  "category": "COMPRESSOR_OIL",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": "100",
+  "viscosityKv40": 100,
+  "description": "Vollsynthetisches Kühl- und Schmieröl auf PAO-Basis für Kolben- und Schraubenkompressoren, klassifiziert als VDL nach DIN 51506. Die hohe Oxidationsstabilität erlaubt verlängerte Ölwechselintervalle; das Produkt bietet gutes Demulgier- und Luftabscheidevermögen sowie hohen Verschleißschutz. Typwerte: 100 mm²/s bei 40 °C, 10,7 mm²/s bei 100 °C, Flammpunkt 260 °C; zusätzlich für hoch belastete Hydraulikanlagen nach DIN 51524-2/3 geeignet.",
+  "applicationAreas": [
+   "Schraubenkompressoren",
+   "Kolbenkompressoren",
+   "Hydraulik",
+   "verlängerte Ölwechselintervalle"
+  ],
+  "certifications": [
+   "DIN 51506 VDL",
+   "DIN 51524-2 HLP",
+   "DIN 51524-3 HVLP"
+  ],
+  "sourceUrl": "https://www.fuchs.com/de/en/product/product/149361-RENOLIN-UNISYN-OL-100/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "ADDINOL",
+  "name": "ADDINOL VDL 100",
+  "category": "COMPRESSOR_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "100",
+  "viscosityKv40": 100,
+  "description": "Mineralisches Kompressorenöl der Gruppe VDL nach DIN 51506 bzw. DAH nach ISO 6743-3, hitzebeständig bis 220 °C. EP- und AW-Additive sorgen für Verschleiß- und Korrosionsschutz, dazu kommen gutes Luft- und Wasserabscheidevermögen. Kinematische Viskosität 100 mm²/s bei 40 °C, Flammpunkt 268 °C, Pourpoint −24 °C.",
+  "applicationAreas": [
+   "Druckluftkompressoren",
+   "Kolbenkompressoren",
+   "Schraubenkompressoren",
+   "Hochtemperaturbetrieb"
+  ],
+  "certifications": [
+   "DIN 51506 VDL",
+   "ISO 6743-3 DAH"
+  ],
+  "sourceUrl": "https://addinol.de/en/products/industrial-lubricants/compressor-oils/vdl-100/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "ADDINOL",
+  "name": "ADDINOL VDL 150",
+  "category": "COMPRESSOR_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "150",
+  "viscosityKv40": 150,
+  "description": "Mineralisches Kompressorenöl der höheren Viskositätslage ISO VG 150, ebenfalls VDL nach DIN 51506 und DAH nach ISO 6743-3. Ausgelegt für hoch belastete Verdichter mit Spitzentemperaturen bis 220 °C, mit stabilem Schmierfilm über den gesamten Temperaturbereich sowie gutem Korrosions- und Alterungsschutz. Kinematische Viskosität 150 mm²/s bei 40 °C, Flammpunkt 285 °C.",
+  "applicationAreas": [
+   "Kolbenkompressoren",
+   "Druckluftkompressoren",
+   "hohe Enddrücke",
+   "Hochtemperaturbetrieb"
+  ],
+  "certifications": [
+   "DIN 51506 VDL",
+   "ISO 6743-3 DAH"
+  ],
+  "sourceUrl": "https://addinol.de/en/products/industrial-lubricants/compressor-oils/vdl-150/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Shell",
+  "name": "Shell Corena S3 R 46",
+  "category": "COMPRESSOR_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": "46",
+  "viscosityKv40": 46,
+  "description": "Premium-Kompressorenöl mit aschefreier Additivtechnologie für ölgeflutete ein- und zweistufige Vielzellen- und Schraubenkompressoren, klassifiziert nach ISO 6743-3 L-DAH. Laut Datenblatt sind Ölwechselintervalle bis 4.000 Betriebsstunden auch bei Verdichtungsendtemperaturen bis 100 °C möglich. Typwerte: 46 mm²/s bei 40 °C, VI 105, Flammpunkt (COC) 230 °C, Pourpoint −30 °C.",
+  "applicationAreas": [
+   "Schraubenkompressoren",
+   "Vielzellenkompressoren",
+   "ölgeflutet",
+   "Druckluft"
+  ],
+  "certifications": [
+   "ISO 6743-3 L-DAH"
+  ],
+  "sourceUrl": "https://www.shell.com/business-customers/industrial-lubricants-and-specialty-fluids-for-business/products/shell-corena-compressor-oils.html",
+  "dataSheetUrl": "https://www.shell-livedocs.com/data/published/en-US/dc6df9c2-06a8-4400-9ee2-fb21567f3405.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "TotalEnergies",
+  "name": "TotalEnergies Dacnis SH 46",
+  "category": "COMPRESSOR_OIL",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": "46",
+  "viscosityKv40": null,
+  "description": "Vollsynthetisches Kompressorenöl auf PAO-Basis für Schraubenkompressoren, klassifiziert nach DIN 51506 VDL und ISO 6743-3 DAJ. Es verhindert Ablagerungen und Verkokung, schützt Rotoren gegen Verschleiß und Korrosion und hält Filter und Abscheider lange frei. Ölwechselintervalle von 4.000 bis 6.000 Stunden, mit begleitender Ölanalyse bis 8.000 Stunden.",
+  "applicationAreas": [
+   "Schraubenkompressoren",
+   "Druckluft",
+   "hohe Verdichtungstemperaturen",
+   "verlängerte Ölwechselintervalle"
+  ],
+  "certifications": [
+   "DIN 51506 VDL",
+   "ISO 6743-3 DAJ"
+  ],
+  "sourceUrl": "https://lubricants.catalog.totalenergies.com/catalog-za/en_UK/1kt_dacnis-sh-46",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Atlas Copco",
+  "name": "Atlas Copco Roto-Xtend Duty Fluid",
+  "category": "COMPRESSOR_OIL",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Synthetisches OEM-Kompressorenöl von Atlas Copco für öleingespritzte Schraubenkompressoren der Baureihen GA, GX, GN und GR. Der Hersteller gibt Serviceintervalle von 8.000 Betriebsstunden bzw. 2 Jahren auch unter schweren Bedingungen an; der geringere Druckverlust am Ölabscheider senkt den Energieverbrauch. Freigegebener Umgebungstemperaturbereich 0 °C bis +46 °C.",
+  "applicationAreas": [
+   "Schraubenkompressoren",
+   "öleingespritzt",
+   "OEM-Erstbefüllung",
+   "Dauerbetrieb"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.atlascopco.com/en-us/compressors/service/parts/compressor-oil/2901170000-rotoxtend",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Busch",
+  "name": "Busch VM 100",
+  "category": "VACUUM_PUMP_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Mineralisches Original-Vakuumpumpenöl von Busch aus der Reihe VM 032–150 für Standard-Industrieanwendungen bis 80 °C Betriebstemperatur. Es ist auf Busch-Vakuumpumpen (u. a. Drehschieberpumpen der R5-Baureihe) abgestimmt, bietet bewährten Verschleißschutz und beugt Leckagen an den Dichtungen vor. VM 100 ersetzt das frühere Busch-Öl R 530.",
+  "applicationAreas": [
+   "Vakuumpumpen",
+   "Drehschieberpumpen",
+   "R5-Baureihe",
+   "Standardanwendungen"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.buschvacuum.com/global/en/products/genuine-oils-vm-032-150.html",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Busch",
+  "name": "Busch VSI 100",
+  "category": "VACUUM_PUMP_OIL",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Synthetisches Original-Vakuumpumpenöl von Busch auf Basis von Polyalphaolefin (PAO) für anspruchsvolle Anwendungen. Durch die hohe thermische und oxidative Stabilität erreicht es laut Hersteller eine rund viermal längere Standzeit als vergleichbare Mineralöle und erlaubt entsprechend verlängerte Wechselintervalle. Das gute Viskositäts-Temperatur-Verhalten sichert die Schmierung auch bei erhöhten Betriebstemperaturen.",
+  "applicationAreas": [
+   "Vakuumpumpen",
+   "hohe Betriebstemperaturen",
+   "verlängerte Wechselintervalle",
+   "Industrieprozesse"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.buschvacuum.com/global/en/products/genuine-oils-vsi-100.html",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Mobil",
+  "name": "Mobil Rarus 827",
+  "category": "COMPRESSOR_OIL",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": "100",
+  "viscosityKv40": 107.5,
+  "description": "Kompressorenöl auf synthetischer Grundölbasis, ausgelegt für Kolbenkompressoren unter schweren Betriebsbedingungen und für Anlagen mit bisherigen Ablagerungsproblemen. Es ist besonders für Dauerbetrieb mit Verdichtungsendtemperaturen bis 200 °C geeignet. Typwerte: ISO VG 100, kinematische Viskosität 107,5 mm²/s bei 40 °C; erfüllt GB/T 12691-2021 L-DAB.",
+  "applicationAreas": [
+   "Kolbenkompressoren",
+   "Hochtemperaturbetrieb",
+   "Dauerbetrieb",
+   "ablagerungskritische Anlagen"
+  ],
+  "certifications": [
+   "GB/T 12691-2021 L-DAB"
+  ],
+  "sourceUrl": "https://www.mobil.com/en/lubricants/for-businesses/industrial/lubricants/products/products/mobil-rarus-827",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Bio-Circle Surface Technology",
+  "name": "BIO-CIRCLE L",
+  "category": "CLEANER",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Leicht alkalischer Tensidreiniger mit Mikroorganismen (Risikogruppe 1) für den BIO-CIRCLE Pinselwaschtisch zur Reinigung und Entfettung von Einzelteilen und Werkzeugen. Wird unverdünnt (100 %) eingesetzt; die enthaltenen Mikroorganismen bauen eingetragene Öle ab und verlängern so die Standzeit des Bades. Das Produkt enthält keine VOC gemäß EU-Definition, ist nach CLP nicht kennzeichnungspflichtig, in WGK 1 eingestuft und für die Lebensmittelindustrie NSF-registriert (C1).",
+  "applicationAreas": [
+   "Teilewaschtisch",
+   "Entfettung",
+   "Werkstatt",
+   "Instandhaltung",
+   "Lebensmittelindustrie",
+   "Kaltreiniger-Alternative"
+  ],
+  "certifications": [
+   "NSF C1 (Reg.-Nr. 139721)",
+   "VOC-frei (EU-Definition)",
+   "WGK 1",
+   "nicht kennzeichnungspflichtig nach CLP"
+  ],
+  "sourceUrl": "https://www.bio-circle.de/shop/reiniger/industriereiniger/kaltreiniger-alternative/bio-circle-l/",
+  "dataSheetUrl": "https://www.bio-circle.de/lib/uploads/2024/09/BIO-CIRCLE-L-TDB_DE_2026.pdf",
+  "sdsUrl": "https://www.bio-circle.de/lib/uploads/2024/09/BIO-CIRCLE-L_SDS_DE_CLP_2026.pdf",
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Bio-Circle Surface Technology",
+  "name": "BIO-CIRCLE L Ultra",
+  "category": "CLEANER",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Sehr wirkungsvoller, leicht alkalischer Tensidreiniger mit Mikroorganismen für stärkere Verschmutzungen wie Bitumen, Korrosionsschutzwachse und eingebrannte Fette. Wird unverdünnt in BIO-CIRCLE Teilewaschtischen sowie in den Hochdruckanlagen HP und HP Vigo eingesetzt. Enthält laut Datenblatt nur 0,2 % VOC, ist nach CLP nicht eingestuft, WGK 1 und für die Lebensmittelindustrie NSF-registriert (A1).",
+  "applicationAreas": [
+   "Teilewaschtisch",
+   "Hochdruckreinigung",
+   "Bitumen-Entfernung",
+   "Korrosionsschutzwachs-Entfernung",
+   "eingebrannte Fette",
+   "Lebensmittelindustrie"
+  ],
+  "certifications": [
+   "NSF A1 (Reg.-Nr. 146757)",
+   "WGK 1",
+   "nicht eingestuft nach CLP"
+  ],
+  "sourceUrl": "https://www.bio-circle.de/shop/reiniger/industriereiniger/kaltreiniger-alternative/bio-circle-l-ultra/",
+  "dataSheetUrl": "https://www.bio-circle.de/lib/uploads/2024/09/BIO-CIRCLE-L-Ultra-TDB_DE_2026.pdf",
+  "sdsUrl": "https://www.bio-circle.de/lib/uploads/2024/09/BIO-CIRCLE-L-Ultra_SDS_DE_CLP_2026.pdf",
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Henkel",
+  "name": "BONDERITE C-AK 470",
+  "category": "CLEANER",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Einkomponentiger, stark alkalischer Flüssigreiniger für die Hochleistungsreinigung von Eisenwerkstoffen. Anwendbar sowohl im Spritz- als auch im Tauchverfahren, mit Behandlungszeiten von 30 Sekunden bis 5 Minuten. Der Einsatzbereich reicht von Raumtemperatur bis 66 °C.",
+  "applicationAreas": [
+   "Spritzreinigung",
+   "Tauchreinigung",
+   "Eisenmetalle",
+   "Stahl",
+   "Automobilindustrie",
+   "Vorbehandlung"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://next.henkel-adhesives.com/us/en/products/industrial-cleaners/central-pdp.html/bonderite-c-ak-470/BP000000232751.html",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Henkel",
+  "name": "BONDERITE C-NE 5088",
+  "category": "CLEANER",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Wässriger, lösemittelfreier Neutralreiniger auf Basis von Tensiden, Salzen organischer Säuren und Hydrotropen für Stahl, Grauguss und Buntmetalle. Bleibt auch bei starkem Eintrag von Kühlschmierstoff schaumarm und bietet zugleich guten Zwischenstufen-Korrosionsschutz. Einsatz im Spritz- und Tauchverfahren bei 50–80 °C mit Behandlungszeiten von 30 Sekunden bis 3 Minuten.",
+  "applicationAreas": [
+   "Zwischenreinigung",
+   "Spritzreinigung",
+   "Tauchreinigung",
+   "Buntmetalle",
+   "Stahl",
+   "Grauguss",
+   "Zerspanung",
+   "Umformung"
+  ],
+  "certifications": [
+   "lösemittelfrei"
+  ],
+  "sourceUrl": "https://next.henkel-adhesives.com/us/en/products/industrial-cleaners/central-pdp.html/bonderite-c-ne-5088/BP000000160188.html",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "SurTec",
+  "name": "SurTec 089",
+  "category": "CLEANER",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Silikatfreies, stark demulgierendes Tensidgemisch für Tauchanwendungen in der industriellen Teilereinigung. Bereits sehr niedrige Einsatzkonzentrationen erzielen laut Hersteller eine hohe Reinigungswirkung; das Produkt ist ultraschallgeeignet. Durch die demulgierende Wirkung lässt sich das Bad über Filtration oder Ölabscheider gut aufbereiten und im Kreislauf führen.",
+  "applicationAreas": [
+   "Tauchreinigung",
+   "Ultraschallreinigung",
+   "Teilereinigung",
+   "Metallvorbehandlung",
+   "Badpflege/Recycling"
+  ],
+  "certifications": [
+   "silikatfrei"
+  ],
+  "sourceUrl": "https://www.surtec.com/de/produkte-services/surtec-089/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "SurTec",
+  "name": "SurTec 085",
+  "category": "CLEANER",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Tensidgemisch für Spritz- und Tauchanwendungen in der industriellen Teilereinigung. Es ist für Tauchprozesse mit starker Badbewegung bzw. turbulenten Bedingungen optimiert und vereint die Vorteile von Tauch- und Spritztensiden. Oberhalb von 50 °C ist es laut Hersteller ohne Schaumbildung sprühfähig.",
+  "applicationAreas": [
+   "Spritzreinigung",
+   "Tauchreinigung",
+   "Teilereinigung",
+   "Metallvorbehandlung"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.surtec.com/de/produkte-services/surtec-085/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Elma Schmidbauer",
+  "name": "elma tec clean A4",
+  "category": "CLEANER",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Alkalisches Reinigungskonzentrat für Ultraschall- und Tauchbäder mit breiter Materialverträglichkeit (Metall, Glas, Keramik, Kunststoff, Gummi). Der pH-Wert des Konzentrats liegt bei etwa 13, die Dichte bei 1,132 g/ml; im Ultraschallbad wird mit 2–5 Vol.-% bei 50–80 °C und 3–5 Minuten gearbeitet, im Tauchbad mit 5–10 %. Wirkt gegenüber den meisten Mineralölen und Fetten demulgierend; Leichtmetalllegierungen vom Typ AlSiMg sollten vorab auf Verträglichkeit geprüft werden.",
+  "applicationAreas": [
+   "Ultraschallreinigung",
+   "Tauchbad",
+   "Vergaser",
+   "Einspritzdüsen",
+   "Ölentfernung",
+   "Rußentfernung",
+   "Labor",
+   "Werkstatt"
+  ],
+  "certifications": [
+   "Tenside biologisch abbaubar gemäß VO (EG) Nr. 648/2004"
+  ],
+  "sourceUrl": "https://www.elma-ultrasonic.com/en/elmaclean-tec-clean-a4",
+  "dataSheetUrl": "https://www.elma-ultrasonic.com/api/documents/file/elma-tec-clean-A4-product-information-en-cleaning-chemistry.pdf",
+  "sdsUrl": "https://www.elma-ultrasonic.com/api/documents/file/elma-tec-clean-A4-safety-data-sheet-en-cleaning-chemistry.pdf",
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "BANDELIN electronic",
+  "name": "TICKOPUR R 33",
+  "category": "CLEANER",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Mild alkalisches, hochkonzentriertes Universal-Reinigungsmittel für die Ultraschallreinigung mit integriertem Korrosionsschutz; der pH-Wert beträgt 9,9 bei 1 % Konzentration. Die Anwendung erfolgt mit 3–5 % Dosierung bei 20–80 °C und 1–10 Minuten Beschallungszeit, auch für Tauch-, Wisch- und Hochdruckreinigung geeignet. Die Materialverträglichkeit ist hoch, Teile aus Zinn und Zink können jedoch angegriffen werden.",
+  "applicationAreas": [
+   "Ultraschallreinigung",
+   "Tauchreinigung",
+   "Hochdruckreinigung",
+   "Werkzeuge",
+   "Maschinenteile",
+   "Atemschutzmasken",
+   "Schleif- und Polierrückstände",
+   "Labor"
+  ],
+  "certifications": [
+   "EXAM-Gutachten Nr. 5734/06 (Ultraschallanwendung)",
+   "biologisch abbaubar"
+  ],
+  "sourceUrl": "https://bandelin.com/en/shop/cleaning-and-disinfecting-preparations/tickopur-cleaning-preparations-2/tickopur-r-33-universal-cleaner-for-ultrasonic-cleaning-concentrate/",
+  "dataSheetUrl": "https://bandelin.com/chemie_Dr_STAMM/Produktinformation/TICKOPUR_R_33_DE_STAMM.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Kärcher",
+  "name": "PressurePro Öl- und Fettlöser Extra RM 31 ASF",
+  "category": "CLEANER",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Hochkonzentrierter, stark alkalischer Hochdruckreiniger-Zusatz gegen hartnäckige Öl-, Fett-, Teer-, Ruß- und Harzverschmutzungen. Der pH-Wert liegt bei 13,5 im Konzentrat und bei 12–13 in 1%iger Lösung; das Produkt ist silikonfrei, in WGK 1 eingestuft und bis zur Dampfstufe (150 °C) einsetzbar. Die Rezeptur ist abscheidefreundlich (ASF), Öl und Wasser trennen sich im Abscheider rasch wieder.",
+  "applicationAreas": [
+   "Hochdruckreinigung",
+   "Motorwäsche",
+   "Teilereinigung",
+   "Fassreinigung",
+   "Oberflächenentfettung",
+   "Fassadenreinigung",
+   "Werkstatt",
+   "Landwirtschaft"
+  ],
+  "certifications": [
+   "WGK 1",
+   "silikonfrei",
+   "ASF – abscheidefreundlich"
+  ],
+  "sourceUrl": "https://www.karcher.com/de/de/professional/reinigungs-und-pflegemittel/reinigungsmittel-professional/hochdruck/pressurepro-oel-und-fettloeser-extra-rm-31-62950690.html",
+  "dataSheetUrl": "https://d201jv09wbq6e1.cloudfront.net/product_information/deu/0.011-338.0_PI_de_DE.pdf",
+  "sdsUrl": "https://dp6jru56judg7.cloudfront.net/SDB/001/00113380_DE.pdf",
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Zeller+Gmelin",
+  "name": "Divinol Cleaner 9337",
+  "category": "CLEANER",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Reinigungsmittel auf Kohlenwasserstoffbasis zum Reinigen und Entfetten verölter Bauteile. Es wird unverdünnt aufgetragen, bei Bedarf mechanisch nachgearbeitet und verdunstet anschließend rückstandsfrei; die Trocknungszeit lässt sich durch Abblasen verkürzen. Heiße Teile müssen vor der Anwendung mindestens unter den Flammpunkt abgekühlt werden.",
+  "applicationAreas": [
+   "Entfettung",
+   "Teilereinigung",
+   "Vorbehandlung Metalle",
+   "Lösemittelreinigung",
+   "Hochdruckanwendung mit Leichtflüssigkeitsabscheider"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.zeller-gmelin.de/zgSite/de/Chemie/Oberfl%C3%A4chenbehandlung/Vorbehandlung-Metalle/Divinol-Cleaner-9337/p/09337",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Castrol",
+  "name": "Techniclean XBC",
+  "category": "CLEANER",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Familie wasserbasierter Reiniger für die Präzisionsreinigung zerspanter Teile und Bauteile in industriellen Reinigungsanlagen. Geeignet für Niedertemperatur-Reinigung, Spritzanlagen, intensive Flutwaschanlagen und Hochdrucksysteme; die gute Demulgierwirkung erleichtert das Abskimmen von Fremdöl und verlängert die Badstandzeit. Am Ende der Nutzungsdauer kann das Bad in den Kühlschmierstoff-Kreislauf (Castrol Alusol, Hysol XBB) zurückgeführt werden.",
+  "applicationAreas": [
+   "Spritzreinigung",
+   "Flutwaschanlage",
+   "Hochdruckreinigung",
+   "Präzisionsreinigung",
+   "Niedertemperatur-Reinigung",
+   "KSS-Rückführung"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.castrol.com/en_us/united-states/home/products/our-brands/industrial/techniclean-xbc.html",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Quaker Houghton",
+  "name": "HOUGHTO-CLEAN 138 AT",
+  "category": "CLEANER",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Wässriger, schwach alkalischer Spritzwaschreiniger mit langer Badstandzeit; der pH-Wert in der Anwendung liegt typischerweise bei 9, die Dichte bei 1,05 g/cm³. Eingesetzt wird er mit 2–5 % v/v im Spritzwaschverfahren, bis 10 % v/v im Tauchbad und 2–3 % beim Gleitschleifen, bei Umgebungstemperatur bis 60 °C. Er ist sehr schaumarm, demulgiert Öle gut, bietet Zwischenstufen-Korrosionsschutz für Eisenwerkstoffe und ist mit Eisen- wie Buntmetallen verträglich.",
+  "applicationAreas": [
+   "Spritzwaschanlage",
+   "Tauchreinigung",
+   "Gleitschleifen",
+   "Dichtheitsprüfung",
+   "Buntmetalle",
+   "Eisenmetalle",
+   "Niedertemperatur-Reinigung"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://home.quakerhoughton.com/wp-content/hub/Files/TDS_HOUGHTO-CLEAN%20138%20AT_EN.pdf",
+  "dataSheetUrl": "https://home.quakerhoughton.com/wp-content/hub/Files/TDS_HOUGHTO-CLEAN%20138%20AT_EN.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Blaser Swisslube",
+  "name": "Blasogrind GTC 7",
+  "category": "GRINDING_OIL",
+  "chemistry": "GTL",
+  "viscosityIso": null,
+  "viscosityKv40": 7.0,
+  "description": "Hochleistungs-Schleiföl auf Basis von GTL-Grundölen (Gas-to-Liquid) mit 7,0 mm²/s bei 40 °C und einem Flammpunkt von 160 °C. Es ist farblos und transparent, geruchsarm und wirkt der Kobaltauslösung beim Hartmetallschleifen aktiv entgegen. Ausgelegt auf hohe Vorschübe, lange Abrichtintervalle und schnelle Luftabscheidung; typisch für Werkzeugschleifen und Nachschleifen von Hartmetall, Keramik und Cermet sowie Profil- und Tiefschleifen.",
+  "applicationAreas": [
+   "Werkzeugschleifen",
+   "Nachschleifen",
+   "Hartmetall",
+   "Keramik",
+   "Cermet",
+   "Profilschleifen",
+   "Tiefschleifen"
+  ],
+  "certifications": [
+   "kobaltinhibiert",
+   "für Edgecap- und Pre-Coat-Filter geeignet"
+  ],
+  "sourceUrl": "https://blaser.com/blasogrind-gtc-7/",
+  "dataSheetUrl": "https://blaser.com/wp-content/uploads/blaser_blasogrind_GTC_7_14.500_en.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Blaser Swisslube",
+  "name": "Blasogrind GTS 15",
+  "category": "GRINDING_OIL",
+  "chemistry": "GTL",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Schleiföl für maximale Zeitspanvolumen (Q'w) durch verschobene Schleifbrandgrenze und höhere Vorschübe. Besonders auf das Verzahnungsschleifen ausgerichtet, daneben Einsatzstahl, gehärteter Stahl und HSS im Profil- und Tiefschleifen. Hoher Flammpunkt, geringe Nebelbildung, gute Filtrierbarkeit und Verträglichkeit mit Polymerbeton-Maschinen.",
+  "applicationAreas": [
+   "Verzahnungsschleifen",
+   "Profilschleifen",
+   "Tiefschleifen",
+   "Einsatzstahl",
+   "gehärteter Stahl",
+   "HSS"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://blaser.com/blasogrind-gts-15/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Blaser Swisslube",
+  "name": "Blasogrind GTM 15 HFP",
+  "category": "GRINDING_OIL",
+  "chemistry": "GTL",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Universelles Schleiföl, das laut Hersteller alle gängigen Schneidstoffe abdeckt – Hartmetall, HSS, Stahl und Cermet. Farblos, transparent und geruchsarm mit hohem Flammpunkt (HFP); die schnelle Luftabscheidung sorgt für gute Kühlung und beugt Mikrorissen vor. Geeignet für Einzelbefüllung wie für Zentralanlagen, mit guter Filtrierbarkeit und Polymerverträglichkeit.",
+  "applicationAreas": [
+   "Werkzeugschleifen",
+   "Nachschleifen",
+   "Hartmetall",
+   "HSS",
+   "Stahl",
+   "Cermet",
+   "Zentralanlagen"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://blaser.com/blasogrind-gtm-15-hfp/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Fuchs",
+  "name": "ECOCUT HS",
+  "category": "GRINDING_OIL",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": null,
+  "viscosityKv40": 5.5,
+  "description": "Nicht wassermischbares Schleiföl auf PAO-Basis zum Schleifen und Schärfen von HSS und Hartmetall. Mit 5,5 mm²/s bei 40 °C sehr dünnflüssig, aromatenfrei, Dichte 0,80 g/ml bei 15 °C und Flammpunkt 160 °C. Für Feinstfiltrationsanlagen geeignet.",
+  "applicationAreas": [
+   "Werkzeugschleifen",
+   "Schärfen",
+   "HSS",
+   "Hartmetall",
+   "Feinstfiltration"
+  ],
+  "certifications": [
+   "aromatenfrei"
+  ],
+  "sourceUrl": "https://www.fuchs.com/de/de/produkt/product/147952-ecocut-hs/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Zeller+Gmelin",
+  "name": "Multicut Grind HSG 9",
+  "category": "GRINDING_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": 10,
+  "description": "Schleiföl auf Mineralölbasis speziell für das Hochgeschwindigkeitsschleifen, 10 mm²/s bei 40 °C. Die Additivkombination bietet hohe Druckaufnahmefähigkeit und zuverlässigen Verschleißschutz; die speziell raffinierte Grundflüssigkeit sorgt für geringe Nebel- und Verdampfungsneigung sowie Oxidations- und Alterungsstabilität. Bewährt beim Rund- und Profilschleifen mit CBN- und Diamantscheiben; eine Junker-Freigabe liegt vor.",
+  "applicationAreas": [
+   "Hochgeschwindigkeitsschleifen",
+   "Rundschleifen",
+   "Profilschleifen",
+   "CBN-Scheiben",
+   "Diamantscheiben"
+  ],
+  "certifications": [
+   "Junker-Freigabe"
+  ],
+  "sourceUrl": "https://zeller-gmelin.de/en/products/multicut-grind-hsg-9/",
+  "dataSheetUrl": "https://zeller-gmelin.de/wp-content/uploads/2023/11/Multicut_deutsch_0320_WEB_DpS.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Zeller+Gmelin",
+  "name": "Multicut Grind 8",
+  "category": "GRINDING_OIL",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": 10,
+  "description": "Hochleistungsschleiföl auf Mineralölbasis für den Mittel- und Hochgeschwindigkeitsbereich, 10 mm²/s bei 40 °C. Gut geeignet für CBN- und Diamantscheiben beim Einstechschleifen, Formschlitzschleifen und Nockenwellenschleifen, mit guter Wärmeabfuhr und ausgezeichnetem Luftabscheidevermögen. Nicht für die Bearbeitung von Buntmetallen; Freigaben von Kapp, Junker, Transor und Wendt liegen vor.",
+  "applicationAreas": [
+   "Einstechschleifen",
+   "Formschlitzschleifen",
+   "Nockenwellenschleifen",
+   "CBN-Scheiben",
+   "Diamantscheiben"
+  ],
+  "certifications": [
+   "Freigabe Kapp",
+   "Freigabe Junker",
+   "Freigabe Transor",
+   "Freigabe Wendt"
+  ],
+  "sourceUrl": "https://zeller-gmelin.de/en/products/multicut-grind-8/",
+  "dataSheetUrl": "https://zeller-gmelin.de/wp-content/uploads/2023/11/Multicut_deutsch_0320_WEB_DpS.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Zeller+Gmelin",
+  "name": "Multicut Honolit 4",
+  "category": "HONING_LAPPING_OIL",
+  "chemistry": null,
+  "viscosityIso": null,
+  "viscosityKv40": 5,
+  "description": "Honöl zum Honen und Schleifen zähharter Werkstoffe mit 5 mm²/s bei 40 °C. Hauptsächlich bei großer Zerspanleistung im Einsatz, etwa bei der Feinstbearbeitung von Wellen, Zylindern oder Zahnflanken.",
+  "applicationAreas": [
+   "Honen",
+   "Schleifen",
+   "Feinstbearbeitung",
+   "Wellen",
+   "Zylinder",
+   "Zahnflanken"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://zeller-gmelin.de/wp-content/uploads/2023/11/Multicut_deutsch_0320_WEB_DpS.pdf",
+  "dataSheetUrl": "https://zeller-gmelin.de/wp-content/uploads/2023/11/Multicut_deutsch_0320_WEB_DpS.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Rhenus Lub",
+  "name": "rhenus GP 20 M",
+  "category": "GRINDING_OIL",
+  "chemistry": null,
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Gelbbraunes, emissionsarmes und nicht wassermischbares Schleiföl für den universellen Einsatz an Stahl, Aluminium und Buntmetallen. Es ist chlorfrei und frei von Schwermetallen (Blei, Zink, Barium) und zeichnet sich durch hohe Oxidationsstabilität, günstiges Nebelverhalten, gute Kühl- und Spülwirkung sowie gutes Luftabscheidevermögen aus. Neben Schleifprozessen auch für Bohren, Drehen, Fräsen und Reiben einsetzbar.",
+  "applicationAreas": [
+   "Schleifen",
+   "Bohren",
+   "Drehen",
+   "Fräsen",
+   "Reiben",
+   "Stahl",
+   "Aluminium",
+   "Buntmetalle"
+  ],
+  "certifications": [
+   "chlorfrei",
+   "schwermetallfrei",
+   "WGK 1",
+   "DIN ISO 513"
+  ],
+  "sourceUrl": "https://www.rhenuslub.de/produkt/rhenus-gp-20-m/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Rhenus Lub",
+  "name": "rhenus GP 6",
+  "category": "GRINDING_OIL",
+  "chemistry": null,
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Hellgelbes, emissionsarmes Hon- und Schleiföl, nicht wassermischbar, calcium- und chlorfrei sowie frei von Blei, Zink und Barium. Vorgesehen für das Honen und Schleifen von Stählen, Gusswerkstoffen, Buntmetallen und Speziallegierungen. Ausgeprägte Spülwirkung, gutes Absetzverhalten und dadurch längere Standzeit der Schleifscheiben.",
+  "applicationAreas": [
+   "Honen",
+   "Schleifen",
+   "Stahl",
+   "Guss",
+   "Buntmetalle",
+   "Speziallegierungen"
+  ],
+  "certifications": [
+   "chlorfrei",
+   "calciumfrei",
+   "schwermetallfrei",
+   "WGK 1",
+   "DIN ISO 513"
+  ],
+  "sourceUrl": "https://www.rhenuslub.de/produkt/rhenus-gp-6/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Rhenus Lub",
+  "name": "rhenus EP 11 M",
+  "category": "GRINDING_OIL",
+  "chemistry": null,
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Gelbes, emissionsarmes Schneid- und Schleiföl ohne Wasseranteil, chlor- und calciumfrei sowie frei von Blei, Zink und Barium. Hohe Oxidationsstabilität, sehr gute Kühlleistung, Luftabscheidung, Filtrierbarkeit und Spülwirkung. Einsetzbar an Stahl, Guss, Aluminium und Buntmetallen beim Schleifen, Honen, Bohren, Drehen, Fräsen und Reiben; für die Luftfahrt liegt eine Freigabe der Safran-Gruppe vor.",
+  "applicationAreas": [
+   "Schleifen",
+   "Honen",
+   "Bohren",
+   "Drehen",
+   "Fräsen",
+   "Reiben",
+   "Luftfahrt"
+  ],
+  "certifications": [
+   "chlorfrei",
+   "calciumfrei",
+   "schwermetallfrei",
+   "WGK 1",
+   "Safran-Freigabe (Luftfahrt)"
+  ],
+  "sourceUrl": "https://www.rhenuslub.de/produkt/rhenus-ep-11-m/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "oelheld",
+  "name": "ToolGrind TC-X 620",
+  "category": "GRINDING_OIL",
+  "chemistry": null,
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Schleiföl aus der ToolGrind-Reihe, chlor- und schwermetallfrei, hergestellt aus aromatenarmen, hydrierten Grundölen. Hochwirksame Additive in Kombination mit grenzflächenaktiven Substanzen liefern hohe Oberflächengüten, reduzieren Normalkraft, maximale Oberflächentemperatur und Scheibenverschleiß. Eingesetzt beim Nut- und Gewindeschleifen sowie an HSS, Hartmetall, CBN, PKD und Edelstählen; geringe Schaumbildung und Eignung für gängige Filtersysteme inklusive Anschwemmfilter.",
+  "applicationAreas": [
+   "Nutschleifen",
+   "Gewindeschleifen",
+   "Werkzeugschleifen",
+   "HSS",
+   "Hartmetall",
+   "CBN",
+   "PKD",
+   "Edelstahl"
+  ],
+  "certifications": [
+   "chlorfrei",
+   "schwermetallfrei"
+  ],
+  "sourceUrl": "https://www.oelheld.com/de/produkte/schmierstoffe-metallbearbeitung/schleifoel/toolgrind-schleifoel/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Petrofer",
+  "name": "ISOCUT VG 15 G",
+  "category": "GRINDING_OIL",
+  "chemistry": null,
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Nicht wassermischbarer Kühlschmierstoff aus der ISOCUT-Reihe für hochbelastete Universalanwendungen und speziell für das Zahnflankenschleifen. Der Hersteller hebt die verbesserte Oberflächenqualität an Zahnrädern hervor, wodurch Verschleiß und Geräuschentwicklung im späteren Betrieb sinken.",
+  "applicationAreas": [
+   "Zahnflankenschleifen",
+   "Verzahnungsschleifen",
+   "Universalzerspanung"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.petrofer.com/products/metal-cutting-fluids/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Motorex",
+  "name": "SWISSGRIND ZOOM XL",
+  "category": "GRINDING_OIL",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Helles, chlorfreies Hochleistungs-Schleiföl auf Polyalphaolefin-Basis (PAO) aus der MOTOREX Industrial Line. Ausgelegt auf hohe Schleifbelastungen mit ausgeprägter Kühl- und Spülwirkung, was die Schleifscheiben länger schnitthaltig hält.",
+  "applicationAreas": [
+   "Schleifen",
+   "Hochleistungsschleifen",
+   "Werkzeugschleifen"
+  ],
+  "certifications": [
+   "chlorfrei"
+  ],
+  "sourceUrl": "https://motorex.com/en-us/swissgrind-zoom-xl--38366",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "recherchiert"
+ },
+ {
+  "manufacturer": "oelheld",
+  "name": "IonoPlus IME-MH",
+  "category": "EDM_FLUID",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": null,
+  "viscosityKv40": 2.5,
+  "description": "Universelles Hochleistungs-Dielektrikum auf synthetischer Basis für das Senkerodieren, das vom Schruppen bis zum Schlichten eingesetzt wird. Fein verteilte Satellitenelektroden begünstigen den schnellen Aufbau der Entladungsbrücke und damit regelmäßigere Zündungen, höhere Abtragsrate und geringeren Elektrodenverschleiß. Viskosität 2,5 mm²/s bei 40 °C, Flammpunkt 107 °C, Dichte 0,79 g/cm³ bei 15 °C.",
+  "applicationAreas": [
+   "Senkerodieren",
+   "Schruppen",
+   "Schlichten",
+   "Werkzeug- und Formenbau",
+   "Kupfer- und Graphitelektroden"
+  ],
+  "certifications": [
+   "REACH"
+  ],
+  "sourceUrl": "https://www.oelheld.com/en/products/metalworking-lubricants/dielectric/ionoplus-series-dielectric-for-die-sinking-edm/",
+  "dataSheetUrl": "https://www.oelheld.com/fileadmin/content/Broschueren/DE/Dielektrika_-BR-__DE_.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "oelheld",
+  "name": "IME 82",
+  "category": "EDM_FLUID",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": null,
+  "viscosityKv40": 2.0,
+  "description": "Dielektrikum der seit Jahrzehnten bewährten IME-Reihe für EDM-Senkmaschinen, hergestellt auf synthetischer Basis und dadurch besonders alterungsstabil. Es ist wasserhell, nahezu geruchlos, praktisch aromatenfrei und verfärbt sich beim Erodieren nicht. Viskosität 2,0 mm²/s bei 40 °C, Flammpunkt 82 °C, Dichte 0,77 g/cm³ bei 15 °C.",
+  "applicationAreas": [
+   "Senkerodieren",
+   "Schruppen",
+   "Schlichten",
+   "Werkzeugbau"
+  ],
+  "certifications": [
+   "REACH"
+  ],
+  "sourceUrl": "https://www.oelheld.com/en/products/metalworking-lubricants/dielectric/ime-series-dielectric-for-die-sinking-edm/",
+  "dataSheetUrl": "https://www.oelheld.com/fileadmin/content/Broschueren/DE/Dielektrika_-BR-__DE_.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "oelheld",
+  "name": "EcoSpark 105",
+  "category": "EDM_FLUID",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": 2.3,
+  "description": "Dielektrikum für EDM-Senkmaschinen, das hohes Abtragsvolumen mit geringem Elektrodenverschleiß verbindet und von der Feinstbearbeitung bis zu schweren Schrupparbeiten einsetzbar ist. Besonders geeignet, wenn maschinenseitig ein Mindest-Flammpunkt von 100 °C gefordert ist; der hohe Siedepunkt reduziert die Dampfbildung deutlich. Viskosität 2,3 mm²/s bei 40 °C, Flammpunkt 105 °C, Dichte 0,81 g/cm³ bei 15 °C.",
+  "applicationAreas": [
+   "Senkerodieren",
+   "Schruppen",
+   "Schlichten",
+   "Brandschutzanforderung Flammpunkt >100 °C"
+  ],
+  "certifications": [
+   "REACH"
+  ],
+  "sourceUrl": "https://www.oelheld.com/en/products/metalworking-lubricants/dielectric/ecospark-dielectric-for-die-sinking-edm/",
+  "dataSheetUrl": "https://www.oelheld.com/fileadmin/content/Broschueren/DE/Dielektrika_-BR-__DE_.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "oelheld",
+  "name": "IonoFil 100",
+  "category": "EDM_FLUID",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": 2.9,
+  "description": "Dielektrikum auf Kohlenwasserstoffbasis speziell für das Drahterodieren, entwickelt gemeinsam mit der Universität Leuven. Es verhindert Cobalt-Leaching bei Hartmetall, vermeidet Korrosion an Werkstück und Maschine und erlaubt kleinere Funkenspalte als Wasser. Viskosität 2,9 mm²/s bei 40 °C, Flammpunkt >115 °C, Dichte 0,79 g/cm³ bei 15 °C.",
+  "applicationAreas": [
+   "Drahterodieren",
+   "Hartmetallbearbeitung",
+   "Feinstbearbeitung",
+   "Stanzstempel"
+  ],
+  "certifications": [
+   "REACH"
+  ],
+  "sourceUrl": "https://www.oelheld.com/en/products/metalworking-lubricants/dielectric/ionofil-dielectric-for-wire-edm/",
+  "dataSheetUrl": "https://www.oelheld.com/fileadmin/content/Broschueren/DE/Dielektrika_-BR-__DE_.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "oelheld",
+  "name": "IonoGrind 165",
+  "category": "EDM_FLUID",
+  "chemistry": "SYNTHETIC",
+  "viscosityIso": null,
+  "viscosityKv40": 8.5,
+  "description": "Multifunktionsfluid für Kombimaschinen, das gleichermaßen als Dielektrikum für das Rotationserodieren und als Schleiföl dient. Spezielle Hochdruckadditive sichern hohe Schleifleistung, die Zusammensetzung verhindert das Herauslösen von Cobalt bei Hartmetall. Viskosität 8,5 mm²/s bei 40 °C, Flammpunkt >160 °C, Dichte 0,83 g/cm³ bei 15 °C.",
+  "applicationAreas": [
+   "Rotationserodieren",
+   "Schleifen",
+   "PKD-Bearbeitung",
+   "HSS",
+   "Hartmetall",
+   "Kombimaschinen"
+  ],
+  "certifications": [
+   "REACH"
+  ],
+  "sourceUrl": "https://www.oelheld.com/en/products/metalworking-lubricants/dielectric/ionogrind-2-in-1-multifunctional-fluid/",
+  "dataSheetUrl": "https://www.oelheld.com/fileadmin/content/Broschueren/DE/Dielektrika_-BR-__DE_.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "oelheld",
+  "name": "IonoVit 0",
+  "category": "EDM_FLUID",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Gebrauchsfertiges Dielektrikum auf Wasserbasis mit Additiven für das EDM-Startlochbohren ab 0,1 mm Elektrodendurchmesser. Es liefert reproduzierbare Präzisionsbohrungen, ist frei von Schwermetallen und Chlorverbindungen und schützt temporär vor Korrosion. Der Brixwert liegt bei 5-7 %; erforderlich sind ein Dielektrikum-Aggregat mit Mischharzpatrone und ein Wasserleitwert unter 10 µS/cm.",
+  "applicationAreas": [
+   "Startlochbohren",
+   "Präzisionsbohrungen",
+   "Kleinstdurchmesser ab 0,1 mm",
+   "PKD",
+   "Stahl"
+  ],
+  "certifications": [
+   "REACH"
+  ],
+  "sourceUrl": "https://www.oelheld.com/en/products/metalworking-lubricants/dielectric/ionovit-dielectric-for-fast-hole-edm-drilling/",
+  "dataSheetUrl": "https://www.oelheld.com/fileadmin/content/Broschueren/DE/Dielektrika_-BR-__DE_.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Blaser Swisslube",
+  "name": "Blasospark GT 250",
+  "category": "EDM_FLUID",
+  "chemistry": "GTL",
+  "viscosityIso": null,
+  "viscosityKv40": 2.5,
+  "description": "Dielektrikum auf Basis synthetischer Paraffinöle aus der Gas-to-Liquid-Technologie für den Werkzeug- und Formenbau. Farblos für freie Sicht auf den Prozess, geruchsarm dank niedriger Schwefel-, Olefin- und Aromatengehalte, hautschonend und verdampfungsarm. Viskosität 2,5 mm²/s bei 40 °C, Flammpunkt 110 °C, Dielektrizitätskonstante 2,05 bei 25 °C.",
+  "applicationAreas": [
+   "Senkerodieren",
+   "Schruppen",
+   "Schlichten",
+   "Werkzeug- und Formenbau",
+   "Kupfer- und Graphitelektroden"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://blaser.com/blasosparkgt250",
+  "dataSheetUrl": "https://blaser.com/wp-content/uploads/2021/06/blaser_blasospark_gt_250_10.130_en_us.pdf",
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Mobil",
+  "name": "Mobil Vacmul EDM 2",
+  "category": "EDM_FLUID",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": 2.37,
+  "description": "Mehrzweck-Dielektrikum für Senkerodiermaschinen, das zugleich als Isolator, Funkenleiter, Kühlmittel und Spülmedium für den Partikelabtransport wirkt. Geeignet für Schrupparbeiten mit hoher Abtragsrate ebenso wie für Schlicht- und Feinstschlichtarbeiten mit hoher Oberflächengüte; hell, geruchsarm und gut filtrierbar. Viskosität 2,37 mm²/s bei 40 °C, Flammpunkt 108 °C.",
+  "applicationAreas": [
+   "Senkerodieren",
+   "Schruppen",
+   "Schlichten",
+   "Feinstschlichten"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.mobil.com/en/sap/our-products/product-series/vacmul-edm-2-3",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Fuchs",
+  "name": "ECOCUT 30 EDM",
+  "category": "EDM_FLUID",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Hochraffiniertes Dielektrikum für das Funkenerodieren, ausgelegt für Präzisions-, Fein- und Schrupparbeiten. Die sehr gute Oxidations- und Thermostabilität sorgt für lange Badstandzeiten, die erzielten Oberflächen erfordern kaum Nacharbeit. Das Produkt ist glasklar, praktisch geruchlos und hat einen hohen Flammpunkt mit geringer Rauchbildung.",
+  "applicationAreas": [
+   "Senkerodieren",
+   "Präzisionsbearbeitung",
+   "Schlichten",
+   "Schruppen"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.fuchs.com/ca/en/product/product/123482-ECOCUT-30-EDM/",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "TotalEnergies",
+  "name": "DIEL MS 7000",
+  "category": "EDM_FLUID",
+  "chemistry": "MINERAL",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Sehr klares Erodieröl auf Mineralölbasis für das Funkenerodieren, geeignet für Schrupp- wie Schlichtbearbeitung. Es zeichnet sich durch gute Oxidationsbeständigkeit, einen hohen Flammpunkt sowie einen sehr engen Siedeschnitt und damit geringe Verdampfungsneigung aus. Der sehr niedrige Aromatengehalt und der tiefe Stockpunkt erlauben auch die Lagerung im Freien.",
+  "applicationAreas": [
+   "Senkerodieren",
+   "Schruppen",
+   "Schlichten"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://lubricants.catalog.totalenergies.com/catalog-id/en_ID/hey_diel-ms-7000",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Quaker Houghton",
+  "name": "EDM 244",
+  "category": "EDM_FLUID",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Dielektrische Flüssigkeit für das Funkenerodieren, ausgelegt auf sehr feine und komplexe Schnitte und Konturen, unter anderem mit Graphitelektroden. Die hohe Durchschlagsfestigkeit verkürzt die Polierzeit, die niedrige Viskosität sorgt für rasches Spülen und der hohe Flammpunkt senkt das Brandrisiko. Das Produkt wird als leicht biologisch abbaubar beschrieben.",
+  "applicationAreas": [
+   "Senkerodieren",
+   "Werkzeug- und Formenbau",
+   "Medizintechnik",
+   "Luft- und Raumfahrt",
+   "Graphitelektroden"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://store.quakerhoughton.com/edm-244-na",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ },
+ {
+  "manufacturer": "Sodick",
+  "name": "V-WX",
+  "category": "EDM_FLUID",
+  "chemistry": "OTHER",
+  "viscosityIso": null,
+  "viscosityKv40": null,
+  "description": "Wasserbasierter Korrosionsschutz-Zusatz für Drahterodiermaschinen, die mit deionisiertem Wasser als Dielektrikum arbeiten. Er wird dem Dielektrikum mit 1-3 Vol.-% zugesetzt, nachdem der geforderte spezifische Widerstand eingestellt wurde, und bietet bereits in dieser geringen Konzentration einen sehr guten Rostschutz. Zusätzlich reduziert er Drahtbrüche, Beckenverfärbungen und Schaumbildung; das Produkt enthält kein Blei.",
+  "applicationAreas": [
+   "Drahterodieren",
+   "Korrosionsschutz",
+   "Wasser-Dielektrikum",
+   "Additiv"
+  ],
+  "certifications": [],
+  "sourceUrl": "https://www.sodick.co.jp/en/product/supplies/chemicals/v-wxcoat.html",
+  "dataSheetUrl": null,
+  "sdsUrl": null,
+  "sourceConfidence": "verifiziert"
+ }
+]

@@ -16,6 +16,16 @@ export type DetectedCategory =
   | "HYDRAULIC_OIL"
   | "GEAR_OIL"
   | "COMPRESSOR_OIL"
+  | "HONING_LAPPING_OIL"
+  | "MQL_FLUID"
+  | "FIRE_RESISTANT_HYDRAULIC"
+  | "CIRCULATION_OIL"
+  | "OPEN_GEAR_LUBRICANT"
+  | "FORGING_LUBRICANT"
+  | "MASS_FINISHING_COMPOUND"
+  | "POLYMER_QUENCHANT"
+  | "LUBRICATING_PASTE"
+  | "DRY_FILM_LUBRICANT"
   | "SLIDEWAY_OIL"
   | "SPINDLE_OIL"
   | "TURBINE_OIL"
@@ -37,18 +47,37 @@ export type DetectedCategory =
 // Mehrere Kategorien, wenn der Begriff mehrdeutig ist (z. B. „KSS" =
 // wassermischbar ODER nicht wassermischbar).
 const RULES: { re: RegExp; cats: DetectedCategory[] }[] = [
+  // Sonderfall zuerst: „wassermischbarer Schleif-KSS" / „Schleifemulsion" ist
+  // eine Emulsion und KEIN Schleiföl. Nur diese Kombination greift vor — ein
+  // pauschaler Emulsions-Vorrang würde z. B. „wassermischbare Ziehpaste"
+  // fälschlich zum Kühlschmierstoff machen.
+  {
+    re: /(schleif|hon)\w*[\s-]*(emulsion|kss)|(emulsion|wassermischbar|wassergemischt)\w*[\s-]*(schleif|hon)/,
+    cats: ["COOLANT_WATER_MIX"],
+  },
   { re: /gleitbahn|bettbahn|führungsbahn|fuehrungsbahn|slideway|way.?oil|\bcgl?p\b/, cats: ["SLIDEWAY_OIL"] },
   // Drahtziehen ist ein eigener Markt (Ziehseifen/-fette, Nassziehmittel) und
   // wird von Umform-/Stanzölen getrennt — Einkäufer suchen gezielt danach.
-  { re: /drahtzieh|ziehseife|ziehfett|nassziehmittel|drawing.?soap|wire.?draw/, cats: ["WIRE_DRAWING"] },
+  { re: /drahtzieh|drahtzug|ziehseife|ziehfett|ziehpaste|nassziehmittel|drawing.?soap|wire.?draw/, cats: ["WIRE_DRAWING"] },
+  { re: /gesenkschmier|gesenktrenn|schmiedehilfsmittel|schmiedetrenn|warmumform|forging.?die/, cats: ["FORGING_LUBRICANT"] },
   { re: /ziehmittel|ziehöl|ziehoel|tiefzieh|umform|stanz|drückwalz|drueckwalz|abkant|forming/, cats: ["FORMING_OIL"] },
-  { re: /trennmittel|formentrenn|schalungsöl|schalungsoel|release.?agent|druckguss.?trenn/, cats: ["RELEASE_AGENT"] },
+  { re: /trennmittel|formentrenn|schalungsöl|schalungsoel|schalöl|schaloel|betontrennmittel|release.?agent|druckguss.?trenn/, cats: ["RELEASE_AGENT"] },
   { re: /erodier|\bedm\b|funkenerosion|dielektrikum|dielectric/, cats: ["EDM_FLUID"] },
-  { re: /schleiföl|schleifoel|honöl|honoel|läppöl|laeppoel|schleifen.*öl|grinding/, cats: ["GRINDING_OIL"] },
+  // Honen/Läppen ist ein eigener Markt (eigene Viskositäten, eigene Produktlinien)
+  { re: /honöl|honoel|läppöl|laeppoel|superfinish|honing|lapping/, cats: ["HONING_LAPPING_OIL"] },
+  { re: /schleiföl|schleifoel|schleifen.*öl|grinding/, cats: ["GRINDING_OIL"] },
+  { re: /minimalmenge|schmiernebel|sprühnebelschmierung|spruehnebelschmierung|\bmms\b|\bmmks\b|\bmql\b/, cats: ["MQL_FLUID"] },
+  { re: /gleitschleif|trowalisier|vibrationsschleif|entgratmittel|verfahrensmittel|mass.?finishing|tumbling/, cats: ["MASS_FINISHING_COMPOUND"] },
+  { re: /schwer.?entflammbar|wasserglykol|\bhfa\b|\bhfb\b|\bhfc\b|\bhfdu\b|\bhfdr\b|fire.?resistant|iso ?12922/, cats: ["FIRE_RESISTANT_HYDRAULIC"] },
+  { re: /umlauföl|umlaufoel|umlaufschmieröl|papiermaschinenöl|papiermaschinenoel|kalanderöl|kalanderoel|lageröl|lageroel|circulation.?oil|bearing.?oil/, cats: ["CIRCULATION_OIL"] },
+  { re: /haftschmierstoff|offene.?getriebe|zahnkranz|großzahnrad|grosszahnrad|drehrohrofen|open.?gear|girth.?gear/, cats: ["OPEN_GEAR_LUBRICANT"] },
+  { re: /montagepaste|schmierpaste|kupferpaste|keramikpaste|trennpaste|anti.?seize|assembly.?paste/, cats: ["LUBRICATING_PASTE"] },
+  { re: /gleitlack|trockenschmierstoff|trockenschmierung|festschmierstoff|gleitbeschichtung|dry.?film|bonded.?coating/, cats: ["DRY_FILM_LUBRICANT"] },
+  { re: /polymer.?abschreck|abschreckpolymer|wasserverdünnbare.?abschreck|polymer.?quench/, cats: ["POLYMER_QUENCHANT"] },
   { re: /wärmeträger|waermetraeger|thermalöl|thermaloel|thermoöl|thermoel|heat.?transfer|\bwtö\b/, cats: ["HEAT_TRANSFER_OIL"] },
   { re: /härteöl|haerteoel|abschrecköl|abschreckoel|abschreckmittel|quench/, cats: ["QUENCHING_OIL"] },
   { re: /isolieröl|isolieroel|transformatoren|trafoöl|trafooel|transformer.?oil|iec ?60296/, cats: ["TRANSFORMER_OIL"] },
-  { re: /turbinenöl|turbinenoel|turbine|\btd\b ?öl|\btg\b ?öl|din ?51515/, cats: ["TURBINE_OIL"] },
+  { re: /turbinenöl|turbinenoel|turbine.?oil|dampfturbine|gasturbine|din ?51515/, cats: ["TURBINE_OIL"] },
   { re: /kältemaschinen|kaeltemaschinen|kälteöl|kaelteoel|kältemittelöl|refrigerat/, cats: ["REFRIGERATION_OIL"] },
   { re: /vakuumpumpen|vakuumöl|vakuumoel|vacuum.?pump/, cats: ["VACUUM_PUMP_OIL"] },
   { re: /kettenöl|kettenoel|kettenschmier|hochtemperaturkette|chain.?oil|chain.?lube/, cats: ["CHAIN_OIL"] },

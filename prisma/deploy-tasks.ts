@@ -27,6 +27,8 @@ import { prisma } from "@/lib/prisma";
 import { PRODUCT_DELETIONS, ISSUE_DELETIONS, PRODUCT_PATCHES } from "./fix-datenqualitaet-2026-07-15";
 import { applyCorrections2026_07_18 } from "./fix-datenqualitaet-2026-07-18";
 import { applyProduktErweiterung2026_08_02 } from "./add-produkte-2026-08-02";
+import { applyReklassifizierung2026_08_02 } from "./reclass-produktarten-2026-08-02";
+import { applyProduktErweiterung2026_08_02b } from "./add-produkte-2026-08-02b";
 
 type Task = {
   name: string;
@@ -108,6 +110,23 @@ const TASKS: Task[] = [
     // Upsert über (manufacturerId, slug) — idempotent, überschreibt nichts.
     name: "Produkt-Erweiterung 2026-08-02 (Gleitbahn, Umform/Drahtzieh, Additive)",
     run: () => applyProduktErweiterung2026_08_02(),
+  },
+  {
+    // Die Produktarten wurden am 2026-08-02 um 10 eigenständige Arten erweitert
+    // (Turbinen-, Wärmeträger-, Härte-, Isolier-, Ketten-, Kälte-, Vakuum-,
+    // Spindelöl, Drahtzieh-Schmierstoff, Trennmittel). Produkte, die vorher
+    // mangels Schublade unter „Spezial"/„Sonstiges" lagen, hängen wir nach.
+    name: "Nach-Einordnung 2026-08-02 (neue Produktarten)",
+    run: () => applyReklassifizierung2026_08_02(),
+  },
+  {
+    // 136 recherchierte Produkte für die bisher unterversorgten und die neu
+    // aufgenommenen Produktarten: Erodier-Dielektrika, Industriereiniger,
+    // Schleiföle, Korrosionsschutz, Kompressoren-, Ketten-, Spindel-, Kälte-,
+    // Wärmeträger- und Härteöle, Drahtzieh-Schmierstoffe, Trennmittel.
+    // Legt fehlende Hersteller an (Condat, Bitzer, Sika, Cortec, Eastman …).
+    name: "Produkt-Erweiterung 2026-08-02b (Lückenkategorien + neue Produktarten)",
+    run: () => applyProduktErweiterung2026_08_02b(),
   },
 ];
 

@@ -147,9 +147,14 @@ enum ProductCategory {
   COOLANT_WATER_MIX     // wassermischbarer KSS-Konzentrat
   COOLANT_NEAT          // nicht wassermischbares Schneidöl
   GRINDING_OIL          // Schleiföl
+  HONING_LAPPING_OIL    // Hon-, Läpp-, Superfinishöl (eigener Markt, oft sehr niedrigviskos)
+  MQL_FLUID             // Minimalmengenschmierstoff (MMS/MQL) — verdampfungsarme Ester
   EDM_FLUID             // Erodieröl (Senk/Draht), Dielektrikum
   HYDRAULIC_OIL
+  FIRE_RESISTANT_HYDRAULIC // Schwer entflammbar (ISO 12922: HFA/HFB/HFC/HFDU/HFDR)
   GEAR_OIL
+  CIRCULATION_OIL       // Umlauf-/Lageröl (DIN 51517 C/CL/CLP), Papiermaschinenöl
+  OPEN_GEAR_LUBRICANT   // Haftschmierstoff für offene Getriebe (DIN 51502 "OG")
   COMPRESSOR_OIL
   SLIDEWAY_OIL          // Bettbahnöl
   SPINDLE_OIL           // Spindelöl (ISO VG 2–10, Hochfrequenzspindeln)
@@ -158,14 +163,19 @@ enum ProductCategory {
   REFRIGERATION_OIL     // Kältemaschinenöl (POE/PAG/Mineral)
   VACUUM_PUMP_OIL       // Vakuumpumpenöl
   FORMING_OIL           // Stanz-/Umform-/Tiefziehöl
+  FORGING_LUBRICANT     // Gesenkschmierstoff Warmumformung (Graphit-Wasser/-Öl, graphitfrei)
   WIRE_DRAWING          // Drahtzieh-Schmierstoff (Ziehseife, Ziehfett, Nassziehmittel)
   RELEASE_AGENT         // Trennmittel (Druckguss, Gummi, Kunststoff), Schalungsöl
+  MASS_FINISHING_COMPOUND // Gleitschleifmittel / Compound (Trowalisieren, Vibrationsschleifen)
   HEAT_TRANSFER_OIL     // Wärmeträgeröl / Thermalöl (DIN 51522)
   QUENCHING_OIL         // Härteöl / Abschrecköl (Wärmebehandlung)
+  POLYMER_QUENCHANT     // Wasserverdünnbares Polymer-Abschreckmittel (nicht mit Härteöl mischbar)
   TRANSFORMER_OIL       // Isolieröl / Transformatorenöl (IEC 60296)
   CLEANER               // Reiniger / Entfetter
   CORROSION_PROTECTION
   GREASE
+  LUBRICATING_PASTE     // Montage-/Schmierpaste mit hohem Festschmierstoffanteil
+  DRY_FILM_LUBRICANT    // Gleitlack / Trockenschmierstoff (MoS2, PTFE, Graphit)
   SPECIALTY             // Spezial-/Sonderschmierstoff
   ADDITIVE
   OTHER
