@@ -187,7 +187,7 @@ export default async function ListingDetailPage({
 
       {/* SPECS */}
       <section className="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-200">
-        <h2 className="mb-4 eyebrow">
+        <h2 className="mb-4 section-title">
           Technische Spezifikation
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
@@ -222,7 +222,7 @@ export default async function ListingDetailPage({
       {/* MACHINING OPERATIONS */}
       {listing.machiningOperations.length > 0 && (
         <section className="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-200">
-          <h2 className="mb-3 flex items-center gap-2 eyebrow">
+          <h2 className="mb-3 flex items-center gap-2 section-title">
             <Wrench size={14} />
             Bearbeitungsverfahren
           </h2>
@@ -250,7 +250,7 @@ export default async function ListingDetailPage({
       {(typeof listing.mineralOilContent === "number" ||
         listing.containsGlycol !== null) && (
         <section className="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-200">
-          <h2 className="mb-3 flex items-center gap-2 eyebrow">
+          <h2 className="mb-3 flex items-center gap-2 section-title">
             <Droplet size={14} />
             Rezeptur
           </h2>
@@ -313,7 +313,7 @@ export default async function ListingDetailPage({
           return (
             <section className="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-200">
               <div className="mb-3 flex items-center justify-between gap-3">
-                <h2 className="flex items-center gap-2 eyebrow">
+                <h2 className="flex items-center gap-2 section-title">
                   <Gauge size={14} />
                   Automatisierungs-Eignung
                 </h2>
@@ -399,7 +399,7 @@ export default async function ListingDetailPage({
       {/* CERTIFICATES */}
       {listing.certificates.length > 0 && (
         <section className="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-200">
-          <h2 className="mb-3 eyebrow">
+          <h2 className="mb-3 section-title">
             Zertifikate &amp; Freigaben
           </h2>
           <p className="mb-3 text-xs text-slate-500">
@@ -412,7 +412,7 @@ export default async function ListingDetailPage({
       {/* DESCRIPTION */}
       {listing.description && (
         <section className="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-200">
-          <h2 className="mb-2 eyebrow">
+          <h2 className="mb-2 section-title">
             Beschreibung
           </h2>
           <p className="whitespace-pre-line text-sm text-slate-700">
@@ -424,7 +424,7 @@ export default async function ListingDetailPage({
       {/* SDS */}
       {matchingSds.length > 0 && (
         <section className="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-200">
-          <h2 className="mb-3 flex items-center gap-2 eyebrow">
+          <h2 className="mb-3 flex items-center gap-2 section-title">
             <FileText size={14} />
             Sicherheitsdatenblätter
           </h2>
