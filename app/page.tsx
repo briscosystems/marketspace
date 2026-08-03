@@ -439,7 +439,7 @@ async function PersonalDashboard({ userId }: { userId: string }) {
             <h2 className="section-title">
               Offene Anfragen — vielleicht hast du das auf Lager
             </h2>
-            <Link href="/rfqs" className="text-xs text-brand-500 hover:underline">
+            <Link href="/rfqs" className="text-xs text-brand-700 hover:underline">
               alle →
             </Link>
           </div>
@@ -448,7 +448,7 @@ async function PersonalDashboard({ userId }: { userId: string }) {
               <Link
                 key={r.id}
                 href={`/rfqs/${r.id}`}
-                className="group flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0 hover:text-brand-500"
+                className="group flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0 hover:text-brand-700"
               >
                 <div className="min-w-0">
                   <div className="font-medium truncate">
@@ -474,7 +474,7 @@ async function PersonalDashboard({ userId }: { userId: string }) {
         <section>
           <div className="mb-3 flex items-center justify-between">
             <h2 className="section-title">Letzte Nachrichten</h2>
-            <Link href="/conversations" className="text-xs text-brand-500 hover:underline">
+            <Link href="/conversations" className="text-xs text-brand-700 hover:underline">
               alle →
             </Link>
           </div>
@@ -487,7 +487,7 @@ async function PersonalDashboard({ userId }: { userId: string }) {
                 <Link
                   key={c.id}
                   href={`/conversations/${c.id}`}
-                  className="flex items-start gap-3 py-3 first:pt-0 last:pb-0 hover:text-brand-500"
+                  className="flex items-start gap-3 py-3 first:pt-0 last:pb-0 hover:text-brand-700"
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
@@ -521,7 +521,7 @@ async function PersonalDashboard({ userId }: { userId: string }) {
         <section>
           <div className="mb-3 flex items-center justify-between">
             <h2 className="section-title">Neu im Markt</h2>
-            <Link href="/listings" className="text-xs text-brand-500 hover:underline">
+            <Link href="/listings" className="text-xs text-brand-700 hover:underline">
               alle →
             </Link>
           </div>

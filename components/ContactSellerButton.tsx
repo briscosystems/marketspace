@@ -42,7 +42,7 @@ export function ContactSellerButton({
 
   return (
     <div>
-      <button onClick={onClick} disabled={loading} className="btn-primary">
+      <button onClick={onClick} disabled={loading} className="btn-secondary">
         {loading ? "Öffne Chat …" : label}
       </button>
       {error && <div className="mt-2 text-sm text-red-600">{error}</div>}

@@ -153,7 +153,7 @@ export function CertBadge({
                   href={def.wikipedia}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-sm text-brand-500 hover:underline"
+                  className="inline-flex items-center gap-1 text-sm text-brand-700 hover:underline"
                 >
                   Mehr Infos <ExternalLink size={13} />
                 </a>

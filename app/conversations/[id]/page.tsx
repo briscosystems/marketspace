@@ -37,7 +37,7 @@ export default async function ConversationPage({
 
   return (
     <div className="space-y-4">
-      <Link href="/conversations" className="text-sm text-brand-500 hover:underline">
+      <Link href="/conversations" className="text-sm text-brand-700 hover:underline">
         {t("convd.back")}
       </Link>
       <div className="card">
@@ -52,7 +52,7 @@ export default async function ConversationPage({
             {t("convd.reListing")}{" "}
             <Link
               href={`/listings/${conversation.listing.id}`}
-              className="text-brand-500 hover:underline"
+              className="text-brand-700 hover:underline"
             >
               {conversation.listing.manufacturer} {conversation.listing.productName}
             </Link>{" "}

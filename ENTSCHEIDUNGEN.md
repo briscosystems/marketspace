@@ -99,6 +99,21 @@ Nach jeder Änderung, die hier etwas berührt: **Eintrag ergänzen oder anpassen
 | Reihenfolge: **Schweiz, Österreich, Deutschland**, dann alphabetisch | Heimatmarkt zuerst |
 | Eine Länderliste für alles: `lib/europe-countries.ts` versorgt Registrierung und Lagerregion | die Liste stand vorher doppelt im Seitencode |
 
+## Farb- und Bediensprache (Design-Audit 2026-08-03, umgesetzt)
+
+| Entscheidung | Begründung |
+|---|---|
+| **Eine Primäraktion pro Seite.** Auf der Angebots-Detailseite ist es „Angebot anfragen"; Kontakt und Muster sind Zweitaktionen, die KI steht abgesetzt darunter | Vorher vier gleichrangige Knöpfe in vier Farben am Konversionspunkt |
+| **Grün ist Status, keine Handlungsfarbe** (angenommen/geeignet/frei). Verkauf = blau, Einkauf/Anfrage = amber — auch in Kennzahlen und Status-Chips | Farbkonvention Anbieten/Suchen gilt überall |
+| Bestätigungsseiten tragen die Farbe ihrer Strecke: Angebot = blau, Anfrage = amber | Endpunkt gehört zur Strecke, Grün bleibt dem Status |
+| **`text-brand-500` nie als Text-/Linkfarbe** — Kontrast ≈ 2,2:1 auf Weiß. Links: `text-brand-700` | Lesbarkeit (WCAG) |
+| Am Geldpunkt steht die **Gebühren-Formel** (2,5 % + 0,25 €, trägt der Käufer) — und niemals „Brisco verdient nichts" | stand im Widerspruch zu den AGB; §12 „Provisions-" ebenfalls bereinigt |
+| Anfrage-Detail: Überschrift ist das **Gesuchte**, die Menge der Untertitel; Status: offen = amber, angenommen = grün | Blickführung |
+| Kachel „Nachrichten" zählt ehrlich Gespräche — kein „Ungelesen"-Signal, solange es keine Gelesen-Markierung gibt | keine vorgetäuschten Zähler |
+| Werkstoffseite: Verträglichkeit **positiv zuerst** (empfohlen → verträglich → Vorsicht → ungeeignet) | gleiche Dramaturgie wie die Produktseite: Auswahlhilfe, keine Warnliste |
+| Nach dem Veröffentlichen zeigt die Bearbeiten-Seite einen **Erfolgsbalken** (Angebot online + Foto-Hinweis) | der Belohnungsmoment ging vorher verloren |
+| Leere Zustände auch auf Konto-Seiten mit Ausweg (Dashboard ×3, Nachrichten, Umsätze, Anfrage-Detail) | Sackgassen sind der häufigste Absprungmoment |
+
 ## Fachliche Regeln
 
 | Entscheidung | Begründung |

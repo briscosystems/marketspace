@@ -256,7 +256,7 @@ export default function RegisterPage() {
                     update("pseudonym", generatePseudonym());
                     setPseudonymNote(null);
                   }}
-                  className="text-xs text-brand-500 hover:underline"
+                  className="text-xs text-brand-700 hover:underline"
                 >
                   {t("reg.pseudonymSuggest")}
                 </button>
@@ -301,7 +301,7 @@ export default function RegisterPage() {
         </button>
         <p className="text-center text-sm text-slate-600">
           {t("reg.alreadyRegistered")}{" "}
-          <Link href="/login" className="text-brand-500 hover:underline">
+          <Link href="/login" className="text-brand-700 hover:underline">
             {t("reg.toLogin")}
           </Link>
         </p>

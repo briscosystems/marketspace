@@ -21,7 +21,7 @@ export default async function AlternativesPage({
     <div className="space-y-6">
       <Link
         href={`/listings/${id}`}
-        className="text-sm text-brand-500 hover:underline"
+        className="text-sm text-brand-700 hover:underline"
       >
         {t("alt.back")}
       </Link>

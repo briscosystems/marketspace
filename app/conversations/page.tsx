@@ -32,8 +32,10 @@ export default async function ConversationsPage() {
       <h1 className="page-title">{t("conv.title")}</h1>
       {conversations.length === 0 ? (
         <div className="card text-slate-500">
-          {t("conv.empty")}{" "}
-          <em>{t("conv.contactSeller")}</em>.
+          {t("conv.empty")} <em>{t("conv.contactSeller")}</em>.{" "}
+          <Link href="/listings" className="font-medium text-brand-700 hover:underline">
+            Angebote ansehen →
+          </Link>
         </div>
       ) : (
         <div className="card divide-y divide-slate-200">
@@ -46,7 +48,7 @@ export default async function ConversationsPage() {
               <Link
                 key={c.id}
                 href={`/conversations/${c.id}`}
-                className="flex items-start justify-between gap-4 py-3 first:pt-0 last:pb-0 hover:text-brand-500"
+                className="flex items-start justify-between gap-4 py-3 first:pt-0 last:pb-0 hover:text-brand-700"
               >
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">

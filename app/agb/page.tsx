@@ -181,7 +181,7 @@ export default function AgbPage() {
         <p>
           Die Nutzung kann von beiden Seiten jederzeit beendet werden. Brisco kann Zugänge bei
           Verstößen gegen diese AGB (insbesondere Punkt 4 und 7) mit sofortiger Wirkung sperren.
-          Bereits entstandene Provisions- und Schadenersatzansprüche bleiben bestehen.
+          Bereits entstandene Entgelt- und Schadenersatzansprüche bleiben bestehen.
         </p>
       </Section>
 

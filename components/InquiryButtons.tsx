@@ -77,7 +77,7 @@ export function InquiryButtons({
       <button
         type="button"
         onClick={() => show("sample")}
-        className="inline-flex items-center gap-1.5 rounded-md bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700 ring-1 ring-emerald-200 hover:bg-emerald-100"
+        className="btn-secondary inline-flex items-center gap-1.5 text-sm"
       >
         <FlaskConical size={14} />
         Muster anfordern
@@ -85,7 +85,7 @@ export function InquiryButtons({
       <button
         type="button"
         onClick={() => show("quote")}
-        className="inline-flex items-center gap-1.5 rounded-md bg-brand-50 px-3 py-2 text-sm font-medium text-brand-700 ring-1 ring-brand-200 hover:bg-brand-100"
+        className="btn-primary inline-flex items-center gap-1.5 text-sm"
       >
         <FileText size={14} />
         Angebot anfragen

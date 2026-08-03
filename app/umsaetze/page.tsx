@@ -116,11 +116,11 @@ export default async function UmsaetzePage() {
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="card">
           <div className="eyebrow">{t("rev.salesCompleted")}</div>
-          <div className="stat-value mt-1 text-emerald-700">{formatCurrency(salesTotal, currency)}</div>
+          <div className="stat-value mt-1 text-blue-700">{formatCurrency(salesTotal, currency)}</div>
         </div>
         <div className="card">
           <div className="eyebrow">{t("rev.purchasesCompleted")}</div>
-          <div className="stat-value mt-1 text-blue-700">{formatCurrency(purchaseTotal, currency)}</div>
+          <div className="stat-value mt-1 text-amber-700">{formatCurrency(purchaseTotal, currency)}</div>
         </div>
         <div className="card">
           <div className="eyebrow">{t("rev.savedByswitch")}</div>
@@ -188,7 +188,7 @@ export default async function UmsaetzePage() {
                 <td className="px-4 py-3 font-medium text-slate-900">{r.product}</td>
                 <td className="px-4 py-3 text-slate-600">{r.counterpart}</td>
                 <td className="px-4 py-3 text-slate-600">
-                  {r.quantity.toLocaleString("de-CH")} {r.unit}
+                  {r.quantity.toLocaleString("de-DE")} {r.unit}
                 </td>
                 <td className="px-4 py-3 text-right font-semibold text-slate-900">
                   {formatCurrency(r.amount, currency)}
@@ -226,7 +226,10 @@ export default async function UmsaetzePage() {
             {rows.length === 0 && (
               <tr>
                 <td colSpan={8} className="px-4 py-6 text-center text-slate-500">
-                  {t("rev.emptyTransactions")}
+                  {t("rev.emptyTransactions")}{" "}
+                  <Link href="/listings" className="font-medium text-brand-700 hover:underline">
+                    Angebote durchsuchen →
+                  </Link>
                 </td>
               </tr>
             )}

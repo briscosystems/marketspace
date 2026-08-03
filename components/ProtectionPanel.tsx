@@ -89,9 +89,9 @@ export function ProtectionPanel({
         )}
         <p className="text-sm text-slate-600">
           Du zahlst über die Plattform, das Geld wird sicher geparkt und erst nach deiner
-          Lieferbestätigung an den Verkäufer freigegeben. Abwicklungsgebühr:{" "}
-          <strong>{feeEur.toFixed(2)} €</strong> (Zahlungsdienstleister — Brisco verdient
-          an der Transaktion nichts).
+          Lieferbestätigung an den Verkäufer freigegeben. Käuferschutz-Gebühr:{" "}
+          <strong>{feeEur.toFixed(2)} €</strong> (2,5 % + 0,25 €, trägt der Käufer — deckt
+          Zahlungsabwicklung und Käuferschutz).
         </p>
         {role === "BUYER" ? (
           <button

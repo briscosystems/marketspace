@@ -27,7 +27,7 @@ export default async function AngebotEingestelltPage({
           Käufer finden es ab sofort über die Suche. Wir haben dir eine E-Mail geschickt: Darin
           steht ein Link, mit dem du dein Passwort setzt.
         </p>
-        <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 p-3 text-left text-sm text-amber-900">
+        <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-blue-200 bg-blue-50 p-3 text-left text-sm text-blue-900">
           <Camera size={17} className="mt-0.5 shrink-0" />
           <span>
             <strong>Fotos fehlen noch.</strong> Sobald dein Passwort gesetzt ist, kannst du

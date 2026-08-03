@@ -55,7 +55,7 @@ export default function LoginPage() {
             <label className="label" htmlFor="password">{t("auth.password")}</label>
             <Link
               href="/forgot-password"
-              className="text-xs text-brand-500 hover:underline"
+              className="text-xs text-brand-700 hover:underline"
             >
               {t("auth.forgotPassword")}
             </Link>
@@ -74,7 +74,7 @@ export default function LoginPage() {
         </button>
         <p className="text-center text-sm text-slate-600">
           {t("auth.noAccount")}{" "}
-          <Link href="/register" className="text-brand-500 hover:underline">
+          <Link href="/register" className="text-brand-700 hover:underline">
             {t("auth.toRegister")}
           </Link>
         </p>

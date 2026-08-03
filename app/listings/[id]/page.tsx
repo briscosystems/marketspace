@@ -57,7 +57,7 @@ export default async function ListingDetailPage({
 
   return (
     <div className="space-y-6">
-      <Link href="/listings" className="text-sm text-brand-500 hover:underline">
+      <Link href="/listings" className="text-sm text-brand-700 hover:underline">
         ← zurück zur Übersicht
       </Link>
 
@@ -144,16 +144,19 @@ export default async function ListingDetailPage({
                 </Link>
               ) : session?.user ? (
                 <>
-                  <ContactSellerButton
-                    sellerId={listing.seller.id}
-                    listingId={listing.id}
-                  />
+                  {/* EINE Primäraktion („Angebot anfragen" in InquiryButtons);
+                      Kontakt und Muster sind Zweitaktionen. Vorher standen hier
+                      vier gleichrangige Knöpfe in vier Farben. */}
                   <InquiryButtons
                     sellerId={listing.seller.id}
                     listingId={listing.id}
                     productLabel={`${listing.manufacturer} ${listing.productName}`}
                     quantityUnit={listing.quantityUnit}
                     minOrderQty={listing.minOrderQty}
+                  />
+                  <ContactSellerButton
+                    sellerId={listing.seller.id}
+                    listingId={listing.id}
                   />
                 </>
               ) : (
@@ -171,16 +174,29 @@ export default async function ListingDetailPage({
                   </p>
                 </div>
               )}
-              {!isOwnListing && (
+            </div>
+            {!isOwnListing && (
+              <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1.5">
+                {/* KI bewusst abgesetzt — sie konkurriert nicht mit der Anfrage. */}
                 <Link
                   href={`/listings/${listing.id}/alternatives`}
-                  className="inline-flex items-center gap-1.5 rounded-md bg-violet-50 px-3 py-2 text-sm font-medium text-violet-700 ring-1 ring-violet-200 hover:bg-violet-100"
+                  className="inline-flex items-center gap-1.5 rounded-md bg-violet-50 px-3 py-1.5 text-sm font-medium text-violet-700 ring-1 ring-violet-200 hover:bg-violet-100"
                 >
                   <Sparkles size={14} className="text-violet-500" />
                   KI: Alternative finden
                 </Link>
-              )}
-            </div>
+                {session?.user && (
+                  <span className="text-xs text-slate-500">
+                    Chat über die Plattform — dein Klarname bleibt verborgen. Zahlung auf Wunsch
+                    mit{" "}
+                    <Link href="/vertrauen" className="font-medium text-brand-700 hover:underline">
+                      Käuferschutz
+                    </Link>
+                    .
+                  </span>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -439,7 +455,7 @@ export default async function ListingDetailPage({
                   className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50/40 px-4 py-3 text-sm hover:bg-slate-50"
                 >
                   <div className="min-w-0">
-                    <Link href={`/sds/${s.id}`} className="font-medium hover:text-brand-500">
+                    <Link href={`/sds/${s.id}`} className="font-medium hover:text-brand-700">
                       {s.manufacturer} {s.productName}
                     </Link>
                     <div className="text-xs text-slate-500">
@@ -460,7 +476,7 @@ export default async function ListingDetailPage({
                     href={`/api/sds/${s.id}/download?inline=1`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm font-medium text-brand-500 hover:underline"
+                    className="text-sm font-medium text-brand-700 hover:underline"
                   >
                     PDF öffnen
                   </a>
@@ -484,7 +500,7 @@ export default async function ListingDetailPage({
             </p>
           </div>
           {isOwnListing ? (
-            <span className="text-sm text-slate-500">Das ist dein eigenes Listing.</span>
+            <span className="text-sm text-slate-500">Das ist dein eigenes Angebot.</span>
           ) : session?.user ? (
             <ContactSellerButton sellerId={listing.seller.id} listingId={listing.id} />
           ) : (

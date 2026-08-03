@@ -53,6 +53,9 @@ export default async function DashboardPage() {
       orderBy: { createdAt: "desc" },
       take: 8,
     }),
+    // Es gibt (noch) keine Gelesen-Markierung — die Kachel zählt deshalb
+    // ehrlich die Gespräche und heißt auch so, statt ein „Ungelesen"-Signal
+    // vorzutäuschen, das nie sinkt.
     prisma.conversation.count({
       where: { OR: [{ buyerId: me }, { sellerId: me }] },
     }),
@@ -103,7 +106,7 @@ export default async function DashboardPage() {
         <h1 className="page-title">{t("dash.title")}</h1>
         <p className="flex items-center gap-2 text-sm text-slate-600">
           {t("dash.loggedInAs")}{" "}
-          <Link href={`/profile/${user?.pseudonym}`} className="font-medium hover:text-brand-500">
+          <Link href={`/profile/${user?.pseudonym}`} className="font-medium hover:text-brand-700">
             {user?.pseudonym}
           </Link>
           ({user?.role})
@@ -111,7 +114,7 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-5">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
         <div className="card">
           <div className="eyebrow">{t("dash.tileListings")}</div>
           <div className="stat-value mt-1">{listings.length}</div>
@@ -149,7 +152,7 @@ export default async function DashboardPage() {
                   </h3>
                   <Link
                     href="/listings"
-                    className="text-xs text-brand-500 hover:underline"
+                    className="text-xs text-brand-700 hover:underline"
                   >
                     {t("dash.all")}
                   </Link>
@@ -167,7 +170,7 @@ export default async function DashboardPage() {
                   <h3 className="font-medium">
                     {t("dash.openRequestsForMfrs")}
                   </h3>
-                  <Link href="/rfqs" className="text-xs text-brand-500 hover:underline">
+                  <Link href="/rfqs" className="text-xs text-brand-700 hover:underline">
                     {t("dash.all")}
                   </Link>
                 </div>
@@ -176,7 +179,7 @@ export default async function DashboardPage() {
                     <Link
                       key={r.id}
                       href={`/rfqs/${r.id}`}
-                      className="flex items-center justify-between py-3 first:pt-0 last:pb-0 hover:text-brand-500"
+                      className="flex items-center justify-between py-3 first:pt-0 last:pb-0 hover:text-brand-700"
                     >
                       <div className="min-w-0">
                         <div className="font-medium truncate">
@@ -190,7 +193,7 @@ export default async function DashboardPage() {
                           {t("dash.offersCount")}
                         </div>
                       </div>
-                      <span className="text-xs text-brand-500">{t("dash.makeOffer")}</span>
+                      <span className="text-xs font-medium text-brand-700">{t("dash.makeOffer")}</span>
                     </Link>
                   ))}
                 </div>
@@ -227,7 +230,7 @@ export default async function DashboardPage() {
                   packaging={l.packaging}
                   size="sm"
                 />
-                <Link href={`/listings/${l.id}`} className="min-w-0 flex-1 hover:text-brand-500">
+                <Link href={`/listings/${l.id}`} className="min-w-0 flex-1 hover:text-brand-700">
                   <div className="font-medium truncate">{l.manufacturer} {l.productName}</div>
                   <div className="text-xs text-slate-500">
                     {l.productType} · {l.quantity.toLocaleString("de-DE")} {l.quantityUnit} · {l.locationRegion}
@@ -236,7 +239,7 @@ export default async function DashboardPage() {
                 <QuickStatusToggle listingId={l.id} status={l.status} />
                 <Link
                   href={`/listings/${l.id}/edit`}
-                  className="text-xs text-slate-500 hover:text-brand-500"
+                  className="text-xs text-slate-500 hover:text-brand-700"
                 >
                   {t("dash.edit")}
                 </Link>
@@ -257,14 +260,19 @@ export default async function DashboardPage() {
           </Link>
         </div>
         {myRfqs.length === 0 ? (
-          <div className="card text-sm text-slate-500">{t("dash.emptySeeking")}</div>
+          <div className="card text-sm text-slate-500">
+            {t("dash.emptySeeking")}{" "}
+            <Link href="/rfqs/new" className="font-medium text-amber-700 hover:underline">
+              Bedarf einstellen →
+            </Link>
+          </div>
         ) : (
           <div className="card divide-y divide-slate-200">
             {myRfqs.map((r) => (
               <Link
                 key={r.id}
                 href={`/rfqs/${r.id}`}
-                className="flex items-center justify-between py-3 first:pt-0 last:pb-0 hover:text-brand-500"
+                className="flex items-center justify-between py-3 first:pt-0 last:pb-0 hover:text-brand-700"
               >
                 <div className="min-w-0">
                   <div className="font-medium truncate">
@@ -284,7 +292,12 @@ export default async function DashboardPage() {
       <section>
         <h2 className="mb-3 section-title">{t("dash.tileTransactions")}</h2>
         {myTxns.length === 0 ? (
-          <div className="card text-sm text-slate-500">{t("dash.emptyTransactions")}</div>
+          <div className="card text-sm text-slate-500">
+            {t("dash.emptyTransactions")}{" "}
+            <Link href="/listings" className="font-medium text-brand-700 hover:underline">
+              Angebote durchsuchen →
+            </Link>
+          </div>
         ) : (
           <div className="card divide-y divide-slate-200">
             {myTxns.map((tx) => {
@@ -294,7 +307,7 @@ export default async function DashboardPage() {
                 <Link
                   key={tx.id}
                   href={`/transactions/${tx.id}`}
-                  className="flex items-center justify-between py-3 first:pt-0 last:pb-0 hover:text-brand-500"
+                  className="flex items-center justify-between py-3 first:pt-0 last:pb-0 hover:text-brand-700"
                 >
                   <div className="min-w-0">
                     <div className="font-medium">
@@ -317,14 +330,19 @@ export default async function DashboardPage() {
       <section>
         <h2 className="mb-3 section-title">{t("dash.myOffersTitle")}</h2>
         {myOffers.length === 0 ? (
-          <div className="card text-sm text-slate-500">{t("dash.emptyMyOffers")}</div>
+          <div className="card text-sm text-slate-500">
+            {t("dash.emptyMyOffers")}{" "}
+            <Link href="/rfqs" className="font-medium text-amber-700 hover:underline">
+              Offene Anfragen ansehen →
+            </Link>
+          </div>
         ) : (
           <div className="card divide-y divide-slate-200">
             {myOffers.map((o) => (
               <Link
                 key={o.id}
                 href={`/rfqs/${o.rfq.id}`}
-                className="flex items-center justify-between py-3 first:pt-0 last:pb-0 hover:text-brand-500"
+                className="flex items-center justify-between py-3 first:pt-0 last:pb-0 hover:text-brand-700"
               >
                 <div className="min-w-0">
                   <div className="font-medium">

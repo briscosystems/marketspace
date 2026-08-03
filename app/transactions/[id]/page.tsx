@@ -94,7 +94,7 @@ export default async function TransactionPage({
 
   return (
     <div className="space-y-6">
-      <Link href="/dashboard" className="text-sm text-brand-500 hover:underline">
+      <Link href="/dashboard" className="text-sm text-brand-700 hover:underline">
         ← {t("txn.dashboard")}
       </Link>
 
@@ -112,8 +112,8 @@ export default async function TransactionPage({
               {tx.rfq && (
                 <>
                   {" · "}
-                  <Link href={`/rfqs/${tx.rfq.id}`} className="text-brand-500 hover:underline">
-                    RFQ {tx.rfq.productType}
+                  <Link href={`/rfqs/${tx.rfq.id}`} className="text-brand-700 hover:underline">
+                    Anfrage {tx.rfq.productType}
                     {tx.rfq.isoViscosity ? ` ISO VG ${tx.rfq.isoViscosity}` : ""}
                   </Link>
                 </>
@@ -121,7 +121,7 @@ export default async function TransactionPage({
               {tx.listing && (
                 <>
                   {" · "}
-                  <Link href={`/listings/${tx.listing.id}`} className="text-brand-500 hover:underline">
+                  <Link href={`/listings/${tx.listing.id}`} className="text-brand-700 hover:underline">
                     {tx.listing.manufacturer} {tx.listing.productName}
                   </Link>
                 </>
@@ -139,7 +139,7 @@ export default async function TransactionPage({
             <div className="flex items-center gap-2">
               <Link
                 href={`/profile/${tx.buyer.pseudonym}`}
-                className="font-medium hover:text-brand-500"
+                className="font-medium hover:text-brand-700"
               >
                 {tx.buyer.pseudonym}
               </Link>
@@ -152,7 +152,7 @@ export default async function TransactionPage({
             <div className="flex items-center gap-2">
               <Link
                 href={`/profile/${tx.seller.pseudonym}`}
-                className="font-medium hover:text-brand-500"
+                className="font-medium hover:text-brand-700"
               >
                 {tx.seller.pseudonym}
               </Link>

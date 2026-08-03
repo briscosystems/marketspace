@@ -53,7 +53,7 @@ export default function ResetPasswordPage() {
         <div className="card">
           <p className="text-sm text-slate-600">
             Dieser Link ist unvollständig. Bitte fordere unter{" "}
-            <Link href="/forgot-password" className="text-brand-500 hover:underline">
+            <Link href="/forgot-password" className="text-brand-700 hover:underline">
               Passwort vergessen
             </Link>{" "}
             einen neuen an.

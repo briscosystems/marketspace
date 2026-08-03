@@ -9,6 +9,7 @@ const RFQ_STATUS_LABEL: Record<string, string> = {
   CANCELED: "zurückgezogen",
 };
 import Link from "next/link";
+import { LeerHinweis } from "@/components/LeerHinweis";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -61,25 +62,27 @@ export default async function RfqDetailPage({
 
   return (
     <div className="space-y-6">
-      <Link href="/rfqs" className="text-sm text-brand-500 hover:underline">
+      <Link href="/rfqs" className="text-sm text-brand-700 hover:underline">
         ← Anfragen-Übersicht
       </Link>
 
       <div className="card space-y-5">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <div className="eyebrow">
-              {rfq.productType} {rfq.isoViscosity ? `· ISO VG ${rfq.isoViscosity}` : ""}
-            </div>
+            <div className="eyebrow">Gesucht wird</div>
             <h1 className="page-title">
               {rfq.manufacturer ? `${rfq.manufacturer} · ` : ""}
-              {rfq.quantity.toLocaleString("de-DE")} {rfq.quantityUnit}
+              {rfq.productType}
+              {rfq.isoViscosity ? ` · ISO VG ${rfq.isoViscosity}` : ""}
             </h1>
+            <div className="mt-0.5 text-sm font-medium text-slate-700">
+              {rfq.quantity.toLocaleString("de-DE")} {rfq.quantityUnit}
+            </div>
             <div className="mt-1 flex items-center gap-2 text-sm text-slate-600">
               <span>{rfq.buyer.pseudonym}</span>
               <TrustBadge tier={rfq.buyer.trustTier} size="xs" />
               {rfq.visibility === "VERIFIED_ONLY" && (
-                <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] text-blue-700">
+                <span className="chip bg-slate-100 text-slate-700 ring-1 ring-slate-200">
                   Nur für geprüfte Mitglieder
                 </span>
               )}
@@ -88,9 +91,9 @@ export default async function RfqDetailPage({
           <span
             className={`rounded-full px-3 py-1 text-xs font-medium ${
               rfq.status === "OPEN"
-                ? "bg-emerald-100 text-emerald-800"
+                ? "bg-amber-100 text-amber-800"
                 : rfq.status === "ACCEPTED"
-                ? "bg-blue-100 text-blue-800"
+                ? "bg-emerald-100 text-emerald-800"
                 : "bg-slate-100 text-slate-600"
             }`}
           >
@@ -166,7 +169,11 @@ export default async function RfqDetailPage({
       <div className="space-y-3">
         <h2 className="section-title">Angebote</h2>
         {rfq.offers.length === 0 ? (
-          <div className="card text-sm text-slate-500">Noch keine Angebote.</div>
+          <LeerHinweis
+            titel="Noch keine Angebote."
+            text="Anbieter sehen deine Anfrage — bis zur ersten Antwort dauert es meist wenige Stunden. In der Zwischenzeit kann die KI passende Alternativen aus dem Katalog vorschlagen."
+            aktionen={["alternative", "suche"]}
+          />
         ) : (
           <div className="space-y-3">
             {rfq.offers.map((o) => {
@@ -211,13 +218,21 @@ export default async function RfqDetailPage({
                       )}
                     </div>
                     <div className="text-right">
-                      <div className="text-lg font-semibold text-brand-500">
+                      <div className="text-lg font-semibold text-slate-900">
                         {o.priceEur.toFixed(2)} €
                       </div>
                       <div className="text-xs text-slate-500">pro {o.quantityUnit}</div>
                       {isBuyer && rfq.status === "OPEN" && (
                         <div className="mt-3">
                           <AcceptOfferButton rfqId={rfq.id} offerId={o.id} />
+                          <p className="mt-1.5 text-xs text-slate-500">
+                            Nach dem Annehmen öffnet sich ein Chat mit dem Anbieter. Zahlung auf
+                            Wunsch mit{" "}
+                            <Link href="/vertrauen" className="font-medium text-brand-700 hover:underline">
+                              Käuferschutz
+                            </Link>
+                            .
+                          </p>
                         </div>
                       )}
                     </div>

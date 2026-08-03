@@ -58,10 +58,10 @@ export default async function ManufacturersPage() {
                   </span>
                 ))}
               </div>
-              <div className="mt-2 flex items-center justify-center gap-3 text-[10px] text-slate-500">
+              <div className="mt-2 flex items-center justify-center gap-3 text-xs text-slate-500">
                 {m._count.products > 0 ? <span>{m._count.products} Produkte</span> : null}
                 {m._count.sds > 0 ? <span>{m._count.sds} SDS</span> : null}
-                {m._count.listings > 0 ? <span>{m._count.listings} Listings</span> : null}
+                {m._count.listings > 0 ? <span>{m._count.listings} Angebote</span> : null}
               </div>
             </div>
           </Link>

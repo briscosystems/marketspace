@@ -536,7 +536,7 @@ export default async function AdminPage() {
               })}
               {referralCodes.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="py-4 text-center text-slate-500">
+                  <td colSpan={8} className="py-4 text-center text-slate-500">
                     Noch keine Codes generiert.
                   </td>
                 </tr>
@@ -1151,7 +1151,7 @@ export default async function AdminPage() {
             ))}
             {users.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-6 text-center text-slate-500">
+                <td colSpan={7} className="px-4 py-6 text-center text-slate-500">
                   Noch keine Reseller vorhanden.
                 </td>
               </tr>

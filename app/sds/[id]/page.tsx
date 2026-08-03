@@ -77,7 +77,7 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
 
   return (
     <div className="space-y-6">
-      <Link href="/sds" className="text-sm text-brand-500 hover:underline">
+      <Link href="/sds" className="text-sm text-brand-700 hover:underline">
         ← {t("sdsd.backToLibrary")}
       </Link>
 
@@ -122,7 +122,7 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
                 href={sds.sourceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="break-all text-brand-500 hover:underline"
+                className="break-all text-brand-700 hover:underline"
               >
                 {new URL(sds.sourceUrl).hostname}
               </a>
@@ -421,7 +421,7 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
               <Link
                 key={p.id}
                 href={`/products/${p.manufacturer.slug}/${p.slug}`}
-                className="flex items-baseline justify-between gap-3 py-3 first:pt-0 last:pb-0 hover:text-brand-500"
+                className="flex items-baseline justify-between gap-3 py-3 first:pt-0 last:pb-0 hover:text-brand-700"
               >
                 <div className="min-w-0 flex-1">
                   <div className="font-medium">
@@ -450,7 +450,7 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
               <Link
                 key={l.id}
                 href={`/listings/${l.id}`}
-                className="flex items-center gap-3 py-3 first:pt-0 last:pb-0 hover:text-brand-500"
+                className="flex items-center gap-3 py-3 first:pt-0 last:pb-0 hover:text-brand-700"
               >
                 <ProductImage
                   manufacturer={l.manufacturer}

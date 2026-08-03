@@ -191,7 +191,7 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
             <Link
               key={s.id}
               href={`/sds/${s.id}`}
-              className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0 hover:text-brand-500"
+              className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0 hover:text-brand-700"
             >
               <div className="flex min-w-0 flex-1 items-center gap-2.5">
                 <ProductImage

@@ -284,7 +284,7 @@ export default async function ManufacturerDetailPage({
               className="rounded-lg border border-slate-200 bg-white p-4 hover:border-brand-400"
             >
               <div className="text-sm font-semibold text-slate-900">
-                {m._count.listings} aktive Listings
+                {m._count.listings} aktive Angebote
               </div>
               <div className="text-xs text-slate-500">{t("mfr.toOffers")}</div>
             </Link>

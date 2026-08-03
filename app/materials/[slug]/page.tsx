@@ -16,7 +16,7 @@ export default async function MaterialDetailPage({ params }: { params: Params })
     include: {
       compatibilities: {
         include: { ingredient: true },
-        orderBy: { rating: "asc" },
+        orderBy: { rating: "desc" },
       },
     },
   });
@@ -90,23 +90,15 @@ export default async function MaterialDetailPage({ params }: { params: Params })
 
       {/* Inhaltsstoffe nach Verträglichkeit sortiert */}
       <div className="space-y-4">
-        {grouped.UNSUITABLE.length > 0 && (
+        {/* Positives zuerst — dieselbe Reihenfolge wie auf der Produktseite:
+            eine Auswahlhilfe, keine Warnliste. */}
+        {grouped.RECOMMENDED.length > 0 && (
           <CompatGroup
-            title={t("mat.unsuitableTitle")}
-            subtitle={t("mat.unsuitableSub")}
-            icon={AlertOctagon}
-            iconColor="text-red-600"
-            items={grouped.UNSUITABLE}
-            t={t}
-          />
-        )}
-        {grouped.CAUTION.length > 0 && (
-          <CompatGroup
-            title={t("mat.cautionSub")}
-            subtitle={t("mat.cautionSubtitle")}
-            icon={AlertTriangle}
-            iconColor="text-amber-600"
-            items={grouped.CAUTION}
+            title={t("mat.recommendedTitle")}
+            subtitle={t("mat.recommendedSubtitle")}
+            icon={CheckCircle2}
+            iconColor="text-emerald-700"
+            items={grouped.RECOMMENDED}
             t={t}
           />
         )}
@@ -120,13 +112,23 @@ export default async function MaterialDetailPage({ params }: { params: Params })
             t={t}
           />
         )}
-        {grouped.RECOMMENDED.length > 0 && (
+        {grouped.CAUTION.length > 0 && (
           <CompatGroup
-            title={t("mat.recommendedTitle")}
-            subtitle={t("mat.recommendedSubtitle")}
-            icon={CheckCircle2}
-            iconColor="text-emerald-700"
-            items={grouped.RECOMMENDED}
+            title={t("mat.cautionSub")}
+            subtitle={t("mat.cautionSubtitle")}
+            icon={AlertTriangle}
+            iconColor="text-amber-600"
+            items={grouped.CAUTION}
+            t={t}
+          />
+        )}
+        {grouped.UNSUITABLE.length > 0 && (
+          <CompatGroup
+            title={t("mat.unsuitableTitle")}
+            subtitle={t("mat.unsuitableSub")}
+            icon={AlertOctagon}
+            iconColor="text-red-600"
+            items={grouped.UNSUITABLE}
             t={t}
           />
         )}

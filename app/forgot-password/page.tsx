@@ -39,7 +39,7 @@ export default function ForgotPasswordPage() {
             {t("fp.sentBefore")}<strong>{email}</strong>{t("fp.sentAfter")}
           </div>
 
-          <Link href="/login" className="block text-center text-sm text-brand-500 hover:underline">
+          <Link href="/login" className="block text-center text-sm text-brand-700 hover:underline">
             {t("fp.backToLogin")}
           </Link>
         </div>
@@ -60,7 +60,7 @@ export default function ForgotPasswordPage() {
             {loading ? t("fp.sending") : t("fp.request")}
           </button>
           <p className="text-center text-sm text-slate-600">
-            <Link href="/login" className="text-brand-500 hover:underline">
+            <Link href="/login" className="text-brand-700 hover:underline">
               {t("fp.backToLogin")}
             </Link>
           </p>
