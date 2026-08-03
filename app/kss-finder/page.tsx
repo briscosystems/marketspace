@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LeerHinweis } from "@/components/LeerHinweis";
 import { prisma } from "@/lib/prisma";
 import { getT } from "@/lib/i18n-server";
 import { Collapsible } from "@/components/Collapsible";
@@ -10,6 +11,7 @@ import { KssAiAnalysis } from "@/components/KssAiAnalysis";
 import { buildSearchWhere } from "@/lib/normalize-search";
 import { getCurrentPricesBatch } from "@/lib/price-aggregation";
 import { ProductImage } from "@/components/ProductImage";
+import { BrandLogo } from "@/components/BrandLogo";
 import { packagingForProduct } from "@/lib/product-packaging";
 import {
   APPLICATION_AREAS,
@@ -397,13 +399,11 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
         }
       >
       {products.length === 0 ? (
-        <div className="card text-center text-slate-500">
-          Keine KSS gefunden. Filter aufweichen oder{" "}
-          <Link href="/kss-finder" className="text-brand-600 hover:underline">
-            zurücksetzen
-          </Link>
-          .
-        </div>
+        <LeerHinweis
+          titel="Zu diesen Anforderungen passt kein Produkt im Katalog."
+          text="Weich die Filter auf — oder lass die KI eine Alternative suchen und stell parallel eine Anfrage ein. Händler melden sich dann mit Preis und Lieferzeit."
+          aktionen={["alternative", "anfrage"]}
+        />
       ) : (
         <div className="grid gap-3 md:grid-cols-2">
           {products.map((p) => (
@@ -421,10 +421,20 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
                     size="sm"
                   />
                   <div className="min-w-0">
-                    <div className="text-xs uppercase tracking-wide text-slate-500">
-                      {p.manufacturer.name}
+                    {/* Herstellerlogo statt nur Name — gleiche Bildsprache wie
+                        in den Trefferlisten und auf der Produktseite. */}
+                    <BrandLogo manufacturer={p.manufacturer.name} size="xs" />
+                    <div className="mt-1 text-base font-semibold">{p.name}</div>
+                    <div className="mt-0.5 flex flex-wrap gap-1.5">
+                      <span className="chip bg-slate-100 text-slate-600">
+                        {t(`cat.${p.category}`)}
+                      </span>
+                      {p.viscosityIso && (
+                        <span className="chip bg-slate-100 text-slate-600">
+                          ISO VG {p.viscosityIso.replace(/^ISO\s*VG\s*/i, "")}
+                        </span>
+                      )}
                     </div>
-                    <div className="text-base font-semibold">{p.name}</div>
                   </div>
                 </div>
                 <div className="flex shrink-0 flex-col items-end gap-1">

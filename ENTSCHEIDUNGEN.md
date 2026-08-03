@@ -86,6 +86,8 @@ Nach jeder Änderung, die hier etwas berührt: **Eintrag ergänzen oder anpassen
 | Darunter **Beispielsuchen** als Knöpfe (Blasocut 4000, HLP 46, Gleitbahnöl ISO 68, Bor-frei) | zeigt in einer Sekunde, wonach man hier sucht |
 | **Jede leere Liste bietet einen Ausweg** über den Baustein `components/LeerHinweis.tsx`: „Alternative finden (KI)" und „Anfrage einstellen — wir holen Angebote ein" | Eine leere Liste ist der häufigste Absprungmoment; ehrlicher als so zu tun, als sei alles da |
 | Kein „Keine Treffer" ohne nächsten Schritt | dito |
+| Eingesetzt auf: Angebote, Anfragen, Datenblätter, Richtwerte, KSS-Finder, Praxis-Wissen, Herstellerseite, Werkstoffseite | Stand 2026-08-03 |
+| **Produktdarstellung überall gleich:** Gebindebild + Herstellerlogo + Produktart-Chip. Gemeinsamer Baustein `components/ProduktZeile.tsx`; wo eine Seite eine eigene Karte braucht, mindestens dieselben drei Bestandteile | Dasselbe Produkt sah vorher auf acht Seiten acht Mal anders aus |
 
 ## Fachliche Regeln
 

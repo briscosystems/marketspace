@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LeerHinweis } from "@/components/LeerHinweis";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { ManufacturerLogo } from "@/components/ManufacturerLogo";
@@ -200,9 +201,13 @@ export default async function ManufacturerDetailPage({
           </span>
         </h2>
         {m.products.length === 0 ? (
-          <p className="mt-2 rounded-lg border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-sm text-slate-500">
-            {t("mfr.emptyCatalog")}
-          </p>
+          <div className="mt-2">
+            <LeerHinweis
+              titel={t("mfr.emptyCatalog")}
+              text="Wir bauen den Katalog laufend aus. Such solange im Gesamtkatalog — oder stell eine Anfrage, wir holen Angebote für dieses Produkt ein."
+              aktionen={["suche", "anfrage"]}
+            />
+          </div>
         ) : (
           <div className="mt-3 space-y-5">
             {Array.from(productsByFamily.entries()).map(([family, ps]) => (

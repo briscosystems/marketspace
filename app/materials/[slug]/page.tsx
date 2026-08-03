@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LeerHinweis } from "@/components/LeerHinweis";
 import { getT } from "@/lib/i18n-server";
 import { fill } from "@/lib/i18n";
 import { notFound } from "next/navigation";
@@ -132,9 +133,11 @@ export default async function MaterialDetailPage({ params }: { params: Params })
       </div>
 
       {material.compatibilities.length === 0 && (
-        <div className="card text-center text-slate-500">
-          {t("mat.noData")}
-        </div>
+        <LeerHinweis
+          titel={t("mat.noData")}
+          text="Die Verträglichkeits-Matrix wächst mit jedem ausgewerteten Datenblatt. Lass die KI prüfen, welches Produkt zu diesem Werkstoff passt."
+          aktionen={["alternative", "suche"]}
+        />
       )}
     </div>
   );

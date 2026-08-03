@@ -8,6 +8,7 @@ import { FilterDropdown } from "@/components/FilterDropdown";
 import { SearchInput } from "@/components/SearchInput";
 import { buildSearchWhere } from "@/lib/normalize-search";
 import { ProductImage } from "@/components/ProductImage";
+import { BrandLogo } from "@/components/BrandLogo";
 import { packagingForProduct } from "@/lib/product-packaging";
 import { FileText } from "lucide-react";
 import type { SdsCategory } from "@prisma/client";
@@ -200,9 +201,10 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
                   size="xs"
                 />
                 <div className="min-w-0">
-                <div className="font-medium">
-                  {s.manufacturer} · {s.productName}
-                </div>
+                {/* Herstellerlogo statt reinem Namenstext — gleiche Bildsprache
+                    wie in den Trefferlisten und auf der Produktseite. */}
+                <BrandLogo manufacturer={s.manufacturer} size="xs" />
+                <div className="mt-0.5 font-medium">{s.productName}</div>
                 <div className="text-xs text-slate-500">
                   {SDS_CATEGORY_LABEL[s.category] ?? s.category} ·{" "}
                   {SDS_LANGUAGE_LABEL[s.language] ?? s.language} · {s.pageCount ?? "?"} Seiten ·{" "}

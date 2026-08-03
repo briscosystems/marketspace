@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LeerHinweis } from "@/components/LeerHinweis";
 import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
 import { getT } from "@/lib/i18n-server";
@@ -132,9 +133,11 @@ export default async function WissenPage({ searchParams }: { searchParams: Searc
 
       {/* Fälle */}
       {issues.length === 0 ? (
-        <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-500">
-          Keine Einträge gefunden.
-        </div>
+        <LeerHinweis
+          titel="Zu dieser Suche haben wir noch keinen Praxis-Fall."
+          text="Das Praxis-Wissen wächst mit gemeldeten Fällen. Such im Katalog nach dem Produkt — oder lass die KI prüfen, ob ein anderes Produkt besser zu deiner Anwendung passt."
+          aktionen={["suche", "alternative"]}
+        />
       ) : (
         <div className="grid gap-4 lg:grid-cols-2">
           {issues.map((it) => {
