@@ -62,9 +62,10 @@ export default function NewListingPage() {
   const [measurementMethods, setMeasurementMethods] = useState<string[]>([]);
   const [dbManufacturers, setDbManufacturers] = useState<string[]>([]);
 
-  useEffect(() => {
-    if (status === "unauthenticated") router.replace("/login?callbackUrl=/listings/new");
-  }, [status, router]);
+  // Anbieten verlangt ein Konto — es entsteht aber erst beim Absenden
+  // (Entscheidung 2026-08-03). Niemand soll ein Anmeldeformular ausfüllen
+  // müssen, bevor er sein Angebot eintippen darf; das Eingetippte ging dabei
+  // bisher verloren.
 
   // Echte Hersteller aus der Datenbank laden und mit den bekannten Familien-
   // Marken zusammenführen — so deckt die Vorschlagsliste alle möglichen ab.
@@ -112,7 +113,8 @@ export default function NewListingPage() {
     [],
   );
 
-  if (status !== "authenticated") return <div className="text-slate-500">{t("lnew.loading")}</div>;
+  if (status === "loading") return <div className="text-slate-500">{t("lnew.loading")}</div>;
+  const angemeldet = status === "authenticated";
 
   const manufacturerSuggestions = (q: string): Suggestion[] =>
     suggestFrom(allManufacturers, q, 8).map((m) => ({ value: m, label: m }));
@@ -163,6 +165,7 @@ export default function NewListingPage() {
       containsGlycol,
       automationSuitability: automation.score,
       measurementMethods,
+      ...(angemeldet ? {} : { email: (fd.get("email") as string) || undefined }),
     };
     const res = await fetch(withBasePath("/api/listings"), {
       method: "POST",
@@ -179,6 +182,12 @@ export default function NewListingPage() {
     // Direkt zur Bearbeitung: dort steht der Foto-Bereich. Marktplätze führen
     // nach dem Anlegen immer zuerst zu den Bildern — ohne Foto wird ein Angebot
     // deutlich seltener angefragt.
+    if (created.kontoAngelegt) {
+      // Ohne gesetztes Passwort ist die Bearbeitung noch gesperrt — deshalb auf
+      // die Bestätigungsseite, die erklärt, wie es weitergeht.
+      router.push(`/listings/eingestellt?id=${created.id}`);
+      return;
+    }
     router.push(`/listings/${created.id}/edit?neu=1`);
     router.refresh();
   }
@@ -506,6 +515,28 @@ export default function NewListingPage() {
             {error}
           </div>
         )}
+        {!angemeldet && (
+          <div className="rounded-2xl border-2 border-blue-200 bg-blue-50 p-4">
+            <label className="label" htmlFor="listing-email">
+              Deine E-Mail-Adresse *
+            </label>
+            <input
+              id="listing-email"
+              name="email"
+              type="email"
+              required
+              placeholder="verkauf@firma.de"
+              className="input bg-white"
+            />
+            <p className="mt-1.5 text-xs text-blue-900">
+              Darüber erreichen dich Kaufinteressenten. Ein Konto legen wir beim Absenden
+              automatisch an — du bekommst per Mail einen Link, um dein Passwort zu setzen.
+              Danach kannst du Fotos ergänzen und dein Angebot ändern. Anonym bleibst du
+              trotzdem: Käufer sehen nur deinen Anzeigenamen, nie deine Adresse.
+            </p>
+          </div>
+        )}
+
         <div className="flex justify-end">
           <button type="submit" className="btn-primary" disabled={loading}>
             {loading ? t("lnew.saving") : t("lnew.submit")}

@@ -133,6 +133,8 @@ Nach jeder Änderung, die hier etwas berührt: **Eintrag ergänzen oder anpassen
 
 | **Anfragen ohne Konto** (2026-08-03): Wer nicht angemeldet ist, gibt nur seine E-Mail-Adresse an. Das Konto entsteht dabei automatisch, der Anzeigename wird vergeben, und per Mail kommt der Link zum Passwortsetzen (derselbe Weg wie „Passwort vergessen"). Danach sieht man die Antworten der Händler | Baymard: 18–26 % Abbruch allein durch Kontozwang |
 | **Anbieten verlangt weiterhin ein Konto** — ein Angebot ist eine Zusage, der Anbieter muss erreichbar und zurechenbar sein. Käufer sollen dagegen ohne Hürde fragen dürfen | Asymmetrie ist gewollt |
+| **Das Konto entsteht aber ERST beim Absenden**, bei Anfrage wie bei Angebot: ausfüllen, E-Mail angeben, fertig. Vorher wurde man auf die Anmeldeseite geworfen und verlor alles Eingetippte | gemeinsamer Baustein `lib/konto-nebenbei.ts` |
+| Nach dem Absenden ohne Konto führt der Weg auf eine Bestätigungsseite (`/rfqs/eingegangen`, `/listings/eingestellt`), nie in eine gesperrte Seite | Das Passwort ist zu diesem Zeitpunkt noch nicht gesetzt |
 
 ## Technik
 

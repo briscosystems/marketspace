@@ -5,6 +5,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getSettingInt } from "@/lib/credits";
 import { activeTier, listingLimitFor } from "@/lib/membership-tiers";
+import { kontoNebenbei } from "@/lib/konto-nebenbei";
 
 const listingSchema = z.object({
   productType: z.string().min(2),
@@ -30,14 +31,14 @@ const listingSchema = z.object({
   containsGlycol: z.boolean().nullable().optional(),
   automationSuitability: z.number().int().min(0).max(5).optional(),
   measurementMethods: z.array(z.string()).default([]),
+  // Nur nötig, wenn niemand angemeldet ist. Anbieten verlangt weiterhin ein
+  // Konto — es entsteht aber ERST beim Absenden, damit niemand ein Formular
+  // ausfüllen muss, bevor er sein Angebot eintippen darf.
+  email: z.string().email().optional(),
 });
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   const body = await req.json().catch(() => null);
   const parsed = listingSchema.safeParse(body);
   if (!parsed.success) {
@@ -47,13 +48,40 @@ export async function POST(req: Request) {
     );
   }
 
-  const data = parsed.data;
+  const { email, ...data } = parsed.data;
+
+  // Angemeldet? Dann gehört das Angebot dem Konto. Sonst reicht die
+  // E-Mail-Adresse; das Konto entsteht dabei (Rolle: Händler).
+  let sellerId = session?.user?.id ?? null;
+  let kontoAngelegt = false;
+  if (!sellerId) {
+    if (!email) {
+      return NextResponse.json(
+        { error: "Bitte gib deine E-Mail-Adresse an — darüber erreichen dich Kaufinteressenten." },
+        { status: 400 },
+      );
+    }
+    const konto = await kontoNebenbei({
+      email,
+      rolle: "RESELLER",
+      origin: new URL(req.url).origin,
+      betreff: "Brisco Marketplace — dein Angebot ist online",
+      einleitung: [
+        "Danke, dein Angebot ist veröffentlicht.",
+        "",
+        "Wir haben dir dafür automatisch einen Zugang angelegt. Damit kannst du",
+        "Fotos ergänzen, den Preis ändern und Anfragen von Käufern beantworten.",
+      ],
+    });
+    sellerId = konto.userId;
+    kontoAngelegt = konto.neuAngelegt;
+  }
 
   // Angebots-Limit der Stufe durchsetzen: BASIS (und Nutzer ohne aktive Stufe,
   // z.B. in der Kennenlernphase) dürfen nur eine begrenzte Zahl gleichzeitig
   // aktiver Angebote führen; Pro/Marke sind unbegrenzt.
   const seller = await prisma.user.findUnique({
-    where: { id: session.user.id },
+    where: { id: sellerId },
     select: { membershipTier: true, membershipValidUntil: true },
   });
   const tier = activeTier({
@@ -63,7 +91,7 @@ export async function POST(req: Request) {
   const limit = listingLimitFor(tier, await getSettingInt("basisListingLimit"));
   if (limit !== null) {
     const activeCount = await prisma.listing.count({
-      where: { sellerId: session.user.id, status: "ACTIVE" },
+      where: { sellerId, status: "ACTIVE" },
     });
     if (activeCount >= limit) {
       return NextResponse.json(
@@ -81,8 +109,8 @@ export async function POST(req: Request) {
       ...data,
       productionDate: data.productionDate ? new Date(data.productionDate) : null,
       expiryDate: data.expiryDate ? new Date(data.expiryDate) : null,
-      sellerId: session.user.id,
+      sellerId,
     },
   });
-  return NextResponse.json(listing, { status: 201 });
+  return NextResponse.json({ ...listing, kontoAngelegt }, { status: 201 });
 }
