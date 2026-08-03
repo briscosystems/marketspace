@@ -18,28 +18,18 @@ import {
 
 type SearchParams = Promise<{ category?: string; q?: string }>;
 
-const CATEGORY_LABEL: Record<string, string> = {
-  WORKPIECE_STAINS: "Werkstück-Flecken",
-  CORROSION: "Korrosion",
-  BIOLOGY: "Bakterien / Geruch",
-  FOAM: "Schaumbildung",
-  OPERATOR_HEALTH: "Bediener-Gesundheit",
-  SEAL_DAMAGE: "Dichtungen / Lackangriff",
-  RESIDUES: "Klebrige Rückstände",
-  TOOL_WEAR: "Werkzeugverschleiß",
-  FILTRATION: "Filtration / Tramp-Oil",
-  STABILITY: "Stabilität / Lagerung",
-  PERFORMANCE: "Leistung",
-  COMPATIBILITY: "Kompatibilität",
-  REGULATORY: "REACH / TRGS",
-  SHELF_LIFE: "Lager-/Standzeit",
-  OTHER: "Sonstiges",
-};
+// Die Beschriftungen stehen in lib/i18n.ts (issuecat.*) — vorher standen sie
+// hier nur auf Deutsch, englische und niederländische Nutzer sahen Deutsch.
+const CATEGORY_KEYS = [
+  "WORKPIECE_STAINS", "CORROSION", "BIOLOGY", "FOAM", "OPERATOR_HEALTH",
+  "SEAL_DAMAGE", "RESIDUES", "TOOL_WEAR", "FILTRATION", "STABILITY",
+  "PERFORMANCE", "COMPATIBILITY", "REGULATORY", "SHELF_LIFE", "OTHER",
+];
 
-const SEVERITY: Record<string, { label: string; cls: string; Icon: typeof Info }> = {
-  HIGH: { label: "Kritisch", cls: "bg-rose-50 text-rose-700 border-rose-200", Icon: AlertOctagon },
-  MEDIUM: { label: "Beachten", cls: "bg-amber-50 text-amber-800 border-amber-200", Icon: AlertTriangle },
-  LOW: { label: "Hinweis", cls: "bg-slate-50 text-slate-600 border-slate-200", Icon: Info },
+const SEVERITY: Record<string, { key: string; cls: string; Icon: typeof Info }> = {
+  HIGH: { key: "sev.HIGH", cls: "bg-rose-50 text-rose-700 border-rose-200", Icon: AlertOctagon },
+  MEDIUM: { key: "sev.MEDIUM", cls: "bg-amber-50 text-amber-800 border-amber-200", Icon: AlertTriangle },
+  LOW: { key: "sev.LOW", cls: "bg-slate-50 text-slate-600 border-slate-200", Icon: Info },
 };
 
 export default async function WissenPage({ searchParams }: { searchParams: SearchParams }) {
@@ -80,9 +70,9 @@ export default async function WissenPage({ searchParams }: { searchParams: Searc
 
   const counts = new Map(catCounts.map((c) => [c.category as string, c._count._all]));
   // Kategorien nach Häufigkeit, Werkstück-Flecken bewusst als erstes Highlight
-  const chips = Object.keys(CATEGORY_LABEL)
+  const chips = CATEGORY_KEYS
     .filter((k) => counts.get(k))
-    .map((k) => ({ key: k, label: CATEGORY_LABEL[k], count: counts.get(k) ?? 0 }));
+    .map((k) => ({ key: k, label: t(`issuecat.${k}`), count: counts.get(k) ?? 0 }));
 
   function chipHref(cat: string | null): string {
     const p = new URLSearchParams();
@@ -157,10 +147,10 @@ export default async function WissenPage({ searchParams }: { searchParams: Searc
               >
                 <div className="flex flex-wrap items-center gap-2">
                   <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${sev.cls}`}>
-                    <SevIcon size={12} /> {sev.label}
+                    <SevIcon size={12} /> {t(sev.key)}
                   </span>
                   <span className="rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-semibold text-brand-800">
-                    {CATEGORY_LABEL[it.category] ?? it.category}
+                    {t(`issuecat.${it.category}`)}
                   </span>
                   {it.isOfficial && (
                     <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">

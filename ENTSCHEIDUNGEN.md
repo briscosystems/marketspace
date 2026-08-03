@@ -127,3 +127,5 @@ nicht als Abwicklung. Geld über Sichtbarkeit und Abo, nicht über Provision.
 | Vor Datenarbeiten **Backup**: `./scripts/backup.sh --commit --label X` | dito |
 | KI-Aufrufe brauchen Absicherung: Zeitlimit, Wiederholungs-Sperre, Rückfall auf Heuristik | Kostenkontrolle |
 | Produktarten zentral in `lib/product-categories.ts` — keine kopierten Listen | Es gab vier Kopien, eine wurde immer vergessen |
+| Auch Geschäftsschwerpunkte (`focus.*`) und Praxis-Wissen-Kategorien (`issuecat.*`, `sev.*`) laufen über lib/i18n.ts | Standen vorher nur auf Deutsch im Seitencode — englische und niederländische Nutzer sahen Deutsch |
+| **Ausnahme, bewusst so gelassen:** `PRODUCT_TYPE_PRESETS` in `app/rfqs/new/page.tsx`. Das sind Freitext-Werte des Feldes `Listing.productType`, keine Produktarten — sie müssen wörtlich zu den Angeboten passen, sonst greift die Zuordnung nicht mehr | Änderung wäre riskant ohne Nutzen |

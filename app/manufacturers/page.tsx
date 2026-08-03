@@ -8,16 +8,6 @@ export const metadata = {
   description: "Alle Hersteller von Kühlschmierstoffen und Schmierstoffen mit Produktkatalog.",
 };
 
-const FOCUS_LABEL: Record<string, string> = {
-  COOLANT: "KSS",
-  NEAT_OIL: "Schneidöl",
-  LUBRICANT: "Schmierstoff",
-  GREASE: "Fett",
-  CLEANER: "Reiniger",
-  CORROSION_PROTECTION: "Korr.-Schutz",
-  CHEMICAL_SUPPLIER: "Distributor",
-  ADDITIVE: "Additiv",
-};
 
 export default async function ManufacturersPage() {
   const t = await getT();
@@ -64,7 +54,7 @@ export default async function ManufacturersPage() {
                     key={f}
                     className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-600"
                   >
-                    {FOCUS_LABEL[f] ?? f}
+                    {t(`focus.${f}`)}
                   </span>
                 ))}
               </div>
