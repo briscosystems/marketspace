@@ -45,9 +45,9 @@ export default function NewRfqPage() {
   const [productType, setProductType] = useState("Hydrauliköl");
   const [manufacturerOptions, setManufacturerOptions] = useState<string[]>([]);
 
-  useEffect(() => {
-    if (status === "unauthenticated") router.replace("/login?callbackUrl=/rfqs/new");
-  }, [status, router]);
+  // Anfragen sind ohne Konto möglich (Entscheidung 2026-08-03): Wer nicht
+  // angemeldet ist, gibt am Ende nur seine E-Mail-Adresse an — das Konto legt
+  // die Plattform selbst an und schickt den Link zum Passwortsetzen.
 
   // Hersteller-Liste einmal laden — Vorschläge bauen sich dann beim Tippen auf.
   useEffect(() => {
@@ -57,9 +57,10 @@ export default function NewRfqPage() {
       .catch(() => setManufacturerOptions([]));
   }, []);
 
-  if (status !== "authenticated") {
+  if (status === "loading") {
     return <div className="text-slate-500">{t("rnew.loading")}</div>;
   }
+  const angemeldet = status === "authenticated";
 
   // Produkttyp → relevanter Problem-Scope, damit pro Kategorie nur die
   // passenden Pain-Points (+ kategorieübergreifende) angezeigt werden.
@@ -104,6 +105,7 @@ export default function NewRfqPage() {
       workpieceMaterial: (fd.get("workpieceMaterial") as string) || undefined,
       requiredCertifications: requiredCerts,
       avoidIssues: issues,
+      ...(angemeldet ? {} : { email: (fd.get("email") as string) || undefined }),
     };
     const res = await fetch(withBasePath("/api/rfqs"), {
       method: "POST",
@@ -117,6 +119,11 @@ export default function NewRfqPage() {
       return;
     }
     const created = await res.json();
+    if (created.kontoAngelegt) {
+      // Ohne gesetztes Passwort kann die Detailseite noch nicht geöffnet werden.
+      router.push("/rfqs/eingegangen");
+      return;
+    }
     router.push(`/rfqs/${created.id}`);
     router.refresh();
   }
@@ -277,6 +284,27 @@ export default function NewRfqPage() {
             {error}
           </div>
         )}
+        {!angemeldet && (
+          <div className="rounded-2xl border-2 border-amber-200 bg-amber-50 p-4">
+            <label className="label" htmlFor="rfq-email">
+              Deine E-Mail-Adresse *
+            </label>
+            <input
+              id="rfq-email"
+              name="email"
+              type="email"
+              required
+              placeholder="einkauf@firma.de"
+              className="input bg-white"
+            />
+            <p className="mt-1.5 text-xs text-amber-900">
+              Dorthin schicken wir die Antworten der Händler. Ein Konto legen wir dabei
+              automatisch für dich an — du bekommst per Mail einen Link, um dein Passwort zu
+              setzen. Kein Formular vorher, keine Kreditkarte.
+            </p>
+          </div>
+        )}
+
         <div className="flex justify-end">
           <button type="submit" className="btn-primary" disabled={loading}>
             {loading ? t("rnew.saving") : t("rnew.submit")}

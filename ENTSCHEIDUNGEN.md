@@ -120,7 +120,7 @@ Nach jeder Änderung, die hier etwas berührt: **Eintrag ergänzen oder anpassen
 | Wiederkehrende Scheiterungsgründe: fehlende Liquidität, Angst der Anbieter vor Preistransparenz, Umgehung nach Erstkontakt, fehlende Neutralität bei Hersteller-Plattformen | dito |
 | **Unsere Neutralität ist ein Vorteil** — genau daran sind die Konzern-Plattformen gescheitert | dito |
 | Unser eigener Katalog ist über §§ 87a ff. UrhG (Datenbankherstellerrecht) schützbar; das rohe fremde Datenblatt nicht | Recherche, keine Rechtsberatung |
-| **Offener Punkt vor breitem Ausrollen:** anwaltliche Prüfung zum Hosten fremder Sicherheitsdatenblätter (keine deutsche Entscheidung auffindbar → ungeklärt, nicht „erlaubt") | — |
+| **Erledigt am 2026-08-03: anwaltliche Prüfung zum Hosten fremder Sicherheitsdatenblätter abgeschlossen** — der Betreiber hat freigegeben, wir dürfen so verfahren | Angabe des Betreibers |
 
 ### Entschieden am 2026-08-03
 
@@ -131,9 +131,8 @@ Nach jeder Änderung, die hier etwas berührt: **Eintrag ergänzen oder anpassen
 | **Zahlungsabwicklung über die Plattform ist freiwillig.** Nur wer sie nutzt, zahlt eine kleine Gebühr (2,5 % + 0,25 €, getragen vom Käufer). Wer direkt abwickelt, zahlt keine Provision | Käuferschutz-Text angepasst |
 | **Keine 30 Reseller vor dem Start.** Der Start trägt über den Katalog; Reseller kommen über nachgewiesene Nachfrage | — |
 
-**Nicht behauptet, weil heute nicht wahr:** „Anfragen ohne Konto". Eine Anfrage
-verlangt derzeit ein Konto. Auf der Startseite steht deshalb nur, was stimmt:
-Suchen und Datenblätter sind kostenlos und ohne Konto.
+| **Anfragen ohne Konto** (2026-08-03): Wer nicht angemeldet ist, gibt nur seine E-Mail-Adresse an. Das Konto entsteht dabei automatisch, der Anzeigename wird vergeben, und per Mail kommt der Link zum Passwortsetzen (derselbe Weg wie „Passwort vergessen"). Danach sieht man die Antworten der Händler | Baymard: 18–26 % Abbruch allein durch Kontozwang |
+| **Anbieten verlangt weiterhin ein Konto** — ein Angebot ist eine Zusage, der Anbieter muss erreichbar und zurechenbar sein. Käufer sollen dagegen ohne Hürde fragen dürfen | Asymmetrie ist gewollt |
 
 ## Technik
 

@@ -44,7 +44,7 @@ export function LeerHinweis({
             href="/rfqs/new"
             className="inline-flex items-center gap-2 rounded-lg bg-amber-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-600"
           >
-            <Plus size={16} /> Anfrage einstellen — wir holen Angebote ein
+            <Plus size={16} /> Anfrage einstellen — ohne Konto, wir holen Angebote ein
           </Link>
         )}
         {aktionen.includes("suche") && (
