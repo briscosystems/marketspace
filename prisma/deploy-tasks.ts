@@ -30,6 +30,7 @@ import { applyProduktErweiterung2026_08_02 } from "./add-produkte-2026-08-02";
 import { applyReklassifizierung2026_08_02 } from "./reclass-produktarten-2026-08-02";
 import { applyProduktErweiterung2026_08_02b } from "./add-produkte-2026-08-02b";
 import { importCastrolSds2026_08_03 } from "./import-sds-castrol-2026-08-03";
+import { applyRegionen2026_08_03 } from "./fix-regionen-2026-08-03";
 
 type Task = {
   name: string;
@@ -136,6 +137,15 @@ const TASKS: Task[] = [
     // über den sha256, ein zweiter Lauf legt also nichts doppelt an.
     name: "Castrol-Datenblätter 2026-08-03 (manueller Download)",
     run: () => importCastrolSds2026_08_03(),
+  },
+  {
+    // Die Lagerregionen waren faktisch auf Deutschland zugeschnitten (nur neun
+    // deutsche Bundesländer einzeln, Schweiz/Österreich nur als ganzes Land,
+    // Platzhalter „DE-BW"). Die neue Liste deckt Kantone, Bundesländer und
+    // Europa ab; diese Aufgabe bringt bestehende Einträge auf die neue
+    // Schreibweise.
+    name: "Lagerregionen vereinheitlichen 2026-08-03 (DACH statt nur Deutschland)",
+    run: () => applyRegionen2026_08_03(),
   },
 ];
 

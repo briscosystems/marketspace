@@ -23,6 +23,7 @@ import {
 import { Autocomplete } from "@/components/Autocomplete";
 import { Droplet, Gauge } from "lucide-react";
 import { withBasePath } from "@/lib/base-path";
+import { REGION_OPTIONS, REGION_PLACEHOLDER } from "@/lib/regionen";
 import { useLocale } from "@/components/LocaleProvider";
 import { fill } from "@/lib/i18n";
 
@@ -31,10 +32,6 @@ const packagings = ["DRUM", "IBC", "TANK", "CANISTER", "BULK", "OTHER"] as const
 
 // Vorschlags-Vokabulare für die Echtzeit-Felder
 const ISO_VG_PRESETS = ["5", "7", "10", "15", "22", "32", "46", "68", "100", "150", "220", "320", "460", "680"];
-const REGION_PRESETS = [
-  "DE-BW", "DE-BY", "DE-NW", "DE-HE", "DE-NI", "DE-RP", "DE-SN", "DE-BE", "DE-HH",
-  "DE (ganz)", "AT", "CH", "FR", "IT", "NL", "BE", "PL", "CZ", "EU",
-];
 const UNIT_PRESETS = ["L", "kg", "IBC (1000 L)", "Fass (200 L)", "Kanister (20 L)", "Stück", "t"];
 
 export default function NewListingPage() {
@@ -468,7 +465,7 @@ export default function NewListingPage() {
             </div>
             <div>
               <label className="label">{t("lnew.storageRegion")}</label>
-              <Autocomplete name="locationRegion" options={REGION_PRESETS} required placeholder="DE-BW" />
+              <Autocomplete name="locationRegion" options={REGION_OPTIONS} required placeholder={REGION_PLACEHOLDER} />
             </div>
             <div>
               <label className="label">{t("lnew.price")}</label>

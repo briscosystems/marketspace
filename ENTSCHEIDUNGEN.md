@@ -89,6 +89,15 @@ Nach jeder Änderung, die hier etwas berührt: **Eintrag ergänzen oder anpassen
 | Eingesetzt auf: Angebote, Anfragen, Datenblätter, Richtwerte, KSS-Finder, Praxis-Wissen, Herstellerseite, Werkstoffseite | Stand 2026-08-03 |
 | **Produktdarstellung überall gleich:** Gebindebild + Herstellerlogo + Produktart-Chip. Gemeinsamer Baustein `components/ProduktZeile.tsx`; wo eine Seite eine eigene Karte braucht, mindestens dieselben drei Bestandteile | Dasselbe Produkt sah vorher auf acht Seiten acht Mal anders aus |
 
+## Regionen und Märkte
+
+| Entscheidung | Begründung |
+|---|---|
+| **Der Markt ist DACH und Europa, nicht Deutschland.** Die Lagerregion umfasst alle 26 Schweizer Kantone, alle 9 österreichischen Bundesländer, alle 16 deutschen Bundesländer und die europäischen Nachbarländer | Brisco sitzt in der Schweiz; vorher waren nur 9 deutsche Bundesländer einzeln wählbar und der Platzhalter lautete „DE-BW" |
+| Reihenfolge in der Auswahl: **Schweiz, Österreich, Deutschland, übriges Europa** | Heimatmarkt zuerst |
+| Der Platzhalter nennt alle drei Kernländer: „z. B. CH-ZH, AT-OÖ oder DE-BW" | darf nie nach einem Land aussehen |
+| Gespeichert wird Kürzel plus Name („CH-ZH (Zürich)"), zentral in `lib/regionen.ts` | man kann „ZH" oder „Zürich" tippen; die Liste stand vorher doppelt im Code |
+
 ## Fachliche Regeln
 
 | Entscheidung | Begründung |

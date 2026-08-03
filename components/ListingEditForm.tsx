@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { withBasePath } from "@/lib/base-path";
+import { Autocomplete } from "@/components/Autocomplete";
+import { REGION_OPTIONS, REGION_PLACEHOLDER } from "@/lib/regionen";
 
 const chemistries = ["MINERAL", "SYNTHETIC", "SEMI_SYNTHETIC", "ESTER", "PAG", "GTL", "OTHER"] as const;
 const packagings = ["DRUM", "IBC", "TANK", "CANISTER", "BULK", "OTHER"] as const;
@@ -139,7 +141,13 @@ export function ListingEditForm({ listing }: { listing: EditableListing }) {
         </div>
         <div>
           <label className="label">Lagerregion *</label>
-          <input name="locationRegion" required defaultValue={listing.locationRegion} className="input" />
+          <Autocomplete
+            name="locationRegion"
+            options={REGION_OPTIONS}
+            defaultValue={listing.locationRegion}
+            required
+            placeholder={REGION_PLACEHOLDER}
+          />
         </div>
         <div>
           <label className="label">Preis (€)</label>
