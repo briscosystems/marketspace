@@ -116,6 +116,9 @@ Nach jeder Änderung, die hier etwas berührt: **Eintrag ergänzen oder anpassen
 | Datenqualität („gut belegt / mittel belegt / wenige Daten") **deutsch und ohne Rot** — Rot bleibt echten Gefahren (GHS, ungeeignet) vorbehalten | englische Enums und Rot für Datenqualität wirkten wie Warnungen |
 | Produktseite hat eine **Primäraktion: „Preis anfragen — ohne Konto"** (amber) | vorher konnte man von der wichtigsten Seite weder anfragen noch anbieten |
 | Formulare sagen, was Pflicht ist: „Pflicht sind nur mit * markierte Felder" | 11 freiwillige Felder wirkten wie eine Wand |
+| Datenblatt-Detail: **Signalwort + Gefahrensymbole direkt im Kopf** — die 3-Sekunden-Antwort auf „wie gefährlich?" | standen vorher erst weit unten in Abschnitt 2 |
+| Technische Datenblätter nummerieren **laufend** — feste Nummern hinterließen Lücken („2., 5., 7."), wenn Abschnitte fehlen | Dokument-Vertrauen |
+| Die ganze Plattform **duzt** — auch Werbe- und Abo-Texte (siezte als einzige) | eine Ansprache |
 | Leere Zustände auch auf Konto-Seiten mit Ausweg (Dashboard ×3, Nachrichten, Umsätze, Anfrage-Detail) | Sackgassen sind der häufigste Absprungmoment |
 
 ## Fachliche Regeln

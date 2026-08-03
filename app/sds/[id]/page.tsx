@@ -5,6 +5,7 @@ import { getT } from "@/lib/i18n-server";
 import { fill } from "@/lib/i18n";
 import { ProductImage } from "@/components/ProductImage";
 import { GhsPictogram } from "@/components/GhsPictogram";
+import { ProduktZeile } from "@/components/ProduktZeile";
 import {
   AlertOctagon,
   AlertTriangle,
@@ -89,16 +90,25 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
           <h1 className="page-title">
             {sds.manufacturer} {sds.productName}
           </h1>
-          {sds.signalWord && (
-            <span
-              className={`mt-2 inline-block rounded px-2 py-0.5 text-xs font-bold uppercase ${
-                /gefahr|danger/i.test(sds.signalWord)
-                  ? "bg-red-100 text-red-800"
-                  : "bg-amber-100 text-amber-800"
-              }`}
-            >
-              {sds.signalWord}
-            </span>
+          {(sds.signalWord || sds.ghsPictograms.length > 0) && (
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              {sds.signalWord && (
+                <span
+                  className={`inline-block rounded px-2 py-0.5 text-xs font-bold uppercase ${
+                    /gefahr|danger/i.test(sds.signalWord)
+                      ? "bg-red-100 text-red-800"
+                      : "bg-amber-100 text-amber-800"
+                  }`}
+                >
+                  {sds.signalWord}
+                </span>
+              )}
+              {/* Die Piktogramme gehören zur 3-Sekunden-Antwort auf „wie
+                  gefährlich?" — nicht erst in Abschnitt 2 weiter unten. */}
+              {sds.ghsPictograms.slice(0, 6).map((p) => (
+                <GhsPictogram key={p} code={p} size={30} />
+              ))}
+            </div>
           )}
         </div>
 
@@ -416,25 +426,20 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
           <h2 className="mb-3 section-title">
             {fill(t("sdsd.catalogProducts"), { n: sds.products.length })}
           </h2>
-          <div className="card divide-y divide-slate-200">
+          <div className="grid gap-3 sm:grid-cols-2">
             {sds.products.map((p) => (
-              <Link
+              <ProduktZeile
                 key={p.id}
                 href={`/products/${p.manufacturer.slug}/${p.slug}`}
-                className="flex items-baseline justify-between gap-3 py-3 first:pt-0 last:pb-0 hover:text-brand-700"
-              >
-                <div className="min-w-0 flex-1">
-                  <div className="font-medium">
-                    {p.manufacturer.name} · {p.name}
-                  </div>
-                  <div className="text-xs text-slate-500">
-                    {t(`cat.${p.category}`)}
-                    {p.chemistry ? ` · ${t(`chem.${p.chemistry}`)}` : ""}
-                    {p.viscosityIso ? ` · ${p.viscosityIso}` : ""}
-                  </div>
-                </div>
-                <span className="text-xs text-slate-400">→</span>
-              </Link>
+                produktId={p.id}
+                name={p.name}
+                hersteller={p.manufacturer.name}
+                kategorie={t(`cat.${p.category}`)}
+                chips={[
+                  p.chemistry ? t(`chem.${p.chemistry}`) : null,
+                  p.viscosityIso ? `ISO VG ${p.viscosityIso.replace(/^ISO\s*VG\s*/i, "")}` : null,
+                ]}
+              />
             ))}
           </div>
         </section>

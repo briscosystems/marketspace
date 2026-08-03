@@ -75,6 +75,7 @@ export default async function TdsPage({
     product.waterHardnessMaxDh != null ||
     product.waterHardnessNotes;
 
+  let abschnitt = 0;
   return (
     <div className="mx-auto max-w-3xl space-y-4">
       {/* Werkzeugleiste — erscheint nicht im Druck */}
@@ -108,13 +109,15 @@ export default async function TdsPage({
           </div>
         </header>
 
+        {/* Laufender Zähler statt fester Nummern: Abschnitte sind bedingt —
+            feste Nummern hinterließen Lücken („2., 5., 7.") im Dokument. */}
         {product.description && (
-          <TdsSection n={1} title={t("tds.secDescription")}>
+          <TdsSection n={++abschnitt} title={t("tds.secDescription")}>
             <p className="text-sm leading-relaxed text-slate-700">{product.description}</p>
           </TdsSection>
         )}
 
-        <TdsSection n={2} title={t("tds.secApplication")}>
+        <TdsSection n={++abschnitt} title={t("tds.secApplication")}>
           <dl className="space-y-2 text-sm">
             {product.applicationAreas.length > 0 && (
               <TdsRow label={t("tds.rowProcesses")} value={product.applicationAreas.join(", ")} />
@@ -144,7 +147,7 @@ export default async function TdsPage({
         </TdsSection>
 
         {kennwerte.length > 0 && (
-          <TdsSection n={3} title={t("tds.secKeyValues")}>
+          <TdsSection n={++abschnitt} title={t("tds.secKeyValues")}>
             <table className="w-full text-sm">
               <tbody>
                 {kennwerte.map(([label, value]) => (
@@ -162,7 +165,7 @@ export default async function TdsPage({
         )}
 
         {hasWater && (
-          <TdsSection n={4} title={t("tds.secWater")}>
+          <TdsSection n={++abschnitt} title={t("tds.secWater")}>
             <dl className="space-y-2 text-sm">
               {(product.waterHardnessMinDh != null || product.waterHardnessMaxDh != null) && (
                 <TdsRow
@@ -178,7 +181,7 @@ export default async function TdsPage({
         )}
 
         {kennzeichnungen.length > 0 && (
-          <TdsSection n={5} title={t("tds.secLabeling")}>
+          <TdsSection n={++abschnitt} title={t("tds.secLabeling")}>
             <dl className="space-y-2 text-sm">
               {kennzeichnungen.map(([label, value]) => (
                 <TdsRow key={label} label={label} value={value} />
@@ -188,7 +191,7 @@ export default async function TdsPage({
         )}
 
         {product.certifications.length > 0 && (
-          <TdsSection n={6} title={t("tds.secCertifications")}>
+          <TdsSection n={++abschnitt} title={t("tds.secCertifications")}>
             <ul className="list-inside list-disc space-y-1 text-sm text-slate-700">
               {product.certifications.map((c) => (
                 <li key={c}>{c}</li>
@@ -198,7 +201,7 @@ export default async function TdsPage({
         )}
 
         {product.notes && (
-          <TdsSection n={7} title={t("tds.secNotes")}>
+          <TdsSection n={++abschnitt} title={t("tds.secNotes")}>
             <p className="text-sm leading-relaxed text-slate-700">{product.notes}</p>
           </TdsSection>
         )}
