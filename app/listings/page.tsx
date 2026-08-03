@@ -182,6 +182,7 @@ export default async function ListingsPage({ searchParams }: { searchParams: Sea
           membershipValidUntil: true,
         },
       },
+      photos: { select: { id: true }, orderBy: { position: "asc" } },
     },
     orderBy: [{ seller: { searchBoost: "desc" } }, { createdAt: "desc" }],
     take: 60,
@@ -226,6 +227,7 @@ export default async function ListingsPage({ searchParams }: { searchParams: Sea
     region: l.locationRegion,
     price: l.priceEur,
     sponsored: l.seller.searchBoost > 0,
+    photos: l.photos,
     seller: {
       name: l.seller.pseudonym,
       tier: l.seller.trustTier,

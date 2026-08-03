@@ -28,6 +28,13 @@ export default async function HomePage() {
   return <PersonalDashboard userId={session.user.id} />;
 }
 
+/**
+ * Ab wie vielen Einträgen eine Zahl auf der Startseite gezeigt wird. Darunter
+ * wirbt der Zähler nur für die eigene Leere („5 Angebote") — das kostet in den
+ * ersten Sekunden mehr Vertrauen, als die Zahl je einbringt.
+ */
+const MIN_ZAHL = 25;
+
 async function PublicLanding() {
   const t = await getT();
   // Trial-Zahlen aus den Superadmin-Einstellungen — nie fest im Text.
@@ -35,15 +42,19 @@ async function PublicLanding() {
     getSettingInt("trialDays"),
     getSettingInt("welcomeCredits"),
   ]);
-  const [listingCount, rfqCount, sdsCount, manufacturerCount, freshListings] =
+  const [listingCount, rfqCount, sdsCount, manufacturerCount, productCount, freshListings] =
     await Promise.all([
       prisma.listing.count({ where: { status: "ACTIVE" } }),
       prisma.rfq.count({ where: { status: "OPEN" } }),
       prisma.safetyDataSheet.count(),
       prisma.manufacturer.count(),
+      prisma.product.count(),
       prisma.listing.findMany({
         where: { status: "ACTIVE" },
-        include: { seller: { select: { id: true, pseudonym: true, trustTier: true } } },
+        include: {
+          seller: { select: { id: true, pseudonym: true, trustTier: true } },
+          photos: { select: { id: true }, orderBy: { position: "asc" } },
+        },
         orderBy: { createdAt: "desc" },
         take: 4,
       }),
@@ -57,25 +68,34 @@ async function PublicLanding() {
         <h1 className="mt-2 max-w-2xl text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
           {t("home.title")}
         </h1>
-        {/* Muster erfolgreicher Marktplätze: Zahlen als Vertrauenssignal statt
-            Erklärabsatz — der Text dahinter erscheint nirgendwo mehr. */}
+        {/* Zahlen als Vertrauenssignal — aber nur die, die auch tragen.
+            Ein Zähler unter der Schwelle bewirbt die eigene Leere („5 Angebote")
+            und schadet mehr, als er nützt; er erscheint erst ab MIN_ZAHL. */}
         <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-sm text-slate-600">
           <Link href="/listings" className="hover:text-brand-700 hover:underline">
-            <strong className="font-bold text-slate-900">{listingCount.toLocaleString("de-CH")}</strong>{" "}
-            {t("home.heroStatOffers")}
+            <strong className="font-bold text-slate-900">{productCount.toLocaleString("de-CH")}</strong>{" "}
+            {t("home.heroStatProducts")}
           </Link>
           <Link href="/sds" className="hover:text-brand-700 hover:underline">
             <strong className="font-bold text-slate-900">{sdsCount.toLocaleString("de-CH")}</strong>{" "}
             {t("home.heroStatSds")}
           </Link>
-          <Link href="/rfqs" className="hover:text-brand-700 hover:underline">
-            <strong className="font-bold text-slate-900">{rfqCount.toLocaleString("de-CH")}</strong>{" "}
-            {t("home.heroStatRfqs")}
-          </Link>
           <Link href="/manufacturers" className="hover:text-brand-700 hover:underline">
             <strong className="font-bold text-slate-900">{manufacturerCount.toLocaleString("de-CH")}</strong>{" "}
             {t("home.heroStatMfr")}
           </Link>
+          {listingCount >= MIN_ZAHL && (
+            <Link href="/listings" className="hover:text-brand-700 hover:underline">
+              <strong className="font-bold text-slate-900">{listingCount.toLocaleString("de-CH")}</strong>{" "}
+              {t("home.heroStatOffers")}
+            </Link>
+          )}
+          {rfqCount >= MIN_ZAHL && (
+            <Link href="/rfqs" className="hover:text-brand-700 hover:underline">
+              <strong className="font-bold text-slate-900">{rfqCount.toLocaleString("de-CH")}</strong>{" "}
+              {t("home.heroStatRfqs")}
+            </Link>
+          )}
           <Link href="/prices" className="hover:text-brand-700 hover:underline">
             {t("home.tilePriceTitle")}
           </Link>

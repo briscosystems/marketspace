@@ -1,4 +1,13 @@
 import { notFound } from "next/navigation";
+
+// Nutzer dürfen nie rohe Datenbank-Werte sehen („OPEN"). Gleiche Beschriftungen
+// wie auf der Anfragen-Übersicht (app/rfqs/page.tsx).
+const RFQ_STATUS_LABEL: Record<string, string> = {
+  OPEN: "offen",
+  ACCEPTED: "angenommen",
+  EXPIRED: "abgelaufen",
+  CANCELED: "zurückgezogen",
+};
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -85,7 +94,7 @@ export default async function RfqDetailPage({
                 : "bg-slate-100 text-slate-600"
             }`}
           >
-            {rfq.status}
+            {RFQ_STATUS_LABEL[rfq.status] ?? rfq.status}
           </span>
         </div>
 

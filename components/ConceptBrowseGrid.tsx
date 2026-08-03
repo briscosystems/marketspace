@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Heart, MapPin, Tag, Check, Star, ShieldCheck, X } from "lucide-react";
+import { Heart, MapPin, Tag, Check, Star, ShieldCheck, X, Camera } from "lucide-react";
+import { withBasePath } from "@/lib/base-path";
 import { ProductImage } from "./ProductImage";
 
 type PkgForm = "DRUM" | "IBC" | "TANK" | "CANISTER" | "BULK" | "OTHER";
@@ -25,6 +26,9 @@ export type BrowseListing = {
   // ausgewiesen werden (EU-P2B-Verordnung 2019/1150: bezahltes Ranking
   // transparent machen)
   sponsored?: boolean;
+  // Eigene Fotos des Anbieters (Titelbild zuerst); ohne Foto bleibt die
+  // gezeichnete Gebinde-Grafik stehen.
+  photos?: { id: string }[];
   seller: { name: string; tier: string; ratingAvg: number | null; ratingCount: number };
 };
 
@@ -148,14 +152,30 @@ export function ConceptBrowseGrid({ listings }: { listings: BrowseListing[] }) {
             onClick={() => setSelected(l)}
             className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white text-left shadow-soft transition-all hover:-translate-y-1 hover:border-slate-300 hover:shadow-lift"
           >
-            {/* Bildbereich — realistisches Fass/IBC/Kanister + Marke unten links */}
-            <div className="relative flex items-center justify-center border-b border-slate-100 bg-gradient-to-br from-brand-50 to-white py-4">
-              <ProductImage
-                manufacturer={l.manufacturer}
-                productName={l.productName}
-                packaging={l.packagingForm as PkgForm}
-                size="md"
-              />
+            {/* Bildbereich — eigenes Foto des Anbieters, sonst die gezeichnete
+                Gebinde-Grafik (nie ein leerer Kasten). */}
+            <div className="relative flex items-center justify-center overflow-hidden border-b border-slate-100 bg-gradient-to-br from-brand-50 to-white py-4">
+              {l.photos && l.photos.length > 0 ? (
+                <div className="relative -my-4 h-40 w-full">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={withBasePath(`/api/listing-photos/${l.photos[0].id}?v=klein`)}
+                    alt={`${l.manufacturer} ${l.productName}`}
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  <span className="absolute left-2.5 top-2.5 inline-flex items-center gap-1 rounded-full bg-slate-900/70 px-2 py-0.5 text-[11px] font-semibold text-white">
+                    <Camera size={11} /> {l.photos.length}
+                  </span>
+                </div>
+              ) : (
+                <ProductImage
+                  manufacturer={l.manufacturer}
+                  productName={l.productName}
+                  packaging={l.packagingForm as PkgForm}
+                  size="md"
+                />
+              )}
               <span className="absolute bottom-2.5 left-2.5 rounded-full border border-slate-200 bg-white/90 px-2.5 py-0.5 text-[11px] font-semibold text-slate-700">
                 {l.manufacturer}
               </span>
@@ -173,7 +193,7 @@ export function ConceptBrowseGrid({ listings }: { listings: BrowseListing[] }) {
             {/* Inhalt */}
             <div className="flex flex-1 flex-col gap-1.5 p-4">
               <div className="flex items-center gap-1.5">
-                <span className="inline-flex w-fit items-center gap-1 rounded-md bg-brand-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-800">
+                <span className="inline-flex w-fit items-center gap-1 rounded-md bg-blue-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-blue-800">
                   <Tag size={10} /> Bietet an
                 </span>
                 {l.sponsored && (

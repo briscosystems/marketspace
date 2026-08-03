@@ -4,7 +4,8 @@ import { ProductImage } from "./ProductImage";
 import { BrandLogo } from "./BrandLogo";
 import { CompareToggle } from "./compare/CompareToggle";
 import { brandColors } from "@/lib/branding";
-import { Tag, MapPin } from "lucide-react";
+import { Tag, MapPin, Camera } from "lucide-react";
+import { withBasePath } from "@/lib/base-path";
 
 type Tier = "UNVERIFIED" | "VERIFIED" | "TRADE_ASSURED" | "PREMIUM" | "DIAMOND";
 type Status = "ACTIVE" | "PAUSED" | "SOLD" | "ARCHIVED";
@@ -36,6 +37,9 @@ export type ListingCardData = {
   containsGlycol?: boolean | null;
   automationSuitability?: number | null;
   measurementMethods?: string[];
+  // Eigene Fotos des Anbieters (Titelbild zuerst). Ohne Foto bleibt die
+  // gezeichnete Gebinde-Grafik stehen — nie ein leerer grauer Kasten.
+  photos?: { id: string }[];
   seller: {
     pseudonym: string;
     trustTier: Tier;
@@ -91,12 +95,30 @@ function CompactCard({ listing, hideStatus }: { listing: ListingCardData; hideSt
         href={`/listings/${listing.id}`}
         className="group flex items-center gap-3 overflow-hidden rounded-xl bg-white p-3 shadow-soft ring-1 ring-slate-200 transition-all hover:-translate-y-0.5 hover:shadow-lift hover:ring-slate-300"
       >
-        <ProductImage
-          manufacturer={listing.manufacturer}
-          productName={listing.productName}
-          packaging={packaging}
-          size="sm"
-        />
+        {listing.photos && listing.photos.length > 0 ? (
+          <span className="relative h-16 w-16 shrink-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={withBasePath(`/api/listing-photos/${listing.photos[0].id}?v=klein`)}
+              alt={`${listing.manufacturer} ${listing.productName}`}
+              className="h-16 w-16 rounded-lg object-cover"
+              loading="lazy"
+            />
+            {listing.photos.length > 1 && (
+              <span className="absolute bottom-0.5 right-0.5 inline-flex items-center gap-0.5 rounded bg-slate-900/70 px-1 text-[10px] font-semibold text-white">
+                <Camera size={9} />
+                {listing.photos.length}
+              </span>
+            )}
+          </span>
+        ) : (
+          <ProductImage
+            manufacturer={listing.manufacturer}
+            productName={listing.productName}
+            packaging={packaging}
+            size="sm"
+          />
+        )}
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-0.5 rounded-md bg-blue-100 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-blue-800">
@@ -178,14 +200,32 @@ function ExtendedCard({ listing, hideStatus }: { listing: ListingCardData; hideS
         href={`/listings/${listing.id}`}
         className="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft transition-all hover:-translate-y-1 hover:border-slate-300 hover:shadow-lift"
       >
-        {/* Bildbereich — realistisches Fass/IBC/Kanister + Marke unten links */}
-        <div className="relative flex items-center justify-center border-b border-slate-100 bg-gradient-to-br from-brand-50 to-white py-4">
-          <ProductImage
-            manufacturer={listing.manufacturer}
-            productName={listing.productName}
-            packaging={packaging}
-            size="md"
-          />
+        {/* Bildbereich — eigenes Foto des Anbieters, sonst die gezeichnete
+            Gebinde-Grafik. Muster von eBay/Kleinanzeigen: Titelbild füllt die
+            Fläche, die Anzahl weiterer Fotos steht als kleiner Hinweis dabei. */}
+        <div className="relative flex items-center justify-center overflow-hidden border-b border-slate-100 bg-gradient-to-br from-brand-50 to-white py-4">
+          {listing.photos && listing.photos.length > 0 ? (
+            <div className="relative -my-4 h-40 w-full">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={withBasePath(`/api/listing-photos/${listing.photos[0].id}?v=klein`)}
+                alt={`${listing.manufacturer} ${listing.productName}`}
+                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                loading="lazy"
+              />
+              <span className="absolute right-2.5 top-2.5 inline-flex items-center gap-1 rounded-full bg-slate-900/70 px-2 py-0.5 text-[11px] font-semibold text-white">
+                <Camera size={11} />
+                {listing.photos.length}
+              </span>
+            </div>
+          ) : (
+            <ProductImage
+              manufacturer={listing.manufacturer}
+              productName={listing.productName}
+              packaging={packaging}
+              size="md"
+            />
+          )}
           <span className="absolute bottom-2.5 left-2.5 rounded-full border border-slate-200 bg-white/90 px-2.5 py-0.5 text-[11px] font-semibold text-slate-700">
             {listing.manufacturer}
           </span>
@@ -194,7 +234,7 @@ function ExtendedCard({ listing, hideStatus }: { listing: ListingCardData; hideS
         {/* Inhalt */}
         <div className="flex flex-1 flex-col gap-1.5 p-4">
           <div className="flex items-center gap-2">
-            <span className="inline-flex w-fit items-center gap-1 rounded-md bg-brand-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-800">
+            <span className="inline-flex w-fit items-center gap-1 rounded-md bg-blue-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-blue-800">
               <Tag size={10} /> Bietet an
             </span>
             {listing.sponsored && (

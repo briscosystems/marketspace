@@ -176,7 +176,10 @@ export default function NewListingPage() {
       return;
     }
     const created = await res.json();
-    router.push(`/listings/${created.id}`);
+    // Direkt zur Bearbeitung: dort steht der Foto-Bereich. Marktplätze führen
+    // nach dem Anlegen immer zuerst zu den Bildern — ohne Foto wird ein Angebot
+    // deutlich seltener angefragt.
+    router.push(`/listings/${created.id}/edit?neu=1`);
     router.refresh();
   }
 

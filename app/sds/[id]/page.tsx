@@ -413,8 +413,8 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
                     {p.manufacturer.name} · {p.name}
                   </div>
                   <div className="text-xs text-slate-500">
-                    {p.category}
-                    {p.chemistry ? ` · ${p.chemistry}` : ""}
+                    {t(`cat.${p.category}`)}
+                    {p.chemistry ? ` · ${t(`chem.${p.chemistry}`)}` : ""}
                     {p.viscosityIso ? ` · ${p.viscosityIso}` : ""}
                   </div>
                 </div>

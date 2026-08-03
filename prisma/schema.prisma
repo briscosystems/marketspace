@@ -1068,6 +1068,7 @@ model Listing {
 
   conversations   Conversation[]
   transactions    Transaction[]
+  photos          ListingPhoto[]
 
   @@index([productType])
   @@index([manufacturer])
@@ -1075,6 +1076,36 @@ model Listing {
   @@index([isoViscosity])
   @@index([status])
   @@index([sdsId])
+}
+
+/**
+ * Foto zu einem Angebot — vom Anbieter selbst aufgenommen (Handy oder Kamera).
+ *
+ * Warum die Bytes in der Datenbank liegen und nicht als Datei: Der Server auf
+ * Railway hat kein dauerhaftes Dateisystem, hochgeladene Dateien wären nach dem
+ * nächsten Deploy weg. Die Bilder werden schon im Browser des Anbieters auf
+ * max. 1600 px verkleinert (~200 kB), dazu kommt eine kleine Vorschau für
+ * Trefferlisten — damit bleibt der Platzbedarf überschaubar.
+ */
+model ListingPhoto {
+  id          String   @id @default(cuid())
+  listingId   String
+  listing     Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  position    Int      @default(0)   // 0 = Titelbild
+  mimeType    String   @default("image/jpeg")
+  width       Int?
+  height      Int?
+
+  data        Bytes                  // Anzeigegröße (max. 1600 px Kante)
+  thumb       Bytes?                 // Vorschau für Karten/Listen (max. 400 px)
+  bytesSize   Int      @default(0)
+  sha256      String?                // erkennt versehentliche Doppel-Uploads
+
+  // Hinweis für Käufer: Wann wurde das Bild aufgenommen/hochgeladen?
+  createdAt   DateTime @default(now())
+
+  @@index([listingId, position])
 }
 
 model Transaction {

@@ -16,6 +16,16 @@
 Vor jeder größeren UI- oder Datenänderung: **diese Datei lesen.**
 Nach jeder Änderung, die hier etwas berührt: **Eintrag ergänzen oder anpassen.**
 
+## Zwei Daueraufträge (2026-08-03, gelten ohne Nachfrage)
+
+1. **Diese Datei laufend nachführen.** Jede Änderung an Funktion, Gestaltung,
+   Wording oder Fachlogik wird hier im selben Arbeitsschritt eingetragen — nicht
+   später, nicht „wenn Zeit ist". Es darf nichts verloren gehen.
+2. **Erst recherchieren, dann gestalten.** Vor Design- und Feature-Entscheidungen
+   nachsehen, wie bekannte erfolgreiche Plattformen (eBay, Kleinanzeigen, Amazon,
+   Alibaba, Airbnb, Mobile.de …) die Aufgabe lösen, und die bewährten Muster
+   übernehmen — statt sich etwas Eigenes auszudenken.
+
 ---
 
 ## Sprache und Wording
@@ -38,7 +48,8 @@ Nach jeder Änderung, die hier etwas berührt: **Eintrag ergänzen oder anpassen
 | **Realistische Vektor-Grafiken** statt Emoji/Comic: `OilBarrels`, `SearchCanister` | gesetzt seit 2026-08-02 |
 | Kein „Willkommen zurück"-Block — der Anmelde-Status steht oben rechts (grüner Punkt) | gesetzt 2026-08-03 |
 | Werbebanner ist ein **schmaler Streifen**, kein Hero | gesetzt 2026-08-02 |
-| Zahlen-Leiste im Kopf (Angebote / Anfragen / Datenblätter / Hersteller / Preise) ersetzt den Erklärabsatz | gesetzt 2026-08-03 |
+| Zahlen-Leiste im Kopf ersetzt den Erklärabsatz | gesetzt 2026-08-03 |
+| **Zähler unter 25 werden nicht angezeigt** — die Leiste führt mit Katalog-Stärke (Produkte, Datenblätter, Hersteller); Angebote/Anfragen erscheinen erst, wenn die Zahl trägt | „5 Angebote" bewarb die eigene Leere; NN/g: die ersten Sekunden entscheiden |
 | **Entfernt am 2026-08-03, ohne dass es verlangt war:** die drei „Entdecken"-Kacheln (Datenblätter / Hersteller / Preisorientierung). Ersatz ist die Zahlen-Leiste. Auf Wunsch zurückholbar. | offen |
 
 ## Bedienung / Gestaltung
@@ -51,6 +62,21 @@ Nach jeder Änderung, die hier etwas berührt: **Eintrag ergänzen oder anpassen
 | Karten heben sich beim Überfahren leicht an, Symbol wächst, Pfeil gleitet | gesetzt 2026-08-03 |
 | Angebotskarten kompakt, 4 pro Reihe | älter |
 | Suchtreffer aus dem Katalog zeigen **Gebindebild + Herstellerlogo + Produktart** | gesetzt 2026-08-03 |
+
+## Angebots-Fotos (neu 2026-08-03)
+
+| Entscheidung | Begründung / Beleg |
+|---|---|
+| Anbieter können **eigene Fotos** aufnehmen und anhängen — „Foto aufnehmen" öffnet am Handy direkt die Kamera, „Aus Galerie" erlaubt Mehrfachauswahl | Muster von eBay/Kleinanzeigen |
+| **Max. 12 Fotos** je Angebot, zentral in `lib/listing-photos.ts` | Vergleichsplattformen: Etsy 10, Facebook 10, mobile.de 15, Kleinanzeigen/Vinted 20, eBay 24 |
+| **Erstes Bild = Titelbild**, per Klick auf ein anderes Bild wechselbar | durchgängiges Marktmuster |
+| Verkleinert wird **im Browser** (1600 px Anzeige + 400 px Vorschau, WebP mit JPEG-Rückfall), Bildlage aus EXIF übernehmen | Handyfotos haben 4–12 MB; ohne `imageOrientation` liegen iPhone-Bilder quer |
+| Fotos liegen **in der Datenbank**, nicht als Datei | Railway hat kein dauerhaftes Dateisystem — Dateien wären nach dem Deploy weg. Ab einigen Hundert Angeboten auf Objektspeicher umstellen |
+| Detailseite: großes Bild + **sichtbare Auswahlbilder** (keine reinen Punkte), Vollbild mit Pfeilen/Tastatur | Baymard: reine Punkt-Indikatoren sind ein belegtes Bedienproblem |
+| Trefferliste: Titelbild füllt die Fläche, **Kamera-Symbol mit Anzahl**; ohne Foto bleibt die gezeichnete Gebinde-Grafik — nie ein leerer Kasten | Marktmuster; Platzhalter wirken billiger als eine gute Grafik |
+| Hinweis **„Eigene Aufnahme des Anbieters · hochgeladen am …"** unter der Galerie | Vertrauenssignal; Cornell-Studie: eigene Fotos schlagen Katalogbilder im Vertrauen (3,8 vs. 3,7 von 5) |
+| Regel im Upload: **nur eigene Fotos der echten Ware**, keine Hersteller-/Katalogbilder, kein Text, keine Wasserzeichen | eBay-Bildrichtlinie, Vinted-Begründung („zeigen nicht den Zustand") |
+| Motiv-Reihenfolge vorgeschlagen: Gebinde → Etikett → Charge → Verschluss → Palette | B2B-Besonderheit: Fotos sind Nachweis über Ware und Betrieb |
 
 ## Fachliche Regeln
 

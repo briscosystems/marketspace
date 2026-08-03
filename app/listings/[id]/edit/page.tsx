@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ListingEditForm } from "@/components/ListingEditForm";
+import { ListingPhotoUpload } from "@/components/ListingPhotoUpload";
 
 export default async function EditListingPage({
   params,
@@ -16,7 +17,10 @@ export default async function EditListingPage({
   if (!session?.user?.id) {
     redirect(`/login?callbackUrl=/listings/${id}/edit`);
   }
-  const listing = await prisma.listing.findUnique({ where: { id } });
+  const listing = await prisma.listing.findUnique({
+    where: { id },
+    include: { photos: { select: { id: true, position: true }, orderBy: { position: "asc" } } },
+  });
   if (!listing) notFound();
   if (listing.sellerId !== session.user.id) {
     redirect(`/listings/${id}`);
@@ -46,6 +50,12 @@ export default async function EditListingPage({
           status: listing.status,
         }}
       />
+
+      {/* Fotos werden getrennt vom Formular gespeichert: sie gehen sofort raus,
+          damit auf dem Handy nichts verloren geht, wenn das Formular noch offen ist. */}
+      <div className="card">
+        <ListingPhotoUpload listingId={listing.id} initial={listing.photos} />
+      </div>
     </div>
   );
 }

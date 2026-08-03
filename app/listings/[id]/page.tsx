@@ -10,6 +10,7 @@ import { ContactSellerButton } from "@/components/ContactSellerButton";
 import { InquiryButtons } from "@/components/InquiryButtons";
 import { TrustBadge } from "@/components/TrustBadge";
 import { ProductImage } from "@/components/ProductImage";
+import { ListingPhotoGallery } from "@/components/ListingPhotoGallery";
 import { BrandLogo } from "@/components/BrandLogo";
 import { CertBadgeList } from "@/components/CertBadge";
 import { AutomationBadge } from "@/components/AutomationBadge";
@@ -33,7 +34,10 @@ export default async function ListingDetailPage({
   const [listing, session, t, trialDays] = await Promise.all([
     prisma.listing.findUnique({
       where: { id },
-      include: { seller: { select: { id: true, pseudonym: true, trustTier: true } } },
+      include: {
+        seller: { select: { id: true, pseudonym: true, trustTier: true } },
+        photos: { select: { id: true, createdAt: true }, orderBy: { position: "asc" } },
+      },
     }),
     getServerSession(authOptions),
     getT(),
@@ -68,12 +72,24 @@ export default async function ListingDetailPage({
             background: `linear-gradient(135deg, ${colors.primary}14 0%, transparent 60%)`,
           }}
         >
-          <ProductImage
-            manufacturer={listing.manufacturer}
-            productName={listing.productName}
-            packaging={packaging}
-            size="xl"
-          />
+          {/* Eigene Fotos schlagen die gezeichnete Grafik: Käufer wollen die
+              echte Ware sehen. Ohne Foto bleibt die Gebinde-Grafik stehen. */}
+          {listing.photos.length > 0 ? (
+            <div className="w-full md:w-72">
+              <ListingPhotoGallery
+                photos={listing.photos.map((p) => ({ id: p.id }))}
+                productName={listing.productName}
+                aufgenommenAm={listing.photos[0].createdAt.toLocaleDateString("de-CH")}
+              />
+            </div>
+          ) : (
+            <ProductImage
+              manufacturer={listing.manufacturer}
+              productName={listing.productName}
+              packaging={packaging}
+              size="xl"
+            />
+          )}
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-3">
               <BrandLogo manufacturer={listing.manufacturer} size="lg" />

@@ -107,7 +107,7 @@ export default function AgbPage() {
           Kaufbetrags zzgl. 0,25 €) wird vom Käufer getragen. Sie deckt die
           Zahlungsabwicklung durch den Zahlungsdienstleister sowie den Käuferschutz-Service
           (sichere Verwahrung bis zur Lieferbestätigung, Streitschlichtung); ein Teil
-          verbleibt als Entgelt bei Brisco. Der Käuferschutz ist keine Treuhand- oder
+          verbleibt als Entgelt bei Brisco. Brisco verwahrt das Geld nicht selbst; die Zahlung wickelt Stripe ab. Der Käuferschutz ist keine
           Bankdienstleistung von Brisco; die Zahlungsabwicklung erfolgt durch Stripe. Die
           Haltedauer geparkter Beträge beträgt maximal 90 Tage.
         </p>
