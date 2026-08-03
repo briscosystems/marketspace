@@ -18,8 +18,8 @@ import { Search, ShieldCheck, FileText, Check } from "lucide-react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Brisco Marketplace — Industrieöle, KSS & Schmierstoffe",
-  description: "B2B-Marktplatz für Industrieöle, KSS und Schmierstoffe — Anbieten & Suchen",
+  title: "Brisco Marketplace — die Suchmaschine für Industrieöle, KSS & Schmierstoffe",
+  description: "Datenblätter, Alternativen und Preis-Richtwerte zu über 1.000 Industrieölen, Kühlschmierstoffen und Schmierstoffen von 118 Herstellern — dazu Anbieten und Suchen.",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,

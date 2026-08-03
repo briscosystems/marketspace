@@ -113,9 +113,18 @@ Nach jeder Änderung, die hier etwas berührt: **Eintrag ergänzen oder anpassen
 | Unser eigener Katalog ist über §§ 87a ff. UrhG (Datenbankherstellerrecht) schützbar; das rohe fremde Datenblatt nicht | Recherche, keine Rechtsberatung |
 | **Offener Punkt vor breitem Ausrollen:** anwaltliche Prüfung zum Hosten fremder Sicherheitsdatenblätter (keine deutsche Entscheidung auffindbar → ungeklärt, nicht „erlaubt") | — |
 
-**Ableitung (Entscheidung des Betreibers steht noch aus):** Der Start trägt über den
-Daten-/Katalogteil, nicht über 30 vorab gewonnene Reseller. Handel als Anbahnung,
-nicht als Abwicklung. Geld über Sichtbarkeit und Abo, nicht über Provision.
+### Entschieden am 2026-08-03
+
+| Entscheidung | Umsetzung |
+|---|---|
+| **Positionierung: „Die Suchmaschine für Industrieöle, Kühlschmierstoffe und Schmierstoffe."** Bewusst NICHT „Marktplatz" und bewusst NICHT „Lieferantenverzeichnis" — letzteres ist mit wlw, lieferanten.de und induux besetzt, dort wären wir der 20. Anbieter. Unser Unterschied sind Produktdaten, Alternativen und Fachlogik | Startseite, Seitentitel und Beschreibung angepasst |
+| **Geldmodell: Abos.** Keine Provision als Hauptmodell — das ist in der Chemie fünfmal gescheitert (Chemdex, ChemConnect, Omnexus, OneTwoChem, CheMondis) | Abo-Seite umformuliert |
+| **Zahlungsabwicklung über die Plattform ist freiwillig.** Nur wer sie nutzt, zahlt eine kleine Gebühr (2,5 % + 0,25 €, getragen vom Käufer). Wer direkt abwickelt, zahlt keine Provision | Käuferschutz-Text angepasst |
+| **Keine 30 Reseller vor dem Start.** Der Start trägt über den Katalog; Reseller kommen über nachgewiesene Nachfrage | — |
+
+**Nicht behauptet, weil heute nicht wahr:** „Anfragen ohne Konto". Eine Anfrage
+verlangt derzeit ein Konto. Auf der Startseite steht deshalb nur, was stimmt:
+Suchen und Datenblätter sind kostenlos und ohne Konto.
 
 ## Technik
 
