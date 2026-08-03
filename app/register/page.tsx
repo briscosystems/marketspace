@@ -78,12 +78,6 @@ export default function RegisterPage() {
     }
   }
 
-  // Neutralen Vorschlag erst im Browser erzeugen (nicht beim Server-Render),
-  // sonst gäbe es eine Hydration-Warnung durch den Zufallswert.
-  useEffect(() => {
-    setForm((f) => (f.pseudonym ? f : { ...f, pseudonym: generatePseudonym() }));
-  }, []);
-
   function update<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
     setForm((f) => ({ ...f, [key]: value }));
   }
@@ -99,7 +93,11 @@ export default function RegisterPage() {
     const res = await fetch(withBasePath("/api/register"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify(
+        Object.fromEntries(
+          Object.entries(form).filter(([k, v]) => k === "role" || String(v).trim() !== ""),
+        ),
+      ),
     });
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
@@ -150,53 +148,21 @@ export default function RegisterPage() {
         </div>
       )}
       <form onSubmit={onSubmit} className="card space-y-4">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label className="label">{t("reg.emailLabel")}</label>
-            <input
-              type="email"
-              required
-              value={form.email}
-              onChange={(e) => update("email", e.target.value)}
-              className="input"
-            />
-            <p className="mt-1 text-xs text-slate-500">
-{t("reg.emailHint")}
-            </p>
-          </div>
-          <div>
-            <div className="flex items-center justify-between">
-              <label className="label">{t("reg.pseudonymLabel")}</label>
-              <button
-                type="button"
-                onClick={() => {
-                  update("pseudonym", generatePseudonym());
-                  setPseudonymNote(null);
-                }}
-                className="text-xs text-brand-500 hover:underline"
-              >
-                {t("reg.pseudonymSuggest")}
-              </button>
-            </div>
-            <input
-              type="text"
-              required
-              minLength={3}
-              pattern="[A-Za-z0-9_-]+"
-              value={form.pseudonym}
-              onChange={(e) => update("pseudonym", e.target.value)}
-              onBlur={checkPseudonym}
-              className="input"
-              placeholder={t("reg.pseudonymPlaceholder")}
-            />
-            {pseudonymNote ? (
-              <p className="mt-1 text-xs text-amber-700">{pseudonymNote}</p>
-            ) : (
-              <p className="mt-1 text-xs text-slate-500">
-{t("reg.pseudonymHint")}
-              </p>
-            )}
-          </div>
+        {/* Für den Einstieg reichen E-Mail und Passwort (Entscheidung 2026-08-03).
+            Rolle, Firma, Land und Umsatzsteuer-Nummer stehen unter „Weitere
+            Angaben" und sind freiwillig — gebraucht werden sie erst beim
+            Einstellen eines Angebots bzw. beim Käuferschutz. Jedes Pflichtfeld
+            mehr kostet Anmeldungen. */}
+        <div>
+          <label className="label">{t("reg.emailLabel")}</label>
+          <input
+            type="email"
+            required
+            value={form.email}
+            onChange={(e) => update("email", e.target.value)}
+            className="input"
+          />
+          <p className="mt-1 text-xs text-slate-500">{t("reg.emailHint")}</p>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
@@ -220,65 +186,99 @@ export default function RegisterPage() {
               className="input"
             />
             {form.passwordConfirm && form.password !== form.passwordConfirm && (
-              <p className="mt-1 text-xs text-red-600">
-                {t("reg.passwordMismatch")}
-              </p>
+              <p className="mt-1 text-xs text-red-600">{t("reg.passwordMismatch")}</p>
             )}
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label className="label">{t("reg.roleLabel")}</label>
-            <select
-              value={form.role}
-              onChange={(e) =>
-                update("role", e.target.value as "RESELLER" | "OEM" | "ENDKUNDE")
-              }
-              className="input"
-            >
-              <option value="RESELLER">{t("reg.roleReseller")}</option>
-              <option value="OEM">{t("reg.roleOem")}</option>
-              <option value="ENDKUNDE">{t("reg.roleEndUser")}</option>
-            </select>
-          </div>
-          <div>
-            <label className="label">{t("reg.countryLabel")}</label>
-            <select
-              required
-              value={form.country}
-              onChange={(e) => update("country", e.target.value)}
-              className="input"
-            >
-              {EUROPE_COUNTRIES.map((c) => (
-                <option key={c.code} value={c.code}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
+        <details className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+          <summary className="cursor-pointer text-sm font-medium text-slate-700">
+            {t("reg.moreDetails")}
+          </summary>
+          <div className="mt-3 space-y-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label className="label">{t("reg.roleLabel")}</label>
+                <select
+                  value={form.role}
+                  onChange={(e) =>
+                    update("role", e.target.value as "RESELLER" | "OEM" | "ENDKUNDE")
+                  }
+                  className="input"
+                >
+                  <option value="RESELLER">{t("reg.roleReseller")}</option>
+                  <option value="OEM">{t("reg.roleOem")}</option>
+                  <option value="ENDKUNDE">{t("reg.roleEndUser")}</option>
+                </select>
+              </div>
+              <div>
+                <label className="label">{t("reg.countryLabel")}</label>
+                <select
+                  value={form.country}
+                  onChange={(e) => update("country", e.target.value)}
+                  className="input"
+                >
+                  {EUROPE_COUNTRIES.map((c) => (
+                    <option key={c.code} value={c.code}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
 
-        <div>
-          <label className="label">{t("reg.companyLabel")}</label>
-          <input
-            type="text"
-            required
-            value={form.companyName}
-            onChange={(e) => update("companyName", e.target.value)}
-            className="input"
-          />
-        </div>
+            <div>
+              <label className="label">{t("reg.companyLabel")}</label>
+              <input
+                type="text"
+                value={form.companyName}
+                onChange={(e) => update("companyName", e.target.value)}
+                className="input"
+              />
+            </div>
 
-        <div>
-          <label className="label">{t("reg.vatLabel")}</label>
-          <input
-            type="text"
-            value={form.vatId}
-            onChange={(e) => update("vatId", e.target.value)}
-            className="input"
-          />
-        </div>
+            <div>
+              <label className="label">{t("reg.vatLabel")}</label>
+              <input
+                type="text"
+                value={form.vatId}
+                onChange={(e) => update("vatId", e.target.value)}
+                className="input"
+              />
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between">
+                <label className="label">{t("reg.pseudonymLabel")}</label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    update("pseudonym", generatePseudonym());
+                    setPseudonymNote(null);
+                  }}
+                  className="text-xs text-brand-500 hover:underline"
+                >
+                  {t("reg.pseudonymSuggest")}
+                </button>
+              </div>
+              <input
+                type="text"
+                minLength={3}
+                pattern="[A-Za-z0-9_-]+"
+                value={form.pseudonym}
+                onChange={(e) => update("pseudonym", e.target.value)}
+                onBlur={checkPseudonym}
+                className="input"
+                placeholder={t("reg.pseudonymAutoPlaceholder")}
+              />
+              {pseudonymNote ? (
+                <p className="mt-1 text-xs text-amber-700">{pseudonymNote}</p>
+              ) : (
+                <p className="mt-1 text-xs text-slate-500">{t("reg.pseudonymAutoHint")}</p>
+              )}
+            </div>
+          </div>
+        </details>
 
         <div>
           <label className="label">{t("reg.referralLabel")}</label>

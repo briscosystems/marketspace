@@ -2,21 +2,28 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { findPseudonymLeak } from "@/lib/pseudonym";
+import { findPseudonymLeak, generatePseudonym } from "@/lib/pseudonym";
 import { getAllSettings, grantCredits } from "@/lib/credits";
 import { sendEmail } from "@/lib/mailer";
 
 // Betreiber-Benachrichtigung bei jeder Registrierung
 const ADMIN_NOTIFY_EMAIL = "jgosch@brisco.ch";
 
+/**
+ * Für den Einstieg reichen E-Mail und Passwort (Entscheidung 2026-08-03).
+ * Jedes zusätzliche Pflichtfeld kostet Anmeldungen — Baymard misst 18–26 %
+ * Abbruch allein wegen Kontozwang. Rolle, Firma, Land und Umsatzsteuer-Nummer
+ * werden dort abgefragt, wo sie gebraucht werden: beim ersten Einstellen eines
+ * Angebots bzw. beim Käuferschutz. Das Pseudonym vergibt die Plattform selbst.
+ */
 const registerSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
-  pseudonym: z.string().min(3).max(40).regex(/^[A-Za-z0-9_-]+$/),
+  pseudonym: z.string().min(3).max(40).regex(/^[A-Za-z0-9_-]+$/).optional(),
   role: z.enum(["RESELLER", "OEM", "ENDKUNDE"]).default("RESELLER"),
-  companyName: z.string().min(2),
+  companyName: z.string().min(2).optional(),
   vatId: z.string().optional(),
-  country: z.string().length(2),
+  country: z.string().length(2).optional(),
   // Empfehlungs-Code = Pseudonym des Werbers (optional, aus ?ref=…)
   referralCode: z.string().max(40).optional(),
 });
@@ -30,22 +37,40 @@ export async function POST(req: Request) {
       { status: 400 }
     );
   }
-  const { email, password, pseudonym, role, companyName, vatId, country, referralCode } =
-    parsed.data;
+  const { email, password, role, vatId, referralCode } = parsed.data;
+  const companyName = parsed.data.companyName ?? null;
+  const country = (parsed.data.country ?? "CH").toUpperCase();
 
-  // Schutz: Pseudonym darf die Identität nicht verraten (Firma, E-Mail,
-  // USt-ID, bekannter Hersteller) — sonst kann die Plattform umgangen werden.
-  const manufacturers = await prisma.manufacturer.findMany({
-    select: { name: true },
-  });
-  const leak = findPseudonymLeak(pseudonym, {
-    companyName,
-    email,
-    vatId,
-    manufacturerNames: manufacturers.map((m) => m.name),
-  });
-  if (leak) {
-    return NextResponse.json({ error: leak }, { status: 422 });
+  // Pseudonym: selbst gewählt (Profil) oder von der Plattform vergeben.
+  let pseudonym = parsed.data.pseudonym?.trim();
+  if (pseudonym) {
+    // Schutz: Ein selbst gewähltes Pseudonym darf die Identität nicht verraten
+    // (Firma, E-Mail, USt-ID, bekannter Hersteller) — sonst lässt sich die
+    // Plattform umgehen. Bei vergebenen Pseudonymen entfällt die Prüfung.
+    const manufacturers = await prisma.manufacturer.findMany({ select: { name: true } });
+    const leak = findPseudonymLeak(pseudonym, {
+      companyName: companyName ?? undefined,
+      email,
+      vatId,
+      manufacturerNames: manufacturers.map((m) => m.name),
+    });
+    if (leak) return NextResponse.json({ error: leak }, { status: 422 });
+  } else {
+    // Freies Pseudonym suchen — theoretisch kann eines doppelt entstehen.
+    for (let i = 0; i < 12; i++) {
+      const kandidat = generatePseudonym();
+      const belegt = await prisma.user.findUnique({
+        where: { pseudonym: kandidat },
+        select: { id: true },
+      });
+      if (!belegt) { pseudonym = kandidat; break; }
+    }
+    if (!pseudonym) {
+      return NextResponse.json(
+        { error: "Konto konnte nicht angelegt werden. Bitte noch einmal versuchen." },
+        { status: 500 },
+      );
+    }
   }
 
   const exists = await prisma.user.findFirst({
@@ -79,7 +104,7 @@ export async function POST(req: Request) {
       role,
       companyName,
       vatId,
-      country: country.toUpperCase(),
+      country,
       trialEndsAt,
       referredById: referrer?.id,
     },
