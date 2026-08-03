@@ -29,6 +29,7 @@ import { applyCorrections2026_07_18 } from "./fix-datenqualitaet-2026-07-18";
 import { applyProduktErweiterung2026_08_02 } from "./add-produkte-2026-08-02";
 import { applyReklassifizierung2026_08_02 } from "./reclass-produktarten-2026-08-02";
 import { applyProduktErweiterung2026_08_02b } from "./add-produkte-2026-08-02b";
+import { importCastrolSds2026_08_03 } from "./import-sds-castrol-2026-08-03";
 
 type Task = {
   name: string;
@@ -127,6 +128,14 @@ const TASKS: Task[] = [
     // Legt fehlende Hersteller an (Condat, Bitzer, Sika, Cortec, Eastman …).
     name: "Produkt-Erweiterung 2026-08-02b (Lückenkategorien + neue Produktarten)",
     run: () => applyProduktErweiterung2026_08_02b(),
+  },
+  {
+    // 99 Castrol-Sicherheitsdatenblätter, die der Betreiber am 2026-08-03 aus
+    // dem Castrol-Dokumentenportal heruntergeladen hat. Die PDFs liegen im
+    // Repo unter data/sds/castrol/ und werden hier eingelesen; erkannt wird
+    // über den sha256, ein zweiter Lauf legt also nichts doppelt an.
+    name: "Castrol-Datenblätter 2026-08-03 (manueller Download)",
+    run: () => importCastrolSds2026_08_03(),
   },
 ];
 

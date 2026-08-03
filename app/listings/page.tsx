@@ -15,6 +15,9 @@ import { getT } from "@/lib/i18n-server";
 import { fill } from "@/lib/i18n";
 import { activeTier, hasPriorityPlacement } from "@/lib/membership-tiers";
 import { LayoutGrid, BookOpen } from "lucide-react";
+import { ProductImage } from "@/components/ProductImage";
+import { BrandLogo } from "@/components/BrandLogo";
+import { packagingForProduct } from "@/lib/product-packaging";
 
 type SearchParams = Promise<{
   q?: string;
@@ -243,6 +246,7 @@ export default async function ListingsPage({ searchParams }: { searchParams: Sea
           name: true,
           slug: true,
           category: true,
+          viscosityIso: true,
           manufacturer: { select: { name: true, slug: true } },
         },
         orderBy: { name: "asc" },
@@ -326,27 +330,55 @@ export default async function ListingsPage({ searchParams }: { searchParams: Sea
       {/* Treffer aus dem Produktkatalog (Wissensbasis) — auch wenn gerade kein
           Anbieten dafür aktiv ist, z.B. bei Herstellersuche wie "Blaser". */}
       {catalogProducts.length > 0 && (
-        <div className="card space-y-3">
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
-            <BookOpen size={16} className="text-brand-600" />
-            {fill(t("listings.catalogTitle"), { q: q ?? "" })}
+        <section className="space-y-3">
+          {/* Die Katalog-Treffer waren früher blasse Text-Kacheln und gingen
+              neben den Angeboten unter. Jetzt mit Gebindebild, Herstellerlogo
+              und Produktart — dieselbe Bildsprache wie die Angebotskarten. */}
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <h2 className="section-title flex items-center gap-2">
+              <BookOpen size={18} className="text-brand-600" />
+              {fill(t("listings.catalogTitle"), { q: q ?? "" })}
+            </h2>
+            <span className="text-sm font-medium text-slate-500">
+              {catalogProducts.length}{" "}
+              {catalogProducts.length === 1 ? "Produkt" : "Produkte"}
+            </span>
           </div>
-          <p className="text-sm text-slate-600">
-            {t("listings.catalogHint")}
-          </p>
-          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          <p className="text-sm text-slate-600">{t("listings.catalogHint")}</p>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {catalogProducts.map((p) => (
               <Link
                 key={p.id}
                 href={`/products/${p.manufacturer.slug}/${p.slug}`}
-                className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm transition hover:border-brand-400 hover:shadow-soft"
+                className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-soft transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-400 hover:shadow-lift"
               >
-                <div className="font-medium text-slate-900">{p.name}</div>
-                <div className="text-xs text-slate-500">{p.manufacturer.name}</div>
+                <ProductImage
+                  manufacturer={p.manufacturer.name}
+                  productName={p.name}
+                  packaging={packagingForProduct(p.category, p.id)}
+                  size="sm"
+                  className="transition-transform duration-200 group-hover:scale-105"
+                />
+                <div className="min-w-0 flex-1">
+                  <BrandLogo manufacturer={p.manufacturer.name} size="xs" />
+                  <div className="mt-1 truncate text-sm font-bold text-slate-900 group-hover:text-brand-700">
+                    {p.name}
+                  </div>
+                  <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
+                    <span className="chip bg-slate-100 text-slate-600">
+                      {t(`cat.${p.category}`)}
+                    </span>
+                    {p.viscosityIso && (
+                      <span className="chip bg-slate-100 text-slate-600">
+                        ISO VG {p.viscosityIso.replace(/^ISO\s*VG\s*/i, "")}
+                      </span>
+                    )}
+                  </div>
+                </div>
               </Link>
             ))}
           </div>
-        </div>
+        </section>
       )}
     </div>
   );
