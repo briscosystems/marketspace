@@ -280,6 +280,12 @@ export default async function ListingsPage({ searchParams }: { searchParams: Sea
 
   return (
     <div className="space-y-5">
+      {/* Die Katalogseite hatte als einzige Hauptseite keine Überschrift. */}
+      <div>
+        <h1 className="page-title">{q ? `Suche: „${q}"` : t("listings.pageTitle")}</h1>
+        <p className="mt-0.5 text-sm text-slate-600">{t("listings.lead")}</p>
+      </div>
+
       {/* Kategorie-Kacheln mit Symbolen (wie im Konzept) */}
       {categoryChips.length > 0 && (
         <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">

@@ -76,6 +76,8 @@ export const MESSAGES: Record<Locale, Dict> = {
     "nav.kssFinder": "KSS-Finder",
     "nav.manufacturers": "Hersteller",
     "nav.sds": "Sicherheitsdatenblätter",
+    "listings.pageTitle": "Angebote durchsuchen",
+    "listings.lead": "Aktuelle Bestände von Händlern und Herstellern — dazu alles aus dem Produktkatalog.",
     "nav.materials": "Materialien",
     // Fußzeile
     "footer.tagline": "Pseudonyme Reseller-Plattform",
@@ -1200,6 +1202,8 @@ export const MESSAGES: Record<Locale, Dict> = {
     "nav.kssFinder": "Coolant finder",
     "nav.manufacturers": "Manufacturers",
     "nav.sds": "Safety data sheets",
+    "listings.pageTitle": "Browse offers",
+    "listings.lead": "Current stock from traders and manufacturers — plus everything from the product catalogue.",
     "nav.materials": "Materials",
     // Footer
     "footer.tagline": "Pseudonymous reseller platform",
@@ -2314,6 +2318,8 @@ export const MESSAGES: Record<Locale, Dict> = {
     "nav.kssFinder": "Koelsmeermiddel-zoeker",
     "nav.manufacturers": "Fabrikanten",
     "nav.sds": "Veiligheidsinformatiebladen",
+    "listings.pageTitle": "Aanbiedingen doorzoeken",
+    "listings.lead": "Actuele voorraden van handelaren en fabrikanten — plus alles uit de productcatalogus.",
     "nav.materials": "Materialen",
     // Voettekst
     "footer.tagline": "Pseudoniem resellerplatform",

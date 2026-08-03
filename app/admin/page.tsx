@@ -377,7 +377,7 @@ export default async function AdminPage() {
       {/* ============ Referral-/Gutschein-Codes ============ */}
       <section>
         <div className="flex items-center justify-between gap-3">
-          <h2 className="page-title">Referral-Codes</h2>
+          <h2 className="section-title">Referral-Codes</h2>
           <CsvButton list="referrals" />
         </div>
         <p className="max-w-2xl text-sm text-slate-600">
@@ -549,7 +549,7 @@ export default async function AdminPage() {
       {/* ============ Käuferschutz ============ */}
       <section>
         <div className="flex items-center justify-between gap-3">
-          <h2 className="page-title">Käuferschutz</h2>
+          <h2 className="section-title">Käuferschutz</h2>
           <CsvButton list="protection" />
         </div>
         <p className="max-w-2xl text-sm text-slate-600">
@@ -636,7 +636,7 @@ export default async function AdminPage() {
 
       {/* ============ Nutzung (Web-Analytics) ============ */}
       <section>
-        <h2 className="page-title">Nutzung (letzte 30 Tage)</h2>
+        <h2 className="section-title">Nutzung (letzte 30 Tage)</h2>
         <p className="max-w-2xl text-sm text-slate-600">
           Selbst gehostete, datenschutzarme Messung (keine IP, keine Cookies) —
           Grundlage, um die Seite gezielt zu verbessern: Welche Bereiche werden
@@ -690,7 +690,7 @@ export default async function AdminPage() {
 
       {/* ============ KI-Kosten & Token-Verbrauch ============ */}
       <section>
-        <h2 className="page-title">KI-Kosten &amp; Token-Verbrauch</h2>
+        <h2 className="section-title">KI-Kosten &amp; Token-Verbrauch</h2>
         <p className="max-w-2xl text-sm text-slate-600">
           Echte Token-Zahlen aus jeder Claude-Antwort. Kosten sind aus den
           aktuellen Anthropic-Preisen (Haiku 4.5: 1/5&nbsp;$, Sonnet: 3/15&nbsp;$
@@ -925,7 +925,7 @@ export default async function AdminPage() {
       {/* ============ System-E-Mails ============ */}
       <section>
         <div className="flex items-center justify-between gap-3">
-          <h2 className="page-title">System-E-Mails</h2>
+          <h2 className="section-title">System-E-Mails</h2>
           <CsvButton list="emails" />
         </div>
         <p className="max-w-2xl text-sm text-slate-600">
@@ -1006,7 +1006,7 @@ export default async function AdminPage() {
 
       <section>
         <div className="flex items-center justify-between gap-3">
-          <h2 className="page-title">Sichtbarkeits-Steuerung &amp; Kunden</h2>
+          <h2 className="section-title">Sichtbarkeits-Steuerung &amp; Kunden</h2>
           <CsvButton list="users" />
         </div>
         <p className="max-w-2xl text-sm text-slate-600">

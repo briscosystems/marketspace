@@ -94,7 +94,7 @@ export default async function TdsPage({
           <div className="text-xs font-semibold uppercase tracking-widest text-slate-500">
             {t("tds.docType")}
           </div>
-          <h1 className="mt-1 text-2xl font-bold text-slate-900">
+          <h1 className="page-title mt-1">
             {m.name} {product.name}
           </h1>
           <div className="mt-1 text-sm text-slate-600">

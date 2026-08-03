@@ -22,7 +22,7 @@ export default async function PriceVerificationPage() {
       <div className="card">
         <h1 className="page-title">{t("common.accessDenied")}</h1>
         <p className="mt-2 text-sm text-slate-600">
-          Preis-Verifizierung ist Admins und Trade-Assured+ Usern vorbehalten.
+          Die Preis-Prüfung steht der Verwaltung und Mitgliedern ab der Stufe „Trade Assured" offen.
         </p>
       </div>
     );

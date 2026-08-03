@@ -97,7 +97,7 @@ export default async function WissenPage({ searchParams }: { searchParams: Searc
       {/* Hero */}
       <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-7 shadow-soft md:p-9">
         <div className="eyebrow text-brand-700">{t("know.eyebrow")}</div>
-        <h1 className="mt-2 max-w-3xl text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">
+        <h1 className="page-title mt-2 max-w-3xl">
           {t("know.title")}
         </h1>
         <p className="mt-2 max-w-3xl text-slate-600">

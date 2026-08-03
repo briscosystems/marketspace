@@ -398,7 +398,7 @@ export default async function ComparePage({
                     <strong>{t("cmp.mixed")}</strong>{" "}
                     {Array.from(types).join(", ")}.{t("cmp.mixedBanner1")}
                     <Link href="/listings" className="underline">
-                      /listings
+                      zu den Angeboten
                     </Link>
                     {t("cmp.mixedBanner2")}
                   </div>

@@ -142,9 +142,8 @@ export default async function MembershipPage() {
 
       {!configured && (
         <div className="rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
-          <strong>Hinweis:</strong> Stripe ist noch nicht konfiguriert. Trage{" "}
-          <code>STRIPE_SECRET_KEY</code> (Test-Key <code>sk_test_…</code>) in die <code>.env</code>{" "}
-          ein und starte den Dev-Server neu — dann funktioniert die Kartenzahlung im Testmodus.
+          <strong>Hinweis:</strong> Die Kartenzahlung ist derzeit nicht verfügbar. Schreib uns
+          kurz — wir schalten deine Mitgliedschaft von Hand frei.
         </div>
       )}
 

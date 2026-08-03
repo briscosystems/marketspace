@@ -80,7 +80,7 @@ export default async function RfqDetailPage({
               <TrustBadge tier={rfq.buyer.trustTier} size="xs" />
               {rfq.visibility === "VERIFIED_ONLY" && (
                 <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] text-blue-700">
-                  Nur Verified+
+                  Nur für geprüfte Mitglieder
                 </span>
               )}
             </div>
@@ -244,7 +244,7 @@ export default async function RfqDetailPage({
 
       {!canOffer && !isBuyer && me && rfq.visibility === "VERIFIED_ONLY" && session?.user?.trustTier === "UNVERIFIED" && (
         <div className="card text-sm text-amber-800">
-          Nur Verified+ Reseller dürfen auf diese Anfrage bieten.
+Auf diese Anfrage dürfen nur geprüfte Mitglieder bieten.
         </div>
       )}
     </div>
