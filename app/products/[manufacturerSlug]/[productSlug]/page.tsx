@@ -40,6 +40,40 @@ const COMPAT_LABEL: Record<string, string> = {
   UNSUITABLE: "Nicht geeignet",
 };
 
+
+/**
+ * Eigener Seitentitel je Produkt. Ohne das tragen alle 1.092 Produktseiten
+ * denselben Titel und sind in Suchmaschinen nicht unterscheidbar — die
+ * Wissensbasis ist aber der Grund, warum die Plattform überhaupt gefunden wird.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ manufacturerSlug: string; productSlug: string }>;
+}) {
+  const { manufacturerSlug, productSlug } = await params;
+  const p = await prisma.product.findFirst({
+    where: { slug: productSlug, manufacturer: { slug: manufacturerSlug } },
+    select: {
+      name: true,
+      description: true,
+      viscosityIso: true,
+      manufacturer: { select: { name: true } },
+    },
+  });
+  if (!p) return { title: "Produkt nicht gefunden — Brisco Marketplace" };
+  const viskositaet = p.viscosityIso ? ` ISO VG ${p.viscosityIso.replace(/^ISO\s*VG\s*/i, "")}` : "";
+  const titel = `${p.manufacturer.name} ${p.name}${viskositaet} — Datenblatt, Alternativen & Preis-Richtwert`;
+  const text =
+    p.description?.slice(0, 155) ??
+    `Technische Daten, Sicherheitsdatenblatt, Dichtungs-Verträglichkeit und Preis-Richtwerte zu ${p.manufacturer.name} ${p.name}.`;
+  return {
+    title: titel,
+    description: text,
+    openGraph: { title: titel, description: text },
+  };
+}
+
 export default async function ProductDetailPage({
   params,
 }: {

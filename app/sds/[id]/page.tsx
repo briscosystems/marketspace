@@ -16,6 +16,21 @@ import {
   ShieldAlert,
 } from "lucide-react";
 
+
+/** Eigener Titel je Sicherheitsdatenblatt — 3.383 Seiten, die sonst gleich heißen. */
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const s = await prisma.safetyDataSheet.findUnique({
+    where: { id },
+    select: { productName: true, manufacturer: true, revisionDate: true },
+  });
+  if (!s) return { title: "Sicherheitsdatenblatt nicht gefunden — Brisco Marketplace" };
+  const jahr = s.revisionDate ? ` (${s.revisionDate.getFullYear()})` : "";
+  const titel = `${s.manufacturer} ${s.productName} — Sicherheitsdatenblatt${jahr}`;
+  const text = `Sicherheitsdatenblatt zu ${s.manufacturer} ${s.productName}: GHS-Einstufung, H- und P-Sätze, Inhaltsstoffe und physikalische Kennwerte — ausgewertet und durchsuchbar.`;
+  return { title: titel, description: text, openGraph: { title: titel, description: text } };
+}
+
 export default async function SdsDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const t = await getT();
   const { id } = await params;

@@ -24,6 +24,22 @@ const FOCUS_LABEL: Record<string, string> = {
 };
 
 
+
+/** Eigener Titel je Hersteller — 118 Marken-Seiten. */
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const m = await prisma.manufacturer.findUnique({
+    where: { slug },
+    select: { name: true, description: true, _count: { select: { products: true } } },
+  });
+  if (!m) return { title: "Hersteller nicht gefunden — Brisco Marketplace" };
+  const titel = `${m.name} — Produktkatalog, Datenblätter & Alternativen`;
+  const text =
+    m.description?.slice(0, 155) ??
+    `${m._count.products} Produkte von ${m.name} mit technischen Daten, Sicherheitsdatenblättern und Alternativvorschlägen.`;
+  return { title: titel, description: text, openGraph: { title: titel, description: text } };
+}
+
 export default async function ManufacturerDetailPage({
   params,
 }: {
