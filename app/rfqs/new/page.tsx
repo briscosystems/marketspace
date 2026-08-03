@@ -144,7 +144,11 @@ export default function NewRfqPage() {
           <h2 className="eyebrow">
             {t("rnew.sec1")}
           </h2>
-          <div className="grid gap-4 md:grid-cols-2">
+          <p className="mt-1 text-xs text-slate-500">
+            Pflicht sind nur mit * markierte Felder — alles andere ist freiwillig und bringt
+            passendere Angebote.
+          </p>
+          <div className="mt-3 grid gap-4 md:grid-cols-2">
             <div className="md:col-span-2">
               <label className="label">{t("rnew.productType")}</label>
               <select

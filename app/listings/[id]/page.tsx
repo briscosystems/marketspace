@@ -115,12 +115,7 @@ export default async function ListingDetailPage({
             </div>
 
             <div className="mt-5 flex flex-wrap items-center gap-3">
-              <div
-                className="rounded-full px-5 py-2 text-lg font-bold text-white shadow-sm"
-                style={{
-                  backgroundColor: listing.priceEur ? colors.primary : "#475569",
-                }}
-              >
+              <div className="rounded-full bg-slate-900 px-5 py-2 text-lg font-bold text-white shadow-sm">
                 {listing.priceEur
                   ? `${listing.priceEur.toFixed(2)} € / ${listing.quantityUnit}`
                   : "auf Anfrage"}

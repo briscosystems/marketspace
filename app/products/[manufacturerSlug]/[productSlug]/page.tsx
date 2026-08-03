@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { RefractometerCalculator } from "@/components/RefractometerCalculator";
 import { CompareToggle } from "@/components/compare/CompareToggle";
+import { BrandLogo } from "@/components/BrandLogo";
 import { recommendMaterialsForProduct } from "@/lib/seal-recommendations";
 import { getMonthlyMedianHistory, getCurrentMarketPrice } from "@/lib/price-aggregation";
 import { getT } from "@/lib/i18n-server";
@@ -169,8 +170,9 @@ export default async function ProductDetailPage({
           size="lg"
         />
         <div className="flex-1">
-          <div className="eyebrow">{m.name}</div>
-          <h1 className="mt-0.5 page-title">{product.name}</h1>
+          {/* Echtes Logo statt Namenstext — Marken erkennt man in Sekundenbruchteilen. */}
+          <BrandLogo manufacturer={m.name} size="sm" />
+          <h1 className="mt-1 page-title">{product.name}</h1>
           <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
             <span className="rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-medium text-brand-700">
               {t(`cat.${product.category}`)}
@@ -194,7 +196,11 @@ export default async function ProductDetailPage({
               }`}
               title={t("product.dataConfidence")}
             >
-              {product.sourceConfidence}
+              {{
+                verifiziert: "Daten verifiziert",
+                recherchiert: "Daten recherchiert",
+                "hersteller-doku": "aus Hersteller-Unterlagen",
+              }[product.sourceConfidence ?? ""] ?? product.sourceConfidence}
             </span>
             <ComplianceBadges product={product} />
           </div>
@@ -202,6 +208,14 @@ export default async function ProductDetailPage({
             <p className="mt-3 text-sm text-slate-700">{product.description}</p>
           ) : null}
           <div className="mt-3 flex flex-wrap items-center gap-2">
+            {/* DIE Handlung der Seite: Preis anfragen — wir holen Angebote ein.
+                Vorher konnte man von hier weder anfragen noch anbieten. */}
+            <Link
+              href="/rfqs/new"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-600"
+            >
+              Preis anfragen — ohne Konto
+            </Link>
             <CompareToggle id={product.id} kind="products" />
             {/* Häufigster Einkäufer-Anwendungsfall: Äquivalent bei Lieferantenwechsel */}
             <Link
@@ -638,11 +652,11 @@ function PriceBanner({
   currentPrice: import("@/lib/price-aggregation").CurrentMarketPrice | null;
 }) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border-2 border-amber-400 bg-gradient-to-r from-amber-50 to-yellow-50 px-5 py-3 shadow-sm">
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-3 shadow-soft">
       <div className="flex flex-wrap items-baseline gap-3">
         <div className="flex items-center gap-2">
-          <TrendingUp size={20} className="text-amber-700" />
-          <span className="text-sm font-bold uppercase tracking-wide text-amber-900">
+          <TrendingUp size={20} className="text-slate-500" />
+          <span className="eyebrow">
             Richtwert
           </span>
         </div>
@@ -660,21 +674,26 @@ function PriceBanner({
               Spanne {currentPrice.min.toFixed(2)} – {currentPrice.max.toFixed(2)} ·{" "}
               {currentPrice.observationCount} Beobachtungen · letzte {currentPrice.windowDays} Tage
             </span>
+            {/* Datenqualität ist kein Gefahrenstatus — neutral abgestuft und deutsch. */}
             <span
-              className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${
+              className={`chip ring-1 ${
                 currentPrice.confidence === "high"
-                  ? "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-300"
+                  ? "bg-emerald-100 text-emerald-800 ring-emerald-300"
                   : currentPrice.confidence === "medium"
-                    ? "bg-amber-100 text-amber-800 ring-1 ring-amber-300"
-                    : "bg-red-100 text-red-800 ring-1 ring-red-300"
+                    ? "bg-slate-100 text-slate-700 ring-slate-300"
+                    : "bg-slate-100 text-slate-500 ring-slate-200"
               }`}
             >
-              {currentPrice.confidence}
+              {currentPrice.confidence === "high"
+                ? "gut belegt"
+                : currentPrice.confidence === "medium"
+                  ? "mittel belegt"
+                  : "wenige Daten"}
             </span>
           </>
         ) : (
           <span className="text-sm text-slate-600">
-            Noch keine Preisdaten — sei der erste!
+            Noch keine Preisdaten — 
           </span>
         )}
       </div>
@@ -709,7 +728,7 @@ function PriceSection({
   currentPrice: import("@/lib/price-aggregation").CurrentMarketPrice | null;
 }) {
   return (
-    <section id="preis-historie" className="scroll-mt-4 rounded-xl border-2 border-amber-300 bg-amber-50/30 shadow-sm">
+    <section id="preis-historie" className="scroll-mt-4 rounded-xl border border-slate-200 bg-white shadow-soft shadow-sm">
       <header className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-amber-300 px-4 py-2">
         <div className="flex items-center gap-2">
           <TrendingUp size={16} className="text-amber-700" />
@@ -745,20 +764,24 @@ function PriceSection({
               {currentPrice.observationCount} Beobachtungen · letzte {currentPrice.windowDays} Tage
             </div>
             <span
-              className={`ml-auto rounded-full px-2 py-0.5 text-[10px] font-medium ${
+              className={`chip ml-auto ring-1 ${
                 currentPrice.confidence === "high"
-                  ? "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-300"
+                  ? "bg-emerald-100 text-emerald-800 ring-emerald-300"
                   : currentPrice.confidence === "medium"
-                    ? "bg-amber-100 text-amber-800 ring-1 ring-amber-300"
-                    : "bg-red-100 text-red-800 ring-1 ring-red-300"
+                    ? "bg-slate-100 text-slate-700 ring-slate-300"
+                    : "bg-slate-100 text-slate-500 ring-slate-200"
               }`}
             >
-              Konfidenz: {currentPrice.confidence}
+              {currentPrice.confidence === "high"
+                ? "gut belegt"
+                : currentPrice.confidence === "medium"
+                  ? "mittel belegt"
+                  : "wenige Daten"}
             </span>
           </div>
         ) : (
-          <div className="rounded-lg border border-dashed border-amber-300 bg-white p-3 text-sm text-slate-600">
-            Noch keine Preisdaten vorhanden — sei der erste und melde einen Preis!
+          <div className="rounded-xl border border-dashed border-slate-300 bg-white p-3 text-sm text-slate-600">
+            Noch keine Preisdaten vorhanden. Wer einen aktuellen Preis kennt, kann ihn hier melden — anonym, er fließt in den Richtwert ein.
           </div>
         )}
 

@@ -112,6 +112,10 @@ Nach jeder Änderung, die hier etwas berührt: **Eintrag ergänzen oder anpassen
 | Kachel „Nachrichten" zählt ehrlich Gespräche — kein „Ungelesen"-Signal, solange es keine Gelesen-Markierung gibt | keine vorgetäuschten Zähler |
 | Werkstoffseite: Verträglichkeit **positiv zuerst** (empfohlen → verträglich → Vorsicht → ungeeignet) | gleiche Dramaturgie wie die Produktseite: Auswahlhilfe, keine Warnliste |
 | Nach dem Veröffentlichen zeigt die Bearbeiten-Seite einen **Erfolgsbalken** (Angebot online + Foto-Hinweis) | der Belohnungsmoment ging vorher verloren |
+| **Preisflächen sind neutral** (dunkel/weiß) — nie in Herstellerfarbe (Mobil-Rot = Fehlerfläche) und nie amber (gehört den Anfragen) | Preis ist Information |
+| Datenqualität („gut belegt / mittel belegt / wenige Daten") **deutsch und ohne Rot** — Rot bleibt echten Gefahren (GHS, ungeeignet) vorbehalten | englische Enums und Rot für Datenqualität wirkten wie Warnungen |
+| Produktseite hat eine **Primäraktion: „Preis anfragen — ohne Konto"** (amber) | vorher konnte man von der wichtigsten Seite weder anfragen noch anbieten |
+| Formulare sagen, was Pflicht ist: „Pflicht sind nur mit * markierte Felder" | 11 freiwillige Felder wirkten wie eine Wand |
 | Leere Zustände auch auf Konto-Seiten mit Ausweg (Dashboard ×3, Nachrichten, Umsätze, Anfrage-Detail) | Sackgassen sind der häufigste Absprungmoment |
 
 ## Fachliche Regeln
