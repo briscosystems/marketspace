@@ -101,7 +101,7 @@ export default async function TransactionPage({
       <div className="card space-y-5">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <div className="text-xs uppercase tracking-wide text-slate-500">
+            <div className="eyebrow">
               {fill(t("txn.transactionNumber"), { id: tx.id.slice(-6) })}
             </div>
             <h1 className="page-title">
@@ -135,7 +135,7 @@ export default async function TransactionPage({
 
         <div className="grid gap-4 md:grid-cols-2">
           <div>
-            <div className="text-xs uppercase tracking-wide text-slate-500">{t("txn.buyer")}</div>
+            <div className="eyebrow">{t("txn.buyer")}</div>
             <div className="flex items-center gap-2">
               <Link
                 href={`/profile/${tx.buyer.pseudonym}`}
@@ -148,7 +148,7 @@ export default async function TransactionPage({
             </div>
           </div>
           <div>
-            <div className="text-xs uppercase tracking-wide text-slate-500">{t("txn.seller")}</div>
+            <div className="eyebrow">{t("txn.seller")}</div>
             <div className="flex items-center gap-2">
               <Link
                 href={`/profile/${tx.seller.pseudonym}`}
@@ -161,23 +161,23 @@ export default async function TransactionPage({
             </div>
           </div>
           <div>
-            <div className="text-xs uppercase tracking-wide text-slate-500">{t("txn.created")}</div>
+            <div className="eyebrow">{t("txn.created")}</div>
             <div className="text-sm">{tx.createdAt.toLocaleString("de-DE")}</div>
           </div>
           <div>
-            <div className="text-xs uppercase tracking-wide text-slate-500">{t("txn.shipped")}</div>
+            <div className="eyebrow">{t("txn.shipped")}</div>
             <div className="text-sm">
               {tx.shippedAt ? tx.shippedAt.toLocaleString("de-DE") : "–"}
             </div>
           </div>
           <div>
-            <div className="text-xs uppercase tracking-wide text-slate-500">{t("txn.completed")}</div>
+            <div className="eyebrow">{t("txn.completed")}</div>
             <div className="text-sm">
               {tx.completedAt ? tx.completedAt.toLocaleString("de-DE") : "–"}
             </div>
           </div>
           <div>
-            <div className="text-xs uppercase tracking-wide text-slate-500">{t("txn.canceled")}</div>
+            <div className="eyebrow">{t("txn.canceled")}</div>
             <div className="text-sm">
               {tx.canceledAt ? tx.canceledAt.toLocaleString("de-DE") : "–"}
             </div>

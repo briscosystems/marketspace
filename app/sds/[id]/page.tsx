@@ -83,7 +83,7 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
 
       <div className="card space-y-5">
         <div>
-          <div className="text-xs uppercase tracking-wide text-slate-500">
+          <div className="eyebrow">
             {t(`sdsd.cat.${sds.category}`)}
           </div>
           <h1 className="page-title">
@@ -477,7 +477,7 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
 function Meta({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div>
-      <div className="text-xs uppercase tracking-wide text-slate-500">{label}</div>
+      <div className="eyebrow">{label}</div>
       <div className="text-sm text-slate-900">{value}</div>
     </div>
   );

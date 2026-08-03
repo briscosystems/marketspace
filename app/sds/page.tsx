@@ -186,7 +186,7 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
           suchLink="/sds"
         />
       ) : (
-        <div className="rounded-lg border border-slate-200 bg-white divide-y divide-slate-200 px-4">
+        <div className="rounded-2xl border border-slate-200 bg-white shadow-soft divide-y divide-slate-200 px-4">
           {sheets.map((s) => (
             <Link
               key={s.id}

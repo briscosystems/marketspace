@@ -182,7 +182,7 @@ export default async function MembershipPage() {
             <Coins size={18} className="text-amber-500" />
             KI-Credits
           </div>
-          <div className="text-2xl font-bold text-slate-900">
+          <div className="stat-value">
             {user?.creditBalance ?? 0}
             <span className="ml-1 text-sm font-normal text-slate-500">{t("mem.creditsWord")}</span>
           </div>
@@ -199,7 +199,7 @@ export default async function MembershipPage() {
         />
         {recentTx.length > 0 && (
           <div className="border-t border-slate-100 pt-3">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+            <div className="eyebrow mb-2">
               {t("mem.recentBookings")}
             </div>
             <ul className="space-y-1 text-sm">

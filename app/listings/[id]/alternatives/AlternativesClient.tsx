@@ -591,7 +591,7 @@ function DetailSlideOver({
         >
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <div className="text-xs uppercase tracking-wide text-slate-500">
+              <div className="eyebrow">
                 {t("alt.detailEyebrow")}
               </div>
               <h3 className="mt-0.5 truncate text-lg font-bold text-slate-900">
@@ -613,7 +613,7 @@ function DetailSlideOver({
         <div className="space-y-5 p-5">
           {/* Match-Index groß */}
           <section className="rounded-xl border border-slate-200 p-4">
-            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-500">
+            <div className="eyebrow mb-1">
               {t("alt.matchIndexTitle")}
             </div>
             <MatchMeter score={alt.score} size="lg" />
@@ -623,7 +623,7 @@ function DetailSlideOver({
           {/* Angebots-Eckdaten */}
           {l && (
             <section className="rounded-xl border border-slate-200 p-4">
-              <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <div className="eyebrow mb-2">
                 {t("alt.offerData")}
               </div>
               <dl className="space-y-1.5 text-sm">

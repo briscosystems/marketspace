@@ -33,7 +33,7 @@ export default async function ManufacturersPage() {
           <Link
             key={m.id}
             href={`/manufacturers/${m.slug}`}
-            className="group flex flex-col items-center justify-between rounded-xl border border-slate-200 bg-white p-4 transition hover:border-brand-400 hover:shadow-soft"
+            className="group flex flex-col items-center justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-soft transition-all duration-200 hover:-translate-y-1 hover:border-brand-400 hover:shadow-lift"
           >
             <div className="flex h-20 items-center justify-center">
               <ManufacturerLogo name={m.name} logoPath={m.logoPath} height={56} />

@@ -54,7 +54,7 @@ export default async function RfqDetailPage({
 
   const Field = ({ label, value }: { label: string; value: React.ReactNode }) => (
     <div>
-      <div className="text-xs uppercase tracking-wide text-slate-500">{label}</div>
+      <div className="eyebrow">{label}</div>
       <div className="text-sm text-slate-900">{value ?? "–"}</div>
     </div>
   );
@@ -68,7 +68,7 @@ export default async function RfqDetailPage({
       <div className="card space-y-5">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <div className="text-xs uppercase tracking-wide text-slate-500">
+            <div className="eyebrow">
               {rfq.productType} {rfq.isoViscosity ? `· ISO VG ${rfq.isoViscosity}` : ""}
             </div>
             <h1 className="page-title">
@@ -119,7 +119,7 @@ export default async function RfqDetailPage({
 
         {rfq.workpieceMaterial && (
           <div>
-            <div className="text-xs uppercase tracking-wide text-slate-500">Werkstoff</div>
+            <div className="eyebrow">Werkstoff</div>
             <p className="mt-1 text-sm text-slate-700">{rfq.workpieceMaterial}</p>
           </div>
         )}
@@ -157,7 +157,7 @@ export default async function RfqDetailPage({
 
         {rfq.notes && (
           <div>
-            <div className="text-xs uppercase tracking-wide text-slate-500">Notizen</div>
+            <div className="eyebrow">Notizen</div>
             <p className="mt-1 whitespace-pre-line text-sm text-slate-700">{rfq.notes}</p>
           </div>
         )}

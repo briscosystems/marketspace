@@ -712,7 +712,7 @@ export default async function AdminPage() {
                 <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
                   Kosten gesamt
                 </div>
-                <div className="mt-1 text-2xl font-bold text-slate-900">
+                <div className="stat-value mt-1">
                   {aiCostAllEur.toLocaleString("de-DE", {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
@@ -725,7 +725,7 @@ export default async function AdminPage() {
                 <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
                   Kosten (30 Tage)
                 </div>
-                <div className="mt-1 text-2xl font-bold text-slate-900">
+                <div className="stat-value mt-1">
                   {aiCost30dEur.toLocaleString("de-DE", {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
@@ -738,7 +738,7 @@ export default async function AdminPage() {
                 <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
                   Tokens gesamt
                 </div>
-                <div className="mt-1 text-2xl font-bold text-slate-900">
+                <div className="stat-value mt-1">
                   {aiTokensAll.toLocaleString("de-DE")}
                 </div>
                 <div className="text-xs text-slate-500">Input + Output + Cache</div>
@@ -747,7 +747,7 @@ export default async function AdminPage() {
                 <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
                   Ø Kosten / Aufruf
                 </div>
-                <div className="mt-1 text-2xl font-bold text-slate-900">
+                <div className="stat-value mt-1">
                   {(aiCallsAll > 0 ? aiCostAllEur / aiCallsAll : 0).toLocaleString("de-DE", {
                     minimumFractionDigits: 3,
                     maximumFractionDigits: 3,

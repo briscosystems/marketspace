@@ -169,7 +169,7 @@ export default async function ProductDetailPage({
           size="lg"
         />
         <div className="flex-1">
-          <div className="text-xs uppercase tracking-wide text-slate-500">{m.name}</div>
+          <div className="eyebrow">{m.name}</div>
           <h1 className="mt-0.5 page-title">{product.name}</h1>
           <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
             <span className="rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-medium text-brand-700">
@@ -1011,7 +1011,7 @@ function SealCompatibilitySection({
       {/* Driver-Details für die kritischen Materialien */}
       {groups.UNSUITABLE.length + groups.CAUTION.length > 0 && (
         <div className="mt-4 border-t border-slate-100 pt-3">
-          <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <div className="eyebrow">
             Begründung
           </div>
           <div className="mt-2 space-y-2 text-xs">

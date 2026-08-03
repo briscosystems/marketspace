@@ -257,7 +257,7 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
             aktionen={["anfrage", "suche"]}
           />
         ) : (
-          <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white">
+          <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-soft">
             <table className="w-full text-sm">
               <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
                 <tr>

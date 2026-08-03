@@ -164,7 +164,7 @@ export default async function ManufacturerDetailPage({
         <section className="grid gap-4 sm:grid-cols-2">
           {m.productFamilies.length > 0 ? (
             <div className="rounded-lg border border-slate-200 bg-white p-4">
-              <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <div className="eyebrow">
                 {t("mfr.brandFamilies")}
               </div>
               <div className="mt-2 flex flex-wrap gap-1">
@@ -178,7 +178,7 @@ export default async function ManufacturerDetailPage({
           ) : null}
           {m.knownForApplications.length > 0 ? (
             <div className="rounded-lg border border-slate-200 bg-white p-4">
-              <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <div className="eyebrow">
                 {t("mfr.knownFor")}
               </div>
               <div className="mt-2 flex flex-wrap gap-1">

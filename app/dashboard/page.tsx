@@ -113,27 +113,27 @@ export default async function DashboardPage() {
 
       <div className="grid gap-4 md:grid-cols-5">
         <div className="card">
-          <div className="text-xs uppercase tracking-wide text-slate-500">{t("dash.tileListings")}</div>
-          <div className="text-2xl font-semibold text-brand-500">{listings.length}</div>
+          <div className="eyebrow">{t("dash.tileListings")}</div>
+          <div className="stat-value mt-1">{listings.length}</div>
         </div>
         <div className="card">
-          <div className="text-xs uppercase tracking-wide text-slate-500">{t("dash.tileRequests")}</div>
-          <div className="text-2xl font-semibold text-brand-500">{myRfqs.length}</div>
+          <div className="eyebrow">{t("dash.tileRequests")}</div>
+          <div className="stat-value mt-1">{myRfqs.length}</div>
         </div>
         <div className="card">
-          <div className="text-xs uppercase tracking-wide text-slate-500">{t("dash.tileOffers")}</div>
-          <div className="text-2xl font-semibold text-brand-500">{myOffers.length}</div>
+          <div className="eyebrow">{t("dash.tileOffers")}</div>
+          <div className="stat-value mt-1">{myOffers.length}</div>
         </div>
         <div className="card">
-          <div className="text-xs uppercase tracking-wide text-slate-500">{t("dash.tileTransactions")}</div>
-          <div className="text-2xl font-semibold text-brand-500">{myTxns.length}</div>
+          <div className="eyebrow">{t("dash.tileTransactions")}</div>
+          <div className="stat-value mt-1">{myTxns.length}</div>
         </div>
         <Link
           href="/conversations"
           className="card hover:border-brand-500"
         >
-          <div className="text-xs uppercase tracking-wide text-slate-500">{t("dash.tileConversations")}</div>
-          <div className="text-2xl font-semibold text-brand-500">{unreadCount}</div>
+          <div className="eyebrow">{t("dash.tileConversations")}</div>
+          <div className="stat-value mt-1">{unreadCount}</div>
         </Link>
       </div>
 

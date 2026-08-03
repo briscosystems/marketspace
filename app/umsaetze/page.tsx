@@ -115,16 +115,16 @@ export default async function UmsaetzePage() {
       {/* Summen */}
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="card">
-          <div className="text-sm text-slate-500">{t("rev.salesCompleted")}</div>
-          <div className="text-2xl font-bold text-emerald-700">{formatCurrency(salesTotal, currency)}</div>
+          <div className="eyebrow">{t("rev.salesCompleted")}</div>
+          <div className="stat-value mt-1 text-emerald-700">{formatCurrency(salesTotal, currency)}</div>
         </div>
         <div className="card">
-          <div className="text-sm text-slate-500">{t("rev.purchasesCompleted")}</div>
-          <div className="text-2xl font-bold text-blue-700">{formatCurrency(purchaseTotal, currency)}</div>
+          <div className="eyebrow">{t("rev.purchasesCompleted")}</div>
+          <div className="stat-value mt-1 text-blue-700">{formatCurrency(purchaseTotal, currency)}</div>
         </div>
         <div className="card">
-          <div className="text-sm text-slate-500">{t("rev.savedByswitch")}</div>
-          <div className="text-2xl font-bold text-amber-600">{formatCurrency(savingsTotal, currency)}</div>
+          <div className="eyebrow">{t("rev.savedByswitch")}</div>
+          <div className="stat-value mt-1 text-amber-600">{formatCurrency(savingsTotal, currency)}</div>
           <div className="mt-0.5 text-xs text-slate-500">
             {t("rev.vsPrevProduct")}
           </div>

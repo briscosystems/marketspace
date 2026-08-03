@@ -401,7 +401,7 @@ export default function NewListingPage() {
             {/* Live-Vorschau */}
             <div className="rounded-lg border border-slate-200 bg-slate-50/60 p-3">
               <div className="flex items-center justify-between gap-2">
-                <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                <div className="eyebrow">
                   {t("lnew.estimated")}
                 </div>
                 <AutomationBadge
