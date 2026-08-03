@@ -12,6 +12,15 @@ Wenn der Nutzer **„starte server"** schreibt (oder sinngemäß: „server star
 `bash scripts/start.sh` im Hintergrund ausführen** und anschließend bestätigen, dass
 die Seite auf http://localhost:3000 läuft. Nicht nachfragen, einfach starten.
 
+## VOR JEDER ÄNDERUNG: [ENTSCHEIDUNGEN.md](ENTSCHEIDUNGEN.md) lesen
+
+Dort stehen die Festlegungen des Betreibers zu Gestaltung, Wording, Fachlogik und
+Technik. Diese Dinge dürfen **nicht stillschweigend entfernt, ersetzt oder
+„aufgeräumt"** werden — auch nicht als Nebeneffekt einer anderen Aufgabe.
+Widerspricht ein neuer Auftrag einem Eintrag: erst fragen. Wird doch etwas
+entfernt, muss es ausdrücklich in der Antwort stehen. Nach Änderungen, die einen
+Eintrag berühren, die Datei nachführen.
+
 ## Projektkontext
 
 Brisco Marketplace — ein B2B-Marktplatz-Prototyp für Reseller und OEM-Hersteller von

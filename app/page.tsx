@@ -107,7 +107,12 @@ async function PublicLanding() {
           href="/listings"
           className="group rounded-2xl border-t-4 border border-slate-200 border-t-blue-600 bg-white p-5 shadow-soft transition duration-200 hover:-translate-y-1 hover:shadow-lift"
         >
-          <OilBarrels className="h-10 w-auto transition duration-200 group-hover:scale-105" />
+          <div className="flex items-center justify-between gap-2">
+            <OilBarrels className="h-10 w-auto transition duration-200 group-hover:scale-105" />
+            <span className="rounded-full bg-blue-600 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
+              {t("home.offerBadge")}
+            </span>
+          </div>
           <h3 className="mt-2 text-lg font-bold text-slate-900 group-hover:text-blue-700">
             {t("home.groupResellerTitle")}
           </h3>
@@ -122,7 +127,12 @@ async function PublicLanding() {
           href="/kss-finder"
           className="group rounded-2xl border-t-4 border border-slate-200 border-t-amber-500 bg-white p-5 shadow-soft transition duration-200 hover:-translate-y-1 hover:shadow-lift"
         >
-          <SearchCanister className="h-10 w-auto transition duration-200 group-hover:scale-105" />
+          <div className="flex items-center justify-between gap-2">
+            <SearchCanister className="h-10 w-auto transition duration-200 group-hover:scale-105" />
+            <span className="rounded-full bg-amber-600 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
+              {t("home.seekBadge")}
+            </span>
+          </div>
           <h3 className="mt-2 text-lg font-bold text-slate-900 group-hover:text-amber-700">
             {t("home.groupBuyerTitle")}
           </h3>
@@ -137,9 +147,14 @@ async function PublicLanding() {
           href="/register"
           className="group rounded-2xl border-t-4 border border-slate-200 border-t-brand-500 bg-white p-5 shadow-soft transition duration-200 hover:-translate-y-1 hover:shadow-lift"
         >
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand-50 text-brand-700 transition duration-200 group-hover:scale-105">
-            <Building2 className="h-5 w-5" />
-          </span>
+          <div className="flex items-center justify-between gap-2">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand-50 text-brand-700 transition duration-200 group-hover:scale-105">
+              <Building2 className="h-5 w-5" />
+            </span>
+            <span className="rounded-full bg-brand-600 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
+              {t("home.groupMfrBadge")}
+            </span>
+          </div>
           <h3 className="mt-2 text-lg font-bold text-slate-900 group-hover:text-brand-700">
             {t("home.groupMfrTitle")}
           </h3>
