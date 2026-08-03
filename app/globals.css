@@ -96,27 +96,44 @@ body::before {
    Auf Touch-Geräten (kein Hover möglich) immer sichtbar.
    ============================================================ */
 .hover-hint {
-  /* Der Hinweis liegt ÜBER der Karte, statt sie aufzuklappen: die Kachel behält
-     ihre Größe, das Raster springt nicht. Er sitzt am unteren Rand, deckt dort
-     kurz den Inhalt ab und verschwindet wieder. */
+  /* Klassische Sprechblase UNTER der Karte: die Kachel behält ihre Größe, der
+     Hinweis verdeckt weder Titel noch Symbol und schiebt nichts weg. Der erste
+     Versuch legte den Text in die Karte hinein — bei niedrigen Kacheln
+     verschwand dadurch die Überschrift. */
   position: absolute;
+  top: calc(100% + 0.5rem);
   left: 0;
   right: 0;
-  bottom: 0;
-  z-index: 5;
-  padding: 0.6rem 1.25rem 0.75rem;
-  background: rgba(255, 255, 255, 0.97);
-  border-top: 1px solid rgb(226 232 240);
-  border-radius: 0 0 1rem 1rem;
-  box-shadow: 0 -6px 16px -12px rgb(15 23 42 / 0.35);
+  z-index: 30;
+  padding: 0.55rem 0.8rem;
+  border-radius: 0.6rem;
+  background: #1f2937;
+  color: #f1f5f9;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  box-shadow: 0 10px 24px -12px rgb(15 23 42 / 0.55);
   opacity: 0;
-  transform: translateY(0.35rem);
+  transform: translateY(-0.25rem);
   pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: opacity 0.18s ease, transform 0.18s ease;
 }
-/* Die Karte muss der Bezugsrahmen sein, sonst landet der Hinweis am Seitenrand. */
+/* Spitze der Sprechblase */
+.hover-hint::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 1.75rem;
+  border: 0.4rem solid transparent;
+  border-bottom-color: #1f2937;
+}
+/* Die Karte ist der Bezugsrahmen; beim Überfahren nach vorn holen, damit die
+   Sprechblase nicht hinter der nächsten Kachel verschwindet. */
 .group:has(.hover-hint) {
   position: relative;
+}
+.group:has(.hover-hint):hover,
+.group:has(.hover-hint):focus-within {
+  z-index: 20;
 }
 .group:hover .hover-hint,
 .group:focus-within .hover-hint {
@@ -124,7 +141,7 @@ body::before {
   transform: translateY(0);
 }
 /* Touch-Geräte können nicht „darüberfahren" — dort steht der Text fest in der
-   Karte (im Fluss, nicht überlagert), sonst wäre er nie erreichbar. */
+   Karte (im Fluss, nicht als Sprechblase), sonst wäre er nie erreichbar. */
 @media (hover: none) {
   .hover-hint {
     position: static;
@@ -133,7 +150,11 @@ body::before {
     padding: 0;
     margin-top: 0.25rem;
     background: none;
-    border: 0;
+    color: inherit;
+    font-size: 0.8rem;
     box-shadow: none;
+  }
+  .hover-hint::before {
+    display: none;
   }
 }
