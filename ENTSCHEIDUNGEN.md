@@ -93,10 +93,11 @@ Nach jeder Änderung, die hier etwas berührt: **Eintrag ergänzen oder anpassen
 
 | Entscheidung | Begründung |
 |---|---|
-| **Der Markt ist DACH und Europa, nicht Deutschland.** Die Lagerregion umfasst alle 26 Schweizer Kantone, alle 9 österreichischen Bundesländer, alle 16 deutschen Bundesländer und die europäischen Nachbarländer | Brisco sitzt in der Schweiz; vorher waren nur 9 deutsche Bundesländer einzeln wählbar und der Platzhalter lautete „DE-BW" |
-| Reihenfolge in der Auswahl: **Schweiz, Österreich, Deutschland, übriges Europa** | Heimatmarkt zuerst |
-| Der Platzhalter nennt alle drei Kernländer: „z. B. CH-ZH, AT-OÖ oder DE-BW" | darf nie nach einem Land aussehen |
-| Gespeichert wird Kürzel plus Name („CH-ZH (Zürich)"), zentral in `lib/regionen.ts` | man kann „ZH" oder „Zürich" tippen; die Liste stand vorher doppelt im Code |
+| **Der Markt ist Europa, nicht Deutschland.** Die Lagerregion deckt **alle 27 EU-Staaten** ab, dazu Schweiz, Liechtenstein, Norwegen, Vereinigtes Königreich und übriges Europa (47 Länder) | Brisco sitzt in der Schweiz; die Liste war vorher faktisch auf Deutschland zugeschnitten |
+| **Nur das Land, keine Kantone oder Bundesländer.** Verwaltungsebenen sind für Frachtkosten zu ungenau (Baden-Württemberg ist 300 km breit) und für die Bedienung zu umständlich | Entscheidung des Betreibers 2026-08-03 |
+| Wenn Entfernung später wirklich zählt: **Postleitzahl plus Umkreis** (wie Kleinanzeigen und mobile.de) — nicht eine Verwaltungsebene dazwischen | der einzig sinnvolle nächste Schritt |
+| Reihenfolge: **Schweiz, Österreich, Deutschland**, dann alphabetisch | Heimatmarkt zuerst |
+| Eine Länderliste für alles: `lib/europe-countries.ts` versorgt Registrierung und Lagerregion | die Liste stand vorher doppelt im Seitencode |
 
 ## Fachliche Regeln
 

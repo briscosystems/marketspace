@@ -1,11 +1,12 @@
 /**
- * Lagerregionen vereinheitlichen (2026-08-03).
+ * Lagerregionen auf Länderebene vereinheitlichen (2026-08-03).
  *
- * Bis dahin waren nur neun deutsche Bundesländer einzeln wählbar, Schweiz und
- * Österreich nur als ganzes Land — der Platzhalter lautete „DE-BW". Die neue
- * Liste (lib/regionen.ts) deckt alle Kantone, Bundesländer und Europa ab und
- * schreibt Kürzel plus Name („CH-ZH (Zürich)"). Diese Aufgabe zieht die bereits
- * gespeicherten Kurzwerte nach.
+ * Vorgeschichte: Zuerst waren nur neun deutsche Bundesländer einzeln wählbar
+ * (Schweiz und Österreich nur als ganzes Land, Platzhalter „DE-BW"), danach
+ * kurzzeitig alle Kantone und Bundesländer. Beides war falsch — Verwaltungs-
+ * ebenen sind für Frachtkosten zu ungenau und für die Bedienung zu umständlich.
+ * Jetzt gilt das Land (alle 27 EU-Staaten plus Schweiz, Liechtenstein, Norwegen,
+ * UK und übriges Europa). Diese Aufgabe zieht gespeicherte Werte nach.
  *
  * IDEMPOTENT: Werte, die schon in der neuen Schreibweise stehen, bleiben
  * unverändert; unbekannte Freitexte werden nicht angefasst.

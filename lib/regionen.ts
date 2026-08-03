@@ -1,69 +1,60 @@
 /**
- * Lagerregionen für Angebote und Anfragen.
+ * Lagerregion für Angebote und Anfragen — auf Länderebene.
  *
- * Vorher standen hier neun deutsche Bundesländer einzeln, während Schweiz und
- * Österreich nur als ganzes Land wählbar waren — und der Platzhalter lautete
- * „DE-BW". Das las sich, als sei die Plattform auf Deutschland beschränkt.
- * Brisco sitzt in der Schweiz, der Markt ist DACH und Europa.
+ * Warum nur das Land (Entscheidung 2026-08-03):
+ * Kantone und Bundesländer waren ein schlechter Mittelweg. Für die Frachtkosten
+ * sind sie zu ungenau (Baden-Württemberg ist 300 km breit), für die Bedienung
+ * zu umständlich — und sie zwingen jeden Anbieter zu einer Entscheidung, die
+ * kaum jemand filtert. Wenn Entfernung später wirklich zählt, ist der richtige
+ * Weg Postleitzahl plus Umkreis (wie bei Kleinanzeigen und mobile.de), nicht
+ * eine Verwaltungsebene dazwischen.
  *
- * Reihenfolge: Schweiz, Österreich, Deutschland, dann übriges Europa.
- * Der angezeigte Text IST der gespeicherte Wert — deshalb Kürzel plus Name,
- * damit man sowohl „ZH" als auch „Zürich" tippen kann und die Karte trotzdem
- * kurz bleibt.
+ * Abgedeckt sind alle 27 EU-Staaten sowie Schweiz, Liechtenstein, Norwegen,
+ * Vereinigtes Königreich und die übrigen europäischen Länder — die Liste kommt
+ * aus lib/europe-countries.ts, damit Registrierung und Angebot dieselbe
+ * Ländergrundlage benutzen.
+ *
+ * Reihenfolge: Schweiz, Österreich, Deutschland (Heimatmarkt), dann alphabetisch.
  */
+import { EUROPE_COUNTRIES } from "@/lib/europe-countries";
 
-const CH = [
-  "CH-ZH (Zürich)", "CH-BE (Bern)", "CH-LU (Luzern)", "CH-UR (Uri)", "CH-SZ (Schwyz)",
-  "CH-OW (Obwalden)", "CH-NW (Nidwalden)", "CH-GL (Glarus)", "CH-ZG (Zug)",
-  "CH-FR (Freiburg)", "CH-SO (Solothurn)", "CH-BS (Basel-Stadt)", "CH-BL (Basel-Landschaft)",
-  "CH-SH (Schaffhausen)", "CH-AR (Appenzell A.Rh.)", "CH-AI (Appenzell I.Rh.)",
-  "CH-SG (St. Gallen)", "CH-GR (Graubünden)", "CH-AG (Aargau)", "CH-TG (Thurgau)",
-  "CH-TI (Tessin)", "CH-VD (Waadt)", "CH-VS (Wallis)", "CH-NE (Neuenburg)",
-  "CH-GE (Genf)", "CH-JU (Jura)", "CH (ganze Schweiz)",
-];
+const KERNMARKT = ["CH", "AT", "DE"];
 
-const AT = [
-  "AT-W (Wien)", "AT-NÖ (Niederösterreich)", "AT-OÖ (Oberösterreich)",
-  "AT-ST (Steiermark)", "AT-T (Tirol)", "AT-S (Salzburg)", "AT-K (Kärnten)",
-  "AT-V (Vorarlberg)", "AT-B (Burgenland)", "AT (ganz Österreich)",
-];
+function beschriftung(code: string, name: string): string {
+  return `${code} (${name})`;
+}
 
-const DE = [
-  "DE-BW (Baden-Württemberg)", "DE-BY (Bayern)", "DE-BE (Berlin)", "DE-BB (Brandenburg)",
-  "DE-HB (Bremen)", "DE-HH (Hamburg)", "DE-HE (Hessen)", "DE-MV (Mecklenburg-Vorpommern)",
-  "DE-NI (Niedersachsen)", "DE-NW (Nordrhein-Westfalen)", "DE-RP (Rheinland-Pfalz)",
-  "DE-SL (Saarland)", "DE-SN (Sachsen)", "DE-ST (Sachsen-Anhalt)",
-  "DE-SH (Schleswig-Holstein)", "DE-TH (Thüringen)", "DE (ganz Deutschland)",
-];
+const nachCode = new Map(EUROPE_COUNTRIES.map((c) => [c.code, c.name]));
 
-const EUROPA = [
-  "LI (Liechtenstein)", "FR (Frankreich)", "IT (Italien)", "NL (Niederlande)",
-  "BE (Belgien)", "LU (Luxemburg)", "PL (Polen)", "CZ (Tschechien)", "SK (Slowakei)",
-  "HU (Ungarn)", "SI (Slowenien)", "DK (Dänemark)", "SE (Schweden)", "NO (Norwegen)",
-  "FI (Finnland)", "ES (Spanien)", "PT (Portugal)", "GB (Vereinigtes Königreich)",
-  "IE (Irland)", "RO (Rumänien)", "BG (Bulgarien)", "HR (Kroatien)", "GR (Griechenland)",
+export const REGION_OPTIONS: string[] = [
+  ...KERNMARKT.filter((c) => nachCode.has(c)).map((c) => beschriftung(c, nachCode.get(c)!)),
+  ...EUROPE_COUNTRIES.filter((c) => !KERNMARKT.includes(c.code))
+    .sort((a, b) => a.name.localeCompare(b.name, "de"))
+    .map((c) => beschriftung(c.code, c.name)),
   "EU (europaweit)",
 ];
 
-export const REGION_OPTIONS: string[] = [...CH, ...AT, ...DE, ...EUROPA];
-
-/** Platzhalter zeigt alle drei Kernländer — nicht nur Deutschland. */
-export const REGION_PLACEHOLDER = "z. B. CH-ZH, AT-OÖ oder DE-BW";
+/** Platzhalter nennt die drei Kernländer — nie nur eines. */
+export const REGION_PLACEHOLDER = "Land wählen — z. B. CH, AT oder DE";
 
 /**
- * Alte Kurzwerte („DE-BW", „CH", „AT-OÖ") auf die neue Schreibweise bringen.
- * Liefert den Eingabewert unverändert zurück, wenn nichts passt — es soll
- * nichts verloren gehen, nur vereinheitlicht werden.
+ * Bringt gespeicherte Werte auf die Länder-Schreibweise.
+ *
+ * Deckt drei Fälle ab: die alten Kurzcodes („CH", „DE-BW"), die kurzzeitig
+ * verwendeten Kantons-/Bundeslandeinträge („CH-ZH (Zürich)") und bereits
+ * korrekte Werte. Unbekannte Freitexte bleiben unverändert — es soll nichts
+ * verloren gehen, nur vereinheitlicht werden.
  */
 export function normalisiereRegion(wert: string): string {
   const w = wert.trim();
   if (!w) return w;
   if (REGION_OPTIONS.includes(w)) return w;
-  const treffer = REGION_OPTIONS.find((o) => o.split(" ")[0] === w);
-  if (treffer) return treffer;
-  if (w === "CH") return "CH (ganze Schweiz)";
-  if (w === "AT") return "AT (ganz Österreich)";
-  if (w === "DE" || w === "DE (ganz)") return "DE (ganz Deutschland)";
-  if (w === "EU") return "EU (europaweit)";
+
+  if (/^EU\b/i.test(w)) return "EU (europaweit)";
+
+  // Erstes Wort ist der Code, ggf. mit Regionszusatz: „DE-BW" oder „CH-ZH (Zürich)".
+  const code = w.split(/[\s(]/)[0].split("-")[0].toUpperCase();
+  const name = nachCode.get(code);
+  if (name) return beschriftung(code, name);
   return w;
 }
