@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LeerHinweis } from "@/components/LeerHinweis";
 import { prisma } from "@/lib/prisma";
 import { getT } from "@/lib/i18n-server";
 import { SDS_CATEGORY_LABEL, SDS_LANGUAGE_LABEL } from "@/lib/sds";
@@ -177,10 +178,12 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
       {/* ERGEBNISSE */}
       <div className="space-y-2">
       {sheets.length === 0 ? (
-        <div className="rounded-lg border border-slate-200 bg-white p-4 text-center text-slate-500">
-          {t("sds.emptyBefore")}
-          <Link href="/sds" className="text-brand-600 hover:underline">zurücksetzen</Link>.
-        </div>
+        <LeerHinweis
+          titel="Zu dieser Suche haben wir kein Datenblatt."
+          text="Setz die Filter zurück, such im Katalog nach dem Produkt — oder lass die KI eine Alternative finden."
+          aktionen={["suche", "alternative"]}
+          suchLink="/sds"
+        />
       ) : (
         <div className="rounded-lg border border-slate-200 bg-white divide-y divide-slate-200 px-4">
           {sheets.map((s) => (

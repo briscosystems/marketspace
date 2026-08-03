@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LeerHinweis } from "@/components/LeerHinweis";
 import { prisma } from "@/lib/prisma";
 import { getCurrentPricesBatch } from "@/lib/price-aggregation";
 import { FilterBar } from "@/components/FilterBar";
@@ -250,10 +251,11 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
       {/* ERGEBNISSE — Tabelle */}
       <div className="space-y-2">
         {rows.length === 0 ? (
-          <div className="rounded-lg border border-slate-200 bg-white p-4 text-center text-sm text-slate-500">
-            {t("prc.emptyPrefix")}
-            <Link href="/prices" className="text-brand-600 hover:underline">{t("prc.emptyReset")}</Link>.
-          </div>
+          <LeerHinweis
+            titel="Für diese Auswahl liegt uns kein Richtwert vor."
+            text="Richtwerte entstehen aus gemeldeten Preisen und abgeschlossenen Geschäften. Stell eine Anfrage — die Rückmeldungen fließen anonymisiert in die Richtwerte ein."
+            aktionen={["anfrage", "suche"]}
+          />
         ) : (
           <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white">
             <table className="w-full text-sm">

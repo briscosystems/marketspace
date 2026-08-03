@@ -9,8 +9,10 @@ import { ApplicationEntry } from "@/components/ApplicationEntry";
 import { getT } from "@/lib/i18n-server";
 import { fill } from "@/lib/i18n";
 import { getSettingInt } from "@/lib/credits";
+import { withBasePath } from "@/lib/base-path";
 import {
   Building2,
+  Search,
   ArrowRight,
   LayoutDashboard,
   MessageSquare,
@@ -100,13 +102,45 @@ async function PublicLanding() {
             {t("home.tilePriceTitle")}
           </Link>
         </div>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Link
-            href="/listings"
-            className="btn bg-slate-900 font-semibold text-white shadow-soft hover:bg-slate-800"
+        {/* Wir nennen uns Suchmaschine — dann gehört das Suchfeld auch in die
+            Mitte der Startseite und nicht nur in die Kopfzeile. Es ist ein
+            einfaches Formular (GET), damit es auch ohne JavaScript arbeitet. */}
+        <form
+          action={withBasePath("/listings")}
+          method="get"
+          role="search"
+          className="mt-6 flex flex-col gap-2 sm:flex-row"
+        >
+          <div className="flex min-w-0 flex-1 items-center gap-2 rounded-full border-2 border-slate-200 bg-white pl-4 pr-1.5 transition-all focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-400/30">
+            <Search className="h-5 w-5 shrink-0 text-slate-400" aria-hidden />
+            <input
+              name="q"
+              type="search"
+              placeholder={t("home.searchPlaceholder")}
+              aria-label={t("home.ctaBrowse")}
+              className="min-w-0 flex-1 border-0 bg-transparent py-3 text-base text-slate-900 outline-none placeholder:text-slate-400"
+            />
+          </div>
+          <button
+            type="submit"
+            className="shrink-0 rounded-full bg-slate-900 px-7 py-3 text-base font-semibold text-white shadow-soft transition-colors hover:bg-slate-800"
           >
             {t("home.ctaBrowse")}
-          </Link>
+          </button>
+        </form>
+        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+          <span className="text-slate-500">{t("home.searchExamplesLabel")}</span>
+          {["Blasocut 4000", "HLP 46", "Gleitbahnöl ISO 68", "Bor-frei"].map((b) => (
+            <Link
+              key={b}
+              href={`/listings?q=${encodeURIComponent(b)}`}
+              className="rounded-full bg-slate-100 px-3 py-1 text-slate-700 transition hover:bg-brand-100 hover:text-brand-800"
+            >
+              {b}
+            </Link>
+          ))}
+        </div>
+        <div className="mt-5">
           <Link href="/register" className="btn-secondary">
             {fill(t("home.ctaRegister"), { n: trialDays })}
           </Link>

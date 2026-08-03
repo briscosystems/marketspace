@@ -78,6 +78,15 @@ Nach jeder Änderung, die hier etwas berührt: **Eintrag ergänzen oder anpassen
 | Regel im Upload: **nur eigene Fotos der echten Ware**, keine Hersteller-/Katalogbilder, kein Text, keine Wasserzeichen | eBay-Bildrichtlinie, Vinted-Begründung („zeigen nicht den Zustand") |
 | Motiv-Reihenfolge vorgeschlagen: Gebinde → Etikett → Charge → Verschluss → Palette | B2B-Besonderheit: Fotos sind Nachweis über Ware und Betrieb |
 
+## Suche und leere Zustände (2026-08-03)
+
+| Entscheidung | Begründung |
+|---|---|
+| Das **Suchfeld steht in der Mitte der Startseite**, nicht nur in der Kopfzeile — wir nennen uns Suchmaschine, also muss man sofort suchen können. Einfaches Formular (GET), arbeitet auch ohne JavaScript | Positionierung |
+| Darunter **Beispielsuchen** als Knöpfe (Blasocut 4000, HLP 46, Gleitbahnöl ISO 68, Bor-frei) | zeigt in einer Sekunde, wonach man hier sucht |
+| **Jede leere Liste bietet einen Ausweg** über den Baustein `components/LeerHinweis.tsx`: „Alternative finden (KI)" und „Anfrage einstellen — wir holen Angebote ein" | Eine leere Liste ist der häufigste Absprungmoment; ehrlicher als so zu tun, als sei alles da |
+| Kein „Keine Treffer" ohne nächsten Schritt | dito |
+
 ## Fachliche Regeln
 
 | Entscheidung | Begründung |

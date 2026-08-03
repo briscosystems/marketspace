@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LeerHinweis } from "@/components/LeerHinweis";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -205,18 +206,15 @@ export default async function RfqListPage({ searchParams }: { searchParams: Sear
       </FilterBar>
 
       {cards.length === 0 ? (
-        <div className="card text-slate-500">
-          Keine Bedarfe gefunden.{" "}
-          {filterCount > 0 ? (
-            <Link href="/rfqs" className="text-brand-600 hover:underline">
-              Filter zurücksetzen
-            </Link>
-          ) : session?.user ? (
-            "Stelle den ersten ein."
-          ) : (
-            "Anmelden, um etwas zu suchen."
-          )}
-        </div>
+        <LeerHinweis
+          titel={filterCount > 0 ? "Zu diesen Filtern gibt es keine Anfrage." : "Hier ist gerade keine Anfrage offen."}
+          text={
+            filterCount > 0
+              ? "Setz die Filter zurück oder stell deinen eigenen Bedarf ein — Händler melden sich mit Preis und Lieferzeit."
+              : "Stell deinen Bedarf ein — wir holen Angebote von Händlern und Herstellern ein."
+          }
+          aktionen={["anfrage", "suche"]}
+        />
       ) : variant === "compact" ? (
         <div className="space-y-2">
           {cards.map((r) => (
