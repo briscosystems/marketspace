@@ -98,6 +98,25 @@ Nach jeder Änderung, die hier etwas berührt: **Eintrag ergänzen oder anpassen
 | **Auffindbarkeit ist die Startgrundlage:** Sitemap (`app/sitemap.ts`) und `robots.txt` melden alle 4.600 Fachseiten; Produkt-, Datenblatt- und Herstellerseiten haben eigene Seitentitel. Solange die Zugangssperre an ist, sperrt robots.txt alles und die Sitemap bleibt leer | gesetzt 2026-08-03 |
 | **Registrierung: nur E-Mail + Passwort.** Rolle, Firma, Land, Umsatzsteuer-Nummer und Anzeigename sind freiwillig und stehen unter „Weitere Angaben"; das Pseudonym vergibt die Plattform, wenn nichts eingegeben wird | gesetzt 2026-08-03; Baymard: 18–26 % Abbruch allein durch Kontozwang |
 
+## Business Case — Erkenntnisse der Recherche vom 2026-08-03
+
+> Grundlage für die Start-Strategie. Selbst nachgeprüft, wo es zählt.
+
+| Befund | Beleg |
+|---|---|
+| **CheMondis ist tot.** Der von LANXESS gegründete deutsche Chemie-Marktplatz hat zum 1. Mai 2026 eingestellt — mit 1.900 Lieferanten, 12.000 Käufern und Brenntag als Partner | chemondis.com selbst abgerufen: „we have terminated operations" |
+| **Knowde** (bestfinanzierter Chemie-Marktplatz, 146 Mio. USD) firmiert heute als „AI for Industrial Operations" — der Marktplatz ist eine Nebensäule | knowde.com selbst abgerufen |
+| **Kein überlebendes Vorbild lebt von Transaktionsprovision.** Knowde, SpecialChem, Thomasnet, Octopart, Alibaba B2B verdienen über Abo, Leads und Sichtbarkeit | Recherche mit Quellenliste |
+| **Alle Provisions-Marktplätze der Chemie sind gescheitert:** Chemdex, ChemConnect, Omnexus (Dow/DuPont/BASF/Bayer), OneTwoChem (Evonik), CheMondis (LANXESS) | dito |
+| Wiederkehrende Scheiterungsgründe: fehlende Liquidität, Angst der Anbieter vor Preistransparenz, Umgehung nach Erstkontakt, fehlende Neutralität bei Hersteller-Plattformen | dito |
+| **Unsere Neutralität ist ein Vorteil** — genau daran sind die Konzern-Plattformen gescheitert | dito |
+| Unser eigener Katalog ist über §§ 87a ff. UrhG (Datenbankherstellerrecht) schützbar; das rohe fremde Datenblatt nicht | Recherche, keine Rechtsberatung |
+| **Offener Punkt vor breitem Ausrollen:** anwaltliche Prüfung zum Hosten fremder Sicherheitsdatenblätter (keine deutsche Entscheidung auffindbar → ungeklärt, nicht „erlaubt") | — |
+
+**Ableitung (Entscheidung des Betreibers steht noch aus):** Der Start trägt über den
+Daten-/Katalogteil, nicht über 30 vorab gewonnene Reseller. Handel als Anbahnung,
+nicht als Abwicklung. Geld über Sichtbarkeit und Abo, nicht über Provision.
+
 ## Technik
 
 | Entscheidung | Begründung |
