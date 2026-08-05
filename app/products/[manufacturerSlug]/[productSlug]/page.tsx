@@ -5,6 +5,8 @@ import { RefractometerCalculator } from "@/components/RefractometerCalculator";
 import { CompareToggle } from "@/components/compare/CompareToggle";
 import { BrandLogo } from "@/components/BrandLogo";
 import { recommendMaterialsForProduct } from "@/lib/seal-recommendations";
+import { ErfahrungTeilen } from "@/components/ErfahrungTeilen";
+import { TrustBadge } from "@/components/TrustBadge";
 import { getMonthlyMedianHistory, getCurrentMarketPrice } from "@/lib/price-aggregation";
 import { getT } from "@/lib/i18n-server";
 import { PriceHistoryChart } from "@/components/PriceHistoryChart";
@@ -128,14 +130,26 @@ export default async function ProductDetailPage({
 
   // Berechnete Dichtungs-/Kunststoff-Empfehlung basierend auf Produkt-Chemie
   // Preis-Daten + Praxis-Probleme parallel laden
-  const [priceHistory, currentPrice, issues] = await Promise.all([
+  const [priceHistory, currentPrice, issues, erfahrungen] = await Promise.all([
     getMonthlyMedianHistory(product.id, 60),
     getCurrentMarketPrice(product.id),
     prisma.productIssue.findMany({
       where: { productId: product.id, status: { in: ["VERIFIED", "PENDING"] } },
       orderBy: [{ severity: "asc" }, { isOfficial: "desc" }, { reportCount: "desc" }],
     }),
-  ]);
+    prisma.experienceReport.findMany({
+      where: { productId: product.id, status: "APPROVED" },
+      select: {
+        id: true,
+        text: true,
+        source: true,
+        createdAt: true,
+        user: { select: { pseudonym: true, trustTier: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+    }),
+]);
 
   const sealRec = await recommendMaterialsForProduct({
     category: product.category,
@@ -336,6 +350,34 @@ export default async function ProductDetailPage({
 
           {/* Praxis-Probleme aus Foren, Hersteller-FAQs, Distributoren — Value Add für Anwender */}
           <ProductIssuesSection issues={issues} />
+
+          {/* Nutzer-Erfahrungen: freigegebene Berichte + Aufruf zum Teilen.
+              Die Belohnung (Credits nach Freigabe, positiv wie negativ gleich)
+              ist das belegte Muster, das Beiträge verdreifacht. */}
+          <section className="space-y-3">
+            {erfahrungen.length > 0 && (
+              <div className="card space-y-3">
+                <h2 className="section-title">
+                  {t("erf.listeTitel")}{" "}
+                  <span className="text-sm font-normal text-slate-500">({erfahrungen.length})</span>
+                </h2>
+                <div className="divide-y divide-slate-100">
+                  {erfahrungen.map((e) => (
+                    <div key={e.id} className="py-3 first:pt-0 last:pb-0">
+                      <p className="text-sm text-slate-700">{e.text}</p>
+                      <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                        <span className="font-medium text-slate-600">{e.user.pseudonym}</span>
+                        <TrustBadge tier={e.user.trustTier} size="xs" />
+                        <span>{e.createdAt.toLocaleDateString("de-CH")}</span>
+                        {e.source === "VOICE" && <span className="chip bg-slate-100 text-slate-500">🎙 diktiert</span>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            <ErfahrungTeilen productId={product.id} productName={`${m.name} ${product.name}`} />
+          </section>
 
           {/* Marktpreis & Historie */}
           <PriceSection

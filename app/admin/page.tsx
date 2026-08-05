@@ -15,6 +15,8 @@ import {
   resolveProtectionRelease,
   resolveProtectionRefund,
   sendTestEmail,
+  approveExperience,
+  rejectExperience,
 } from "./actions";
 import { getAllSettings, AI_ACTION_COSTS, packagePriceEur } from "@/lib/credits";
 import { isMembershipActive } from "@/lib/membership";
@@ -33,6 +35,19 @@ export default async function AdminPage() {
   }
 
   const mailStatus = await checkMailStatus();
+  const offeneErfahrungen = await prisma.experienceReport.findMany({
+    where: { status: "PENDING" },
+    select: {
+      id: true,
+      text: true,
+      source: true,
+      productFreetext: true,
+      createdAt: true,
+      user: { select: { pseudonym: true, email: true } },
+      product: { select: { name: true, manufacturer: { select: { name: true } } } },
+    },
+    orderBy: { createdAt: "asc" },
+  });
   const [users, settings, usageAgg, purchaseAgg, referralCodes, revenueByUser, emailLogs] = await Promise.all([
     prisma.user.findMany({
       where: { role: { in: ["RESELLER", "OEM", "ENDKUNDE"] } },
@@ -324,6 +339,65 @@ export default async function AdminPage() {
           gesetzte Stufe.
         </p>
       </section>
+
+      {/* Moderations-Warteschlange: Erfahrungsberichte freigeben (= Prämie
+          gutschreiben) oder ablehnen. Jede geprüfte Erfahrung wird gleich
+          belohnt — positiv wie negativ. */}
+      {offeneErfahrungen.length > 0 && (
+        <section className="card space-y-3">
+          <h2 className="section-title">
+            Erfahrungsberichte prüfen{" "}
+            <span className="text-sm font-normal text-slate-500">({offeneErfahrungen.length} offen)</span>
+          </h2>
+          <div className="divide-y divide-slate-100">
+            {offeneErfahrungen.map((e) => (
+              <div key={e.id} className="py-3 first:pt-0 last:pb-0">
+                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                  <span className="font-medium text-slate-700">{e.user.pseudonym}</span>
+                  <span>({e.user.email})</span>
+                  <span>
+                    →{" "}
+                    {e.product
+                      ? `${e.product.manufacturer.name} ${e.product.name}`
+                      : e.productFreetext ?? "ohne Produktbezug"}
+                  </span>
+                  {e.source === "VOICE" && <span className="chip bg-slate-100 text-slate-500">diktiert</span>}
+                  <span className="ml-auto">{e.createdAt.toLocaleDateString("de-CH")}</span>
+                </div>
+                <p className="mt-1.5 whitespace-pre-wrap rounded-lg bg-slate-50 p-2.5 text-sm text-slate-800">
+                  {e.text}
+                </p>
+                <div className="mt-2 flex gap-2">
+                  <form action={approveExperience}>
+                    <input type="hidden" name="id" value={e.id} />
+                    <button
+                      type="submit"
+                      className="rounded-md bg-emerald-600 px-3 py-1 text-xs font-semibold text-white hover:bg-emerald-700"
+                    >
+                      Freigeben (+2 Credits)
+                    </button>
+                  </form>
+                  <form action={rejectExperience} className="flex gap-1">
+                    <input type="hidden" name="id" value={e.id} />
+                    <input
+                      type="text"
+                      name="grund"
+                      placeholder="Grund (intern)"
+                      className="w-40 rounded-md border border-slate-300 px-2 py-1 text-xs"
+                    />
+                    <button
+                      type="submit"
+                      className="rounded-md bg-red-50 px-3 py-1 text-xs font-semibold text-red-700 ring-1 ring-red-200 hover:bg-red-100"
+                    >
+                      Ablehnen
+                    </button>
+                  </form>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="card space-y-2">
         <p className="max-w-2xl text-sm text-slate-600">

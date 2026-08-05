@@ -269,3 +269,49 @@ export async function toggleUserBlock(formData: FormData) {
   });
   revalidatePath("/admin");
 }
+
+
+/** Erfahrungsbericht freigeben: veröffentlicht ihn und schreibt die Prämie gut. */
+export async function approveExperience(formData: FormData) {
+  await assertOwner();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  const bericht = await prisma.experienceReport.findUnique({
+    where: { id },
+    select: { userId: true, status: true },
+  });
+  if (!bericht || bericht.status !== "PENDING") return;
+  const PRAEMIE = 2;
+  await prisma.$transaction([
+    prisma.experienceReport.update({
+      where: { id },
+      data: { status: "APPROVED", creditsAwarded: PRAEMIE, reviewedAt: new Date() },
+    }),
+    prisma.user.update({
+      where: { id: bericht.userId },
+      data: { creditBalance: { increment: PRAEMIE } },
+    }),
+    prisma.creditTransaction.create({
+      data: {
+        userId: bericht.userId,
+        amount: PRAEMIE,
+        kind: "EXPERIENCE",
+        note: "Prämie: Praxis-Erfahrung freigegeben",
+      },
+    }),
+  ]);
+  revalidatePath("/admin");
+}
+
+/** Erfahrungsbericht ablehnen (z. B. Werbung, Beleidigung, kein Inhalt). */
+export async function rejectExperience(formData: FormData) {
+  await assertOwner();
+  const id = String(formData.get("id") ?? "");
+  const grund = String(formData.get("grund") ?? "").trim() || null;
+  if (!id) return;
+  await prisma.experienceReport.updateMany({
+    where: { id, status: "PENDING" },
+    data: { status: "REJECTED", adminNote: grund, reviewedAt: new Date() },
+  });
+  revalidatePath("/admin");
+}

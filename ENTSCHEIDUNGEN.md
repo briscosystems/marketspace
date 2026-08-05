@@ -198,6 +198,17 @@ Nach jeder Änderung, die hier etwas berührt: **Eintrag ergänzen oder anpassen
 | API-Schlüssel: nur sha256-Hash gespeichert, Klartext genau einmal sichtbar, max. 5 aktive, Selbstverwaltung unter Mitgliedschaft, Doku unter /api-doku | — |
 | **KI über API kostet dieselben Credits wie auf der Plattform** (Web-Recherche 2, regelbasiert kostenlos), gleiche atomare Abbuchung, gleiches Buchungsjournal, automatische Erstattung bei Fehlschlag | End-zu-End getestet: 401/403/402, Abbuchung −2 mit Journal, Erstattung +2, Saldo unverändert bei zu wenig Guthaben |
 
+## Praxis-Erfahrungen der Nutzer (2026-08-04)
+
+| Entscheidung | Begründung / Beleg |
+|---|---|
+| Nutzer teilen Erfahrungen **per Text oder Diktat** — das Diktat nutzt die eingebaute Spracherkennung des Browsers/Smartphones; es wird nie Audio übertragen, nur der fertige, vom Nutzer korrigierte Text | keine externen Sprachdienste, keine Audio-Daten |
+| **Belohnung: 2 Credits nach Freigabe** — und zwar für JEDE geprüfte Erfahrung gleich, positiv wie negativ; das steht auch sichtbar dabei | Punkte-Belohnung verdreifacht Beiträge (Yotpo); nur positive zu belohnen wäre unlauteres Review-Gating (FTC/UWG) |
+| **Alles läuft über Moderation** (Admin-Warteschlange: freigeben = Prämie gutschreiben, ablehnen mit internem Grund) — nichts erscheint ungeprüft | Qualität und Missbrauchsschutz |
+| Freigegebene Berichte erscheinen auf der Produktseite als „Erfahrungen aus der Praxis" mit Pseudonym, Vertrauensstufe und Diktat-Kennzeichen | Herstellerübergreifende Praxis-Daten sind der Datenschatz, den kein Wettbewerber kopieren kann |
+| Höchstens ein offener Bericht je Produkt und Nutzer | Spam-Bremse ohne ehrliche Mehrfach-Erfahrungen zu blockieren |
+| Buchungsart `EXPERIENCE` im Credit-Journal | Prämien sauber von Käufen/Verbrauch getrennt |
+
 ## Technik
 
 | Entscheidung | Begründung |

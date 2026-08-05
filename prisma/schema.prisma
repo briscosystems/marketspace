@@ -74,12 +74,12 @@ enum TransactionStatus {
 // transfers), das Geld bleibt bei Stripe geparkt, erst nach Lieferbestätigung
 // des Käufers wird an das Connect-Konto des Verkäufers überwiesen.
 enum ProtectionStatus {
-  NONE            // ohne Käuferschutz (Direktabwicklung wie bisher)
+  NONE // ohne Käuferschutz (Direktabwicklung wie bisher)
   PENDING_PAYMENT // Käufer hat Checkout gestartet, Zahlung noch offen
-  HELD            // bezahlt — Geld bei Stripe geparkt bis Lieferbestätigung
-  RELEASED        // Käufer hat Lieferung bestätigt, Geld an Verkäufer überwiesen
-  REFUNDED        // Problemfall: Geld an Käufer zurückerstattet
-  DISPUTED        // Käufer hat Problem gemeldet — Superadmin entscheidet
+  HELD // bezahlt — Geld bei Stripe geparkt bis Lieferbestätigung
+  RELEASED // Käufer hat Lieferung bestätigt, Geld an Verkäufer überwiesen
+  REFUNDED // Problemfall: Geld an Käufer zurückerstattet
+  DISPUTED // Käufer hat Problem gemeldet — Superadmin entscheidet
 }
 
 enum ReviewTag {
@@ -95,21 +95,21 @@ enum ChemistryBase {
   SEMI_SYNTHETIC
   ESTER
   PAG
-  GTL              // Gas-to-Liquid (Fischer-Tropsch, Gruppe III+ — sehr hoher VI, sehr rein)
+  GTL // Gas-to-Liquid (Fischer-Tropsch, Gruppe III+ — sehr hoher VI, sehr rein)
   OTHER
 }
 
 enum ProductionType {
-  CONTRACT_MANUFACTURING   // Lohnfertigung — wechselnde Werkstoffe/Aufträge
-  SERIAL_PRODUCTION        // Serienproduktion — konstantes Werkstück/Verfahren
-  MIXED                    // Mischbetrieb
+  CONTRACT_MANUFACTURING // Lohnfertigung — wechselnde Werkstoffe/Aufträge
+  SERIAL_PRODUCTION // Serienproduktion — konstantes Werkstück/Verfahren
+  MIXED // Mischbetrieb
 }
 
 enum CoolantConcentrateForm {
-  CONVENTIONAL_EMULSION    // klassische milchige Emulsion (Mineralöl + Tenside)
-  SEMI_SYNTHETIC           // halbsynthetisch (milchig-opal)
-  FULL_SYNTHETIC           // vollsynthetisch (klar, ohne Mineralöl)
-  TWO_COMPONENT            // Zweikomponenten-System
+  CONVENTIONAL_EMULSION // klassische milchige Emulsion (Mineralöl + Tenside)
+  SEMI_SYNTHETIC // halbsynthetisch (milchig-opal)
+  FULL_SYNTHETIC // vollsynthetisch (klar, ohne Mineralöl)
+  TWO_COMPONENT // Zweikomponenten-System
 }
 
 enum PackagingForm {
@@ -144,80 +144,80 @@ enum SdsLanguage {
 // Stichwort-Erkennung in lib/product-category-detect.ts. Erweiterung 2026-08-02:
 // zehn eigenständige Arten, die vorher unter SPECIALTY/OTHER verschwanden.
 enum ProductCategory {
-  COOLANT_WATER_MIX     // wassermischbarer KSS-Konzentrat
-  COOLANT_NEAT          // nicht wassermischbares Schneidöl
-  GRINDING_OIL          // Schleiföl
-  HONING_LAPPING_OIL    // Hon-, Läpp-, Superfinishöl (eigener Markt, oft sehr niedrigviskos)
-  MQL_FLUID             // Minimalmengenschmierstoff (MMS/MQL) — verdampfungsarme Ester
-  EDM_FLUID             // Erodieröl (Senk/Draht), Dielektrikum
+  COOLANT_WATER_MIX // wassermischbarer KSS-Konzentrat
+  COOLANT_NEAT // nicht wassermischbares Schneidöl
+  GRINDING_OIL // Schleiföl
+  HONING_LAPPING_OIL // Hon-, Läpp-, Superfinishöl (eigener Markt, oft sehr niedrigviskos)
+  MQL_FLUID // Minimalmengenschmierstoff (MMS/MQL) — verdampfungsarme Ester
+  EDM_FLUID // Erodieröl (Senk/Draht), Dielektrikum
   HYDRAULIC_OIL
   FIRE_RESISTANT_HYDRAULIC // Schwer entflammbar (ISO 12922: HFA/HFB/HFC/HFDU/HFDR)
   GEAR_OIL
-  CIRCULATION_OIL       // Umlauf-/Lageröl (DIN 51517 C/CL/CLP), Papiermaschinenöl
-  OPEN_GEAR_LUBRICANT   // Haftschmierstoff für offene Getriebe (DIN 51502 "OG")
+  CIRCULATION_OIL // Umlauf-/Lageröl (DIN 51517 C/CL/CLP), Papiermaschinenöl
+  OPEN_GEAR_LUBRICANT // Haftschmierstoff für offene Getriebe (DIN 51502 "OG")
   COMPRESSOR_OIL
-  SLIDEWAY_OIL          // Bettbahnöl
-  SPINDLE_OIL           // Spindelöl (ISO VG 2–10, Hochfrequenzspindeln)
-  TURBINE_OIL           // Turbinenöl (DIN 51515 TD/TG)
-  CHAIN_OIL             // Ketten-/Hochtemperatur-Kettenöl
-  REFRIGERATION_OIL     // Kältemaschinenöl (POE/PAG/Mineral)
-  VACUUM_PUMP_OIL       // Vakuumpumpenöl
-  FORMING_OIL           // Stanz-/Umform-/Tiefziehöl
-  FORGING_LUBRICANT     // Gesenkschmierstoff Warmumformung (Graphit-Wasser/-Öl, graphitfrei)
-  WIRE_DRAWING          // Drahtzieh-Schmierstoff (Ziehseife, Ziehfett, Nassziehmittel)
-  RELEASE_AGENT         // Trennmittel (Druckguss, Gummi, Kunststoff), Schalungsöl
+  SLIDEWAY_OIL // Bettbahnöl
+  SPINDLE_OIL // Spindelöl (ISO VG 2–10, Hochfrequenzspindeln)
+  TURBINE_OIL // Turbinenöl (DIN 51515 TD/TG)
+  CHAIN_OIL // Ketten-/Hochtemperatur-Kettenöl
+  REFRIGERATION_OIL // Kältemaschinenöl (POE/PAG/Mineral)
+  VACUUM_PUMP_OIL // Vakuumpumpenöl
+  FORMING_OIL // Stanz-/Umform-/Tiefziehöl
+  FORGING_LUBRICANT // Gesenkschmierstoff Warmumformung (Graphit-Wasser/-Öl, graphitfrei)
+  WIRE_DRAWING // Drahtzieh-Schmierstoff (Ziehseife, Ziehfett, Nassziehmittel)
+  RELEASE_AGENT // Trennmittel (Druckguss, Gummi, Kunststoff), Schalungsöl
   MASS_FINISHING_COMPOUND // Gleitschleifmittel / Compound (Trowalisieren, Vibrationsschleifen)
-  HEAT_TRANSFER_OIL     // Wärmeträgeröl / Thermalöl (DIN 51522)
-  QUENCHING_OIL         // Härteöl / Abschrecköl (Wärmebehandlung)
-  POLYMER_QUENCHANT     // Wasserverdünnbares Polymer-Abschreckmittel (nicht mit Härteöl mischbar)
-  TRANSFORMER_OIL       // Isolieröl / Transformatorenöl (IEC 60296)
-  CLEANER               // Reiniger / Entfetter
+  HEAT_TRANSFER_OIL // Wärmeträgeröl / Thermalöl (DIN 51522)
+  QUENCHING_OIL // Härteöl / Abschrecköl (Wärmebehandlung)
+  POLYMER_QUENCHANT // Wasserverdünnbares Polymer-Abschreckmittel (nicht mit Härteöl mischbar)
+  TRANSFORMER_OIL // Isolieröl / Transformatorenöl (IEC 60296)
+  CLEANER // Reiniger / Entfetter
   CORROSION_PROTECTION
   GREASE
-  LUBRICATING_PASTE     // Montage-/Schmierpaste mit hohem Festschmierstoffanteil
-  DRY_FILM_LUBRICANT    // Gleitlack / Trockenschmierstoff (MoS2, PTFE, Graphit)
-  SPECIALTY             // Spezial-/Sonderschmierstoff
+  LUBRICATING_PASTE // Montage-/Schmierpaste mit hohem Festschmierstoffanteil
+  DRY_FILM_LUBRICANT // Gleitlack / Trockenschmierstoff (MoS2, PTFE, Graphit)
+  SPECIALTY // Spezial-/Sonderschmierstoff
   ADDITIVE
   OTHER
 }
 
 enum MaterialCompatibility {
-  RECOMMENDED   // explizit für diesen Werkstoff empfohlen
-  COMPATIBLE    // unproblematisch
-  CAUTION       // mit Einschränkungen / Bedingungen
-  UNSUITABLE    // nicht geeignet, dokumentierte Probleme
+  RECOMMENDED // explizit für diesen Werkstoff empfohlen
+  COMPATIBLE // unproblematisch
+  CAUTION // mit Einschränkungen / Bedingungen
+  UNSUITABLE // nicht geeignet, dokumentierte Probleme
 }
 
 enum BusinessFocus {
-  COOLANT              // Kühlschmierstoffe (wassermischbar)
-  NEAT_OIL             // Nicht wassermischbare Schneidöle
-  LUBRICANT            // Schmierstoffe allgemein (Hydraulik, Getriebe, Motor)
-  GREASE               // Schmierfette
-  CLEANER              // Reiniger / Entfetter
+  COOLANT // Kühlschmierstoffe (wassermischbar)
+  NEAT_OIL // Nicht wassermischbare Schneidöle
+  LUBRICANT // Schmierstoffe allgemein (Hydraulik, Getriebe, Motor)
+  GREASE // Schmierfette
+  CLEANER // Reiniger / Entfetter
   CORROSION_PROTECTION // Korrosionsschutz
-  CHEMICAL_SUPPLIER    // Chemie-Distributor / Mineralöl-Handel
-  ADDITIVE             // Additiv-Hersteller
+  CHEMICAL_SUPPLIER // Chemie-Distributor / Mineralöl-Handel
+  ADDITIVE // Additiv-Hersteller
 }
 
 model Manufacturer {
-  id        String   @id @default(cuid())
-  name      String   @unique   // Display name, z.B. "Blaser Swisslube"
-  slug      String   @unique   // url-safe, z.B. "blaser-swisslube"
+  id   String @id @default(cuid())
+  name String @unique // Display name, z.B. "Blaser Swisslube"
+  slug String @unique // url-safe, z.B. "blaser-swisslube"
 
-  logoPath  String?            // /brand-logos/BlaserSwisslubeLogo.png
-  website   String?            // https://www.blaser.com
+  logoPath String? // /brand-logos/BlaserSwisslubeLogo.png
+  website  String? // https://www.blaser.com
 
-  headquartersCountry String?  // ISO-3166-1 alpha-2 oder Klartext
+  headquartersCountry String? // ISO-3166-1 alpha-2 oder Klartext
   headquartersCity    String?
   foundedYear         Int?
 
   businessFocus   BusinessFocus[] @default([])
-  productFamilies String[]        @default([])  // z.B. ["Blasocut", "Vasco", "Synergy"]
+  productFamilies String[]        @default([]) // z.B. ["Blasocut", "Vasco", "Synergy"]
   description     String?
 
   // Wissens-Metadaten — was wir aus dem Web/Datenblättern wissen
-  knownForApplications String[] @default([])    // z.B. ["Schleifen", "Drehen Alu", "Tiefbohren"]
-  notes               String?                    // freitext, manuell pflegbar
+  knownForApplications String[] @default([]) // z.B. ["Schleifen", "Drehen Alu", "Tiefbohren"]
+  notes                String? // freitext, manuell pflegbar
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -233,28 +233,28 @@ model Manufacturer {
 }
 
 model Product {
-  id              String       @id @default(cuid())
-  manufacturerId  String
-  manufacturer    Manufacturer @relation(fields: [manufacturerId], references: [id], onDelete: Cascade)
+  id             String       @id @default(cuid())
+  manufacturerId String
+  manufacturer   Manufacturer @relation(fields: [manufacturerId], references: [id], onDelete: Cascade)
 
-  name            String       // Vollständiger Name z.B. "Blasocut 2000 CF"
-  slug            String       // url-safe, eindeutig pro Hersteller
-  productFamily   String?      // z.B. "Blasocut"
-  category        ProductCategory
-  chemistry       ChemistryBase?
+  name          String // Vollständiger Name z.B. "Blasocut 2000 CF"
+  slug          String // url-safe, eindeutig pro Hersteller
+  productFamily String? // z.B. "Blasocut"
+  category      ProductCategory
+  chemistry     ChemistryBase?
 
-  description     String?
+  description String?
 
   // Anwendung
-  applicationAreas    String[] @default([])  // Drehen, Fräsen, Schleifen, Stanzen, ...
-  suitableMaterials   String[] @default([])  // Stahl, Alu, Buntmetall, Guss, Titan, Hartmetall
-  unsuitableMaterials String[] @default([])  // Werkstoffe wo Probleme dokumentiert sind
+  applicationAreas    String[] @default([]) // Drehen, Fräsen, Schleifen, Stanzen, ...
+  suitableMaterials   String[] @default([]) // Stahl, Alu, Buntmetall, Guss, Titan, Hartmetall
+  unsuitableMaterials String[] @default([]) // Werkstoffe wo Probleme dokumentiert sind
 
   // Eignung für Produktionsart (Lohnfertigung vs Serie)
-  productionType      ProductionType?
+  productionType ProductionType?
 
   // Form bei wassermischbaren KSS — entscheidend für Auswahl (milchig vs klar)
-  concentrateForm     CoolantConcentrateForm?
+  concentrateForm CoolantConcentrateForm?
 
   // Praxis-Probleme die mit diesem Produkt explizit adressiert (oder bekannt) sind
   // Werte: "Fleckenbildung Buntmetall", "Schaum", "Geruch", "Hautirritation",
@@ -262,53 +262,53 @@ model Product {
   //   "Alu-Verfärbung", "Spritzwasserbeständigkeit", "Kompatibilität mit anderen
   //   Hochdruck-MMS", "Werkzeugstandzeit", "Tramp-Oil-Aufnahme"
   criticalIssuesAddressed String[] @default([])
-  criticalIssuesKnown     String[] @default([])  // dokumentierte Schwachpunkte
+  criticalIssuesKnown     String[] @default([]) // dokumentierte Schwachpunkte
 
   // Refraktometer — Schlüsselwert für KSS-Konzentratbestimmung
-  refractometerFactor Float?    // Brix × Faktor = % Konzentration
+  refractometerFactor Float? // Brix × Faktor = % Konzentration
 
   // Empfohlene Konzentration im Gebrauchsbereich (wassermischbare KSS)
-  recommendedConcentrationMin Float?  // % v/v
-  recommendedConcentrationMax Float?  // % v/v
+  recommendedConcentrationMin Float? // % v/v
+  recommendedConcentrationMax Float? // % v/v
 
   // Typische Emulsions-Standzeit im Tank (Wochen) — Herstellerangabe/Praxiswert,
   // fließt in die Gesamtkostenrechnung (Wechsel = Stillstand + Entsorgung)
-  typicalSumpLifeWeeks        Int?
+  typicalSumpLifeWeeks Int?
 
   // pH
   phConcentrate Float?
-  phEmulsionMin Float?           // bei Soll-Konzentration
+  phEmulsionMin Float? // bei Soll-Konzentration
   phEmulsionMax Float?
 
   // Physik
-  densityGcm3   Float?           // bei 20 °C
-  flashpointC   Int?              // °C (nur für Öle)
-  viscosityIso  String?           // ISO VG (für Öle)
-  viscosityKv40 Float?            // mm²/s bei 40 °C
-  viscosityKv100 Float?           // mm²/s bei 100 °C
+  densityGcm3    Float? // bei 20 °C
+  flashpointC    Int? // °C (nur für Öle)
+  viscosityIso   String? // ISO VG (für Öle)
+  viscosityKv40  Float? // mm²/s bei 40 °C
+  viscosityKv100 Float? // mm²/s bei 100 °C
 
   // Ansetzwasser-Anforderungen (wassermischbare KSS)
-  waterHardnessMinDh  Int?       // °dH min empfohlen
-  waterHardnessMaxDh  Int?       // °dH max empfohlen
-  waterHardnessNotes  String?    // z.B. "demineralisiertes Wasser ungeeignet"
+  waterHardnessMinDh Int? // °dH min empfohlen
+  waterHardnessMaxDh Int? // °dH max empfohlen
+  waterHardnessNotes String? // z.B. "demineralisiertes Wasser ungeeignet"
 
   // Lebensmittel-/Norm-Freigaben
-  certifications  String[]  @default([])  // FDA H1, DIN 51385, TRGS 611, OEM-Freigaben
+  certifications String[] @default([]) // FDA H1, DIN 51385, TRGS 611, OEM-Freigaben
 
   // Markierungen
-  containsBor              Boolean?
+  containsBor               Boolean?
   containsFormaldehydeDepot Boolean?
-  containsMineralOil       Boolean?
-  containsChlorine         Boolean?
-  mineralOilContentPct     Float?       // 0-100 %
+  containsMineralOil        Boolean?
+  containsChlorine          Boolean?
+  mineralOilContentPct      Float? // 0-100 %
 
   // Quellen
-  sourceUrl       String?       // Produktseite Hersteller
-  dataSheetUrl    String?       // technisches Datenblatt (PDS)
-  sdsUrl          String?       // Sicherheitsdatenblatt
-  sourceConfidence String?      // "verifiziert", "modelliert", "geschätzt"
+  sourceUrl        String? // Produktseite Hersteller
+  dataSheetUrl     String? // technisches Datenblatt (PDS)
+  sdsUrl           String? // Sicherheitsdatenblatt
+  sourceConfidence String? // "verifiziert", "modelliert", "geschätzt"
 
-  notes           String?
+  notes String?
 
   // Verlinktes SDS aus der eigenen SDS-Bibliothek (sofern Match per Hersteller+Name möglich war)
   safetyDataSheetId String?
@@ -316,14 +316,15 @@ model Product {
 
   // Normalisierter Suchindex: name + manufacturer + productFamily, lowercase,
   // ohne Trennzeichen — erlaubt "bcool755" → "B-Cool 755", "hocut795mp" → "Hocut 795 MP".
-  searchTokens     String?
+  searchTokens String?
 
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   compatibilityNotes MaterialCompatibilityNote[]
   priceObservations  PriceObservation[]
   issues             ProductIssue[]
+  experienceReports  ExperienceReport[]
 
   @@unique([manufacturerId, slug])
   @@index([manufacturerId])
@@ -334,39 +335,39 @@ model Product {
 }
 
 model ComparisonAnalysis {
-  id           String   @id @default(cuid())
+  id        String   @id @default(cuid())
   // sha256 über die sortierte Liste der verglichenen IDs (Listings oder Products)
-  cacheKey     String   @unique
-  scope        String   // "listings" oder "products"
-  ids          String[] // die verglichenen IDs (sortiert wie cacheKey berechnet)
+  cacheKey  String   @unique
+  scope     String // "listings" oder "products"
+  ids       String[] // die verglichenen IDs (sortiert wie cacheKey berechnet)
   // Strukturiertes Ergebnis als JSON: { perItem: [...], recommendation: "...", model: "..." }
-  result       Json
-  source       String   // "anthropic-claude" | "heuristic-fallback"
-  createdAt    DateTime @default(now())
+  result    Json
+  source    String // "anthropic-claude" | "heuristic-fallback"
+  createdAt DateTime @default(now())
 
   @@index([scope, createdAt])
 }
 
 model MaterialCompatibilityNote {
-  id          String                @id @default(cuid())
-  productId   String?
-  product     Product?              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id        String   @id @default(cuid())
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   // Bei productId = null: allgemeine Regel (z.B. "Buntmetall + pH > 9.5 → Verfärbung")
   // Bei productId gesetzt: produkt-spezifischer Hinweis
-  scope       String                // "product" oder "general"
+  scope String // "product" oder "general"
 
-  material    String                // "Aluminium", "Buntmetall", "Magnesium", "Grauguss", "Titan", "Stahl", "Edelstahl"
+  material      String // "Aluminium", "Buntmetall", "Magnesium", "Grauguss", "Titan", "Stahl", "Edelstahl"
   compatibility MaterialCompatibility
 
-  condition   String?               // z.B. "pH > 9.5", "Konzentration > 8%", "demineralisiertes Wasser"
-  note        String                // Erklärung was passiert / worauf zu achten
+  condition String? // z.B. "pH > 9.5", "Konzentration > 8%", "demineralisiertes Wasser"
+  note      String // Erklärung was passiert / worauf zu achten
 
-  sourceUrl   String?               // Hersteller-Doku, Fachartikel, FAQ
-  sourceLabel String?               // z.B. "Blaser FAQ", "VSI-Merkblatt"
+  sourceUrl   String? // Hersteller-Doku, Fachartikel, FAQ
+  sourceLabel String? // z.B. "Blaser FAQ", "VSI-Merkblatt"
 
-  createdAt   DateTime              @default(now())
-  updatedAt   DateTime              @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([productId])
   @@index([material])
@@ -377,71 +378,71 @@ model MaterialCompatibilityNote {
 // ============================================================
 
 enum MaterialCategory {
-  ELASTOMER      // NBR, EPDM, FKM, Silikon, HNBR, FFKM, PUR, ...
-  THERMOPLASTIC  // PA, POM, PP, PE, PVC, PTFE, PEEK
-  THERMOSET      // Epoxidharz, Phenolharz
-  METAL          // Stahl, Alu, Cu, Mg, ...
-  COATING        // Lacke, Beschichtungen
+  ELASTOMER // NBR, EPDM, FKM, Silikon, HNBR, FFKM, PUR, ...
+  THERMOPLASTIC // PA, POM, PP, PE, PVC, PTFE, PEEK
+  THERMOSET // Epoxidharz, Phenolharz
+  METAL // Stahl, Alu, Cu, Mg, ...
+  COATING // Lacke, Beschichtungen
 }
 
 enum IngredientCategory {
-  AMINE                 // Mono/Di/Triethanolamin, Morpholin, DEA
-  BIOCIDE               // Isothiazolinone, Bronopol, Triazin, Pyrithion, OIT
+  AMINE // Mono/Di/Triethanolamin, Morpholin, DEA
+  BIOCIDE // Isothiazolinone, Bronopol, Triazin, Pyrithion, OIT
   FORMALDEHYDE_RELEASER // Bronopol, DMDM-Hydantoin, Triazin (Untergruppe Biozide)
-  BASE_OIL_MINERAL      // Mineralöl (Naphthenisch, Paraffinisch)
-  BASE_OIL_ESTER        // Ester-Basisöl
-  BASE_OIL_PAO          // Polyalphaolefin
-  BASE_OIL_PAG          // Polyalkylenglykol
-  EMULSIFIER            // Tenside (anionisch, nichtionisch)
-  EP_ADDITIVE_S         // Schwefel-EP
-  EP_ADDITIVE_P         // Phosphor-EP (ZDDP, ZnDTP)
-  EP_ADDITIVE_CL        // Chlorparaffine (SCCP, MCCP)
-  CORROSION_INHIBITOR   // Carboxylate, MBT, BTA, Aminborate
-  BORATE                // Borsäure, Borax, Perborate
-  CHELATE               // EDTA, NTA
-  GLYCOL_ETHER          // Butylglykol, Methoxypropanol
-  SOLVENT_AROMATIC      // Toluol, Xylol, Naphtha
-  SOLVENT_POLAR         // Ketone, Aceton, Alkohole
-  WATER                 // Träger / Hauptphase wassermischbarer KSS
-  ACID                  // Carbonsäuren, Borsäure, Phosphorsäure
-  ALKALI                // KOH, NaOH, Carbonate
+  BASE_OIL_MINERAL // Mineralöl (Naphthenisch, Paraffinisch)
+  BASE_OIL_ESTER // Ester-Basisöl
+  BASE_OIL_PAO // Polyalphaolefin
+  BASE_OIL_PAG // Polyalkylenglykol
+  EMULSIFIER // Tenside (anionisch, nichtionisch)
+  EP_ADDITIVE_S // Schwefel-EP
+  EP_ADDITIVE_P // Phosphor-EP (ZDDP, ZnDTP)
+  EP_ADDITIVE_CL // Chlorparaffine (SCCP, MCCP)
+  CORROSION_INHIBITOR // Carboxylate, MBT, BTA, Aminborate
+  BORATE // Borsäure, Borax, Perborate
+  CHELATE // EDTA, NTA
+  GLYCOL_ETHER // Butylglykol, Methoxypropanol
+  SOLVENT_AROMATIC // Toluol, Xylol, Naphtha
+  SOLVENT_POLAR // Ketone, Aceton, Alkohole
+  WATER // Träger / Hauptphase wassermischbarer KSS
+  ACID // Carbonsäuren, Borsäure, Phosphorsäure
+  ALKALI // KOH, NaOH, Carbonate
   OTHER
 }
 
 enum EffectType {
-  SWELLING       // Volumen-/Längenzunahme
-  SHRINKAGE      // Schwund (Weichmacher-/Additiv-Extraktion)
-  HARDENING      // Verhärtung
-  EMBRITTLEMENT  // Versprödung, Rissbildung
-  EXTRACTION     // Auswaschen von Mischungsbestandteilen
+  SWELLING // Volumen-/Längenzunahme
+  SHRINKAGE // Schwund (Weichmacher-/Additiv-Extraktion)
+  HARDENING // Verhärtung
+  EMBRITTLEMENT // Versprödung, Rissbildung
+  EXTRACTION // Auswaschen von Mischungsbestandteilen
   ATTACK_NETWORK // Angriff der Vernetzungsbrücken (irreversibel)
   NONE
 }
 
 model Material {
-  id              String           @id @default(cuid())
-  slug            String           @unique     // "nbr", "epdm", "fkm-bisphenol"
-  name            String                       // "NBR (Nitril-Butadien-Kautschuk)"
-  shortName       String                       // "NBR"
-  category        MaterialCategory
+  id        String           @id @default(cuid())
+  slug      String           @unique // "nbr", "epdm", "fkm-bisphenol"
+  name      String // "NBR (Nitril-Butadien-Kautschuk)"
+  shortName String // "NBR"
+  category  MaterialCategory
 
   description     String?
-  typicalUseCases String[]         @default([])  // ["Hydraulik-O-Ringe", "Wellendichtringe"]
+  typicalUseCases String[] @default([]) // ["Hydraulik-O-Ringe", "Wellendichtringe"]
   temperatureMinC Int?
   temperatureMaxC Int?
 
   // Charakteristik nach Polarität (similia similibus solvuntur)
-  isPolar         Boolean?
+  isPolar Boolean?
 
   // Wenn Untertyp: Verweis auf "Eltern"-Familie (FKM-Bisphenol → FKM)
-  parentSlug      String?
+  parentSlug String?
 
-  sourceUrl       String?
-  sourceLabel     String?
-  notes           String?
+  sourceUrl   String?
+  sourceLabel String?
+  notes       String?
 
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   compatibilities IngredientMaterialCompatibility[]
 
@@ -450,17 +451,17 @@ model Material {
 }
 
 model Ingredient {
-  id           String              @id @default(cuid())
-  slug         String              @unique    // "monoethanolamine", "boric-acid"
-  name         String                          // "Monoethanolamin (MEA)"
-  shortName    String?                         // "MEA"
-  category     IngredientCategory
-  casNumbers   String[]            @default([])
+  id         String             @id @default(cuid())
+  slug       String             @unique // "monoethanolamine", "boric-acid"
+  name       String // "Monoethanolamin (MEA)"
+  shortName  String? // "MEA"
+  category   IngredientCategory
+  casNumbers String[]           @default([])
 
-  functionInFluid          String? // "pH-Stabilisierung & Korrosionsschutz für Eisen"
-  typicalConcentrationPct  Float?  // typischer Anteil in KSS-Konzentrat in %
-  isSvhc                   Boolean @default(false)
-  description              String?
+  functionInFluid         String? // "pH-Stabilisierung & Korrosionsschutz für Eisen"
+  typicalConcentrationPct Float? // typischer Anteil in KSS-Konzentrat in %
+  isSvhc                  Boolean @default(false)
+  description             String?
 
   sourceUrl   String?
   sourceLabel String?
@@ -474,23 +475,23 @@ model Ingredient {
 }
 
 model IngredientMaterialCompatibility {
-  id           String   @id @default(cuid())
+  id           String     @id @default(cuid())
   ingredientId String
   ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
   materialId   String
   material     Material   @relation(fields: [materialId], references: [id], onDelete: Cascade)
 
-  rating       MaterialCompatibility   // RECOMMENDED, COMPATIBLE, CAUTION, UNSUITABLE
-  effectType   EffectType?
-  swellPctMin  Float?                   // erwartete Volumenquellung in %
-  swellPctMax  Float?
+  rating      MaterialCompatibility // RECOMMENDED, COMPATIBLE, CAUTION, UNSUITABLE
+  effectType  EffectType?
+  swellPctMin Float? // erwartete Volumenquellung in %
+  swellPctMax Float?
 
-  conditionNote String?                 // "bei T > 60°C", "Langzeit > 1000h", "dynamisch"
-  note          String                  // Erklärung des Mechanismus / praktische Wirkung
+  conditionNote String? // "bei T > 60°C", "Langzeit > 1000h", "dynamisch"
+  note          String // Erklärung des Mechanismus / praktische Wirkung
 
-  sourceUrl    String?
-  sourceLabel  String?                  // "ISM Compatibility Chart", "Trelleborg DB"
-  confidence   String?                  // "verifiziert", "indikativ", "geschätzt"
+  sourceUrl   String?
+  sourceLabel String? // "ISM Compatibility Chart", "Trelleborg DB"
+  confidence  String? // "verifiziert", "indikativ", "geschätzt"
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -502,22 +503,22 @@ model IngredientMaterialCompatibility {
 }
 
 model User {
-  id           String        @id @default(cuid())
-  email        String        @unique
-  passwordHash String
-  pseudonym    String        @unique
-  role         UserRole      @default(RESELLER)
-  trustTier    UserTrustTier @default(UNVERIFIED)
+  id                   String          @id @default(cuid())
+  email                String          @unique
+  passwordHash         String
+  pseudonym            String          @unique
+  role                 UserRole        @default(RESELLER)
+  trustTier            UserTrustTier   @default(UNVERIFIED)
   // INTERN / NUR SUPERADMIN — bezahlter Sichtbarkeits-Boost.
   // Höherer Wert ⇒ Angebote dieses Resellers erscheinen weiter oben in
   // Suchergebnissen und Vorschlägen. Wird NIE an die normale UI/API
   // ausgegeben und ist nur über /admin durch den Eigentümer steuerbar.
-  searchBoost  Int           @default(0)
+  searchBoost          Int             @default(0)
   // Bezahlte Jahres-/Zugangsmitgliedschaft (Stripe, echtes Abo mit
   // automatischer Verlängerung). Aktiv, solange membershipValidUntil in
   // der Zukunft liegt — dieses Feld wird bei jeder erfolgreichen
   // Verlängerungszahlung (Webhook invoice.payment_succeeded) fortgeschrieben.
-  stripeCustomerId    String?
+  stripeCustomerId     String?
   // Stripe-Subscription-ID des aktiven Abos (null = kein/kein aktives Abo).
   stripeSubscriptionId String?
   membershipValidUntil DateTime?
@@ -525,40 +526,40 @@ model User {
   // Steuert Funktions-Freischaltung (Angebots-Limit, Sichtbarkeit, Analysen,
   // Marken-Schaufenster). Wird beim Checkout gesetzt, bei Ablauf/Kündigung
   // bleibt der letzte Wert, ist aber ohne membershipValidUntil wirkungslos.
-  membershipTier MembershipTier?
+  membershipTier       MembershipTier?
 
   // Manuelle Sperre durch den Betreiber: gesperrte Konten können sich nicht
   // anmelden, laufende Sitzungen verlieren beim nächsten Aufruf den Zugriff,
   // API-Schlüssel werden abgewiesen. Der Grund ist nur im Admin sichtbar.
-  blockedAt     DateTime?
-  blockedReason String?
+  blockedAt                   DateTime?
+  blockedReason               String?
   // true = Nutzer hat gekündigt; Abo läuft zum Ende der bezahlten Periode
   // aus (membershipValidUntil) und verlängert sich NICHT automatisch weiter.
-  membershipCancelAtPeriodEnd Boolean @default(false)
-  payments            Payment[]
-  emailLogs            EmailLog[]
-  referralCodesCreated ReferralCode[]           @relation("ReferralCodesCreatedBy")
-  referralRedemptions  ReferralCodeRedemption[]
+  membershipCancelAtPeriodEnd Boolean                  @default(false)
+  payments                    Payment[]
+  emailLogs                   EmailLog[]
+  referralCodesCreated        ReferralCode[]           @relation("ReferralCodesCreatedBy")
+  referralRedemptions         ReferralCodeRedemption[]
   // KYC light — internal only
-  companyName  String?
-  vatId        String?
+  companyName                 String?
+  vatId                       String?
   // USt-ID-Prüfung gegen VIES (offizielle EU-Datenbank, lib/vat-validation.ts):
   // Zeitpunkt der letzten ERFOLGREICHEN Prüfung + der von VIES gemeldete
   // Firmenname. null = nie erfolgreich geprüft.
-  vatValidatedAt DateTime?
-  vatValidatedName String?
-  country      String?
+  vatValidatedAt              DateTime?
+  vatValidatedName            String?
+  country                     String?
   // Gewünschte Anzeige-/Abrechnungswährung, vom Nutzer im Profil wählbar.
   // Nicht gesetzt (null) → wird aus `country` abgeleitet (lib/currency.ts).
-  preferredCurrency String?
+  preferredCurrency           String?
   // Käuferschutz als Verkäufer anbieten: Stripe-Connect-Konto (Express).
   // onboarded = Stripe-Prüfung abgeschlossen (charges+payouts aktiv) →
   // Abzeichen "Käuferschutz verfügbar" auf Profil und Angeboten.
-  stripeConnectAccountId String?
-  stripeConnectOnboarded Boolean @default(false)
+  stripeConnectAccountId      String?
+  stripeConnectOnboarded      Boolean                  @default(false)
   // Öffentlicher Schaufenster-Text ("Über uns") auf der Profilseite —
   // pseudonym bleibt, aber der Anbieter kann sich fachlich vorstellen.
-  about        String?
+  about                       String?
 
   // ---- Marke-Stufe: Hersteller-Schaufenster ----
   // Welchen Hersteller/Marke dieses Konto offiziell vertritt. Nur mit aktiver
@@ -573,40 +574,41 @@ model User {
   // ---- Monetarisierung: KI-Credits, Trial, Referral ----
   // KI-Funktionen (Alternativsuche, KSS-Wizard, Concierge) kosten Credits.
   // Guthaben wird zusätzlich als CreditTransaction-Historie geführt.
-  creditBalance Int       @default(0)
+  creditBalance    Int       @default(0)
   // Kennenlernphase: bis zu diesem Datum ist die Plattform ohne Abo nutzbar.
   // Dauer stellt der Superadmin in /admin ein (AppSetting trialDays).
-  trialEndsAt   DateTime?
+  trialEndsAt      DateTime?
   // Kontaktdaten-Filter: Zeitpunkt der einmaligen KI-Prüfung der ersten
   // Nachricht dieses Accounts (Kosten trägt Brisco, max 1× pro Account —
   // siehe lib/contact-filter.ts). null = noch nicht geprüft.
   aiContactCheckAt DateTime?
   // Referral: Wer hat diesen Nutzer geworben? (Empfehlungs-Code = Pseudonym)
-  referredById  String?
-  referredBy    User?     @relation("Referrals", fields: [referredById], references: [id], onDelete: SetNull)
-  referrals     User[]    @relation("Referrals")
+  referredById     String?
+  referredBy       User?     @relation("Referrals", fields: [referredById], references: [id], onDelete: SetNull)
+  referrals        User[]    @relation("Referrals")
 
   creditTransactions CreditTransaction[]
   apiKeys            ApiKey[]
-  adBanners          AdBanner[]    @relation("AdOwner")
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  experienceReports  ExperienceReport[]
+  adBanners          AdBanner[]          @relation("AdOwner")
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
 
   listings        Listing[]
-  buyerThreads    Conversation[] @relation("BuyerThreads")
-  sellerThreads   Conversation[] @relation("SellerThreads")
+  buyerThreads    Conversation[]     @relation("BuyerThreads")
+  sellerThreads   Conversation[]     @relation("SellerThreads")
   messages        Message[]
   rfqs            Rfq[]
   offers          RfqOffer[]
-  buyerTxns       Transaction[] @relation("BuyerTx")
-  sellerTxns      Transaction[] @relation("SellerTx")
-  reviewsGiven    Review[]      @relation("ReviewsGiven")
-  reviewsReceived Review[]      @relation("ReviewsReceived")
+  buyerTxns       Transaction[]      @relation("BuyerTx")
+  sellerTxns      Transaction[]      @relation("SellerTx")
+  reviewsGiven    Review[]           @relation("ReviewsGiven")
+  reviewsReceived Review[]           @relation("ReviewsReceived")
   submittedPrices PriceObservation[] @relation("SubmittedPrices")
   verifiedPrices  PriceObservation[] @relation("VerifiedPrices")
 
-  submittedIssues ProductIssue[]     @relation("ProductIssueSubmitted")
-  verifiedIssues  ProductIssue[]     @relation("ProductIssueVerified")
+  submittedIssues ProductIssue[] @relation("ProductIssueSubmitted")
+  verifiedIssues  ProductIssue[] @relation("ProductIssueVerified")
 
   passwordResetTokens PasswordResetToken[]
 }
@@ -616,7 +618,7 @@ model User {
 // ============================================================
 enum PaymentKind {
   MEMBERSHIP // Jahres-/Zugangsgebühr
-  CREDITS    // KI-Credits-Paket
+  CREDITS // KI-Credits-Paket
 }
 
 enum PaymentStatus {
@@ -626,9 +628,9 @@ enum PaymentStatus {
 }
 
 model Payment {
-  id        String        @id @default(cuid())
-  userId    String
-  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   kind      PaymentKind   @default(MEMBERSHIP)
   status    PaymentStatus @default(PENDING)
@@ -665,9 +667,9 @@ model Payment {
 // ============================================================
 enum EmailKind {
   MEMBERSHIP_RENEWAL_REMINDER // ~30 Tage vor automatischer Verlängerung
-  MEMBERSHIP_RENEWED          // Bestätigung nach erfolgter Verlängerung
-  PASSWORD_RESET              // Link zum Zurücksetzen des Passworts
-  ADMIN_NEW_USER              // Benachrichtigung an den Betreiber bei jeder Registrierung
+  MEMBERSHIP_RENEWED // Bestätigung nach erfolgter Verlängerung
+  PASSWORD_RESET // Link zum Zurücksetzen des Passworts
+  ADMIN_NEW_USER // Benachrichtigung an den Betreiber bei jeder Registrierung
 }
 
 model EmailLog {
@@ -755,17 +757,17 @@ model AiTokenUsage {
 // KI-Credits — Guthaben-Historie (Gutschriften + Verbrauch)
 // ============================================================
 enum CreditTxKind {
-  WELCOME      // Startguthaben bei Registrierung (Kennenlernphase)
-  PURCHASE     // Gekauftes Paket (Stripe)
-  REFERRAL     // Prämie fürs Werben eines Neukunden (Pseudonym-Link)
-  CODE         // Eingelöster Referral-/Gutschein-Code (Admin-generiert)
-  USAGE        // Verbrauch durch eine KI-Funktion (negativ)
+  WELCOME // Startguthaben bei Registrierung (Kennenlernphase)
+  PURCHASE // Gekauftes Paket (Stripe)
+  REFERRAL // Prämie fürs Werben eines Neukunden (Pseudonym-Link)
+  CODE // Eingelöster Referral-/Gutschein-Code (Admin-generiert)
+  USAGE // Verbrauch durch eine KI-Funktion (negativ)
   ADMIN_ADJUST // Manuelle Korrektur durch den Superadmin
+  EXPERIENCE // Prämie für einen freigegebenen Praxis-Erfahrungsbericht
 }
 
 /**
  * API-Schlüssel für die REST-Schnittstelle (/api/v1/*).
- *
  * Nur Konten mit aktiver MARKE-Stufe dürfen Schlüssel anlegen und nutzen —
  * die Stufe wird bei JEDEM Aufruf geprüft, nicht nur beim Anlegen. Gespeichert
  * wird nur der sha256-Hash; der Klartext wird genau einmal angezeigt.
@@ -774,9 +776,9 @@ model ApiKey {
   id         String    @id @default(cuid())
   userId     String
   user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name       String                      // vom Nutzer vergebener Zweck, z.B. "ERP-Anbindung"
-  keyHash    String    @unique           // sha256 des Klartext-Schlüssels
-  prefix     String                      // erste 12 Zeichen zur Wiedererkennung in der Liste
+  name       String // vom Nutzer vergebener Zweck, z.B. "ERP-Anbindung"
+  keyHash    String    @unique // sha256 des Klartext-Schlüssels
+  prefix     String // erste 12 Zeichen zur Wiedererkennung in der Liste
   createdAt  DateTime  @default(now())
   lastUsedAt DateTime?
   revokedAt  DateTime?
@@ -784,13 +786,51 @@ model ApiKey {
   @@index([userId])
 }
 
+/**
+ * Praxis-Erfahrung eines Nutzers zu einem Produkt — per Text oder Diktat vom
+ * Smartphone eingereicht. Belohnung: Credits nach Freigabe durch den Betreiber
+ * (JEDE geprüfte Erfahrung wird gleich belohnt, positiv wie negativ — sonst
+ * wäre die Belohnung unlauteres „Review-Gating").
+ */
+model ExperienceReport {
+  id              String           @id @default(cuid())
+  userId          String
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId       String?
+  product         Product?         @relation(fields: [productId], references: [id], onDelete: SetNull)
+  // Freitext-Produktangabe, wenn das Produkt (noch) nicht im Katalog steht
+  productFreetext String?
+  text            String
+  source          ExperienceSource @default(TEXT)
+  status          ExperienceStatus @default(PENDING)
+  creditsAwarded  Int              @default(0)
+  adminNote       String?
+  createdAt       DateTime         @default(now())
+  reviewedAt      DateTime?
+
+  @@index([status, createdAt])
+  @@index([productId, status])
+  @@index([userId])
+}
+
+enum ExperienceSource {
+  TEXT
+  VOICE
+}
+
+enum ExperienceStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model CreditTransaction {
   id        String       @id @default(cuid())
   userId    String
   user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  amount    Int          // positiv = Gutschrift, negativ = Verbrauch
+  amount    Int // positiv = Gutschrift, negativ = Verbrauch
   kind      CreditTxKind
-  note      String?      // z.B. "KI-Alternativsuche" oder "Paket M (200 Credits)"
+  note      String? // z.B. "KI-Alternativsuche" oder "Paket M (200 Credits)"
   createdAt DateTime     @default(now())
 
   @@index([userId, createdAt])
@@ -802,23 +842,23 @@ model CreditTransaction {
 // Konsole /admin), vom Nutzer im Konto eingelöst für Credits.
 // ============================================================
 model ReferralCode {
-  id          String   @id @default(cuid())
-  code        String   @unique // z.B. "WILLKOMMEN2026" — vom Admin frei wählbar
-  credits     Int
+  id        String    @id @default(cuid())
+  code      String    @unique // z.B. "WILLKOMMEN2026" — vom Admin frei wählbar
+  credits   Int
   // Verlängert beim Einlösen zusätzlich die Kennenlernphase um N Tage
   // (z.B. GRUENDER30 = 90 Tage + 50 Credits). 0 = nur Credits.
-  trialDays   Int      @default(0)
-  maxUses     Int      @default(1)
-  usedCount   Int      @default(0)
-  active      Boolean  @default(true)
-  expiresAt   DateTime?
-  note        String?  // interner Vermerk, z.B. "Messe Hannover 2026"
+  trialDays Int       @default(0)
+  maxUses   Int       @default(1)
+  usedCount Int       @default(0)
+  active    Boolean   @default(true)
+  expiresAt DateTime?
+  note      String? // interner Vermerk, z.B. "Messe Hannover 2026"
 
   createdById String
-  createdBy   User     @relation("ReferralCodesCreatedBy", fields: [createdById], references: [id], onDelete: Cascade)
+  createdBy   User   @relation("ReferralCodesCreatedBy", fields: [createdById], references: [id], onDelete: Cascade)
 
   redemptions ReferralCodeRedemption[]
-  createdAt   DateTime @default(now())
+  createdAt   DateTime                 @default(now())
 
   @@index([active])
 }
@@ -904,44 +944,44 @@ enum PriceUnit {
 }
 
 model PriceObservation {
-  id            String      @id @default(cuid())
-  productId     String
-  product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  observedAt    DateTime    // Datum des Preises (kann historisch sein)
-  pricePerUnit  Float
-  unit          PriceUnit   @default(EUR_PER_L)
+  observedAt   DateTime // Datum des Preises (kann historisch sein)
+  pricePerUnit Float
+  unit         PriceUnit @default(EUR_PER_L)
 
   // Mengenstaffel
-  quantityMin   Float?      // ab welcher Menge gilt der Preis
+  quantityMin   Float? // ab welcher Menge gilt der Preis
   quantityMax   Float?
-  packagingForm PackagingForm?  // DRUM, IBC, CANISTER ...
+  packagingForm PackagingForm? // DRUM, IBC, CANISTER ...
 
-  regionCode    String?     // ISO-2 Country: DE, CH, AT, ...
+  regionCode String? // ISO-2 Country: DE, CH, AT, ...
 
-  source        PriceSource
-  status        PriceStatus @default(PENDING)
+  source PriceSource
+  status PriceStatus @default(PENDING)
 
   // Submission
   submittedByUserId String?
-  submittedByUser   User?     @relation("SubmittedPrices", fields: [submittedByUserId], references: [id], onDelete: SetNull)
-  submittedAt       DateTime  @default(now())
+  submittedByUser   User?    @relation("SubmittedPrices", fields: [submittedByUserId], references: [id], onDelete: SetNull)
+  submittedAt       DateTime @default(now())
 
   // Verifizierung
-  verifiedByUserId  String?
-  verifiedByUser    User?     @relation("VerifiedPrices", fields: [verifiedByUserId], references: [id], onDelete: SetNull)
-  verifiedAt        DateTime?
-  rejectionReason   String?
+  verifiedByUserId String?
+  verifiedByUser   User?     @relation("VerifiedPrices", fields: [verifiedByUserId], references: [id], onDelete: SetNull)
+  verifiedAt       DateTime?
+  rejectionReason  String?
 
   // Provenance
-  sourceUrl     String?
-  sourceLabel   String?
-  notes         String?
+  sourceUrl   String?
+  sourceLabel String?
+  notes       String?
 
   // Wenn aus Transaction abgeleitet
-  transactionId String?     @unique
+  transactionId String? @unique
 
-  createdAt     DateTime    @default(now())
+  createdAt DateTime @default(now())
 
   @@index([productId])
   @@index([observedAt])
@@ -951,11 +991,11 @@ model PriceObservation {
 }
 
 model Rfq {
-  id              String         @id @default(cuid())
-  buyerId         String
-  buyer           User           @relation(fields: [buyerId], references: [id], onDelete: Cascade)
-  status          RfqStatus      @default(OPEN)
-  visibility      RfqVisibility  @default(PUBLIC)
+  id         String        @id @default(cuid())
+  buyerId    String
+  buyer      User          @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+  status     RfqStatus     @default(OPEN)
+  visibility RfqVisibility @default(PUBLIC)
 
   productType     String
   manufacturer    String?
@@ -963,27 +1003,27 @@ model Rfq {
   chemistry       ChemistryBase?
   applicationArea String?
 
-  quantity        Float
-  quantityUnit    String         @default("L")
-  locationRegion  String
+  quantity       Float
+  quantityUnit   String @default("L")
+  locationRegion String
 
-  deadline        DateTime
-  budgetMinEur    Float?
-  budgetMaxEur    Float?
-  notes           String?
+  deadline     DateTime
+  budgetMinEur Float?
+  budgetMaxEur Float?
+  notes        String?
 
   // Anforderungen / Pain Points
-  requiredCertifications String[]  @default([])
-  avoidIssues            String[]  @default([])
+  requiredCertifications String[] @default([])
+  avoidIssues            String[] @default([])
   workpieceMaterial      String?
 
-  acceptedOfferId String?        @unique
+  acceptedOfferId String? @unique
 
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  offers          RfqOffer[]
-  transaction     Transaction?
+  offers      RfqOffer[]
+  transaction Transaction?
 
   @@index([status])
   @@index([productType])
@@ -991,23 +1031,23 @@ model Rfq {
 }
 
 model RfqOffer {
-  id                  String          @id @default(cuid())
-  rfqId               String
-  rfq                 Rfq             @relation(fields: [rfqId], references: [id], onDelete: Cascade)
-  sellerId            String
-  seller              User            @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  id       String @id @default(cuid())
+  rfqId    String
+  rfq      Rfq    @relation(fields: [rfqId], references: [id], onDelete: Cascade)
+  sellerId String
+  seller   User   @relation(fields: [sellerId], references: [id], onDelete: Cascade)
 
-  priceEur            Float
-  quantity            Float
-  quantityUnit        String          @default("L")
-  deliveryDays        Int
-  notes               String?
-  alternativeProduct  String?
-  alternativeReason   String?
+  priceEur           Float
+  quantity           Float
+  quantityUnit       String  @default("L")
+  deliveryDays       Int
+  notes              String?
+  alternativeProduct String?
+  alternativeReason  String?
 
-  status              RfqOfferStatus  @default(PENDING)
-  createdAt           DateTime        @default(now())
-  updatedAt           DateTime        @updatedAt
+  status    RfqOfferStatus @default(PENDING)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 
   @@unique([rfqId, sellerId])
   @@index([rfqId])
@@ -1033,11 +1073,11 @@ model Conversation {
 }
 
 model Message {
-  id             String       @id @default(cuid())
+  id             String   @id @default(cuid())
   conversationId String
   senderId       String
   body           String
-  createdAt      DateTime     @default(now())
+  createdAt      DateTime @default(now())
 
   conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   sender       User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
@@ -1046,57 +1086,57 @@ model Message {
 }
 
 model Listing {
-  id              String         @id @default(cuid())
-  sellerId        String
-  seller          User           @relation(fields: [sellerId], references: [id], onDelete: Cascade)
-  status          ListingStatus  @default(ACTIVE)
+  id       String        @id @default(cuid())
+  sellerId String
+  seller   User          @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  status   ListingStatus @default(ACTIVE)
 
   // FDS 4.2 Datenmodell
-  productType     String         // Hydrauliköl, KSS-Emulsion, etc.
-  manufacturer    String         // Shell, Fuchs, Mobil, OEM-Eigenmarke — Freitext, deprecated zugunsten manufacturerId
+  productType     String // Hydrauliköl, KSS-Emulsion, etc.
+  manufacturer    String // Shell, Fuchs, Mobil, OEM-Eigenmarke — Freitext, deprecated zugunsten manufacturerId
   manufacturerId  String?
-  manufacturerRef Manufacturer?  @relation(fields: [manufacturerId], references: [id], onDelete: SetNull)
-  productName     String         // z.B. Tellus S2 M 46
-  isoViscosity    String?        // ISO VG 32, 46, 68, ...
-  chemistry       ChemistryBase  @default(MINERAL)
-  applicationArea String         // CNC, Schleifen, Hydraulik, ...
+  manufacturerRef Manufacturer? @relation(fields: [manufacturerId], references: [id], onDelete: SetNull)
+  productName     String // z.B. Tellus S2 M 46
+  isoViscosity    String? // ISO VG 32, 46, 68, ...
+  chemistry       ChemistryBase @default(MINERAL)
+  applicationArea String // CNC, Schleifen, Hydraulik, ...
 
-  quantity        Float          // Verfügbare Menge
-  quantityUnit    String         @default("L") // L, kg, drums, IBCs
-  minOrderQty     Float?
+  quantity     Float // Verfügbare Menge
+  quantityUnit String @default("L") // L, kg, drums, IBCs
+  minOrderQty  Float?
 
-  locationRegion  String         // Region/Land — keine Adresse
-  packaging       PackagingForm  @default(DRUM)
+  locationRegion String // Region/Land — keine Adresse
+  packaging      PackagingForm @default(DRUM)
 
-  productionDate  DateTime?
-  expiryDate      DateTime?
+  productionDate DateTime?
+  expiryDate     DateTime?
 
-  certificates    String[]       // OEM-Freigaben, ISO, DIN, TRGS 611
-  priceEur        Float?         // optional, "auf Anfrage" wenn null
-  shippingTerms   String?        // Selbstabholung / Lieferung / verhandelbar
+  certificates  String[] // OEM-Freigaben, ISO, DIN, TRGS 611
+  priceEur      Float? // optional, "auf Anfrage" wenn null
+  shippingTerms String? // Selbstabholung / Lieferung / verhandelbar
 
-  description     String?
+  description String?
 
   // Fertigungs-Eignung — Bearbeitungsverfahren
   machiningOperations String[] @default([])
 
   // Rezeptur-Info
-  mineralOilContent   Float?   // 0-100 %
-  containsGlycol      Boolean?
+  mineralOilContent Float? // 0-100 %
+  containsGlycol    Boolean?
 
   // Automatisierungs-Eignung (1-5) und vom Hersteller empfohlene Messverfahren
   automationSuitability Int?
   measurementMethods    String[] @default([])
 
-  sdsId           String?
-  sds             SafetyDataSheet? @relation(fields: [sdsId], references: [id], onDelete: SetNull)
+  sdsId String?
+  sds   SafetyDataSheet? @relation(fields: [sdsId], references: [id], onDelete: SetNull)
 
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  conversations   Conversation[]
-  transactions    Transaction[]
-  photos          ListingPhoto[]
+  conversations Conversation[]
+  transactions  Transaction[]
+  photos        ListingPhoto[]
 
   @@index([productType])
   @@index([manufacturer])
@@ -1108,7 +1148,6 @@ model Listing {
 
 /**
  * Foto zu einem Angebot — vom Anbieter selbst aufgenommen (Handy oder Kamera).
- *
  * Warum die Bytes in der Datenbank liegen und nicht als Datei: Der Server auf
  * Railway hat kein dauerhaftes Dateisystem, hochgeladene Dateien wären nach dem
  * nächsten Deploy weg. Die Bilder werden schon im Browser des Anbieters auf
@@ -1116,36 +1155,36 @@ model Listing {
  * Trefferlisten — damit bleibt der Platzbedarf überschaubar.
  */
 model ListingPhoto {
-  id          String   @id @default(cuid())
-  listingId   String
-  listing     Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  id        String  @id @default(cuid())
+  listingId String
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
 
-  position    Int      @default(0)   // 0 = Titelbild
-  mimeType    String   @default("image/jpeg")
-  width       Int?
-  height      Int?
+  position Int    @default(0) // 0 = Titelbild
+  mimeType String @default("image/jpeg")
+  width    Int?
+  height   Int?
 
-  data        Bytes                  // Anzeigegröße (max. 1600 px Kante)
-  thumb       Bytes?                 // Vorschau für Karten/Listen (max. 400 px)
-  bytesSize   Int      @default(0)
-  sha256      String?                // erkennt versehentliche Doppel-Uploads
+  data      Bytes // Anzeigegröße (max. 1600 px Kante)
+  thumb     Bytes? // Vorschau für Karten/Listen (max. 400 px)
+  bytesSize Int     @default(0)
+  sha256    String? // erkennt versehentliche Doppel-Uploads
 
   // Hinweis für Käufer: Wann wurde das Bild aufgenommen/hochgeladen?
-  createdAt   DateTime @default(now())
+  createdAt DateTime @default(now())
 
   @@index([listingId, position])
 }
 
 model Transaction {
-  id            String            @id @default(cuid())
-  buyerId       String
-  sellerId      String
-  rfqId         String?           @unique
-  listingId     String?
+  id        String  @id @default(cuid())
+  buyerId   String
+  sellerId  String
+  rfqId     String? @unique
+  listingId String?
 
-  totalEur      Float
-  quantity      Float
-  quantityUnit  String            @default("L")
+  totalEur     Float
+  quantity     Float
+  quantityUnit String @default("L")
 
   // Einsparung durch Produktwechsel: Der Käufer kann erfassen, welches
   // Produkt er vorher eingesetzt hat und was es pro Einheit gekostet hat
@@ -1162,19 +1201,19 @@ model Transaction {
   stripeProtectionPaymentIntentId String?
   stripeProtectionTransferId      String?
 
-  status        TransactionStatus @default(PENDING)
-  shippedAt     DateTime?
-  completedAt   DateTime?
-  canceledAt    DateTime?
+  status      TransactionStatus @default(PENDING)
+  shippedAt   DateTime?
+  completedAt DateTime?
+  canceledAt  DateTime?
 
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  buyer    User     @relation("BuyerTx", fields: [buyerId], references: [id], onDelete: Cascade)
-  seller   User     @relation("SellerTx", fields: [sellerId], references: [id], onDelete: Cascade)
-  rfq      Rfq?     @relation(fields: [rfqId], references: [id], onDelete: SetNull)
-  listing  Listing? @relation(fields: [listingId], references: [id], onDelete: SetNull)
-  reviews  Review[]
+  buyer   User     @relation("BuyerTx", fields: [buyerId], references: [id], onDelete: Cascade)
+  seller  User     @relation("SellerTx", fields: [sellerId], references: [id], onDelete: Cascade)
+  rfq     Rfq?     @relation(fields: [rfqId], references: [id], onDelete: SetNull)
+  listing Listing? @relation(fields: [listingId], references: [id], onDelete: SetNull)
+  reviews Review[]
 
   @@index([buyerId])
   @@index([sellerId])
@@ -1186,7 +1225,7 @@ model Review {
   transactionId String
   reviewerId    String
   revieweeId    String
-  rating        Int         // 1–5
+  rating        Int // 1–5
   comment       String?
   tags          ReviewTag[]
   createdAt     DateTime    @default(now())
@@ -1200,20 +1239,20 @@ model Review {
 }
 
 model SafetyDataSheet {
-  id            String       @id @default(cuid())
-  manufacturer  String       // Freitext, deprecated zugunsten manufacturerId
-  manufacturerId String?
+  id              String        @id @default(cuid())
+  manufacturer    String // Freitext, deprecated zugunsten manufacturerId
+  manufacturerId  String?
   manufacturerRef Manufacturer? @relation(fields: [manufacturerId], references: [id], onDelete: SetNull)
-  productName   String
-  category      SdsCategory
-  language      SdsLanguage  @default(DE)
-  version       String?
-  revisionDate  DateTime?
+  productName     String
+  category        SdsCategory
+  language        SdsLanguage   @default(DE)
+  version         String?
+  revisionDate    DateTime?
 
   sourceUrl     String
   filePath      String
   fileSizeBytes Int
-  sha256        String       @unique
+  sha256        String @unique
   pageCount     Int?
 
   extractedText String?
@@ -1221,76 +1260,76 @@ model SafetyDataSheet {
   // Normalisierter Suchindex: productName + manufacturer + version, lowercase,
   // ohne Bindestriche/Spaces/Punkte/Schrägstriche. Erlaubt "bcool755" → "B-Cool 755".
   // Wird beim Seed (lib/normalize-search.ts) und Backfill gesetzt.
-  searchTokens  String?
+  searchTokens String?
 
   // -------------------------------------------------------------------------
   // Aus extractedText geparste strukturierte Felder (siehe lib/sds-parser.ts)
   // -------------------------------------------------------------------------
   // GHS / CLP
-  hStatements      String[]  @default([])  // z.B. "H226", "H315", "H319"
-  pStatements      String[]  @default([])  // z.B. "P210", "P280", "P305+P351+P338"
-  ghsPictograms    String[]  @default([])  // z.B. "GHS02", "GHS07", "GHS09"
-  signalWord       String?                  // "Gefahr" / "Achtung" / "Danger" / "Warning"
+  hStatements   String[] @default([]) // z.B. "H226", "H315", "H319"
+  pStatements   String[] @default([]) // z.B. "P210", "P280", "P305+P351+P338"
+  ghsPictograms String[] @default([]) // z.B. "GHS02", "GHS07", "GHS09"
+  signalWord    String? // "Gefahr" / "Achtung" / "Danger" / "Warning"
 
   // Physikochemische Kennzahlen (Section 9)
-  physicalState    String?                  // "flüssig", "fest", "Aerosol"
-  appearanceColor  String?                  // "klar", "gelblich", "transparent"
-  odor             String?                  // "öltypisch", "schwach", "geruchlos"
-  phValue          Float?                   // pH (Konzentrat oder Emulsion)
-  phContext        String?                  // "Konzentrat", "5% Emulsion"
-  flashpointC      Float?                   // °C
-  densityGcm3      Float?                   // g/cm³ bei 20°C
-  viscosityKv40    Float?                   // mm²/s bei 40°C
-  pourpointC       Float?                   // Stockpunkt °C
-  boilingPointC    Float?                   // Siedepunkt °C
-  waterSolubility  String?                  // "löslich", "nicht löslich", "emulgierbar"
+  physicalState   String? // "flüssig", "fest", "Aerosol"
+  appearanceColor String? // "klar", "gelblich", "transparent"
+  odor            String? // "öltypisch", "schwach", "geruchlos"
+  phValue         Float? // pH (Konzentrat oder Emulsion)
+  phContext       String? // "Konzentrat", "5% Emulsion"
+  flashpointC     Float? // °C
+  densityGcm3     Float? // g/cm³ bei 20°C
+  viscosityKv40   Float? // mm²/s bei 40°C
+  pourpointC      Float? // Stockpunkt °C
+  boilingPointC   Float? // Siedepunkt °C
+  waterSolubility String? // "löslich", "nicht löslich", "emulgierbar"
 
   // Inhaltsstoffe (Section 3)
-  casNumbers       String[]  @default([])  // alle erkannten CAS-Nummern im Text
+  casNumbers String[] @default([]) // alle erkannten CAS-Nummern im Text
 
   // -------------------------------------------------------------------------
   // REACH + Inhaltsstoff-Flags (Parser-Heuristik, siehe lib/sds-ingredients.ts)
   // -------------------------------------------------------------------------
   // REACH-Konformität: null = unbekannt, true = registriert/konform, false = nicht
-  reachCompliant            Boolean?
-  reachNotes                String?         // Freitext, z.B. "Annex XVII", "SVHC: keine"
-  svhcSubstances            String[]  @default([])  // erkannte SVHC-Stoffe (Name+CAS)
+  reachCompliant Boolean?
+  reachNotes     String? // Freitext, z.B. "Annex XVII", "SVHC: keine"
+  svhcSubstances String[] @default([]) // erkannte SVHC-Stoffe (Name+CAS)
 
   // Inhaltsstoff-Klassen (true = enthalten laut SDS, false = ausdrücklich frei, null = unklar)
-  containsBoron             Boolean?    // Borsäure, Borate, Borax (CAS 10043-35-3 u.a.)
-  containsFormaldehydeReleaser Boolean? // Bronopol, DMDM-Hydantoin, Triazin etc.
-  containsSecondaryAmines   Boolean?    // DEA, Morpholin, Diethylamin (Nitrosamin-Risiko)
-  containsChlorinatedParaffins Boolean? // SCCP, MCCP — REACH Anhang XVII
-  containsMineralOil        Boolean?    // Mineralöl als Hauptkomponente
+  containsBoron                 Boolean? // Borsäure, Borate, Borax (CAS 10043-35-3 u.a.)
+  containsFormaldehydeReleaser  Boolean? // Bronopol, DMDM-Hydantoin, Triazin etc.
+  containsSecondaryAmines       Boolean? // DEA, Morpholin, Diethylamin (Nitrosamin-Risiko)
+  containsChlorinatedParaffins  Boolean? // SCCP, MCCP — REACH Anhang XVII
+  containsMineralOil            Boolean? // Mineralöl als Hauptkomponente
   containsPrimaryAromaticAmines Boolean? // PAA — REACH-relevant
 
   // Wirkstoffe / Biozide
-  hasBactericide            Boolean?    // MIT, BIT, CMIT, OIT, Formaldehyd-Donatoren
-  hasFungicide              Boolean?    // IPBC, Pyrithion-Natrium etc.
-  biocidalActives           String[]  @default([])  // konkrete Wirkstoffe als Strings
+  hasBactericide  Boolean? // MIT, BIT, CMIT, OIT, Formaldehyd-Donatoren
+  hasFungicide    Boolean? // IPBC, Pyrithion-Natrium etc.
+  biocidalActives String[] @default([]) // konkrete Wirkstoffe als Strings
 
   // Entsorgung / Gewässerschutz (Section 12/13/15) — Einkäufer-Compliance
-  wgkClass         String?                  // Wassergefährdungsklasse: "nwg", "1", "2", "3"
-  avvCode          String?                  // Abfallschlüssel nach AVV, z.B. "12 01 09*"
+  wgkClass String? // Wassergefährdungsklasse: "nwg", "1", "2", "3"
+  avvCode  String? // Abfallschlüssel nach AVV, z.B. "12 01 09*"
 
   // Transport (Section 14)
-  adrClass         String?                  // "9", "3", "kein Gefahrgut"
-  unNumber         String?                  // "UN 1993" etc.
-  transportClass   String?                  // verbatim Bezeichnung
+  adrClass       String? // "9", "3", "kein Gefahrgut"
+  unNumber       String? // "UN 1993" etc.
+  transportClass String? // verbatim Bezeichnung
 
   // Hersteller-/Lieferant-Info (Section 1)
-  supplierName     String?
-  supplierAddress  String?
-  emergencyPhone   String?
+  supplierName    String?
+  supplierAddress String?
+  emergencyPhone  String?
 
   // Parser-Metadaten
-  parsedAt         DateTime?
-  parsedVersion    String?                  // welche Parser-Version lief
+  parsedAt      DateTime?
+  parsedVersion String? // welche Parser-Version lief
 
-  fetchedAt     DateTime     @default(now())
+  fetchedAt DateTime @default(now())
 
-  listings      Listing[]
-  products      Product[]
+  listings Listing[]
+  products Product[]
 
   @@index([manufacturer])
   @@index([manufacturerId])
@@ -1301,94 +1340,94 @@ model SafetyDataSheet {
 
 // === Praxis-Probleme aus Foren, Hersteller-Hinweisen, Distributoren, Reviews ===
 enum IssueCategory {
-  BIOLOGY           // Bakterien, Pilze, Verkeimung, Geruch
-  FOAM              // Schaumbildung
-  CORROSION         // Korrosion an Werkstücken, Maschinen, Tank
-  TOOL_WEAR         // Werkzeugverschleiß, kürzere Standzeiten
-  OPERATOR_HEALTH   // Hautirritation, Atemwege, Allergien, MAK
-  SEAL_DAMAGE       // Dichtungen, Schläuche, Lackangriff
-  WORKPIECE_STAINS  // Fleckenbildung Buntmetall, Alu-Anlauffarben, Niro
-  RESIDUES          // Klebrige Rückstände, Harzbildung, Maschinenverschmutzung
-  FILTRATION        // Filtrierbarkeit, Tramp-Oil-Aufnahme
-  STABILITY         // Emulsionsstabilität, Frostempfindlichkeit, Lagerung
-  PERFORMANCE       // Kühlleistung, Schmierleistung, Spülwirkung unzureichend
-  COMPATIBILITY     // Mischbarkeit mit anderem Öl/MMS/HD-Konzentrat
-  REGULATORY        // REACH, TRGS 611, Biozid-VO, Borfrei-Konflikte
-  SHELF_LIFE        // Kurze Lager-/Standzeit im Tank
+  BIOLOGY // Bakterien, Pilze, Verkeimung, Geruch
+  FOAM // Schaumbildung
+  CORROSION // Korrosion an Werkstücken, Maschinen, Tank
+  TOOL_WEAR // Werkzeugverschleiß, kürzere Standzeiten
+  OPERATOR_HEALTH // Hautirritation, Atemwege, Allergien, MAK
+  SEAL_DAMAGE // Dichtungen, Schläuche, Lackangriff
+  WORKPIECE_STAINS // Fleckenbildung Buntmetall, Alu-Anlauffarben, Niro
+  RESIDUES // Klebrige Rückstände, Harzbildung, Maschinenverschmutzung
+  FILTRATION // Filtrierbarkeit, Tramp-Oil-Aufnahme
+  STABILITY // Emulsionsstabilität, Frostempfindlichkeit, Lagerung
+  PERFORMANCE // Kühlleistung, Schmierleistung, Spülwirkung unzureichend
+  COMPATIBILITY // Mischbarkeit mit anderem Öl/MMS/HD-Konzentrat
+  REGULATORY // REACH, TRGS 611, Biozid-VO, Borfrei-Konflikte
+  SHELF_LIFE // Kurze Lager-/Standzeit im Tank
   OTHER
 }
 
 enum IssueSeverity {
-  LOW      // Hinweis/kosmetisch
-  MEDIUM   // Beeinträchtigt Prozess, aber lösbar
-  HIGH     // Ausfall, Maschinenschaden, Gesundheitsrisiko
+  LOW // Hinweis/kosmetisch
+  MEDIUM // Beeinträchtigt Prozess, aber lösbar
+  HIGH // Ausfall, Maschinenschaden, Gesundheitsrisiko
 }
 
 enum IssueSourceType {
-  FORUM             // industryarena, praktiker.com, cnczone, reddit r/Machinists, fachforum
-  MANUFACTURER      // Hersteller-FAQ, Anwendungstipps, Servicedokument
-  DISTRIBUTOR       // Distributor-Warnung, Anwendungshinweis
-  CASE_STUDY        // dokumentierte Fallstudie (Verein, Hochschule)
-  REVIEW            // User-Review (Amazon, Trustpilot)
-  REGULATORY        // BAuA, ECHA, TRGS-Updates
-  SDS               // direkt aus Sicherheitsdatenblatt entnommen
-  USER_REPORT       // direkt vom Plattform-User gemeldet
+  FORUM // industryarena, praktiker.com, cnczone, reddit r/Machinists, fachforum
+  MANUFACTURER // Hersteller-FAQ, Anwendungstipps, Servicedokument
+  DISTRIBUTOR // Distributor-Warnung, Anwendungshinweis
+  CASE_STUDY // dokumentierte Fallstudie (Verein, Hochschule)
+  REVIEW // User-Review (Amazon, Trustpilot)
+  REGULATORY // BAuA, ECHA, TRGS-Updates
+  SDS // direkt aus Sicherheitsdatenblatt entnommen
+  USER_REPORT // direkt vom Plattform-User gemeldet
   OTHER
 }
 
 enum IssueStatus {
-  PENDING    // gemeldet, nicht verifiziert
-  VERIFIED   // von Admin/TRADE_ASSURED bestätigt
-  RESOLVED   // Hersteller hat in neuerer Formulierung behoben
-  REJECTED   // unzutreffend / nicht reproduzierbar
+  PENDING // gemeldet, nicht verifiziert
+  VERIFIED // von Admin/TRADE_ASSURED bestätigt
+  RESOLVED // Hersteller hat in neuerer Formulierung behoben
+  REJECTED // unzutreffend / nicht reproduzierbar
 }
 
 model ProductIssue {
-  id              String          @id @default(cuid())
+  id String @id @default(cuid())
 
-  productId       String
-  product         Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  category        IssueCategory
-  severity        IssueSeverity   @default(MEDIUM)
-  status          IssueStatus     @default(PENDING)
+  category IssueCategory
+  severity IssueSeverity @default(MEDIUM)
+  status   IssueStatus   @default(PENDING)
 
-  title           String          // Kurzbeschreibung, z.B. "Schaumbildung bei niedriger Konzentration"
-  description     String          // Ausführlicher Bericht
+  title       String // Kurzbeschreibung, z.B. "Schaumbildung bei niedriger Konzentration"
+  description String // Ausführlicher Bericht
 
-  symptoms        String[]        @default([])  // ["pH-Drop", "Geruch", "Fleckenbildung Messing"]
-  rootCause       String?         // wenn bekannt: "Bakterien (Pseudomonas) bei Stillstand"
-  workaround      String?         // Tipps zur Behebung
-  preventiveMeasure String?       // wie vermeiden
+  symptoms          String[] @default([]) // ["pH-Drop", "Geruch", "Fleckenbildung Messing"]
+  rootCause         String? // wenn bekannt: "Bakterien (Pseudomonas) bei Stillstand"
+  workaround        String? // Tipps zur Behebung
+  preventiveMeasure String? // wie vermeiden
 
   // Kontext
-  affectedMaterials   String[]   @default([])  // Materialien wo Problem auftritt
-  affectedOperations  String[]   @default([])  // Anwendungen wo Problem auftritt
-  reportedConcentration Float?   // bei wassermischbaren KSS, %
+  affectedMaterials     String[] @default([]) // Materialien wo Problem auftritt
+  affectedOperations    String[] @default([]) // Anwendungen wo Problem auftritt
+  reportedConcentration Float? // bei wassermischbaren KSS, %
   reportedPh            Float?
-  reportedWaterHardness Int?     // °dH
+  reportedWaterHardness Int? // °dH
 
-  sourceType      IssueSourceType
-  sourceUrl       String?         // URL des Forenposts / Doks
-  sourceTitle     String?         // Titel des Posts / Artikels
-  sourceAuthor    String?         // wenn bekannt
-  sourceDate      DateTime?       // wann der Bericht erstellt wurde
+  sourceType   IssueSourceType
+  sourceUrl    String? // URL des Forenposts / Doks
+  sourceTitle  String? // Titel des Posts / Artikels
+  sourceAuthor String? // wenn bekannt
+  sourceDate   DateTime? // wann der Bericht erstellt wurde
 
-  language        SdsLanguage     @default(DE)
+  language SdsLanguage @default(DE)
 
   // Verifizierung
   submittedByUserId String?
-  submittedByUser   User?         @relation("ProductIssueSubmitted", fields: [submittedByUserId], references: [id], onDelete: SetNull)
+  submittedByUser   User?     @relation("ProductIssueSubmitted", fields: [submittedByUserId], references: [id], onDelete: SetNull)
   verifiedByUserId  String?
-  verifiedByUser    User?         @relation("ProductIssueVerified", fields: [verifiedByUserId], references: [id], onDelete: SetNull)
+  verifiedByUser    User?     @relation("ProductIssueVerified", fields: [verifiedByUserId], references: [id], onDelete: SetNull)
   verifiedAt        DateTime?
 
   // Trust-Indikatoren
-  isOfficial       Boolean        @default(false)  // Hersteller-Doku
-  reportCount      Int            @default(1)      // wie oft gemeldet (similar issues merged)
+  isOfficial  Boolean @default(false) // Hersteller-Doku
+  reportCount Int     @default(1) // wie oft gemeldet (similar issues merged)
 
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([productId])
   @@index([category])
@@ -1404,26 +1443,26 @@ model ProductIssue {
 // siehe lib/ads.ts, Ausspielung via components/AdSlot.
 // ============================================================
 enum AdPlacement {
-  HOME       // Startseite (Besucher + Dashboard)
+  HOME // Startseite (Besucher + Dashboard)
   STOREFRONT // Marken-Schaufenster (Herstellerseite)
-  LISTINGS   // Angebotsübersicht
+  LISTINGS // Angebotsübersicht
 }
 
 model AdBanner {
-  id      String @id @default(cuid())
-  owner   User   @relation("AdOwner", fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId String
+  id             String        @id @default(cuid())
+  owner          User          @relation("AdOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId        String
   // Beworbene Marke (optional) — verknüpft die Anzeige mit dem Schaufenster.
   manufacturer   Manufacturer? @relation(fields: [manufacturerId], references: [id], onDelete: SetNull)
   manufacturerId String?
 
   eyebrow  String? // kleine Zeile über der Schlagzeile, z.B. "DOSIMETRIX® hybrid"
-  headline String  // Schlagzeile
+  headline String // Schlagzeile
   chips    String[] @default([]) // knappe Vorteile (Pills)
   // Bild: entweder ein ausgelieferter Pfad ("/images/…") ODER eine data:-URI
   // (Upload). Die Ansicht unterscheidet anhand des Präfixes.
   image    String
-  ctaLabel String  @default("Mehr erfahren")
+  ctaLabel String   @default("Mehr erfahren")
   ctaUrl   String
   origin   String? // dezente Zusatzzeile, z.B. "Made in Switzerland"
 
