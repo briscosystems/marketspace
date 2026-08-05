@@ -252,8 +252,8 @@ export default async function PricesOverviewPage({ searchParams }: { searchParam
       <div className="space-y-2">
         {rows.length === 0 ? (
           <LeerHinweis
-            titel="Für diese Auswahl liegt uns kein Richtwert vor."
-            text="Richtwerte entstehen aus gemeldeten Preisen und abgeschlossenen Geschäften. Stell eine Anfrage — die Rückmeldungen fließen anonymisiert in die Richtwerte ein."
+            titel={t("leer.preiseTitel")}
+            text={t("leer.preiseText")}
             aktionen={["anfrage", "suche"]}
           />
         ) : (

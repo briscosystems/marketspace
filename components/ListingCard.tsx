@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { TrustBadge } from "./TrustBadge";
 import { ProductImage } from "./ProductImage";
@@ -6,6 +8,7 @@ import { CompareToggle } from "./compare/CompareToggle";
 import { brandColors } from "@/lib/branding";
 import { Tag, MapPin, Camera } from "lucide-react";
 import { withBasePath } from "@/lib/base-path";
+import { useLocale } from "@/components/LocaleProvider";
 
 type Tier = "UNVERIFIED" | "VERIFIED" | "TRADE_ASSURED" | "PREMIUM" | "DIAMOND";
 type Status = "ACTIVE" | "PAUSED" | "SOLD" | "ARCHIVED";
@@ -87,6 +90,7 @@ export function ListingCard({
 // COMPACT — schmale Karte, ideal für Listen-Browsing
 // ============================================================================
 function CompactCard({ listing, hideStatus }: { listing: ListingCardData; hideStatus: boolean }) {
+  const { t } = useLocale();
   const packaging = (listing.packaging as Packaging) ?? "DRUM";
 
   return (
@@ -122,7 +126,7 @@ function CompactCard({ listing, hideStatus }: { listing: ListingCardData; hideSt
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-0.5 rounded-md bg-blue-100 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-blue-800">
-              <Tag size={8} /> Bietet an
+              <Tag size={8} /> {t("badge.bietetAn")}
             </span>
             {listing.sponsored && (
               <span
@@ -182,6 +186,7 @@ function CompactCard({ listing, hideStatus }: { listing: ListingCardData; hideSt
 // Merkmale, Anbieter + Vertrauen, klarer Preis.
 // ============================================================================
 function ExtendedCard({ listing, hideStatus }: { listing: ListingCardData; hideStatus: boolean }) {
+  const { t } = useLocale();
   const packaging = (listing.packaging as Packaging) ?? "DRUM";
   const chips: string[] = [];
   if (listing.isoViscosity) chips.push(`ISO VG ${listing.isoViscosity}`);
@@ -235,7 +240,7 @@ function ExtendedCard({ listing, hideStatus }: { listing: ListingCardData; hideS
         <div className="flex flex-1 flex-col gap-1.5 p-4">
           <div className="flex items-center gap-2">
             <span className="inline-flex w-fit items-center gap-1 rounded-md bg-blue-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-blue-800">
-              <Tag size={10} /> Bietet an
+              <Tag size={10} /> {t("badge.bietetAn")}
             </span>
             {listing.sponsored && (
               <span

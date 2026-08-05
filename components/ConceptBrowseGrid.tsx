@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Heart, MapPin, Tag, Check, Star, ShieldCheck, X, Camera } from "lucide-react";
 import { withBasePath } from "@/lib/base-path";
 import { ProductImage } from "./ProductImage";
+import { useLocale } from "@/components/LocaleProvider";
 
 type PkgForm = "DRUM" | "IBC" | "TANK" | "CANISTER" | "BULK" | "OTHER";
 
@@ -60,6 +61,7 @@ function TierBadge({ tier }: { tier: string }) {
 const VERIFIED_TIERS = ["VERIFIED", "TRADE_ASSURED", "PREMIUM", "DIAMOND"];
 
 export function ConceptBrowseGrid({ listings }: { listings: BrowseListing[] }) {
+  const { t } = useLocale();
   const [selected, setSelected] = useState<BrowseListing | null>(null);
   const [favs, setFavs] = useState<Record<string, boolean>>({});
   const [verifiedOnly, setVerifiedOnly] = useState(false);
@@ -194,14 +196,14 @@ export function ConceptBrowseGrid({ listings }: { listings: BrowseListing[] }) {
             <div className="flex flex-1 flex-col gap-1.5 p-4">
               <div className="flex items-center gap-1.5">
                 <span className="inline-flex w-fit items-center gap-1 rounded-md bg-blue-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-blue-800">
-                  <Tag size={10} /> Bietet an
+                  <Tag size={10} /> {t("badge.bietetAn")}
                 </span>
                 {l.sponsored && (
                   <span
                     className="inline-flex w-fit items-center rounded-md bg-amber-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-800"
                     title="Dieser Anbieter hat eine bezahlte Platzierung — das Angebot erscheint dadurch weiter oben."
                   >
-                    Gesponsert
+                    {t("badge.gesponsert")}
                   </span>
                 )}
               </div>

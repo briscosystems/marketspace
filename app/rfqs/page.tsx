@@ -207,12 +207,8 @@ export default async function RfqListPage({ searchParams }: { searchParams: Sear
 
       {cards.length === 0 ? (
         <LeerHinweis
-          titel={filterCount > 0 ? "Zu diesen Filtern gibt es keine Anfrage." : "Hier ist gerade keine Anfrage offen."}
-          text={
-            filterCount > 0
-              ? "Setz die Filter zurück oder stell deinen eigenen Bedarf ein — Händler melden sich mit Preis und Lieferzeit."
-              : "Stell deinen Bedarf ein — wir holen Angebote von Händlern und Herstellern ein."
-          }
+          titel={filterCount > 0 ? t("leer.rfqFilterTitel") : t("leer.rfqTitel")}
+          text={filterCount > 0 ? t("leer.rfqFilterText") : t("leer.rfqText")}
           aktionen={["anfrage", "suche"]}
         />
       ) : variant === "compact" ? (

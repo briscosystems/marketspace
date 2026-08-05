@@ -137,7 +137,7 @@ export default async function MaterialDetailPage({ params }: { params: Params })
       {material.compatibilities.length === 0 && (
         <LeerHinweis
           titel={t("mat.noData")}
-          text="Die Verträglichkeits-Matrix wächst mit jedem ausgewerteten Datenblatt. Lass die KI prüfen, welches Produkt zu diesem Werkstoff passt."
+          text={t("leer.matText")}
           aktionen={["alternative", "suche"]}
         />
       )}

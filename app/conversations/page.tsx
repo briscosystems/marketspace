@@ -34,7 +34,7 @@ export default async function ConversationsPage() {
         <div className="card text-slate-500">
           {t("conv.empty")} <em>{t("conv.contactSeller")}</em>.{" "}
           <Link href="/listings" className="font-medium text-brand-700 hover:underline">
-            Angebote ansehen →
+            {t("conv.leerLink")}
           </Link>
         </div>
       ) : (

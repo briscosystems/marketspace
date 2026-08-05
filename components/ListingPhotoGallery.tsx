@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { Camera, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { withBasePath } from "@/lib/base-path";
+import { useLocale } from "@/components/LocaleProvider";
+import { fill } from "@/lib/i18n";
 
 /**
  * Foto-Galerie auf der Angebots-Detailseite.
@@ -22,6 +24,7 @@ export function ListingPhotoGallery({
   productName: string;
   aufgenommenAm?: string | null;
 }) {
+  const { t } = useLocale();
   const [aktiv, setAktiv] = useState(0);
   const [vollbild, setVollbild] = useState(false);
 
@@ -48,7 +51,7 @@ export function ListingPhotoGallery({
         type="button"
         onClick={() => setVollbild(true)}
         className="group relative block w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-100"
-        aria-label="Foto vergrößern"
+        aria-label={t("foto.vergroessern")}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -58,7 +61,7 @@ export function ListingPhotoGallery({
           fetchPriority="high"
         />
         <span className="absolute left-2.5 top-2.5 inline-flex items-center gap-1.5 rounded-full bg-slate-900/75 px-2.5 py-1 text-[11px] font-semibold text-white">
-          <Camera size={12} /> Fotos vom Anbieter
+          <Camera size={12} /> {t("foto.vomAnbieter")}
         </span>
         {photos.length > 1 && (
           <span className="absolute bottom-2.5 right-2.5 rounded-full bg-slate-900/70 px-2 py-0.5 text-[11px] font-semibold text-white">
@@ -92,7 +95,7 @@ export function ListingPhotoGallery({
       )}
 
       {aufgenommenAm && (
-        <p className="text-xs text-slate-500">Eigene Aufnahme des Anbieters · hochgeladen am {aufgenommenAm}</p>
+        <p className="text-xs text-slate-500">{fill(t("foto.eigeneAufnahme"), { d: aufgenommenAm })}</p>
       )}
 
       {vollbild && (
@@ -106,7 +109,7 @@ export function ListingPhotoGallery({
             type="button"
             onClick={() => setVollbild(false)}
             className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
-            aria-label="Schließen"
+            aria-label={t("foto.schliessen")}
           >
             <X size={20} />
           </button>
@@ -116,7 +119,7 @@ export function ListingPhotoGallery({
                 type="button"
                 onClick={(e) => { e.stopPropagation(); zurueck(); }}
                 className="absolute left-3 rounded-full bg-white/10 p-2.5 text-white hover:bg-white/20"
-                aria-label="Vorheriges Foto"
+                aria-label={t("foto.vorheriges")}
               >
                 <ChevronLeft size={22} />
               </button>
@@ -124,7 +127,7 @@ export function ListingPhotoGallery({
                 type="button"
                 onClick={(e) => { e.stopPropagation(); weiter(); }}
                 className="absolute right-3 rounded-full bg-white/10 p-2.5 text-white hover:bg-white/20"
-                aria-label="Nächstes Foto"
+                aria-label={t("foto.naechstes")}
               >
                 <ChevronRight size={22} />
               </button>

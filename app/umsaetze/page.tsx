@@ -228,7 +228,7 @@ export default async function UmsaetzePage() {
                 <td colSpan={8} className="px-4 py-6 text-center text-slate-500">
                   {t("rev.emptyTransactions")}{" "}
                   <Link href="/listings" className="font-medium text-brand-700 hover:underline">
-                    Angebote durchsuchen →
+                    {t("dash.leerTxLink")}
                   </Link>
                 </td>
               </tr>

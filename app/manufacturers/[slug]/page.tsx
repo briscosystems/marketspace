@@ -204,7 +204,7 @@ export default async function ManufacturerDetailPage({
           <div className="mt-2">
             <LeerHinweis
               titel={t("mfr.emptyCatalog")}
-              text="Wir bauen den Katalog laufend aus. Such solange im Gesamtkatalog — oder stell eine Anfrage, wir holen Angebote für dieses Produkt ein."
+              text={t("leer.mfrText")}
               aktionen={["suche", "anfrage"]}
             />
           </div>

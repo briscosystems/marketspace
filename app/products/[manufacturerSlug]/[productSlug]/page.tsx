@@ -197,9 +197,9 @@ export default async function ProductDetailPage({
               title={t("product.dataConfidence")}
             >
               {{
-                verifiziert: "Daten verifiziert",
-                recherchiert: "Daten recherchiert",
-                "hersteller-doku": "aus Hersteller-Unterlagen",
+                verifiziert: t("prod.confVerifiziert"),
+                recherchiert: t("prod.confRecherchiert"),
+                "hersteller-doku": t("prod.confHersteller"),
               }[product.sourceConfidence ?? ""] ?? product.sourceConfidence}
             </span>
             <ComplianceBadges product={product} />
@@ -214,7 +214,7 @@ export default async function ProductDetailPage({
               href="/rfqs/new"
               className="inline-flex items-center gap-1.5 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-600"
             >
-              Preis anfragen — ohne Konto
+              {t("prod.preisAnfragen")}
             </Link>
             <CompareToggle id={product.id} kind="products" />
             {/* Häufigster Einkäufer-Anwendungsfall: Äquivalent bei Lieferantenwechsel */}
@@ -640,7 +640,7 @@ const SEAL_RATING_STYLE: Record<
   },
 };
 
-function PriceBanner({
+async function PriceBanner({
   productId,
   productName,
   manufacturer,
@@ -651,6 +651,7 @@ function PriceBanner({
   manufacturer: string;
   currentPrice: import("@/lib/price-aggregation").CurrentMarketPrice | null;
 }) {
+  const t = await getT();
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-3 shadow-soft">
       <div className="flex flex-wrap items-baseline gap-3">
@@ -685,10 +686,10 @@ function PriceBanner({
               }`}
             >
               {currentPrice.confidence === "high"
-                ? "gut belegt"
+                ? t("prod.belegtHoch")
                 : currentPrice.confidence === "medium"
-                  ? "mittel belegt"
-                  : "wenige Daten"}
+                  ? t("prod.belegtMittel")
+                  : t("prod.belegtWenig")}
             </span>
           </>
         ) : (
@@ -714,7 +715,7 @@ function PriceBanner({
   );
 }
 
-function PriceSection({
+async function PriceSection({
   productId,
   productName,
   manufacturer,
@@ -727,6 +728,7 @@ function PriceSection({
   priceHistory: import("@/lib/price-aggregation").MonthlyPriceDataPoint[];
   currentPrice: import("@/lib/price-aggregation").CurrentMarketPrice | null;
 }) {
+  const t = await getT();
   return (
     <section id="preis-historie" className="scroll-mt-4 rounded-xl border border-slate-200 bg-white shadow-soft shadow-sm">
       <header className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-amber-300 px-4 py-2">
@@ -773,10 +775,10 @@ function PriceSection({
               }`}
             >
               {currentPrice.confidence === "high"
-                ? "gut belegt"
+                ? t("prod.belegtHoch")
                 : currentPrice.confidence === "medium"
-                  ? "mittel belegt"
-                  : "wenige Daten"}
+                  ? t("prod.belegtMittel")
+                  : t("prod.belegtWenig")}
             </span>
           </div>
         ) : (

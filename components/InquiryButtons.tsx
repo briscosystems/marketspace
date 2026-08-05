@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FlaskConical, FileText, X } from "lucide-react";
 import { withBasePath } from "@/lib/base-path";
+import { useLocale } from "@/components/LocaleProvider";
 
 type Kind = "sample" | "quote";
 
@@ -25,6 +26,7 @@ export function InquiryButtons({
   quantityUnit: string;
   minOrderQty?: number | null;
 }) {
+  const { t } = useLocale();
   const router = useRouter();
   const [open, setOpen] = useState<Kind | null>(null);
   const [amount, setAmount] = useState("");
@@ -80,7 +82,7 @@ export function InquiryButtons({
         className="btn-secondary inline-flex items-center gap-1.5 text-sm"
       >
         <FlaskConical size={14} />
-        Muster anfordern
+        {t("inq.muster")}
       </button>
       <button
         type="button"
@@ -88,7 +90,7 @@ export function InquiryButtons({
         className="btn-primary inline-flex items-center gap-1.5 text-sm"
       >
         <FileText size={14} />
-        Angebot anfragen
+        {t("inq.angebot")}
       </button>
 
       {open && (

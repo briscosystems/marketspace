@@ -34,17 +34,15 @@ export default async function EditListingPage({
   return (
     <div className="mx-auto max-w-3xl space-y-4">
       <Link href={`/listings/${listing.id}`} className="text-sm text-brand-700 hover:underline">
-        ← zurück zum Angebot
+        {t("le.zurueck")}
       </Link>
       {neu === "1" && (
         <div className="flex items-start gap-2.5 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
           <PackageCheck size={18} className="mt-0.5 shrink-0" />
           <span>
-            <strong>Dein Angebot ist online.</strong> Käufer finden es ab sofort über die Suche.
-            Ergänze jetzt noch Fotos — Angebote mit eigenen Bildern werden deutlich häufiger
-            angefragt.{" "}
+            {t("le.neuBanner")}{" "}
             <Link href={`/listings/${listing.id}`} className="font-semibold underline">
-              Öffentliche Ansicht öffnen
+              {t("le.oeffentlich")}
             </Link>
           </span>
         </div>

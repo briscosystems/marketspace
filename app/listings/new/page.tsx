@@ -515,7 +515,7 @@ export default function NewListingPage() {
         {!angemeldet && (
           <div className="rounded-2xl border-2 border-blue-200 bg-blue-50 p-4">
             <label className="label" htmlFor="listing-email">
-              Deine E-Mail-Adresse *
+              {t("anon.mailLabel")}
             </label>
             <input
               id="listing-email"
@@ -526,10 +526,7 @@ export default function NewListingPage() {
               className="input bg-white"
             />
             <p className="mt-1.5 text-xs text-blue-900">
-              Darüber erreichen dich Kaufinteressenten. Ein Konto legen wir beim Absenden
-              automatisch an — du bekommst per Mail einen Link, um dein Passwort zu setzen.
-              Danach kannst du Fotos ergänzen und dein Angebot ändern. Anonym bleibst du
-              trotzdem: Käufer sehen nur deinen Anzeigenamen, nie deine Adresse.
+              {t("anon.mailListingHinweis")}
             </p>
           </div>
         )}

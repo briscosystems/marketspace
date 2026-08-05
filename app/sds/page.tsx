@@ -180,8 +180,8 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
       <div className="space-y-2">
       {sheets.length === 0 ? (
         <LeerHinweis
-          titel="Zu dieser Suche haben wir kein Datenblatt."
-          text="Setz die Filter zurück, such im Katalog nach dem Produkt — oder lass die KI eine Alternative finden."
+          titel={t("leer.sdsTitel")}
+          text={t("leer.sdsText")}
           aktionen={["suche", "alternative"]}
           suchLink="/sds"
         />

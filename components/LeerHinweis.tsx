@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getT } from "@/lib/i18n-server";
 import { Sparkles, Plus, Search } from "lucide-react";
 
 /**
@@ -13,7 +14,7 @@ import { Sparkles, Plus, Search } from "lucide-react";
  * Bewusst schlicht gehalten (keine Zustände, kein JavaScript), damit der
  * Baustein auf jeder Seite ohne Umbau eingesetzt werden kann.
  */
-export function LeerHinweis({
+export async function LeerHinweis({
   titel,
   text,
   aktionen = ["alternative", "anfrage"],
@@ -26,6 +27,7 @@ export function LeerHinweis({
   /** Ziel für die Aktion „suche" (Standard: Angebots-/Katalogsuche). */
   suchLink?: string;
 }) {
+  const t = await getT();
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-soft">
       <h3 className="text-base font-bold text-slate-900">{titel}</h3>
@@ -36,7 +38,7 @@ export function LeerHinweis({
             href="/kss-finder#alternativen"
             className="inline-flex items-center gap-2 rounded-lg bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-purple-700"
           >
-            <Sparkles size={16} /> Alternative finden (KI)
+            <Sparkles size={16} /> {t("leer.altKi")}
           </Link>
         )}
         {aktionen.includes("anfrage") && (
@@ -44,7 +46,7 @@ export function LeerHinweis({
             href="/rfqs/new"
             className="inline-flex items-center gap-2 rounded-lg bg-amber-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-600"
           >
-            <Plus size={16} /> Anfrage einstellen — ohne Konto, wir holen Angebote ein
+            <Plus size={16} /> {t("leer.anfrage")}
           </Link>
         )}
         {aktionen.includes("suche") && (
@@ -52,7 +54,7 @@ export function LeerHinweis({
             href={suchLink ?? "/listings"}
             className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-slate-400"
           >
-            <Search size={16} /> Im Katalog suchen
+            <Search size={16} /> {t("leer.suche")}
           </Link>
         )}
       </div>

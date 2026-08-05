@@ -145,8 +145,7 @@ export default function NewRfqPage() {
             {t("rnew.sec1")}
           </h2>
           <p className="mt-1 text-xs text-slate-500">
-            Pflicht sind nur mit * markierte Felder — alles andere ist freiwillig und bringt
-            passendere Angebote.
+            {t("form.pflichtHinweis")}
           </p>
           <div className="mt-3 grid gap-4 md:grid-cols-2">
             <div className="md:col-span-2">
@@ -288,7 +287,7 @@ export default function NewRfqPage() {
         {!angemeldet && (
           <div className="rounded-2xl border-2 border-amber-200 bg-amber-50 p-4">
             <label className="label" htmlFor="rfq-email">
-              Deine E-Mail-Adresse *
+              {t("anon.mailLabel")}
             </label>
             <input
               id="rfq-email"
@@ -299,9 +298,7 @@ export default function NewRfqPage() {
               className="input bg-white"
             />
             <p className="mt-1.5 text-xs text-amber-900">
-              Dorthin schicken wir die Antworten der Händler. Ein Konto legen wir dabei
-              automatisch für dich an — du bekommst per Mail einen Link, um dein Passwort zu
-              setzen. Kein Formular vorher, keine Kreditkarte.
+              {t("anon.mailRfqHinweis")}
             </p>
           </div>
         )}

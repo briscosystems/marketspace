@@ -13,6 +13,7 @@ import { LeerHinweis } from "@/components/LeerHinweis";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getT } from "@/lib/i18n-server";
 import { TrustBadge } from "@/components/TrustBadge";
 import { SubmitOfferForm } from "@/components/SubmitOfferForm";
 import { AcceptOfferButton } from "@/components/AcceptOfferButton";
@@ -24,6 +25,7 @@ export default async function RfqDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const t = await getT();
   const { id } = await params;
   const [rfq, session] = await Promise.all([
     prisma.rfq.findUnique({
@@ -63,13 +65,13 @@ export default async function RfqDetailPage({
   return (
     <div className="space-y-6">
       <Link href="/rfqs" className="text-sm text-brand-700 hover:underline">
-        ← Anfragen-Übersicht
+        {t("rfqd.uebersicht")}
       </Link>
 
       <div className="card space-y-5">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <div className="eyebrow">Gesucht wird</div>
+            <div className="eyebrow">{t("rfqd.gesucht")}</div>
             <h1 className="page-title">
               {rfq.manufacturer ? `${rfq.manufacturer} · ` : ""}
               {rfq.productType}
@@ -83,7 +85,7 @@ export default async function RfqDetailPage({
               <TrustBadge tier={rfq.buyer.trustTier} size="xs" />
               {rfq.visibility === "VERIFIED_ONLY" && (
                 <span className="chip bg-slate-100 text-slate-700 ring-1 ring-slate-200">
-                  Nur für geprüfte Mitglieder
+                  {t("rfqd.nurGeprueft")}
                 </span>
               )}
             </div>
@@ -167,11 +169,11 @@ export default async function RfqDetailPage({
       </div>
 
       <div className="space-y-3">
-        <h2 className="section-title">Angebote</h2>
+        <h2 className="section-title">{t("rfqd.angebote")}</h2>
         {rfq.offers.length === 0 ? (
           <LeerHinweis
-            titel="Noch keine Angebote."
-            text="Anbieter sehen deine Anfrage — bis zur ersten Antwort dauert es meist wenige Stunden. In der Zwischenzeit kann die KI passende Alternativen aus dem Katalog vorschlagen."
+            titel={t("rfqd.leerTitel")}
+            text={t("rfqd.leerText")}
             aktionen={["alternative", "suche"]}
           />
         ) : (
@@ -226,10 +228,9 @@ export default async function RfqDetailPage({
                         <div className="mt-3">
                           <AcceptOfferButton rfqId={rfq.id} offerId={o.id} />
                           <p className="mt-1.5 text-xs text-slate-500">
-                            Nach dem Annehmen öffnet sich ein Chat mit dem Anbieter. Zahlung auf
-                            Wunsch mit{" "}
+                            {t("rfqd.nachAnnahme")}{" "}
                             <Link href="/vertrauen" className="font-medium text-brand-700 hover:underline">
-                              Käuferschutz
+                              {t("rfqd.kaeuferschutz")}
                             </Link>
                             .
                           </p>

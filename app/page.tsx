@@ -251,6 +251,7 @@ async function PublicLanding() {
 }
 
 async function PersonalDashboard({ userId }: { userId: string }) {
+  const t = await getT();
   const [unreadConversations, openRfqsForMe, freshListings, openOffersToMe, me] = await Promise.all([
     prisma.conversation.findMany({
       where: { OR: [{ buyerId: userId }, { sellerId: userId }] },
@@ -304,8 +305,8 @@ async function PersonalDashboard({ userId }: { userId: string }) {
             cls: "border-purple-200 hover:border-purple-400",
             iconBg: "bg-purple-600",
             icon: <Sparkles className="h-6 w-6" />,
-            title: "Alternative finden (KI)",
-            text: "Produkt oder Problem eingeben — die KI schlägt passende Alternativen vor, inkl. Dichtungs-Check.",
+            title: t("dashact.altTitel"),
+            text: t("dashact.altText"),
             linkCls: "text-purple-700",
           },
           {
@@ -313,8 +314,8 @@ async function PersonalDashboard({ userId }: { userId: string }) {
             cls: "border-amber-200 hover:border-amber-400",
             iconBg: "bg-amber-500",
             icon: <Plus className="h-6 w-6" />,
-            title: "Anfrage einstellen",
-            text: "Bedarf beschreiben — Händler melden sich mit Angeboten. Kostenlos und ohne Verpflichtung.",
+            title: t("dashact.rfqTitel"),
+            text: t("dashact.rfqText"),
             linkCls: "text-amber-700",
           },
         ]
@@ -325,8 +326,8 @@ async function PersonalDashboard({ userId }: { userId: string }) {
               cls: "border-blue-200 hover:border-blue-400",
               iconBg: "bg-blue-600",
               icon: <Plus className="h-6 w-6" />,
-              title: "Produkte anbieten",
-              text: "Bestände und Katalogware einstellen — Käufer finden dich über die Suche.",
+              title: t("dashact.anbietenTitel"),
+              text: t("dashact.anbietenTextOem"),
               linkCls: "text-blue-700",
             },
             {
@@ -334,8 +335,8 @@ async function PersonalDashboard({ userId }: { userId: string }) {
               cls: "border-brand-200 hover:border-brand-400",
               iconBg: "bg-brand-600",
               icon: <Building2 className="h-6 w-6" />,
-              title: "Marke präsentieren",
-              text: "Herstellerprofil und Produkte prominent zeigen — dort, wo Einkäufer suchen.",
+              title: t("dashact.markeTitel"),
+              text: t("dashact.markeText"),
               linkCls: "text-brand-700",
             },
           ]
@@ -345,8 +346,8 @@ async function PersonalDashboard({ userId }: { userId: string }) {
               cls: "border-blue-200 hover:border-blue-400",
               iconBg: "bg-blue-600",
               icon: <Plus className="h-6 w-6" />,
-              title: "Produkte anbieten",
-              text: "Je mehr Angebote online sind, desto öfter wirst du gefunden — Bestände schnell in Aufträge verwandeln.",
+              title: t("dashact.anbietenTitel"),
+              text: t("dashact.anbietenText"),
               linkCls: "text-blue-700",
             },
             {
@@ -354,8 +355,8 @@ async function PersonalDashboard({ userId }: { userId: string }) {
               cls: "border-amber-200 hover:border-amber-400",
               iconBg: "bg-amber-500",
               icon: <Inbox className="h-6 w-6" />,
-              title: "Anfragen bedienen",
-              text: "Offene Käufer-Anfragen ansehen und Angebote abgeben — direkte Verkaufschancen.",
+              title: t("dashact.bedienenTitel"),
+              text: t("dashact.bedienenText"),
               linkCls: "text-amber-700",
             },
           ];
@@ -370,7 +371,7 @@ async function PersonalDashboard({ userId }: { userId: string }) {
             href="/kss-finder"
             className="inline-flex items-center gap-1.5 text-sm font-semibold text-purple-700 hover:underline"
           >
-            <Sparkles size={15} /> KSS-Berater (KI) öffnen
+            <Sparkles size={15} /> {t("dashact.kssOeffnen")}
           </Link>
         </section>
       )}

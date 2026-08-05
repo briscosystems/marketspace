@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PackageCheck, Camera } from "lucide-react";
+import { getT } from "@/lib/i18n-server";
 
 export const metadata = { title: "Angebot eingestellt — Brisco Marketplace" };
 
@@ -16,33 +17,31 @@ export default async function AngebotEingestelltPage({
   searchParams: Promise<{ id?: string }>;
 }) {
   const { id } = await searchParams;
+  const t = await getT();
   return (
     <div className="mx-auto max-w-xl">
       <div className="card text-center">
         <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-blue-50 text-blue-600">
           <PackageCheck size={26} />
         </span>
-        <h1 className="page-title mt-4">Dein Angebot ist online.</h1>
+        <h1 className="page-title mt-4">{t("best.angebotTitel")}</h1>
         <p className="mt-2 text-slate-600">
-          Käufer finden es ab sofort über die Suche. Wir haben dir eine E-Mail geschickt: Darin
-          steht ein Link, mit dem du dein Passwort setzt.
+          {t("best.angebotText")}
         </p>
         <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-blue-200 bg-blue-50 p-3 text-left text-sm text-blue-900">
           <Camera size={17} className="mt-0.5 shrink-0" />
           <span>
-            <strong>Fotos fehlen noch.</strong> Sobald dein Passwort gesetzt ist, kannst du
-            Aufnahmen von Fass, Etikett und Charge ergänzen — Angebote mit eigenen Fotos werden
-            deutlich häufiger angefragt.
+            {t("best.fotoHinweis")}
           </span>
         </div>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           {id && (
             <Link href={`/listings/${id}`} className="btn-primary">
-              Angebot ansehen
+              {t("best.angebotAnsehen")}
             </Link>
           )}
           <Link href="/forgot-password" className="btn-secondary">
-            Neuen Link anfordern
+            {t("best.neuerLink")}
           </Link>
         </div>
       </div>

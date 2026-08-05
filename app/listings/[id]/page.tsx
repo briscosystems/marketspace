@@ -182,10 +182,9 @@ export default async function ListingDetailPage({
                 </Link>
                 {session?.user && (
                   <span className="text-xs text-slate-500">
-                    Chat über die Plattform — dein Klarname bleibt verborgen. Zahlung auf Wunsch
-                    mit{" "}
+                    {t("listing.chatHinweis")}{" "}
                     <Link href="/vertrauen" className="font-medium text-brand-700 hover:underline">
-                      Käuferschutz
+                      {t("rfqd.kaeuferschutz")}
                     </Link>
                     .
                   </span>
@@ -495,7 +494,7 @@ export default async function ListingDetailPage({
             </p>
           </div>
           {isOwnListing ? (
-            <span className="text-sm text-slate-500">Das ist dein eigenes Angebot.</span>
+            <span className="text-sm text-slate-500">{t("listing.eigenes")}</span>
           ) : session?.user ? (
             <ContactSellerButton sellerId={listing.seller.id} listingId={listing.id} />
           ) : (

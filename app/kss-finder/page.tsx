@@ -400,8 +400,8 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
       >
       {products.length === 0 ? (
         <LeerHinweis
-          titel="Zu diesen Anforderungen passt kein Produkt im Katalog."
-          text="Weich die Filter auf — oder lass die KI eine Alternative suchen und stell parallel eine Anfrage ein. Händler melden sich dann mit Preis und Lieferzeit."
+          titel={t("leer.kssTitel")}
+          text={t("leer.kssText")}
           aktionen={["alternative", "anfrage"]}
         />
       ) : (

@@ -263,7 +263,7 @@ export default async function DashboardPage() {
           <div className="card text-sm text-slate-500">
             {t("dash.emptySeeking")}{" "}
             <Link href="/rfqs/new" className="font-medium text-amber-700 hover:underline">
-              Bedarf einstellen →
+              {t("dash.leerRfqLink")}
             </Link>
           </div>
         ) : (
@@ -295,7 +295,7 @@ export default async function DashboardPage() {
           <div className="card text-sm text-slate-500">
             {t("dash.emptyTransactions")}{" "}
             <Link href="/listings" className="font-medium text-brand-700 hover:underline">
-              Angebote durchsuchen →
+              {t("dash.leerTxLink")}
             </Link>
           </div>
         ) : (
@@ -333,7 +333,7 @@ export default async function DashboardPage() {
           <div className="card text-sm text-slate-500">
             {t("dash.emptyMyOffers")}{" "}
             <Link href="/rfqs" className="font-medium text-amber-700 hover:underline">
-              Offene Anfragen ansehen →
+              {t("dash.leerOfferLink")}
             </Link>
           </div>
         ) : (

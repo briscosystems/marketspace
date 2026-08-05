@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Camera, ImagePlus, Loader2, Star, Trash2, AlertTriangle } from "lucide-react";
 import { withBasePath } from "@/lib/base-path";
+import { useLocale } from "@/components/LocaleProvider";
+import { fill } from "@/lib/i18n";
 import { MAX_FOTOS, KANTE_GROSS, KANTE_KLEIN, MOTIV_VORSCHLAEGE } from "@/lib/listing-photos";
 
 /**
@@ -70,6 +72,7 @@ export function ListingPhotoUpload({
   listingId: string;
   initial?: VorhandenesFoto[];
 }) {
+  const { t } = useLocale();
   const [fotos, setFotos] = useState<VorhandenesFoto[]>(
     [...initial].sort((a, b) => a.position - b.position),
   );
@@ -90,7 +93,7 @@ export function ListingPhotoUpload({
       setFehler(null);
       const frei = MAX_FOTOS - fotos.length;
       if (frei <= 0) {
-        setFehler(`Mehr als ${MAX_FOTOS} Fotos gehen nicht.`);
+        setFehler(fill(t("foto.maxErreicht"), { n: MAX_FOTOS }));
         return;
       }
       setLaedt(true);
@@ -110,7 +113,7 @@ export function ListingPhotoUpload({
           });
         }
         if (paket.length === 0) {
-          setFehler("Das war kein Bild. Bitte JPG, PNG oder WEBP wählen.");
+          setFehler(t("foto.keinBild"));
           return;
         }
         const res = await fetch(withBasePath(`/api/listings/${listingId}/photos`), {
@@ -120,7 +123,7 @@ export function ListingPhotoUpload({
         });
         const daten = await res.json();
         if (!res.ok) {
-          setFehler(daten?.error ?? "Hochladen fehlgeschlagen.");
+          setFehler(daten?.error ?? t("foto.uploadFehler"));
           return;
         }
         setFotos((alt) => [
@@ -128,7 +131,7 @@ export function ListingPhotoUpload({
           ...(daten.angelegt as string[]).map((id, i) => ({ id, position: alt.length + i })),
         ]);
       } catch {
-        setFehler("Das Bild konnte nicht verarbeitet werden. Bitte noch einmal versuchen.");
+        setFehler(t("foto.fehler"));
       } finally {
         setLaedt(false);
         if (kameraRef.current) kameraRef.current.value = "";
@@ -144,7 +147,7 @@ export function ListingPhotoUpload({
     const res = await fetch(withBasePath(`/api/listing-photos/${id}`), { method: "DELETE" });
     if (!res.ok) {
       setFotos(vorher);
-      setFehler("Foto konnte nicht gelöscht werden.");
+      setFehler(t("foto.loeschenFehler"));
     }
   }
 
@@ -164,18 +167,16 @@ export function ListingPhotoUpload({
     <div className="space-y-3">
       <div>
         <div className="text-sm font-medium text-slate-700">
-          Fotos vom Bestand{" "}
+          {t("foto.titel")}{" "}
           <span className="font-normal text-slate-500">
             ({fotos.length}/{MAX_FOTOS})
           </span>
         </div>
         <p className="mt-0.5 text-xs text-slate-500">
-          Nur eigene Fotos der tatsächlichen Ware. Hersteller- oder Katalogbilder zeigen nicht den
-          Zustand deines Gebindes — und Käufer vertrauen eigenen Aufnahmen nachweislich mehr als
-          perfekten Katalogbildern. Kein Text und keine Wasserzeichen ins Bild.
+          {t("foto.regel")}
         </p>
         <p className="mt-1 text-xs text-slate-500">
-          Bewährte Reihenfolge:{" "}
+          {t("foto.reihenfolge")}{" "}
           {MOTIV_VORSCHLAEGE.map((m, i) => (
             <span key={m}>
               {i > 0 && " → "}
@@ -193,7 +194,7 @@ export function ListingPhotoUpload({
           className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300"
         >
           {laedt ? <Loader2 size={16} className="animate-spin" /> : <Camera size={16} />}
-          Foto aufnehmen
+          {t("foto.aufnehmen")}
         </button>
         <button
           type="button"
@@ -202,7 +203,7 @@ export function ListingPhotoUpload({
           className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-slate-400 disabled:cursor-not-allowed disabled:text-slate-400"
         >
           <ImagePlus size={16} />
-          Aus Galerie wählen
+          {t("foto.galerie")}
         </button>
       </div>
 
@@ -241,19 +242,19 @@ export function ListingPhotoUpload({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={withBasePath(`/api/listing-photos/${f.id}?v=klein`)}
-                alt={i === 0 ? "Titelbild" : `Foto ${i + 1}`}
+                alt={i === 0 ? t("foto.titelbild") : `Foto ${i + 1}`}
                 className="h-full w-full object-cover"
                 loading="lazy"
               />
               {i === 0 ? (
                 <span className="absolute left-1.5 top-1.5 inline-flex items-center gap-1 rounded-md bg-blue-600 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
-                  <Star size={10} /> Titelbild
+                  <Star size={10} /> {t("foto.titelbild")}
                 </span>
               ) : (
                 <button
                   type="button"
                   onClick={() => alsTitelbild(f.id)}
-                  title="Als Titelbild verwenden"
+                  title={t("foto.alsTitelbild")}
                   className="absolute left-1.5 top-1.5 rounded-md bg-white/90 p-1 text-slate-600 opacity-0 transition group-hover:opacity-100 focus:opacity-100 hover:text-blue-700"
                 >
                   <Star size={13} />
@@ -262,7 +263,7 @@ export function ListingPhotoUpload({
               <button
                 type="button"
                 onClick={() => loeschen(f.id)}
-                title="Foto entfernen"
+                title={t("foto.entfernen")}
                 className="absolute right-1.5 top-1.5 rounded-md bg-white/90 p-1 text-slate-600 opacity-0 transition group-hover:opacity-100 focus:opacity-100 hover:text-rose-600"
               >
                 <Trash2 size={13} />
@@ -274,7 +275,7 @@ export function ListingPhotoUpload({
 
       {fotos.length === 0 && !laedt && (
         <p className="rounded-lg border border-dashed border-slate-300 bg-slate-50 px-3 py-4 text-center text-sm text-slate-500">
-          Noch kein Foto. Angebote mit eigenen Bildern verkaufen sich nachweislich häufiger — ein Bild vom Etikett beantwortet die halbe Rückfrage.
+          {t("foto.leer")}
         </p>
       )}
     </div>

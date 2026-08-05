@@ -134,8 +134,8 @@ export default async function WissenPage({ searchParams }: { searchParams: Searc
       {/* Fälle */}
       {issues.length === 0 ? (
         <LeerHinweis
-          titel="Zu dieser Suche haben wir noch keinen Praxis-Fall."
-          text="Das Praxis-Wissen wächst mit gemeldeten Fällen. Such im Katalog nach dem Produkt — oder lass die KI prüfen, ob ein anderes Produkt besser zu deiner Anwendung passt."
+          titel={t("leer.wissenTitel")}
+          text={t("leer.wissenText")}
           aktionen={["suche", "alternative"]}
         />
       ) : (
