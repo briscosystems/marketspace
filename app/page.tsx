@@ -6,6 +6,7 @@ import { ListingCard } from "@/components/ListingCard";
 import { AdSlot } from "@/components/AdSlot";
 import { OilBarrels, SearchCanister } from "@/components/OilBarrels";
 import { ApplicationEntry } from "@/components/ApplicationEntry";
+import { SuchFeld } from "@/components/SuchFeld";
 import { getT } from "@/lib/i18n-server";
 import { fill } from "@/lib/i18n";
 import { getSettingInt } from "@/lib/credits";
@@ -102,43 +103,8 @@ async function PublicLanding() {
             {t("home.tilePriceTitle")}
           </Link>
         </div>
-        {/* Wir nennen uns Suchmaschine — dann gehört das Suchfeld auch in die
-            Mitte der Startseite und nicht nur in die Kopfzeile. Es ist ein
-            einfaches Formular (GET), damit es auch ohne JavaScript arbeitet. */}
-        <form
-          action={withBasePath("/listings")}
-          method="get"
-          role="search"
-          className="mt-6 flex flex-col gap-2 sm:flex-row"
-        >
-          <div className="flex min-w-0 flex-1 items-center gap-2 rounded-full border-2 border-slate-200 bg-white pl-4 pr-1.5 transition-all focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-400/30">
-            <Search className="h-5 w-5 shrink-0 text-slate-400" aria-hidden />
-            <input
-              name="q"
-              type="search"
-              placeholder={t("home.searchPlaceholder")}
-              aria-label={t("home.ctaBrowse")}
-              className="min-w-0 flex-1 border-0 bg-transparent py-3 text-base text-slate-900 outline-none placeholder:text-slate-400"
-            />
-          </div>
-          <button
-            type="submit"
-            className="shrink-0 rounded-full bg-slate-900 px-7 py-3 text-base font-semibold text-white shadow-soft transition-colors hover:bg-slate-800"
-          >
-            {t("home.ctaBrowse")}
-          </button>
-        </form>
-        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-          <span className="text-slate-500">{t("home.searchExamplesLabel")}</span>
-          {["Blasocut 4000", "HLP 46", "Gleitbahnöl ISO 68", "Bor-frei"].map((b) => (
-            <Link
-              key={b}
-              href={`/listings?q=${encodeURIComponent(b)}`}
-              className="rounded-full bg-slate-100 px-3 py-1 text-slate-700 transition hover:bg-brand-100 hover:text-brand-800"
-            >
-              {b}
-            </Link>
-          ))}
+        <div className="mt-6">
+          <SuchFeld />
         </div>
         <div className="mt-5">
           <Link href="/register" className="btn-secondary">
@@ -364,7 +330,14 @@ async function PersonalDashboard({ userId }: { userId: string }) {
   return (
     <div className="space-y-8">
       {/* Kein „Willkommen zurück"-Block mehr — der Anmelde-Status steht oben
-          rechts im Kopf (AccountMenu); die Seite beginnt direkt mit den Aktionen. */}
+          rechts im Kopf (AccountMenu). Die Seite beginnt mit der SUCHE: wir sind
+          die Suchmaschine, also ist Suchen auch angemeldet die erste Handlung —
+          gleichwertig groß wie die Aktionskarten, nicht nur die Kopfzeile. */}
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft md:p-6">
+        <h1 className="section-title mb-3">{t("dash.sucheTitel")}</h1>
+        <SuchFeld beispiele={false} />
+      </section>
+
       {role !== "ENDKUNDE" && (
         <section className="flex justify-end">
           <Link
@@ -404,30 +377,30 @@ async function PersonalDashboard({ userId }: { userId: string }) {
         <QuickStat
           href="/dashboard"
           icon={<LayoutDashboard className="h-5 w-5" />}
-          label="Dein Dashboard"
-          value="öffnen"
-          hint="Angebote, Anfragen, Transaktionen"
+          label={t("dash.tileDash")}
+          value={t("dash.tileDashWert")}
+          hint={t("dash.tileDashHint")}
         />
         <QuickStat
           href="/conversations"
           icon={<MessageSquare className="h-5 w-5" />}
-          label="Konversationen"
+          label={t("dash.tileMsg")}
           value={String(unreadConversations.length)}
-          hint="aktive Threads"
+          hint={t("dash.tileMsgHint")}
         />
         <QuickStat
           href="/rfqs"
           icon={<Inbox className="h-5 w-5" />}
-          label="Eingegangene Angebote"
+          label={t("dash.tileOffersIn")}
           value={String(openOffersToMe)}
-          hint="auf deine Anfragen, offen"
+          hint={t("dash.tileOffersInHint")}
         />
         <QuickStat
           href="/mitgliedschaft"
           icon={<Sparkles className="h-5 w-5" />}
-          label="Credits"
+          label={t("dash.tileCredits")}
           value={String(creditBalance)}
-          hint="für KI-Funktionen · aufladen"
+          hint={t("dash.tileCreditsHint")}
         />
       </section>
 
@@ -437,11 +410,9 @@ async function PersonalDashboard({ userId }: { userId: string }) {
       {openRfqsForMe.length > 0 && (
         <section>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="section-title">
-              Offene Anfragen — vielleicht hast du das auf Lager
-            </h2>
+            <h2 className="section-title">{t("dash.offeneRfqs")}</h2>
             <Link href="/rfqs" className="text-xs text-brand-700 hover:underline">
-              alle →
+              {t("dash.alle")}
             </Link>
           </div>
           <div className="card divide-y divide-slate-200">
@@ -474,9 +445,9 @@ async function PersonalDashboard({ userId }: { userId: string }) {
       {unreadConversations.length > 0 && (
         <section>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="section-title">Letzte Nachrichten</h2>
+            <h2 className="section-title">{t("dash.letzteNachrichten")}</h2>
             <Link href="/conversations" className="text-xs text-brand-700 hover:underline">
-              alle →
+              {t("dash.alle")}
             </Link>
           </div>
           <div className="card divide-y divide-slate-200">
@@ -521,9 +492,9 @@ async function PersonalDashboard({ userId }: { userId: string }) {
       {freshListings.length > 0 && (
         <section>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="section-title">Neu im Markt</h2>
+            <h2 className="section-title">{t("dash.neuImMarkt")}</h2>
             <Link href="/listings" className="text-xs text-brand-700 hover:underline">
-              alle →
+              {t("dash.alle")}
             </Link>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

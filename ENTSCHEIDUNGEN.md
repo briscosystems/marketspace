@@ -84,6 +84,7 @@ Nach jeder Änderung, die hier etwas berührt: **Eintrag ergänzen oder anpassen
 | Entscheidung | Begründung |
 |---|---|
 | Das **Suchfeld steht in der Mitte der Startseite**, nicht nur in der Kopfzeile — wir nennen uns Suchmaschine, also muss man sofort suchen können. Einfaches Formular (GET), arbeitet auch ohne JavaScript | Positionierung |
+| **Auch angemeldet ist die Suche das erste Element** — auf dem Dashboard steht sie als eigene Karte („Wonach suchst du?") ÜBER den Rollen-Aktionskarten, gleichwertig groß. Gemeinsamer Baustein `components/SuchFeld.tsx` | Ein Endkunde will zuerst suchen; die Kopfzeile allein ist nicht gleichwertig mit den Aktionskarten (Betreiber-Feedback 2026-08-04) |
 | Darunter **Beispielsuchen** als Knöpfe (Blasocut 4000, HLP 46, Gleitbahnöl ISO 68, Bor-frei) | zeigt in einer Sekunde, wonach man hier sucht |
 | **Jede leere Liste bietet einen Ausweg** über den Baustein `components/LeerHinweis.tsx`: „Alternative finden (KI)" und „Anfrage einstellen — wir holen Angebote ein" | Eine leere Liste ist der häufigste Absprungmoment; ehrlicher als so zu tun, als sei alles da |
 | Kein „Keine Treffer" ohne nächsten Schritt | dito |
