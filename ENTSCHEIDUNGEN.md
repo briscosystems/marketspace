@@ -209,6 +209,21 @@ Nach jeder Änderung, die hier etwas berührt: **Eintrag ergänzen oder anpassen
 | Höchstens ein offener Bericht je Produkt und Nutzer | Spam-Bremse ohne ehrliche Mehrfach-Erfahrungen zu blockieren |
 | Buchungsart `EXPERIENCE` im Credit-Journal | Prämien sauber von Käufen/Verbrauch getrennt |
 
+## KSS-Pflegewerte / CoolantGuide-Richtung (2026-08-05)
+
+| Entscheidung | Begründung / Beleg |
+|---|---|
+| Die Wissensbasis wird um **Pflege-Sollwerte** ausgebaut (Refraktometer-Faktor, Konzentrationsfenster, pH-Bereich, Wasserhärte, Standzeit) — nicht nur Auswahl-, sondern auch Pflegewissen | Ein Wettbewerber (Uni-Projekt „CoolantGuide") deckt Auswahl UND Pflege ab, aber nur für einen Hersteller; unser Vorteil ist genau dieselbe Tiefe **herstellerübergreifend** |
+| Daten-Sprint 2026-08-05: 102 der 137 wassermischbaren KSS mit belegten Sollwerten gefüllt (Refraktometer-Faktor 25 → 88, Konzentration 3 → 94, pH 1 → 94, Wasserhärte 10 → 24) | Ohne diese Werte konnte die Seite bei der laufenden Pflege im Betrieb nichts beitragen |
+| **Nur belegte Werte, niemals geschätzte oder von ähnlichen Produkten übertragene** — je Produkt ist eine Quellen-URL hinterlegt (`prisma/data/kss-sollwerte-2026-08-05.json`); 35 Produkte bleiben bewusst leer | Falsche Sollwerte sind im Betrieb gefährlicher als fehlende (falsche Konzentration = Korrosion, Hautprobleme, Werkzeugverschleiß) |
+| **Standzeit in Wochen bleibt überall leer** — kein einziges Herstellerdatenblatt nennt sie | Standzeit hängt vom Betrieb ab; sie kann nur aus echten Messdaten der Nutzer entstehen (nächster Baustein: Tank-Register) |
+| Einspielen über idempotente Deploy-Aufgabe, die **nur NULL-Felder füllt** und vorhandene Werte nie überschreibt | Von Hand gepflegte oder aus dem Datenblatt gelesene Werte haben Vorrang |
+
+Offene Punkte aus dem Sprint (Datenqualität, noch zu prüfen): „Avilub Metacorin 833" ist
+laut Datenblatt kein KSS, sondern Korrosionsschutz (falsche Kategorie); die Reihe
+„Eni Aquamet ECO/MD/Premium" und die drei „Hebro Cut"-Bezeichnungen waren bei den
+Herstellern nicht auffindbar.
+
 ## Technik
 
 | Entscheidung | Begründung |

@@ -31,6 +31,7 @@ import { applyReklassifizierung2026_08_02 } from "./reclass-produktarten-2026-08
 import { applyProduktErweiterung2026_08_02b } from "./add-produkte-2026-08-02b";
 import { importCastrolSds2026_08_03 } from "./import-sds-castrol-2026-08-03";
 import { applyRegionen2026_08_03 } from "./fix-regionen-2026-08-03";
+import { applyKssSollwerte2026_08_05 } from "./add-kss-sollwerte-2026-08-05";
 
 type Task = {
   name: string;
@@ -146,6 +147,15 @@ const TASKS: Task[] = [
     // Schreibweise.
     name: "Lagerregionen vereinheitlichen 2026-08-03 (DACH statt nur Deutschland)",
     run: () => applyRegionen2026_08_03(),
+  },
+  {
+    // Daten-Sprint 2026-08-05 Richtung CoolantGuide: Pflege-Sollwerte
+    // (Refraktometer-Faktor, Konzentrations-/pH-Fenster, Wasserhärte) für die
+    // wassermischbaren KSS aus Hersteller-TDS recherchiert. Füllt nur NULL-
+    // Felder, überschreibt nie vorhandene Werte. Belege je Produkt in
+    // data/kss-sollwerte-2026-08-05.json ("quelle").
+    name: "KSS-Pflege-Sollwerte 2026-08-05 (Refraktometer, Konzentration, pH, Wasserhärte)",
+    run: () => applyKssSollwerte2026_08_05(),
   },
 ];
 
