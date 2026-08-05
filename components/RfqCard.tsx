@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { TrustBadge } from "./TrustBadge";
 import { ProductImage } from "./ProductImage";
@@ -37,7 +39,6 @@ export function RfqCard({
   rfq: RfqCardData;
   variant?: "compact" | "extended";
 }) {
-  const { t } = useLocale();
   if (variant === "compact") return <CompactRfq rfq={rfq} />;
   return <ExtendedRfq rfq={rfq} />;
 }
