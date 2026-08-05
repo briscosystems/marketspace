@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { withBasePath } from "@/lib/base-path";
 import { PRODUCT_CATEGORY_LABEL, categoryLabel } from "@/lib/product-categories";
+import { useLocale } from "@/components/LocaleProvider";
 
 type Availability = {
   available: boolean;
@@ -77,6 +78,7 @@ const FIT_BADGE: Record<AltMatch["fit"], { label: string; cls: string }> = {
 };
 
 export function AlternativeSearchPanel({ initialQuery }: { initialQuery?: string }) {
+  const { t } = useLocale();
   // Mit vorbefülltem Produkt (z.B. Knopf "Alternative finden" auf der
   // Produktseite) startet das Panel sofort geöffnet und sucht los.
   const [enabled, setEnabled] = useState(!!initialQuery);
@@ -204,9 +206,7 @@ export function AlternativeSearchPanel({ initialQuery }: { initialQuery?: string
       {enabled && (
         <div className="mt-4 space-y-4">
           <p className="text-xs text-slate-600">
-            Gib ein vorhandenes Produkt ein <strong>oder</strong> beschreibe deine technischen
-            Anforderungen — die Treffer erscheinen sofort. Für reale Erfahrungen aus dem Internet
-            den Web-Knopf nutzen.
+            {t("alt.intro1")} <strong>{t("alt.intro2")}</strong> {t("alt.intro3")}
           </p>
 
           {/* Modus-Umschalter */}
@@ -286,7 +286,7 @@ export function AlternativeSearchPanel({ initialQuery }: { initialQuery?: string
                 className="inline-flex items-center gap-2 rounded-lg bg-purple-600 px-3 py-2 text-sm font-semibold text-white hover:bg-purple-700 disabled:opacity-50"
               >
                 {webLoading ? <Loader2 size={15} className="animate-spin" /> : <Globe size={15} />}
-                Im Web nach Erfahrungen suchen · 2 Credits
+                {t("alt.webKnopf")}
               </button>
               <button
                 type="button"
@@ -347,7 +347,7 @@ export function AlternativeSearchPanel({ initialQuery }: { initialQuery?: string
                       </p>
                     </>
                   ) : (
-                    result.reasoning ?? "Keine passenden Alternativen gefunden — Anforderungen anpassen."
+                    result.reasoning ?? t("alt.keineTreffer")
                   )}
                 </div>
               )}
@@ -417,6 +417,7 @@ function MatchMeter({ score, size = "sm" }: { score: number; size?: "sm" | "lg" 
 
 /** Kompakte Ergebnis-Zeile — Klick öffnet das Detail-Panel rechts */
 function AltRow({ alt, rank, onOpen }: { alt: AltMatch; rank: number; onOpen: () => void }) {
+  const { t } = useLocale();
   return (
     <button
       type="button"
@@ -438,7 +439,7 @@ function AltRow({ alt, rank, onOpen }: { alt: AltMatch; rank: number; onOpen: ()
           </span>
           {alt.availability.available ? (
             <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-1.5 py-0.5 text-[10px] font-semibold text-blue-800">
-              <CheckCircle2 size={10} /> Angebot verfügbar
+              <CheckCircle2 size={10} /> {t("alt.verfuegbar")}
             </span>
           ) : (
             <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">
@@ -455,6 +456,7 @@ function AltRow({ alt, rank, onOpen }: { alt: AltMatch; rank: number; onOpen: ()
 
 /** Detail-Panel — schiebt sich von rechts über die Seite */
 function AltDetailSlideOver({ alt, onClose }: { alt: AltMatch; onClose: () => void }) {
+  const { t } = useLocale();
   return (
     <div className="fixed inset-0 z-50" role="dialog" aria-modal="true">
       <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[1px]" onClick={onClose} />
@@ -492,7 +494,7 @@ function AltDetailSlideOver({ alt, onClose }: { alt: AltMatch; onClose: () => vo
           <section className="rounded-xl border border-slate-200 p-4">
             <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Produkt-Daten</div>
             <dl className="space-y-1.5 text-sm">
-              <DetailRow label="Hersteller" value={alt.manufacturer} />
+              <DetailRow label={t("alt.rowHersteller")} value={alt.manufacturer} />
               {alt.category && <DetailRow label="Kategorie" value={categoryLabel(alt.category)} />}
               {alt.chemistry && <DetailRow label="Chemie" value={CHEMISTRY_LABEL[alt.chemistry] ?? alt.chemistry} />}
               {alt.viscosityIso && <DetailRow label="Viskosität" value={`ISO VG ${alt.viscosityIso}`} />}
@@ -507,7 +509,7 @@ function AltDetailSlideOver({ alt, onClose }: { alt: AltMatch; onClose: () => vo
                           ? ` · ${alt.availability.quantity.toLocaleString("de-CH")} ${alt.availability.quantityUnit ?? ""}`
                           : ""
                       }`
-                    : "nur im Katalog, aktuell kein Angebot"
+                    : t("alt.nurKatalog")
                 }
               />
             </dl>
@@ -564,7 +566,7 @@ function AltDetailSlideOver({ alt, onClose }: { alt: AltMatch; onClose: () => vo
               href={`/listings/${alt.availability.listingId}`}
               className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-center text-sm font-medium text-slate-700 hover:bg-slate-50"
             >
-              Zum Angebot
+              {t("alt.zumAngebot")}
             </Link>
           )}
         </div>

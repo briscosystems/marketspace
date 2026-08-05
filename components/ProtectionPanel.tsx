@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ShieldCheck } from "lucide-react";
 import { withBasePath } from "@/lib/base-path";
 import { PROTECTION_STATUS_LABEL } from "@/lib/protection";
+import { useLocale } from "@/components/LocaleProvider";
 
 /**
  * Käuferschutz auf der Transaktionsseite.
@@ -31,6 +32,7 @@ export function ProtectionPanel({
   isFirstDeal: boolean;
   txOpen: boolean;
 }) {
+  const { t } = useLocale();
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -73,8 +75,7 @@ export function ProtectionPanel({
         <div className="card space-y-1.5">
           {header}
           <p className="text-sm text-slate-600">
-            Dieser Verkäufer bietet (noch) keinen Käuferschutz an — die Abwicklung läuft
-            direkt zwischen euch.
+            {t("prot.keinSchutz")}
           </p>
         </div>
       );
@@ -105,7 +106,7 @@ export function ProtectionPanel({
               : `Mit Käuferschutz bezahlen (${(totalEur + feeEur).toFixed(2)} €)`}
           </button>
         ) : (
-          <p className="text-xs text-slate-500">Der Käufer kann diese Zahlung wählen.</p>
+          <p className="text-xs text-slate-500">{t("prot.kaeuferWahl")}</p>
         )}
         {error && <p className="text-sm text-red-600">{error}</p>}
       </div>
@@ -120,8 +121,8 @@ export function ProtectionPanel({
         <p className="text-sm text-slate-700">
           Die Zahlung ({totalEur.toFixed(2)} €) ist eingegangen und sicher geparkt.
           {role === "SELLER"
-            ? " Sobald der Käufer die Lieferung bestätigt, wird das Geld an dich überwiesen."
-            : " Bestätige nach Erhalt der Ware die Lieferung — erst dann geht das Geld an den Verkäufer."}
+            ? " " + t("prot.verkaeuferInfo")
+            : " " + t("prot.kaeuferInfo")}
         </p>
         {role === "BUYER" && (
           <div className="flex flex-wrap gap-2">
@@ -166,9 +167,9 @@ export function ProtectionPanel({
       {header}
       <p className="text-sm text-slate-600">
         {protectionStatus === "RELEASED" &&
-          "Die Lieferung wurde bestätigt — das Geld wurde an den Verkäufer überwiesen."}
+          t("prot.bestaetigt")}
         {protectionStatus === "REFUNDED" &&
-          "Der Betrag wurde vollständig an den Käufer zurückerstattet."}
+          t("prot.erstattet")}
         {protectionStatus === "DISPUTED" &&
           "Ein Problem wurde gemeldet. Das Geld bleibt geparkt, bis Brisco den Fall entschieden hat — ihr werdet benachrichtigt."}
       </p>

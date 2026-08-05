@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, Plus, Pencil, Trash2, Play, Pause, ImagePlus } from "lucide-react";
 import { withBasePath } from "@/lib/base-path";
 import { AdBannerView } from "@/components/AdBannerView";
+import { useLocale } from "@/components/LocaleProvider";
 
 type Placement = "HOME" | "STOREFRONT" | "LISTINGS";
 type StatusTone = "live" | "scheduled" | "ended" | "paused";
@@ -81,6 +82,7 @@ export function AdManager({
   initialAds: Ad[];
   placements: { value: Placement; label: string }[];
 }) {
+  const { t } = useLocale();
   const router = useRouter();
   const [editingId, setEditingId] = useState<string | null>(null); // null = zu, "new" = neu
   const [form, setForm] = useState<Form>(emptyForm);
@@ -207,7 +209,7 @@ export function AdManager({
       <div className="space-y-3">
         {initialAds.length === 0 ? (
           <p className="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-sm text-slate-500">
-            Noch keine Anzeige. Legen Sie Ihre erste Werbung an.
+            {t("adm.leer")}
           </p>
         ) : (
           initialAds.map((ad) => (
@@ -231,7 +233,7 @@ export function AdManager({
                 </div>
                 <div className="mt-0.5 truncate text-xs text-slate-500">
                   {ad.placements.map((p) => placements.find((x) => x.value === p)?.label ?? p).join(", ") ||
-                    "keine Platzierung"}
+                    t("adm.keinePlatzierung")}
                 </div>
               </div>
               <div className="flex flex-none items-center gap-1">
@@ -247,7 +249,7 @@ export function AdManager({
                 <button
                   type="button"
                   onClick={() => openEdit(ad)}
-                  title="Bearbeiten"
+                  title={t("adm.bearbeiten")}
                   className="rounded-md p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
                 >
                   <Pencil size={16} />

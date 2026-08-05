@@ -125,7 +125,7 @@ export function ConceptBrowseGrid({ listings }: { listings: BrowseListing[] }) {
 
       {displayed.length === 0 && (
         <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center">
-          <p className="font-medium text-slate-700">Keine Angebote gefunden.</p>
+          <p className="font-medium text-slate-700">{t("grid.keineAngebote")}</p>
           <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">
             Zurzeit bietet kein Händler dieses Produkt an. Zwei Wege führen trotzdem zum Ziel:
           </p>
@@ -140,7 +140,7 @@ export function ConceptBrowseGrid({ listings }: { listings: BrowseListing[] }) {
               href="/rfqs/new"
               className="inline-flex items-center gap-1.5 rounded-lg bg-amber-500 px-3.5 py-2 text-sm font-semibold text-white hover:bg-amber-600"
             >
-              + Anfrage einstellen — Händler melden sich
+              {t("grid.anfrageKnopf")}
             </a>
           </div>
         </div>
@@ -201,7 +201,7 @@ export function ConceptBrowseGrid({ listings }: { listings: BrowseListing[] }) {
                 {l.sponsored && (
                   <span
                     className="inline-flex w-fit items-center rounded-md bg-amber-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-800"
-                    title="Dieser Anbieter hat eine bezahlte Platzierung — das Angebot erscheint dadurch weiter oben."
+                    title={t("grid.gesponsertTitle")}
                   >
                     {t("badge.gesponsert")}
                   </span>
@@ -232,7 +232,7 @@ export function ConceptBrowseGrid({ listings }: { listings: BrowseListing[] }) {
                     <span className="text-xs font-semibold text-slate-500"> / {l.unit}</span>
                   </div>
                 ) : (
-                  <div className="shrink-0 text-sm font-bold text-slate-700">auf Anfrage</div>
+                  <div className="shrink-0 text-sm font-bold text-slate-700">{t("grid.aufAnfrage")}</div>
                 )}
               </div>
             </div>
@@ -258,7 +258,7 @@ export function ConceptBrowseGrid({ listings }: { listings: BrowseListing[] }) {
         {selected && (
           <>
             <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
-              <span className="text-xs font-bold uppercase tracking-wide text-brand-700">Angebot</span>
+              <span className="text-xs font-bold uppercase tracking-wide text-brand-700">{t("grid.angebotLabel")}</span>
               <button
                 type="button"
                 onClick={() => setSelected(null)}
@@ -297,7 +297,7 @@ export function ConceptBrowseGrid({ listings }: { listings: BrowseListing[] }) {
                   <span className="text-base font-semibold text-slate-500"> / {selected.unit}</span>
                 </div>
               ) : (
-                <div className="text-2xl font-bold text-slate-900">Auf Anfrage</div>
+                <div className="text-2xl font-bold text-slate-900">{t("grid.aufAnfrage")}</div>
               )}
 
               <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-slate-200 bg-slate-200">

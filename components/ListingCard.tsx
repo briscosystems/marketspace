@@ -131,7 +131,7 @@ function CompactCard({ listing, hideStatus }: { listing: ListingCardData; hideSt
             {listing.sponsored && (
               <span
                 className="inline-flex items-center rounded-md bg-amber-100 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-amber-800"
-                title="Dieser Anbieter hat eine bezahlte Platzierung — das Angebot erscheint dadurch weiter oben."
+                title={t("grid.gesponsertTitle")}
               >
                 Gesponsert
               </span>
@@ -170,7 +170,7 @@ function CompactCard({ listing, hideStatus }: { listing: ListingCardData; hideSt
               {listing.priceEur.toFixed(2)} €
             </div>
           ) : (
-            <div className="text-sm font-bold text-slate-700">auf Anfrage</div>
+            <div className="text-sm font-bold text-slate-700">{t("grid.aufAnfrage")}</div>
           )}
         </div>
       </Link>
@@ -245,7 +245,7 @@ function ExtendedCard({ listing, hideStatus }: { listing: ListingCardData; hideS
             {listing.sponsored && (
               <span
                 className="inline-flex w-fit items-center rounded-md bg-amber-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-800"
-                title="Dieser Anbieter hat eine bezahlte Platzierung — das Angebot erscheint dadurch weiter oben."
+                title={t("grid.gesponsertTitle")}
               >
                 Gesponsert
               </span>
@@ -289,7 +289,7 @@ function ExtendedCard({ listing, hideStatus }: { listing: ListingCardData; hideS
                 {listing.priceEur.toFixed(2)} €
               </div>
             ) : (
-              <div className="shrink-0 text-sm font-bold text-slate-700">auf Anfrage</div>
+              <div className="shrink-0 text-sm font-bold text-slate-700">{t("grid.aufAnfrage")}</div>
             )}
           </div>
         </div>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, CreditCard, CheckCircle2, XCircle, RotateCcw, Check } from "lucide-react";
 import { withBasePath } from "@/lib/base-path";
+import { useLocale } from "@/components/LocaleProvider";
 
 type TierKey = "BASIS" | "PRO" | "MARKE";
 
@@ -41,6 +42,7 @@ export function MembershipActions({
   currentTierName: string | null;
   tiers: TierOption[];
 }) {
+  const { t } = useLocale();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -110,7 +112,7 @@ export function MembershipActions({
     <div className="space-y-4">
       {notice === "success" && (
         <div className="flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
-          <CheckCircle2 size={16} /> Zahlung erfolgreich — dein Zugang ist freigeschaltet.
+          <CheckCircle2 size={16} /> {t("memact.erfolg")}
         </div>
       )}
       {notice === "cancel" && (
@@ -128,8 +130,9 @@ export function MembershipActions({
         cancelAtPeriodEnd ? (
           <div className="space-y-2">
             <p className="text-sm text-amber-700">
-              Gekündigt — dein Zugang{currentTierName ? ` (${currentTierName})` : ""} läuft am{" "}
-              <strong>{validUntil}</strong> aus. Danach erfolgt keine weitere Abbuchung.
+              {t("memact.gekuendigt1").replace("{tier}", currentTierName ? ` (${currentTierName})` : "")}{" "}
+              <strong>{validUntil}</strong>
+              {t("memact.gekuendigt2")}
             </p>
             <button
               type="button"

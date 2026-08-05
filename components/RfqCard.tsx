@@ -2,6 +2,7 @@ import Link from "next/link";
 import { TrustBadge } from "./TrustBadge";
 import { ProductImage } from "./ProductImage";
 import { Search } from "lucide-react";
+import { useLocale } from "@/components/LocaleProvider";
 
 type Tier = "UNVERIFIED" | "VERIFIED" | "TRADE_ASSURED" | "PREMIUM" | "DIAMOND";
 type RfqStatus = "OPEN" | "ACCEPTED" | "EXPIRED" | "CANCELED";
@@ -36,6 +37,7 @@ export function RfqCard({
   rfq: RfqCardData;
   variant?: "compact" | "extended";
 }) {
+  const { t } = useLocale();
   if (variant === "compact") return <CompactRfq rfq={rfq} />;
   return <ExtendedRfq rfq={rfq} />;
 }
@@ -44,6 +46,7 @@ export function RfqCard({
 // COMPACT — schmale Listenzeile (Standard), analog zur Angebots-Kompaktkarte
 // ============================================================================
 function CompactRfq({ rfq }: { rfq: RfqCardData }) {
+  const { t } = useLocale();
   const status = statusMeta[rfq.status];
   return (
     <Link
@@ -89,7 +92,7 @@ function CompactRfq({ rfq }: { rfq: RfqCardData }) {
           <TrustBadge tier={rfq.buyer.trustTier} size="xs" />
         </div>
         <div className="mt-1 text-xs text-slate-500">
-          {rfq.offersCount} {rfq.offersCount === 1 ? "Angebot" : "Angebote"}
+          {rfq.offersCount} {rfq.offersCount === 1 ? t("rfqc.angebot.one") : t("rfqc.angebot.other")}
         </div>
       </div>
     </Link>
@@ -100,6 +103,7 @@ function CompactRfq({ rfq }: { rfq: RfqCardData }) {
 // EXTENDED — volle Karte mit allen Details
 // ============================================================================
 function ExtendedRfq({ rfq }: { rfq: RfqCardData }) {
+  const { t } = useLocale();
   const status = statusMeta[rfq.status];
   return (
     <Link
@@ -148,7 +152,7 @@ function ExtendedRfq({ rfq }: { rfq: RfqCardData }) {
           </div>
           <span className="text-slate-600">
             {rfq.offersCount}{" "}
-            {rfq.offersCount === 1 ? "Angebot eingegangen" : "Angebote eingegangen"}
+            {rfq.offersCount === 1 ? t("rfqc.eingegangen.one") : t("rfqc.eingegangen.other")}
           </span>
         </div>
       </div>

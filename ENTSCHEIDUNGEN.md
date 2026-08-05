@@ -33,6 +33,7 @@ Nach jeder Änderung, die hier etwas berührt: **Eintrag ergänzen oder anpassen
 | Entscheidung | Begründung |
 |---|---|
 | Alles auf **Deutsch** — UI, Code-Kommentare, Doku, Seed-Daten | Zielmarkt DACH |
+| **Nutzersichtbare Texte gehören in `lib/i18n.ts` (DE/EN/NL)** — nie fest in den Seitencode. Ausnahmen, bewusst nur deutsch: Rechtsseiten (AGB, Datenschutz, Impressum) und der Admin-Bereich | 2026-08-04: 111 feste deutsche Texte gefunden, die EN/NL-Nutzern Deutsch zeigten; in zwei Runden ~130 Schlüssel nachgezogen |
 | Angebote heißen **„Anbieten"** (blau), Anfragen **„Suchen"** (amber) | Feste Marken-Konvention |
 | Niemals „Listings" / „RFQs" in nutzersichtbarem Text | dito |
 | Niemals „Treuhand" / „Escrow" — es heißt **Käuferschutz** | Stripe-Vorgabe für zulässige Geschäftsmodelle |

@@ -66,7 +66,7 @@ export function InquiryButtons({
     }
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
-      setError(data.error ?? "Anfrage konnte nicht gesendet werden.");
+      setError(data.error ?? t("inq.fehler"));
       setSending(false);
       return;
     }
@@ -104,7 +104,7 @@ export function InquiryButtons({
           >
             <div className="flex items-start justify-between gap-3">
               <h3 className="text-base font-bold text-slate-900">
-                {open === "sample" ? "Muster anfordern" : "Angebot anfragen"}
+                {open === "sample" ? t("inq.muster") : t("inq.angebot")}
               </h3>
               <button
                 type="button"
@@ -170,7 +170,7 @@ export function InquiryButtons({
                 disabled={sending}
                 className="rounded-full bg-brand-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50"
               >
-                {sending ? "Sendet …" : "Anfrage senden"}
+                {sending ? t("inq.sendet") : t("inq.senden")}
               </button>
             </div>
           </div>
