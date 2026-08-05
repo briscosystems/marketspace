@@ -83,8 +83,9 @@ Nach jeder Änderung, die hier etwas berührt: **Eintrag ergänzen oder anpassen
 
 | Entscheidung | Begründung |
 |---|---|
-| Das **Suchfeld steht in der Mitte der Startseite**, nicht nur in der Kopfzeile — wir nennen uns Suchmaschine, also muss man sofort suchen können. Einfaches Formular (GET), arbeitet auch ohne JavaScript | Positionierung |
-| **Auch angemeldet ist die Suche das erste Element** — auf dem Dashboard steht sie als eigene Karte („Wonach suchst du?") ÜBER den Rollen-Aktionskarten, gleichwertig groß. Gemeinsamer Baustein `components/SuchFeld.tsx` | Ein Endkunde will zuerst suchen; die Kopfzeile allein ist nicht gleichwertig mit den Aktionskarten (Betreiber-Feedback 2026-08-04) |
+| **EIN Suchfeld pro Seite — und das ist die Kopfzeile** (auf jeder Seite vorhanden, dunkler Balken, gut sichtbar). Kein zweites großes Feld im Seiteninhalt | Betreiber-Feedback 2026-08-04: zwei Felder untereinander verwirren; ersetzt die frühere Hero-Suchfeld-Entscheidung |
+| Auf der Startseite bleiben die **Beispielsuchen** als Chips (Blasocut 4000, HLP 46, Gleitbahnöl ISO 68, Bor-frei) — getippt wird oben | zeigen in einer Sekunde, wonach man hier sucht |
+| **Dashboard entschlackt:** Kacheln „Dein Dashboard" (Doppel-Navigation) und „Credits" (steht schon als Chip in der Kopfzeile) entfernt — es bleiben Nachrichten und Eingegangene Angebote | „Bedienung zu komplex, zu viel angezeigt" (Betreiber 2026-08-04) |
 | Darunter **Beispielsuchen** als Knöpfe (Blasocut 4000, HLP 46, Gleitbahnöl ISO 68, Bor-frei) | zeigt in einer Sekunde, wonach man hier sucht |
 | **Jede leere Liste bietet einen Ausweg** über den Baustein `components/LeerHinweis.tsx`: „Alternative finden (KI)" und „Anfrage einstellen — wir holen Angebote ein" | Eine leere Liste ist der häufigste Absprungmoment; ehrlicher als so zu tun, als sei alles da |
 | Kein „Keine Treffer" ohne nächsten Schritt | dito |

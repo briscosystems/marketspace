@@ -6,7 +6,6 @@ import { ListingCard } from "@/components/ListingCard";
 import { AdSlot } from "@/components/AdSlot";
 import { OilBarrels, SearchCanister } from "@/components/OilBarrels";
 import { ApplicationEntry } from "@/components/ApplicationEntry";
-import { SuchFeld } from "@/components/SuchFeld";
 import { getT } from "@/lib/i18n-server";
 import { fill } from "@/lib/i18n";
 import { getSettingInt } from "@/lib/credits";
@@ -103,8 +102,20 @@ async function PublicLanding() {
             {t("home.tilePriceTitle")}
           </Link>
         </div>
-        <div className="mt-6">
-          <SuchFeld />
+        {/* EIN Suchfeld pro Seite: getippt wird in der Kopfzeile direkt darüber.
+            Die Beispielsuchen bleiben — sie zeigen in einer Sekunde, wonach man
+            hier sucht (Marke, Normkürzel, Produktart, Inhaltsstoff). */}
+        <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm">
+          <span className="text-slate-500">{t("home.searchExamplesLabel")}</span>
+          {["Blasocut 4000", "HLP 46", "Gleitbahnöl ISO 68", "Bor-frei"].map((b) => (
+            <Link
+              key={b}
+              href={`/listings?q=${encodeURIComponent(b)}`}
+              className="rounded-full bg-slate-100 px-3 py-1 text-slate-700 transition hover:bg-brand-100 hover:text-brand-800"
+            >
+              {b}
+            </Link>
+          ))}
         </div>
         <div className="mt-5">
           <Link href="/register" className="btn-secondary">
@@ -329,14 +340,9 @@ async function PersonalDashboard({ userId }: { userId: string }) {
 
   return (
     <div className="space-y-8">
-      {/* Kein „Willkommen zurück"-Block mehr — der Anmelde-Status steht oben
-          rechts im Kopf (AccountMenu). Die Seite beginnt mit der SUCHE: wir sind
-          die Suchmaschine, also ist Suchen auch angemeldet die erste Handlung —
-          gleichwertig groß wie die Aktionskarten, nicht nur die Kopfzeile. */}
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft md:p-6">
-        <h1 className="section-title mb-3">{t("dash.sucheTitel")}</h1>
-        <SuchFeld beispiele={false} />
-      </section>
+      {/* EIN Suchfeld pro Seite — und das ist die Kopfzeile (Betreiber-Feedback
+          2026-08-04: zwei Felder untereinander verwirren). Die Seite beginnt
+          direkt mit den Aktionen. */}
 
       {role !== "ENDKUNDE" && (
         <section className="flex justify-end">
@@ -373,14 +379,7 @@ async function PersonalDashboard({ userId }: { userId: string }) {
         ))}
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <QuickStat
-          href="/dashboard"
-          icon={<LayoutDashboard className="h-5 w-5" />}
-          label={t("dash.tileDash")}
-          value={t("dash.tileDashWert")}
-          hint={t("dash.tileDashHint")}
-        />
+      <section className="grid grid-cols-2 gap-4">
         <QuickStat
           href="/conversations"
           icon={<MessageSquare className="h-5 w-5" />}
@@ -394,13 +393,6 @@ async function PersonalDashboard({ userId }: { userId: string }) {
           label={t("dash.tileOffersIn")}
           value={String(openOffersToMe)}
           hint={t("dash.tileOffersInHint")}
-        />
-        <QuickStat
-          href="/mitgliedschaft"
-          icon={<Sparkles className="h-5 w-5" />}
-          label={t("dash.tileCredits")}
-          value={String(creditBalance)}
-          hint={t("dash.tileCreditsHint")}
         />
       </section>
 
