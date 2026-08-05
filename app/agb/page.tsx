@@ -11,14 +11,16 @@ export const metadata = {
 // B2B) bleibt davon unberührt und ist als offener Punkt in GO-LIVE.md 1.2 festgehalten
 // — der Betreiber führt sie selbst durch.
 export default function AgbPage() {
+  // Laufende Nummerierung: neue Abschnitte verschieben nie wieder Querverweise.
+  let nr = 0;
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div>
         <h1 className="page-title">Allgemeine Geschäftsbedingungen (AGB)</h1>
-        <p className="text-sm text-slate-500">Stand: Juli 2026</p>
+        <p className="text-sm text-slate-500">Stand: August 2026</p>
       </div>
 
-      <Section n="1" title="Geltungsbereich & Plattformbetreiber">
+      <Section n={String(++nr)} title="Geltungsbereich & Plattformbetreiber">
         <p>
           Diese AGB regeln die Nutzung des Online-Marktplatzes „Brisco" (nachfolgend „Plattform"),
           betrieben von der <strong>Brisco Systems GmbH</strong>, Huebacherweg 27, CH-8335 Hittnau,
@@ -33,7 +35,7 @@ export default function AgbPage() {
         </p>
       </Section>
 
-      <Section n="2" title="Rolle von Brisco — reine Vermittlung">
+      <Section n={String(++nr)} title="Rolle von Brisco — reine Vermittlung">
         <p>
           Brisco betreibt eine technische Vermittlungsplattform. Brisco bringt Anbieter und
           Nachfrager zusammen und stellt Werkzeuge zur Recherche, Kommunikation und Anbahnung bereit.
@@ -45,9 +47,15 @@ export default function AgbPage() {
           Hersteller, Importeur noch Inverkehrbringer der gehandelten Produkte und übernimmt keine
           Erfüllungs-, Liefer- oder Zahlungspflichten aus diesen Verträgen.
         </p>
+        <p>
+          Brisco ist <strong>nicht verpflichtet, von Nutzern eingestellte Inhalte vorab zu
+          prüfen</strong> (Angebote, Anfragen, Produktangaben, Nachrichten, Fotos). Brisco geht
+          konkreten Hinweisen auf Rechtsverstöße nach und kann beanstandete Inhalte entfernen,
+          ausblenden oder sperren.
+        </p>
       </Section>
 
-      <Section n="3" title="Registrierung, Pseudonymität & Nutzerpflichten">
+      <Section n={String(++nr)} title="Registrierung, Pseudonymität & Nutzerpflichten">
         <p>
           Nutzer treten auf der Plattform unter einem <strong>Pseudonym</strong> auf; die
           Klaridentität wird Brisco gegenüber im Rahmen der Verifizierung offengelegt, aber anderen
@@ -59,9 +67,36 @@ export default function AgbPage() {
           Zugangsdaten geheim. Eingestellte Angebote/Anfragen müssen sachlich richtig, rechtmäßig und
           vollständig sein (inkl. erforderlicher Sicherheits- und Gefahrstoffangaben).
         </p>
+        <p>
+          Bei Angeboten über chemische Produkte trägt der <strong>Anbieter die alleinige
+          Verantwortung</strong> für die Einhaltung aller einschlägigen Vorschriften — insbesondere
+          des Chemikalien- und Gefahrstoffrechts (in der Schweiz u. a. ChemG/ChemV, in der EU
+          u. a. REACH und CLP), der Kennzeichnungs-, Verpackungs- und Transportvorschriften
+          (u. a. ADR) sowie etwaiger Abgabe-, Export- und Sanktionsbeschränkungen. Der Anbieter
+          stellt sicher, dass er zur Abgabe des Produkts an den jeweiligen Erwerber berechtigt ist.
+        </p>
       </Section>
 
-      <Section n="4" title="Kommunikation & Verbot des Austauschs von Kontaktdaten">
+      <Section n={String(++nr)} title="Nutzerinhalte, Fotos & Dokumente Dritter">
+        <p>
+          Für hochgeladene Inhalte (insbesondere <strong>Fotos</strong>, Texte, Produktangaben)
+          sichert der Nutzer zu, über die erforderlichen Rechte zu verfügen und keine Rechte
+          Dritter zu verletzen. Der Nutzer räumt Brisco das einfache, unentgeltliche Recht ein,
+          diese Inhalte zum Betrieb der Plattform zu speichern, anzuzeigen und technisch zu
+          bearbeiten (z. B. Verkleinern von Bildern).
+        </p>
+        <p>
+          Von Brisco bereitgestellte <strong>Dokumente Dritter</strong> (insbesondere Sicherheits-
+          und technische Datenblätter der Hersteller) werden als Service wiedergegeben.
+          <strong> Maßgeblich ist stets das aktuelle Originaldokument des jeweiligen
+          Herstellers</strong>; für Aktualität, Vollständigkeit und Richtigkeit der Wiedergabe
+          übernimmt Brisco keine Gewähr. Berechtigte Beanstandungen (z. B. von Rechteinhabern)
+          werden nach Prüfung unverzüglich durch Entfernung oder Korrektur umgesetzt — Meldung an
+          die im Impressum genannte Kontaktadresse.
+        </p>
+      </Section>
+
+      <Section n={String(++nr)} title="Kommunikation & Verbot des Austauschs von Kontaktdaten">
         <p>
           Die Kommunikation während der Anbahnung erfolgt über das plattforminterne Nachrichtensystem.
           Zur Wahrung der Pseudonymität und der Plattform-Integrität ist es{" "}
@@ -72,7 +107,7 @@ export default function AgbPage() {
         </p>
       </Section>
 
-      <Section n="5" title="Zustandekommen von Verträgen zwischen Nutzern">
+      <Section n={String(++nr)} title="Zustandekommen von Verträgen zwischen Nutzern">
         <p>
           Angebote und Anfragen auf der Plattform sind unverbindliche Aufforderungen zur Abgabe von
           Angeboten. Ein verbindlicher Vertrag kommt erst durch übereinstimmende Erklärungen der
@@ -81,7 +116,7 @@ export default function AgbPage() {
         </p>
       </Section>
 
-      <Section n="6" title="Entgelte">
+      <Section n={String(++nr)} title="Entgelte">
         <p>
           Die Nutzung der Plattform setzt eine <strong>Jahres-Mitgliedschaft</strong> voraus
           (Preis gemäß aktueller Preisangabe, automatische Verlängerung mit jederzeitiger
@@ -92,7 +127,7 @@ export default function AgbPage() {
         </p>
       </Section>
 
-      <Section n="7" title="Käuferschutz (optionale Zahlungsabwicklung)">
+      <Section n={String(++nr)} title="Käuferschutz (optionale Zahlungsabwicklung)">
         <p>
           Verkäufer können freiwillig den <strong>Käuferschutz</strong> aktivieren
           (Identitäts- und Bankdaten-Prüfung durch den Zahlungsdienstleister Stripe).
@@ -111,9 +146,15 @@ export default function AgbPage() {
           Bankdienstleistung von Brisco; die Zahlungsabwicklung erfolgt durch Stripe. Die
           Haltedauer geparkter Beträge beträgt maximal 90 Tage.
         </p>
+        <p>
+          Die Entscheidung über Freigabe oder Rückerstattung trifft Brisco <strong>nach billigem
+          Ermessen</strong> auf Grundlage der von den Parteien eingereichten Belege. Sie ist ein
+          Service zur Streitbeilegung; die vertraglichen Ansprüche der Nutzer untereinander und
+          der Rechtsweg bleiben unberührt. Ein Anspruch auf ein bestimmtes Ergebnis besteht nicht.
+        </p>
       </Section>
 
-      <Section n="8" title="KI-Empfehlungen, KSS-Finder & Knowledge Base — ohne Gewähr">
+      <Section n={String(++nr)} title="KI-Empfehlungen, KSS-Finder & Knowledge Base — ohne Gewähr">
         <p>
           Die Plattform stellt automatisierte Hilfen bereit (u. a. KI-gestützte Empfehlungen,
           KSS-Finder, Preis- und Produktdaten, Sicherheitsdatenblätter, Materialverträglichkeit).
@@ -131,7 +172,7 @@ export default function AgbPage() {
         </p>
       </Section>
 
-      <Section n="9" title="Haftung & Haftungsausschluss">
+      <Section n={String(++nr)} title="Haftung & Haftungsausschluss">
         <ul className="ml-5 list-disc space-y-2">
           <li>
             Brisco haftet <strong>nicht für die Richtigkeit, Qualität, Vollständigkeit,
@@ -160,7 +201,7 @@ export default function AgbPage() {
         </ul>
       </Section>
 
-      <Section n="10" title="Gewährleistung für die Plattform">
+      <Section n={String(++nr)} title="Gewährleistung für die Plattform">
         <p>
           Brisco bemüht sich um hohe Verfügbarkeit, schuldet jedoch keine ununterbrochene
           Erreichbarkeit. Wartung, Störungen und höhere Gewalt können den Betrieb vorübergehend
@@ -169,7 +210,7 @@ export default function AgbPage() {
         </p>
       </Section>
 
-      <Section n="11" title="Datenschutz">
+      <Section n={String(++nr)} title="Datenschutz">
         <p>
           Brisco verarbeitet personenbezogene Daten nach dem schweizerischen Datenschutzgesetz
           (DSG) und — soweit anwendbar — der europäischen DSGVO. Einzelheiten regelt die gesonderte
@@ -177,15 +218,36 @@ export default function AgbPage() {
         </p>
       </Section>
 
-      <Section n="12" title="Laufzeit, Sperrung & Kündigung">
+      <Section n={String(++nr)} title="Freistellung">
+        <p>
+          Der Nutzer stellt Brisco von sämtlichen <strong>Ansprüchen Dritter</strong> frei, die auf
+          einer Verletzung dieser AGB oder geltenden Rechts durch den Nutzer beruhen — insbesondere
+          aus von ihm eingestellten Angeboten, Inhalten und Fotos sowie aus den von ihm
+          geschlossenen Verträgen. Die Freistellung umfasst die angemessenen Kosten der
+          Rechtsverteidigung. Der Nutzer unterstützt Brisco bei der Abwehr solcher Ansprüche
+          nach besten Kräften.
+        </p>
+      </Section>
+
+      <Section n={String(++nr)} title="Laufzeit, Sperrung & Kündigung">
         <p>
           Die Nutzung kann von beiden Seiten jederzeit beendet werden. Brisco kann Zugänge bei
-          Verstößen gegen diese AGB (insbesondere Punkt 4 und 7) mit sofortiger Wirkung sperren.
+          Verstößen gegen diese AGB (insbesondere gegen die Nutzerpflichten und das Verbot des Austauschs von Kontaktdaten) mit sofortiger Wirkung sperren.
           Bereits entstandene Entgelt- und Schadenersatzansprüche bleiben bestehen.
         </p>
       </Section>
 
-      <Section n="13" title="Anwendbares Recht & Gerichtsstand">
+      <Section n={String(++nr)} title="Änderungen dieser AGB">
+        <p>
+          Brisco kann diese AGB mit Wirkung für die Zukunft ändern. Änderungen werden mindestens
+          <strong> 30 Tage vor Inkrafttreten</strong> per E-Mail oder auf der Plattform angekündigt.
+          Widerspricht der Nutzer nicht bis zum Inkrafttreten oder nutzt er die Plattform danach
+          weiter, gelten die geänderten AGB als angenommen; auf diese Folge wird in der Ankündigung
+          hingewiesen. Im Fall des Widerspruchs kann jede Seite die Nutzung beenden.
+        </p>
+      </Section>
+
+      <Section n={String(++nr)} title="Anwendbares Recht & Gerichtsstand">
         <p>
           Es gilt <strong>schweizerisches Recht</strong>. Die Anwendung des UN-Kaufrechts (CISG)
           wird ausgeschlossen.

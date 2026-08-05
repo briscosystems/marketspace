@@ -124,6 +124,21 @@ Nach jeder Änderung, die hier etwas berührt: **Eintrag ergänzen oder anpassen
 | Die ganze Plattform **duzt** — auch Werbe- und Abo-Texte (siezte als einzige) | eine Ansprache |
 | Leere Zustände auch auf Konto-Seiten mit Ausweg (Dashboard ×3, Nachrichten, Umsätze, Anfrage-Detail) | Sackgassen sind der häufigste Absprungmoment |
 
+## AGB (Stand August 2026, erweitert 2026-08-04)
+
+| Klausel | Zweck |
+|---|---|
+| Automatische §-Nummerierung im Code | feste Nummern erzeugten schon einmal falsche Querverweise |
+| **Keine proaktive Prüfpflicht** — Brisco prüft Nutzerinhalte nicht vorab, handelt auf konkrete Hinweise | Hosting-Stellung; keine Übernahme fremder Inhalte |
+| **Gefahrstoff-Verantwortung allein beim Anbieter** (ChemG/ChemV, REACH/CLP, ADR, Export/Sanktionen) | Kernrisiko einer Chemie-Plattform |
+| **Nutzerinhalte/Fotos:** Rechte-Zusicherung des Nutzers + einfaches Nutzungsrecht für den Betrieb; **Dokumente Dritter:** maßgeblich ist das Hersteller-Original, Entfernung auf berechtigte Meldung | Foto-Upload und SDS-Hosting absichern |
+| **Käuferschutz-Entscheid nach billigem Ermessen**, kein Anspruch auf ein bestimmtes Ergebnis, Rechtsweg unberührt | sonst haftete Brisco für die Streitentscheidung selbst |
+| **Haftungshöchstbetrag:** Entgelte der letzten 12 Monate (außer bei zwingender Haftung) | Begrenzung der Resthaftung |
+| **Freistellung:** Nutzer stellt Brisco von Drittansprüchen aus seinen Inhalten/Verträgen frei, inkl. Verteidigungskosten | wichtigster Schutzschild |
+| **AGB-Änderungen:** 30 Tage Ankündigung, Weiternutzung gilt als Annahme, Widerspruchsrecht | sonst wären Änderungen nie durchsetzbar |
+| Zwingende Haftung (Personenschäden, Produkthaftung, Vorsatz/grobe Fahrlässigkeit) bleibt ausdrücklich unberührt | Klauseln, die das ausschließen, wären insgesamt nichtig |
+| **Die erweiterten AGB brauchen einen kurzen Anwalts-Blick vor Go-Live** — die frühere Freigabe betraf das SDS-Hosting, nicht diese neuen Klauseln | offener Punkt |
+
 ## Fachliche Regeln
 
 | Entscheidung | Begründung |
