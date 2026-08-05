@@ -243,3 +243,29 @@ export async function sendTestEmail() {
   });
   revalidatePath("/admin");
 }
+
+/**
+ * Konto manuell sperren oder entsperren. Gesperrte Konten können sich nicht
+ * mehr anmelden, laufende Sitzungen verlieren beim nächsten Aufruf den Zugriff
+ * (JWT-Prüfung in lib/auth.ts), API-Schlüssel werden abgewiesen.
+ */
+export async function toggleUserBlock(formData: FormData) {
+  await assertOwner();
+  const userId = String(formData.get("userId") ?? "");
+  const grund = String(formData.get("grund") ?? "").trim() || null;
+  if (!userId) return;
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { blockedAt: true, role: true },
+  });
+  if (!user) return;
+  // Der Betreiber kann sich nicht selbst aussperren.
+  if (user.role === "ADMIN") return;
+  await prisma.user.update({
+    where: { id: userId },
+    data: user.blockedAt
+      ? { blockedAt: null, blockedReason: null }
+      : { blockedAt: new Date(), blockedReason: grund },
+  });
+  revalidatePath("/admin");
+}

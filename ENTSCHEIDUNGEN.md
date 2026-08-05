@@ -188,6 +188,16 @@ Nach jeder Änderung, die hier etwas berührt: **Eintrag ergänzen oder anpassen
 | **Das Konto entsteht aber ERST beim Absenden**, bei Anfrage wie bei Angebot: ausfüllen, E-Mail angeben, fertig. Vorher wurde man auf die Anmeldeseite geworfen und verlor alles Eingetippte | gemeinsamer Baustein `lib/konto-nebenbei.ts` |
 | Nach dem Absenden ohne Konto führt der Weg auf eine Bestätigungsseite (`/rfqs/eingegangen`, `/listings/eingestellt`), nie in eine gesperrte Seite | Das Passwort ist zu diesem Zeitpunkt noch nicht gesetzt |
 
+## Konto-Sperrung & REST-API (2026-08-04)
+
+| Entscheidung | Umsetzung |
+|---|---|
+| **Admin sieht Kunden nach Abo-Stufe** (Marke / Pro / Basis / Kennenlernphase / ohne Zugang / gesperrt) als Kachelreihe oben im Admin | „Aktiv" = bezahlte Stufe mit gültigem Ablaufdatum |
+| **Jedes Konto manuell sperrbar** (Spalte „Sperre" in der Kundentabelle, mit Rückfrage und internem Grund). Die Sperre wirkt sofort: Anmeldung verweigert, laufende Sitzungen verlieren beim nächsten Aufruf den Zugriff (JWT-Prüfung), API-Schlüssel abgewiesen. Admin-Konten sind nicht sperrbar | getestet: Anmeldung gesperrt → leere Session |
+| **REST-API /api/v1 nur für aktive Marke-Stufe** — die Stufe wird bei JEDEM Aufruf geprüft; Abo abgelaufen oder Konto gesperrt = Schlüssel sofort wirkungslos | Endpunkte: Produkte (Suche + Detail), Datenblätter (ausgewertet + pdfUrl), KI-Alternativsuche |
+| API-Schlüssel: nur sha256-Hash gespeichert, Klartext genau einmal sichtbar, max. 5 aktive, Selbstverwaltung unter Mitgliedschaft, Doku unter /api-doku | — |
+| **KI über API kostet dieselben Credits wie auf der Plattform** (Web-Recherche 2, regelbasiert kostenlos), gleiche atomare Abbuchung, gleiches Buchungsjournal, automatische Erstattung bei Fehlschlag | End-zu-End getestet: 401/403/402, Abbuchung −2 mit Journal, Erstattung +2, Saldo unverändert bei zu wenig Guthaben |
+
 ## Technik
 
 | Entscheidung | Begründung |

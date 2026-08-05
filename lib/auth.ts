@@ -19,6 +19,9 @@ export const authOptions: NextAuthOptions = {
           where: { email: credentials.email.toLowerCase() },
         });
         if (!user) return null;
+        // Gesperrte Konten kommen nicht rein — gleiche Antwort wie „falsches
+        // Passwort", damit die Sperre nichts über das Konto verrät.
+        if (user.blockedAt) return null;
         const ok = await bcrypt.compare(credentials.password, user.passwordHash);
         if (!ok) return null;
         return {
@@ -33,6 +36,17 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user }) {
+      // Sperr-Prüfung bei jedem Aufruf: JWT-Sitzungen leben sonst weiter, bis
+      // das Token abläuft. Eine Sperre muss sofort wirken.
+      if (token?.id) {
+        const aktuell = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { blockedAt: true },
+        });
+        if (!aktuell || aktuell.blockedAt) {
+          token.id = "";
+        }
+      }
       if (user) {
         const u = user as {
           id: string;

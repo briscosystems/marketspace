@@ -1,3 +1,4 @@
+import { BlockUserButton } from "@/components/admin/BlockUserButton";
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -34,17 +35,21 @@ export default async function AdminPage() {
   const mailStatus = await checkMailStatus();
   const [users, settings, usageAgg, purchaseAgg, referralCodes, revenueByUser, emailLogs] = await Promise.all([
     prisma.user.findMany({
-      where: { role: { in: ["RESELLER", "OEM"] } },
+      where: { role: { in: ["RESELLER", "OEM", "ENDKUNDE"] } },
       select: {
         id: true,
         pseudonym: true,
         email: true,
         companyName: true,
+        role: true,
         trustTier: true,
         searchBoost: true,
         creditBalance: true,
         trialEndsAt: true,
+        membershipTier: true,
         membershipValidUntil: true,
+        blockedAt: true,
+        blockedReason: true,
         _count: { select: { listings: true, referrals: true } },
       },
       orderBy: [{ searchBoost: "desc" }, { pseudonym: "asc" }],
@@ -274,6 +279,53 @@ export default async function AdminPage() {
       <section>
         <div className="eyebrow text-rose-600">Intern · nur Eigentümer</div>
         <h1 className="page-title">Monetarisierung</h1>
+      </section>
+
+      {/* Abo-Übersicht: wie viele Kunden auf welcher Stufe stehen. „Aktiv" heißt
+          bezahlte Stufe mit gültigem Ablaufdatum; abgelaufene Stufen zählen als
+          „ohne Zugang". */}
+      <section className="card">
+        <h2 className="section-title">Kunden nach Abo-Stufe</h2>
+        {(() => {
+          const jetzt = Date.now();
+          const aktiv = (u: (typeof users)[number]) =>
+            !!u.membershipValidUntil && u.membershipValidUntil.getTime() > jetzt;
+          const marke = users.filter((u) => aktiv(u) && u.membershipTier === "MARKE").length;
+          const pro = users.filter((u) => aktiv(u) && u.membershipTier === "PRO").length;
+          const basis = users.filter(
+            (u) => aktiv(u) && (u.membershipTier === "BASIS" || !u.membershipTier),
+          ).length;
+          const trial = users.filter(
+            (u) => !aktiv(u) && !!u.trialEndsAt && u.trialEndsAt.getTime() > jetzt,
+          ).length;
+          const ohne = users.filter(
+            (u) => !aktiv(u) && !(u.trialEndsAt && u.trialEndsAt.getTime() > jetzt),
+          ).length;
+          const gesperrt = users.filter((u) => u.blockedAt).length;
+          const kachel = (label: string, wert: number, extra = "") => (
+            <div className={`rounded-xl border border-slate-200 bg-white p-4 ${extra}`}>
+              <div className="eyebrow">{label}</div>
+              <div className="stat-value mt-1">{wert}</div>
+            </div>
+          );
+          return (
+            <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-6">
+              {kachel("Marke", marke)}
+              {kachel("Pro", pro)}
+              {kachel("Basis", basis)}
+              {kachel("Kennenlernphase", trial)}
+              {kachel("Ohne Zugang", ohne)}
+              {kachel("Gesperrt", gesperrt, gesperrt > 0 ? "border-red-300 bg-red-50" : "")}
+            </div>
+          );
+        })()}
+        <p className="mt-2 text-xs text-slate-500">
+          {users.length} Kundenkonten gesamt (ohne Admin). „Basis" umfasst auch aktive Abos ohne
+          gesetzte Stufe.
+        </p>
+      </section>
+
+      <section className="card space-y-2">
         <p className="max-w-2xl text-sm text-slate-600">
           KI-Funktionen kosten Credits. Hier stellst du Startguthaben, Trial-Dauer,
           Referral-Prämie und den Verkaufspreis pro Credit ein. Kalkulationsbasis:
@@ -1029,11 +1081,15 @@ export default async function AdminPage() {
               <th className="px-4 py-3">Boost (0–100)</th>
               <th className="px-4 py-3">Credits</th>
               <th className="px-4 py-3">Trial / Abo</th>
+              <th className="px-4 py-3">Sperre</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
             {users.map((u) => (
-              <tr key={u.id} className={u.searchBoost > 0 ? "bg-amber-50/60" : ""}>
+              <tr
+                key={u.id}
+                className={u.blockedAt ? "bg-red-50/70" : u.searchBoost > 0 ? "bg-amber-50/60" : ""}
+              >
                 <td className="px-4 py-3">
                   <div className="font-medium text-slate-900">{u.pseudonym}</div>
                   <div className="text-xs text-slate-500">
@@ -1147,12 +1203,23 @@ export default async function AdminPage() {
                     </button>
                   </form>
                 </td>
+                <td className="px-4 py-3 align-top">
+                  {u.blockedAt && (
+                    <div
+                      className="mb-1 text-[11px] font-semibold text-red-700"
+                      title={u.blockedReason ?? undefined}
+                    >
+                      gesperrt seit {u.blockedAt.toLocaleDateString("de-CH")}
+                    </div>
+                  )}
+                  <BlockUserButton userId={u.id} pseudonym={u.pseudonym} blocked={!!u.blockedAt} />
+                </td>
               </tr>
             ))}
             {users.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-4 py-6 text-center text-slate-500">
-                  Noch keine Reseller vorhanden.
+                <td colSpan={8} className="px-4 py-6 text-center text-slate-500">
+                  Noch keine Kundenkonten vorhanden.
                 </td>
               </tr>
             )}

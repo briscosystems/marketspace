@@ -526,6 +526,12 @@ model User {
   // Marken-Schaufenster). Wird beim Checkout gesetzt, bei Ablauf/Kündigung
   // bleibt der letzte Wert, ist aber ohne membershipValidUntil wirkungslos.
   membershipTier MembershipTier?
+
+  // Manuelle Sperre durch den Betreiber: gesperrte Konten können sich nicht
+  // anmelden, laufende Sitzungen verlieren beim nächsten Aufruf den Zugriff,
+  // API-Schlüssel werden abgewiesen. Der Grund ist nur im Admin sichtbar.
+  blockedAt     DateTime?
+  blockedReason String?
   // true = Nutzer hat gekündigt; Abo läuft zum Ende der bezahlten Periode
   // aus (membershipValidUntil) und verlängert sich NICHT automatisch weiter.
   membershipCancelAtPeriodEnd Boolean @default(false)
@@ -581,6 +587,7 @@ model User {
   referrals     User[]    @relation("Referrals")
 
   creditTransactions CreditTransaction[]
+  apiKeys            ApiKey[]
   adBanners          AdBanner[]    @relation("AdOwner")
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -754,6 +761,27 @@ enum CreditTxKind {
   CODE         // Eingelöster Referral-/Gutschein-Code (Admin-generiert)
   USAGE        // Verbrauch durch eine KI-Funktion (negativ)
   ADMIN_ADJUST // Manuelle Korrektur durch den Superadmin
+}
+
+/**
+ * API-Schlüssel für die REST-Schnittstelle (/api/v1/*).
+ *
+ * Nur Konten mit aktiver MARKE-Stufe dürfen Schlüssel anlegen und nutzen —
+ * die Stufe wird bei JEDEM Aufruf geprüft, nicht nur beim Anlegen. Gespeichert
+ * wird nur der sha256-Hash; der Klartext wird genau einmal angezeigt.
+ */
+model ApiKey {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String                      // vom Nutzer vergebener Zweck, z.B. "ERP-Anbindung"
+  keyHash    String    @unique           // sha256 des Klartext-Schlüssels
+  prefix     String                      // erste 12 Zeichen zur Wiedererkennung in der Liste
+  createdAt  DateTime  @default(now())
+  lastUsedAt DateTime?
+  revokedAt  DateTime?
+
+  @@index([userId])
 }
 
 model CreditTransaction {

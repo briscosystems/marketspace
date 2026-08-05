@@ -22,7 +22,8 @@ import {
   packagePriceEur,
 } from "@/lib/credits";
 import { currencyForUser, convertCurrency, formatCurrency } from "@/lib/currency";
-import { CreditCard, ShieldCheck, Lock, Coins, Gift, Clock, Ticket, ScrollText, Store } from "lucide-react";
+import { CreditCard, ShieldCheck, Lock, Coins, Gift, Clock, Ticket, ScrollText, Store, KeyRound } from "lucide-react";
+import { ApiKeyManager } from "@/components/ApiKeyManager";
 
 export const metadata = { title: "Mitgliedschaft & Kosten — Brisco Marketplace" };
 
@@ -243,6 +244,26 @@ export default async function MembershipPage() {
           >
             {t("mem.adsManage")}
           </Link>
+        </div>
+      )}
+
+      {/* REST-API (nur Stufe Marke): Schlüssel-Verwaltung + Doku-Link */}
+      {currentTier === "MARKE" && (
+        <div className="card space-y-3">
+          <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+            <KeyRound size={18} className="text-brand-600" />
+            REST-API
+          </div>
+          <p className="text-sm text-slate-600">
+            Als Marke-Mitglied kannst du per API auf den Produktkatalog, die ausgewerteten
+            Sicherheitsdatenblätter und die KI-Alternativsuche zugreifen — z. B. für dein ERP
+            oder eigene Auswertungen. KI-Aufrufe kosten dieselben Credits wie auf der Plattform;
+            Katalog-Abfragen sind kostenlos.{" "}
+            <Link href="/api-doku" className="font-medium text-brand-700 hover:underline">
+              Zur API-Dokumentation →
+            </Link>
+          </p>
+          <ApiKeyManager />
         </div>
       )}
 
