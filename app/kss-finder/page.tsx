@@ -22,6 +22,7 @@ import {
   COOLANT_FORMS,
 } from "@/lib/kss-knowledge";
 import { ComplianceBadges } from "@/components/ComplianceBadges";
+import { sponsoredManufacturerIds } from "@/lib/storefront";
 import { Droplets, Sparkles, Tag } from "lucide-react";
 
 type SearchParams = Promise<{
@@ -144,12 +145,22 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
     take: 200,
   });
 
+  // Gesponserte Hersteller (aktive Marke-Stufe) kommen zuerst — dieselbe
+  // Regel wie im KSS-Berater, damit die bezahlte Sichtbarkeit überall gilt.
+  // Sichtbar gekennzeichnet (P2B-VO): der Nutzer muss erkennen können, dass
+  // die Platzierung bezahlt ist. Innerhalb der Gruppen bleibt es alphabetisch.
+  const sponsoredIds = await sponsoredManufacturerIds();
+
   // Aktuelle Marktpreise batch laden + min/max-Filter anwenden
   const pricesMap = await getCurrentPricesBatch(productsRaw.map((p) => p.id));
   const minPrice = sp.minPrice ? parseFloat(sp.minPrice) : undefined;
   const maxPrice = sp.maxPrice ? parseFloat(sp.maxPrice) : undefined;
   const products = productsRaw
-    .map((p) => ({ ...p, price: pricesMap.get(p.id) ?? null }))
+    .map((p) => ({
+      ...p,
+      price: pricesMap.get(p.id) ?? null,
+      sponsored: sponsoredIds.has(p.manufacturerId),
+    }))
     .filter((p) => {
       if (minPrice === undefined && maxPrice === undefined) return true;
       if (!p.price) return false; // Preis-Filter aktiv → ohne Preis ausschließen
@@ -157,6 +168,9 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
       if (maxPrice !== undefined && p.price.median > maxPrice) return false;
       return true;
     })
+    // Gesponserte zuerst; die Reihenfolge innerhalb der Gruppen bleibt die
+    // alphabetische aus der Abfrage (stabile Sortierung).
+    .sort((a, b) => Number(b.sponsored) - Number(a.sponsored))
     .slice(0, 100);
 
   const totalCount = await prisma.product.count({
@@ -405,13 +419,27 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
           aktionen={["alternative", "anfrage"]}
         />
       ) : (
+        <div className="space-y-3">
+          {products.some((p) => p.sponsored) && (
+            <p className="rounded-lg bg-amber-50/60 px-3 py-2 text-xs text-amber-900 ring-1 ring-amber-200">
+              {t("kss.sponsoredHint")}
+            </p>
+          )}
         <div className="grid gap-3 md:grid-cols-2">
           {products.map((p) => (
             <Link
               key={p.id}
               href={`/products/${p.manufacturer.slug}/${p.slug}`}
-              className="card transition hover:-translate-y-0.5 hover:shadow-lift"
+              className={`card transition hover:-translate-y-0.5 hover:shadow-lift ${
+                p.sponsored ? "ring-1 ring-amber-200" : ""
+              }`}
             >
+              {p.sponsored && (
+                <div className="mb-2 inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-800 ring-1 ring-amber-200">
+                  <Tag className="h-3 w-3" />
+                  {t("kss.sponsored")}
+                </div>
+              )}
               <div className="flex items-start justify-between gap-2">
                 <div className="flex min-w-0 flex-1 items-center gap-2.5">
                   <ProductImage
@@ -477,6 +505,7 @@ export default async function KssFinderPage({ searchParams }: { searchParams: Se
               </div>
             </Link>
           ))}
+        </div>
         </div>
       )}
       </SearchSection>

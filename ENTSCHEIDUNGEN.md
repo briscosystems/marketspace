@@ -262,6 +262,14 @@ Nicht belegbare Einträge werden entfernt, falsch geschriebene umbenannt
 Erfahrungsberichte hängen). Offen: die restlichen 357 template-erzeugten
 Produkte mit SDS-/Datenblatt-Beleg stichprobenweise prüfen.
 
+## Gesponserte Platzierung (erweitert 2026-08-05)
+
+| Entscheidung | Begründung |
+|---|---|
+| Der Sponsoring-Boost der Marke-Stufe gilt **auch im KSS-Finder** — gesponserte Hersteller stehen oben, innerhalb der Gruppen bleibt es alphabetisch | Betreiber 2026-08-05: „bei der Suche von KSS muss auch hier der im Admin hinterlegte Boost berücksichtigt werden". Vorher wirkte er nur im KI-Berater und bei Angeboten |
+| Jede bezahlte Platzierung ist **sichtbar gekennzeichnet** („Gesponsert" am Produkt + Erklärsatz über der Liste) | P2B-Verordnung (EU) 2019/1150: Rangkriterien und bezahlte Platzierung müssen erkennbar sein |
+| Sponsoring ändert **nur die Reihenfolge**, nie die Filter, nie die Fachdaten | Sonst wäre die Wissensbasis nicht mehr neutral — das ist das Verkaufsargument der Plattform |
+
 ## Technik
 
 | Entscheidung | Begründung |
