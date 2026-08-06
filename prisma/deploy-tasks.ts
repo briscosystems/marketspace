@@ -35,6 +35,7 @@ import { applyKssSollwerte2026_08_05 } from "./add-kss-sollwerte-2026-08-05";
 import { fixMetacorin833_2026_08_05 } from "./fix-metacorin-833-2026-08-05";
 import { fixPhantomprodukte2026_08_05 } from "./fix-phantomprodukte-2026-08-05";
 import { fixGepruefteProdukte2026_08_05 } from "./fix-gepruefte-produkte-2026-08-05";
+import { applyDatenblaetter2026_08_05 } from "./add-datenblaetter-2026-08-05";
 
 type Task = {
   name: string;
@@ -182,6 +183,14 @@ const TASKS: Task[] = [
     // in data/pruefung-a…f.json, Sicherheitsnetz im importierten Skript.
     name: "Produktnamen-Pruefung 2026-08-05 (nicht belegbare raus, falsche umbenannt)",
     run: () => fixGepruefteProdukte2026_08_05(),
+  },
+  {
+    // Datenblatt-Nachtrag 2026-08-05: technische Datenblaetter und
+    // Sicherheitsdatenblaetter fuer Produkte ausserhalb der Kuehlschmierstoffe
+    // (Hydraulik, Getriebe, Umform, Ketten, Kaelte, Fette, Reiniger, Additive).
+    // Jeder Link wurde vor der Aufnahme aufgerufen; fuellt nur leere Felder.
+    name: "Datenblaetter 2026-08-05 (TDS/SDS ausserhalb der KSS)",
+    run: () => applyDatenblaetter2026_08_05(),
   },
 ];
 

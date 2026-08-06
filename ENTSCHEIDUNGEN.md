@@ -270,6 +270,22 @@ Produkte mit SDS-/Datenblatt-Beleg stichprobenweise prüfen.
 | Jede bezahlte Platzierung ist **sichtbar gekennzeichnet** („Gesponsert" am Produkt + Erklärsatz über der Liste) | P2B-Verordnung (EU) 2019/1150: Rangkriterien und bezahlte Platzierung müssen erkennbar sein |
 | Sponsoring ändert **nur die Reihenfolge**, nie die Filter, nie die Fachdaten | Sonst wäre die Wissensbasis nicht mehr neutral — das ist das Verkaufsargument der Plattform |
 
+## Datenblätter ausserhalb der Kühlschmierstoffe (2026-08-05)
+
+| Entscheidung | Begründung / Beleg |
+|---|---|
+| Datenblatt-Recherche auch für **Nicht-KSS** (Hydraulik-, Getriebe-, Umform-, Ketten-, Kälte-, Wärmeträgeröle, Fette, Reiniger, Additive): 196 von 227 belegfreien Produkten ergänzt — 168 mit technischem Datenblatt, 77 zusätzlich mit Sicherheitsdatenblatt, 207 mit sachlicher Beschreibung | Für Einkäufer ist das Datenblatt die Entscheidungsgrundlage; ein Katalogeintrag ohne Beleg ist wenig wert. Produkte ganz ohne Beleg: 227 → 56 |
+| **Jeder Link wird vor der Aufnahme aufgerufen.** Verworfen wird, was 404/410 liefert oder gar nicht antwortet; Portale mit Bot-Schutz (403/405/429) bleiben, weil sie im Browser nutzbar sind | Ein toter Link sieht nach Beleg aus und ist keiner. Von 240 Links waren nur 3 tot |
+| Herstellerportale hinter Login (Fuchs FLIP, Klüber, Bechem, Zeller+Gmelin) werden über **gespiegelte Original-PDFs** belegt, nicht über Sekundärtexte | Das Original-PDF ist der Beleg, unabhängig davon, wer es hostet |
+| Produkte mit belegtem Herstellerdatenblatt steigen von `modelliert` auf `hersteller-doku` | Die Quellenangabe muss der tatsächlichen Belegtiefe entsprechen |
+| Kennwerte (Viskosität, Dichte, Flammpunkt) nur aus dem gelesenen Datenblatt; nichts geschätzt, nichts aus Reihen übertragen ohne Spaltenprüfung | dieselbe Regel wie beim KSS-Sollwerte-Sprint |
+
+Offen: 24 Produkte wurden von den Recherche-Läufen als **nicht existent** gemeldet
+(u. a. Fuchs Renep Compound 104/106, Petrofer Isocut/Isogrind, Rhenus PFK 1/2,
+Castrol Optileb GR 0/2). Diese Meldungen widersprechen teils der früheren
+Namensprüfung (z. B. Petrofer Emulcut 1015) — deshalb wurde **nichts automatisch
+gelöscht**; die Fälle brauchen eine zweite, unabhängige Prüfung.
+
 ## Technik
 
 | Entscheidung | Begründung |
