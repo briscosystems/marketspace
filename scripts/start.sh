@@ -6,7 +6,7 @@
 #   1. Postgres starten (aus den mitgewanderten Daten in .postgres-data/)
 #   2. App-Abhängigkeiten + Prisma-Client für diese Plattform sicherstellen
 #   3. Claude-Chats/Memory/Login aus dem Bundle zurückspielen (falls nötig)
-#   4. Dev-Server auf http://localhost:3000 starten
+#   4. Dev-Server auf http://localhost:4100 starten
 #
 # Idempotent und gefahrlos beliebig oft ausführbar.
 #
@@ -28,6 +28,6 @@ echo; echo "[3/4] Claude-Session (Chats/Memory/Login)"
 bash scripts/restore-session.sh || echo "  (übersprungen)"
 
 echo; echo "[4/4] Dev-Server"
-echo "  → http://localhost:3000   (Strg+C zum Beenden)"
+echo "  → http://localhost:4100   (Strg+C zum Beenden)"
 echo
 npm run dev
