@@ -32,6 +32,8 @@ import { applyProduktErweiterung2026_08_02b } from "./add-produkte-2026-08-02b";
 import { importCastrolSds2026_08_03 } from "./import-sds-castrol-2026-08-03";
 import { applyRegionen2026_08_03 } from "./fix-regionen-2026-08-03";
 import { applyKssSollwerte2026_08_05 } from "./add-kss-sollwerte-2026-08-05";
+import { fixMetacorin833_2026_08_05 } from "./fix-metacorin-833-2026-08-05";
+import { fixPhantomprodukte2026_08_05 } from "./fix-phantomprodukte-2026-08-05";
 
 type Task = {
   name: string;
@@ -156,6 +158,21 @@ const TASKS: Task[] = [
     // data/kss-sollwerte-2026-08-05.json ("quelle").
     name: "KSS-Pflege-Sollwerte 2026-08-05 (Refraktometer, Konzentration, pH, Wasserhärte)",
     run: () => applyKssSollwerte2026_08_05(),
+  },
+  {
+    // Falschzuordnung aus dem automatischen SDS-Aufbau, aufgefallen beim
+    // Sollwerte-Sprint: AVILUB METACORIN 833 stand als wassermischbarer KSS
+    // in der Datenbank, ist laut Original-Datenblatt aber ein gebrauchsfertiges
+    // Korrosionsschutzmittel. Belege im Dateikopf des importierten Skripts.
+    name: "Korrektur Avilub Metacorin 833 (Korrosionsschutz statt KSS)",
+    run: () => fixMetacorin833_2026_08_05(),
+  },
+  {
+    // Sechs erfundene Produkte aus der früheren automatischen Anreicherung
+    // (3× „Hebro Cut HC …", 3× „Aquamet ECO/MD/Premium") raus, dafür 23 belegte
+    // Produkte derselben Hersteller rein. Belege im Dateikopf des Skripts.
+    name: "Phantom-Produkte 2026-08-05 (erfundene Bezeichnungen ersetzt)",
+    run: () => fixPhantomprodukte2026_08_05(),
   },
 ];
 
