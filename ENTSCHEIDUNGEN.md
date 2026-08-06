@@ -224,6 +224,44 @@ laut Datenblatt kein KSS, sondern Korrosionsschutz (falsche Kategorie); die Reih
 „Eni Aquamet ECO/MD/Premium" und die drei „Hebro Cut"-Bezeichnungen waren bei den
 Herstellern nicht auffindbar.
 
+## Tank-Register / Messwerte (2026-08-05)
+
+| Entscheidung | Begründung / Beleg |
+|---|---|
+| Betriebe führen ihre Tanks (Maschine, Füllmenge, Produkt, Ansetzdatum) und tragen Messwerte ein (Brix, pH, Nitrit, Keimzahl, Bemerkung) | Auswahl war einmalig, Pflege ist wöchentlich — das ist der Grund wiederzukommen |
+| Die Bewertung vergleicht mit den **Sollwerten des Herstellers** aus dem Daten-Sprint; fehlt ein Sollwert, wird der Wert nur festgehalten und ausdrücklich **nicht bewertet** | Lieber keine Aussage als eine geratene — falsche Pflegehinweise verursachen Korrosion und Hautprobleme |
+| Zwei produktunabhängige Grenzen gelten immer: **pH unter 8,5 = kritisch** (DGUV-Regel 109-003) und **Nitrit über 20 mg/l = kritisch** (TRGS 611, Nitrosamingefahr) | Gesetzliche bzw. berufsgenossenschaftliche Vorgaben, unabhängig vom Produkt |
+| **Messwerte sind privat.** Nie öffentlich, nie für Hersteller sichtbar; nur anonymisierte Auswertungen über viele Betriebe dürfen später erscheinen — steht auch sichtbar auf der Seite | Ohne diese Zusage trägt kein Betrieb echte Werte ein |
+| Konzentration wird aus Brix × Refraktometer-Faktor berechnet, kann aber direkt eingetragen werden | Refraktometer ist das Werkstatt-Standardgerät; Titration bleibt möglich |
+| Nachdosier-Empfehlung bewusst grob (Volumen × Differenz), Ziel ist die Mitte des Herstellerfensters | Genauer wäre Scheingenauigkeit — Verschleppung und Verdunstung sind unbekannt |
+| Diktat auch bei der Messung (wie bei den Erfahrungen): nie Audio, nur Text | An der Maschine mit öligen Händen tippt niemand |
+| **Echte Standzeit** entsteht aus Ansetzdatum und Messreihe — die Zahl, die in keinem Herstellerdatenblatt steht | Der eigentliche Datenschatz: nicht abschreibbar, weil sie nur im Betrieb entsteht |
+
+## Datenqualität: erfundene Produkte (Prüfung 2026-08-05)
+
+Beim Sollwerte-Sprint fiel auf, dass eine frühere automatische Anreicherung
+(„Auto-generiert aus Hersteller-Produktreihen-Template", 507 Produkte)
+Bezeichnungen erzeugt hat, die es nicht gibt. Geprüft wurden die 150
+riskantesten (weder SDS noch Datenblatt-Link); 147 Urteile liegen vor:
+
+| Urteil | Zahl |
+|---|---|
+| belegt | 69 |
+| falsch geschrieben (Produkt existiert, Name falsch) | 25 |
+| nicht belegbar | 53 |
+
+Belege je Eintrag in `prisma/data/pruefung-a…f.json`. Muster: ganze Marken
+erfunden („Jokisol" bei Jokisch, „Renogear" bei Fuchs, „Divinol Bohröl" statt
+Zubora, „Isohyd"/„Ferrocoat" bei Petrofer), oder eine Viskositätsvariante
+ergänzt, die es in der Reihe nicht gibt.
+
+**Festlegung:** Erfundene Produktseiten sind für eine Plattform, die Vertrauen
+verkauft, das schwerste Datenproblem — wer sie findet, hält sie für belegt.
+Nicht belegbare Einträge werden entfernt, falsch geschriebene umbenannt
+(Löschung nur mit Sicherheitsnetz: nichts, woran Preise, Probleme oder
+Erfahrungsberichte hängen). Offen: die restlichen 357 template-erzeugten
+Produkte mit SDS-/Datenblatt-Beleg stichprobenweise prüfen.
+
 ## Technik
 
 | Entscheidung | Begründung |

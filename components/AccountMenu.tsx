@@ -19,6 +19,7 @@ import {
   Shield,
   Lightbulb,
   Wallet,
+  Droplets,
 } from "lucide-react";
 import { useLocale } from "./LocaleProvider";
 
@@ -151,6 +152,10 @@ export function AccountMenu({
             <Link href="/mitgliedschaft" className={itemClass}>
               <CreditCard size={16} className="text-slate-400" />
               {t("account.membership")}
+            </Link>
+            <Link href="/tanks" className={itemClass}>
+              <Droplets size={16} className="text-slate-400" />
+              {t("tank.title")}
             </Link>
             <Link href="/umsaetze" className={itemClass}>
               <Wallet size={16} className="text-slate-400" />

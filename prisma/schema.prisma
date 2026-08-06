@@ -325,6 +325,7 @@ model Product {
   priceObservations  PriceObservation[]
   issues             ProductIssue[]
   experienceReports  ExperienceReport[]
+  coolantTanks       CoolantTank[]
 
   @@unique([manufacturerId, slug])
   @@index([manufacturerId])
@@ -611,6 +612,8 @@ model User {
   verifiedIssues  ProductIssue[] @relation("ProductIssueVerified")
 
   passwordResetTokens PasswordResetToken[]
+  coolantTanks        CoolantTank[]
+  tankMeasurements    TankMeasurement[]
 }
 
 // ============================================================
@@ -1476,4 +1479,109 @@ model AdBanner {
 
   @@index([active])
   @@index([ownerId])
+}
+
+// ---------------------------------------------------------------------------
+// Tank-Register — die Pflege-Seite der Plattform (2026-08-05)
+//
+// Warum es das gibt: Bis hierher konnte die Seite bei der AUSWAHL eines
+// Kühlschmierstoffs helfen. Der Betrieb verbringt aber Jahre mit der PFLEGE:
+// wöchentlich Konzentration und pH messen, nachdosieren, irgendwann wechseln.
+// Genau diese Messwerte stehen in keinem Herstellerdatenblatt — sie entstehen
+// nur im Betrieb. Damit sind sie der einzige Datenschatz, den kein Wettbewerber
+// abschreiben kann, und sie liefern nebenbei die Zahl, nach der alle fragen:
+// die tatsächliche Standzeit im Tank.
+//
+// Datenschutz-Grundsatz: Messwerte gehören dem Betrieb, der sie erfasst. Sie
+// sind NIE öffentlich sichtbar; nur anonymisierte Auswertungen über viele
+// Betriebe hinweg dürfen später auf der Produktseite erscheinen.
+// ---------------------------------------------------------------------------
+
+/// Ein Tank (Maschine oder zentrale Anlage), dessen KSS gepflegt wird.
+model CoolantTank {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// Anzeigename, frei wählbar — z.B. "DMU 50 Halle 2" oder "Zentralanlage".
+  name         String
+  /// Maschinenbezeichnung/Hersteller, optional (z.B. "DMG Mori NHX 5000").
+  machine      String?
+  /// Standort/Halle, optional — hilft Betrieben mit vielen Maschinen.
+  location     String?
+  /// Füllmenge in Litern — Grundlage für die Nachdosier-Rechnung.
+  volumeLiters Float?
+
+  /// Welcher KSS läuft im Tank. Bevorzugt aus dem Katalog (dann greifen die
+  /// Sollwerte automatisch); sonst Freitext.
+  productId       String?
+  product         Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productFreetext String?
+
+  /// Ansetzwasser-Härte am Standort in °dH — bleibt über alle Messungen gleich.
+  waterHardnessDh Float?
+
+  /// Wann zuletzt frisch angesetzt wurde. Aus diesem Datum und dem Wechsel
+  /// entsteht die echte Standzeit.
+  filledAt DateTime?
+
+  notes      String?
+  /// Archiviert statt gelöscht — Messreihen bleiben für die Auswertung erhalten.
+  archivedAt DateTime?
+
+  measurements TankMeasurement[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, archivedAt])
+  @@index([productId])
+}
+
+/// Eine Messung am Tank. Erfasst wird, was in der Werkstatt wirklich gemessen
+/// wird — meist Refraktometer (Brix) und pH-Streifen.
+model TankMeasurement {
+  id     String      @id @default(cuid())
+  tankId String
+  tank   CoolantTank @relation(fields: [tankId], references: [id], onDelete: Cascade)
+  /// Wer gemessen hat (für Mehrpersonen-Betriebe nachvollziehbar).
+  userId String
+  user   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  measuredAt DateTime @default(now())
+
+  /// Refraktometer-Ablesung in Brix (°Bx) — der Rohwert.
+  brix             Float?
+  /// Konzentration in %. Wird aus Brix × Refraktometer-Faktor des Produkts
+  /// berechnet, kann aber auch direkt eingetragen werden (z.B. Titration).
+  concentrationPct Float?
+  ph               Float?
+  temperatureC     Float?
+  /// Nitrit in mg/l (ppm) — TRGS 611 begrenzt auf 20 mg/l.
+  nitritePpm       Float?
+  /// Keimzahl-Teststäbchen, grobe Stufe statt Laborzahl.
+  bacteria         BacteriaLevel?
+
+  /// Freitext des Prüfers: Geruch, Schaum, Verfärbung, was auffiel.
+  note   String?
+  /// Wie erfasst — zählt für die Auswertung, wie gut der QR-Weg angenommen wird.
+  source MeasurementSource @default(WEB)
+
+  createdAt DateTime @default(now())
+
+  @@index([tankId, measuredAt])
+  @@index([userId])
+}
+
+enum BacteriaLevel {
+  NONE // nicht nachweisbar
+  LOW // gering
+  MEDIUM // deutlich
+  HIGH // stark — Handlungsbedarf
+}
+
+enum MeasurementSource {
+  WEB // am Rechner eingetragen
+  QR // per QR-Code an der Maschine (Smartphone)
+  VOICE // diktiert
 }
