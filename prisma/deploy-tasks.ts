@@ -34,6 +34,7 @@ import { applyRegionen2026_08_03 } from "./fix-regionen-2026-08-03";
 import { applyKssSollwerte2026_08_05 } from "./add-kss-sollwerte-2026-08-05";
 import { fixMetacorin833_2026_08_05 } from "./fix-metacorin-833-2026-08-05";
 import { fixPhantomprodukte2026_08_05 } from "./fix-phantomprodukte-2026-08-05";
+import { fixGepruefteProdukte2026_08_05 } from "./fix-gepruefte-produkte-2026-08-05";
 
 type Task = {
   name: string;
@@ -173,6 +174,14 @@ const TASKS: Task[] = [
     // Produkte derselben Hersteller rein. Belege im Dateikopf des Skripts.
     name: "Phantom-Produkte 2026-08-05 (erfundene Bezeichnungen ersetzt)",
     run: () => fixPhantomprodukte2026_08_05(),
+  },
+  {
+    // Ergebnis der Namenspruefung vom 2026-08-05 (147 Eintraege gegen die
+    // Herstellerkataloge geprueft): nicht belegbare Bezeichnungen entfernen,
+    // falsch geschriebene auf den echten Namen bringen. Belege je Einzelfall
+    // in data/pruefung-a…f.json, Sicherheitsnetz im importierten Skript.
+    name: "Produktnamen-Pruefung 2026-08-05 (nicht belegbare raus, falsche umbenannt)",
+    run: () => fixGepruefteProdukte2026_08_05(),
   },
 ];
 
