@@ -13,7 +13,8 @@ import {
   nachdosierLiter,
   type Ampel,
 } from "@/lib/tank-bewertung";
-import { ArrowLeft, Droplets, Mic } from "lucide-react";
+import { Mischungsrechner } from "@/components/Mischungsrechner";
+import { ArrowLeft, Droplets, Mic, QrCode } from "lucide-react";
 
 const AMPEL_STIL: Record<Ampel, string> = {
   gut: "bg-emerald-50 text-emerald-700 ring-emerald-200",
@@ -153,7 +154,30 @@ export default async function TankDetailPage({ params }: { params: Promise<{ id:
         </section>
       )}
 
+      <section className="card space-y-3">
+        <div className="flex items-center gap-2">
+          <QrCode className="h-5 w-5 text-brand-600" />
+          <h2 className="text-lg font-semibold text-slate-900">{t("tank.labelTitle")}</h2>
+        </div>
+        <p className="text-sm text-slate-600">{t("tank.labelText")}</p>
+        <a
+          href={`/api/tanks/${tank.id}/etikett`}
+          className="btn-primary inline-flex items-center gap-2"
+          download
+        >
+          <QrCode className="h-4 w-4" />
+          {t("tank.labelDownload")}
+        </a>
+      </section>
+
       <MessungErfassen tankId={tank.id} refraktometerFaktor={soll.refractometerFactor} />
+
+      <Mischungsrechner
+        tankVolumen={tank.volumeLiters}
+        sollMin={soll.recommendedConcentrationMin}
+        sollMax={soll.recommendedConcentrationMax}
+        istKonzentration={letzte?.concentrationPct ?? null}
+      />
 
       <section className="card space-y-3">
         <h2 className="text-lg font-semibold text-slate-900">{t("tank.historyTitle")}</h2>

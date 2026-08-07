@@ -1529,6 +1529,19 @@ model CoolantTank {
   /// Archiviert statt gelöscht — Messreihen bleiben für die Auswertung erhalten.
   archivedAt DateTime?
 
+  /// Eindeutiger Schlüssel für den QR-Code am Tank. Wer den Aufkleber scannt,
+  /// landet direkt im Messformular für GENAU diesen Tank — ohne Suchen, ohne
+  /// Tippen. Der Schlüssel erlaubt nur das EINTRAGEN von Messwerten, nie das
+  /// Lesen der Messreihe (die bleibt dem angemeldeten Betrieb vorbehalten).
+  /// Kann neu erzeugt werden, falls ein Aufkleber in falsche Hände gerät.
+  ///
+  /// Bewusst OPTIONAL und bewusst OHNE `@unique`: Prisma meldet jede neue
+  /// Eindeutigkeits-Regel als möglichen Datenverlust, und `prisma db push`
+  /// bricht beim Deploy deshalb ab — die Seite käme nicht hoch. Der Schlüssel
+  /// ist ein cuid (kollisionsfrei) und wird beim Anlegen vergeben; bestehende
+  /// Tanks bekommen ihn über die Deploy-Aufgabe.
+  qrToken String?
+
   measurements TankMeasurement[]
 
   createdAt DateTime @default(now())
@@ -1536,6 +1549,7 @@ model CoolantTank {
 
   @@index([userId, archivedAt])
   @@index([productId])
+  @@index([qrToken])
 }
 
 /// Eine Messung am Tank. Erfasst wird, was in der Werkstatt wirklich gemessen

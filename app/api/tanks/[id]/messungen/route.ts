@@ -13,6 +13,14 @@ import { konzentrationAusBrix } from "@/lib/tank-bewertung";
 
 const MessungSchema = z
   .object({
+    /**
+     * Schlüssel aus dem QR-Code am Tank. Damit darf auch ohne Anmeldung
+     * gemessen werden — der Aufkleber klebt an der Maschine des Betriebs,
+     * und wer davor steht, soll nicht erst ein Konto anlegen müssen.
+     * Der Schlüssel erlaubt ausschließlich das EINTRAGEN; gelesen wird die
+     * Messreihe nur im angemeldeten Tank-Register.
+     */
+    token: z.string().trim().min(10).max(64).optional(),
     brix: z.number().min(0).max(30).optional().nullable(),
     concentrationPct: z.number().min(0).max(50).optional().nullable(),
     ph: z.number().min(0).max(14).optional().nullable(),
@@ -35,19 +43,7 @@ const MessungSchema = z
   );
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Nicht angemeldet" }, { status: 401 });
-  }
   const { id } = await params;
-
-  const tank = await prisma.coolantTank.findFirst({
-    where: { id, userId: session.user.id },
-    select: { id: true, product: { select: { refractometerFactor: true } } },
-  });
-  if (!tank) {
-    return NextResponse.json({ error: "Tank nicht gefunden" }, { status: 404 });
-  }
 
   let body: unknown;
   try {
@@ -64,6 +60,28 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   }
   const d = parsed.data;
 
+  // Zwei Wege zum Tank: angemeldet (eigener Tank) oder über den Schlüssel aus
+  // dem QR-Code am Tank. Beides führt zu genau einem Tank; alles andere = 404.
+  const session = await getServerSession(authOptions);
+  const tank = d.token
+    ? await prisma.coolantTank.findFirst({
+        where: { id, qrToken: d.token, archivedAt: null },
+        select: { id: true, userId: true, product: { select: { refractometerFactor: true } } },
+      })
+    : session?.user?.id
+      ? await prisma.coolantTank.findFirst({
+          where: { id, userId: session.user.id },
+          select: { id: true, userId: true, product: { select: { refractometerFactor: true } } },
+        })
+      : null;
+
+  if (!tank) {
+    return NextResponse.json(
+      { error: session?.user?.id || d.token ? "Tank nicht gefunden" : "Nicht angemeldet" },
+      { status: session?.user?.id || d.token ? 404 : 401 },
+    );
+  }
+
   // Konzentration aus Brix ableiten, wenn sie nicht direkt gemessen wurde und
   // für das Produkt ein Refraktometer-Faktor hinterlegt ist.
   const konz =
@@ -72,7 +90,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const m = await prisma.tankMeasurement.create({
     data: {
       tankId: tank.id,
-      userId: session.user.id,
+      // Beim QR-Weg gibt es keine Anmeldung — die Messung wird dem Betrieb
+      // zugeschrieben, dem der Tank gehört.
+      userId: session?.user?.id ?? tank.userId,
       measuredAt: d.measuredAt ? new Date(d.measuredAt) : new Date(),
       brix: d.brix ?? null,
       concentrationPct: konz,

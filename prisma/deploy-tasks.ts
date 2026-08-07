@@ -36,6 +36,7 @@ import { fixMetacorin833_2026_08_05 } from "./fix-metacorin-833-2026-08-05";
 import { fixPhantomprodukte2026_08_05 } from "./fix-phantomprodukte-2026-08-05";
 import { fixGepruefteProdukte2026_08_05 } from "./fix-gepruefte-produkte-2026-08-05";
 import { applyDatenblaetter2026_08_05 } from "./add-datenblaetter-2026-08-05";
+import { applyQrToken2026_08_06 } from "./add-qr-token-2026-08-06";
 
 type Task = {
   name: string;
@@ -191,6 +192,12 @@ const TASKS: Task[] = [
     // Jeder Link wurde vor der Aufnahme aufgerufen; fuellt nur leere Felder.
     name: "Datenblaetter 2026-08-05 (TDS/SDS ausserhalb der KSS)",
     run: () => applyDatenblaetter2026_08_05(),
+  },
+  {
+    // Tanks, die vor dem Etikett-PDF angelegt wurden, haben noch keinen
+    // QR-Schluessel — ohne ihn laesst sich kein Etikett drucken.
+    name: "QR-Schluessel fuer bestehende Tanks nachtragen (2026-08-06)",
+    run: () => applyQrToken2026_08_06(),
   },
 ];
 

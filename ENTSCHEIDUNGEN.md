@@ -286,6 +286,20 @@ Castrol Optileb GR 0/2). Diese Meldungen widersprechen teils der früheren
 Namensprüfung (z. B. Petrofer Emulcut 1015) — deshalb wurde **nichts automatisch
 gelöscht**; die Fälle brauchen eine zweite, unabhängige Prüfung.
 
+## QR-Etikett und Mischungsrechner am Tank (2026-08-06)
+
+| Entscheidung | Begründung |
+|---|---|
+| Jeder Tank bekommt einen **eigenen QR-Code**; Ausgabe als **PDF-Bogen mit 4 Etiketten zum Ausschneiden** (A4, Schnittrahmen), Kopfbalken „BRISCO Systems GmbH" und Werbezeile „Konzentration, pH und Standzeit im Blick — kostenlos auf markt.brisco.ch" | Der kürzeste Weg von der Messung in die Datenbank. Das Etikett wirbt zugleich im Betrieb — jeder, der daran vorbeigeht, sieht den Namen |
+| Auf dem Etikett stehen zusätzlich **Tankname, Maschine, Produkt, Sollkonzentration, Refraktometer-Faktor und Füllmenge** | Es nützt auch dann, wenn gerade kein Handy zur Hand ist — die Sollwerte hängen dort, wo gemessen wird |
+| Der QR-Schlüssel erlaubt **nur das Eintragen** von Messwerten, nie das Lesen der Messreihe. Ein abfotografierter Aufkleber gibt keine Betriebsdaten preis | Messwerte sind Betriebsdaten (siehe Tank-Register) |
+| Messen über den QR-Code geht **ohne Anmeldung** | An der Maschine mit öligen Händen legt niemand ein Konto an. Die Messung wird dem Betrieb zugeschrieben, dem der Tank gehört |
+| `qrToken` ist bewusst **ohne `@unique` in der Datenbank** (nur Index) — Eindeutigkeit im Code | `prisma db push` meldet jede neue Eindeutigkeits-Regel als Datenverlust und bricht beim Deploy ab; die Seite käme nicht hoch |
+| **Mischungsrechner** nach dem Vorbild auf brisco.ch (Solutions → Mixing Calculator): Tankvolumen, Sollkonzentration, Fehlvolumen, gemessene Ist-Konzentration → Liter Wasser und Liter Konzentrat, dazu die Nachfüllkonzentration in % für Dosiergeräte | „Was muss ich jetzt reinkippen?" ist die häufigste Frage in der Werkstatt; falsch gerechnet heißt Korrosion oder Hautreizung |
+| Am Tank sind die Felder **vorbelegt** (Füllmenge, Soll-Mitte aus dem Herstellerfenster, letzte gemessene Konzentration) | Es bleibt eine einzige Eingabe: wie viel fehlt |
+| Der Hinweis **„Immer zuerst Wasser, dann Konzentrat"** steht bei jedem Ergebnis | Umgekehrt entstehen Klumpen und die Emulsion bricht — Standardregel, die trotzdem oft missachtet wird |
+| Reicht selbst reines Konzentrat nicht mehr aus, sagt der Rechner das **ausdrücklich** und empfiehlt, mit fertiger Emulsion (Soll + 0,5 %) statt mit Wasser aufzufüllen | Ohne diesen Hinweis dosiert der Betrieb ins Leere; entspricht der Logik des Brisco-Rechners |
+
 ## Technik
 
 | Entscheidung | Begründung |

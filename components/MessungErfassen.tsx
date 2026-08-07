@@ -21,10 +21,13 @@ export function MessungErfassen({
   tankId,
   refraktometerFaktor,
   istQr = false,
+  token,
 }: {
   tankId: string;
   refraktometerFaktor: number | null;
   istQr?: boolean;
+  /** Schlüssel aus dem QR-Code — erlaubt das Eintragen ohne Anmeldung. */
+  token?: string;
 }) {
   const { t, locale } = useLocale();
   const router = useRouter();
@@ -107,6 +110,7 @@ export function MessungErfassen({
           bacteria: keime || null,
           note: note || null,
           source: warSprache ? "VOICE" : istQr ? "QR" : "WEB",
+          token,
         }),
       });
       const data = await res.json();
