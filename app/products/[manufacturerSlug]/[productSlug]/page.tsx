@@ -5,6 +5,7 @@ import { RefractometerCalculator } from "@/components/RefractometerCalculator";
 import { CompareToggle } from "@/components/compare/CompareToggle";
 import { BrandLogo } from "@/components/BrandLogo";
 import { recommendMaterialsForProduct } from "@/lib/seal-recommendations";
+import { bauteileFuer, ALLGEMEINE_HINWEISE, zeigeAllgemeineHinweise } from "@/lib/bauteil-hinweise";
 import { ErfahrungTeilen } from "@/components/ErfahrungTeilen";
 import { TrustBadge } from "@/components/TrustBadge";
 import { getMonthlyMedianHistory, getCurrentMarketPrice } from "@/lib/price-aggregation";
@@ -343,6 +344,34 @@ export default async function ProductDetailPage({
               recommendations={sealRec.recommendations}
               inferredIngredients={sealRec.inferredIngredients}
             />
+          )}
+
+          {/* Bauteile, die bei JEDEM wassermischbaren KSS zu beachten sind —
+              unabhängig vom einzelnen Produkt, deshalb nicht aus der Matrix.
+              Belege (DGUV FBHM-040, VDW, FUCHS) in lib/bauteil-hinweise.ts. */}
+          {zeigeAllgemeineHinweise(product.category) && (
+            <section className="rounded-xl border border-slate-200 bg-white p-5">
+              <div className="flex items-center gap-2">
+                <Shield size={16} className="text-brand-600" />
+                <h2 className="section-title">{t("bt.generalHeading")}</h2>
+              </div>
+              <ul className="mt-3 space-y-2">
+                {ALLGEMEINE_HINWEISE.map((h) => (
+                  <li
+                    key={h.schluessel}
+                    className={`rounded-lg p-3 text-xs ring-1 ${
+                      h.stufe === "sicherheit"
+                        ? "bg-red-50 text-red-900 ring-red-200"
+                        : "bg-amber-50 text-amber-900 ring-amber-200"
+                    }`}
+                  >
+                    <div className="font-semibold">{t(`${h.schluessel}.title`)}</div>
+                    <p className="mt-1 leading-relaxed">{t(`${h.schluessel}.text`)}</p>
+                    <p className="mt-1 opacity-70">{t(`${h.schluessel}.source`)}</p>
+                  </li>
+                ))}
+              </ul>
+            </section>
           )}
 
           {/* Verlinktes SDS aus eigener Bibliothek */}
@@ -1074,6 +1103,35 @@ function SealCompatibilitySection({
           );
         })}
       </div>
+
+      {/* Dieselbe Aussage noch einmal in Werkstattsprache: Die Werkstoff-Chips
+          oben bleiben unverändert (Betreiber-Entscheidung 2026-08-07) — hier
+          kommt dazu, WO diese Werkstoffe in der Maschine sitzen. Belege für die
+          Zuordnung in lib/bauteil-hinweise.ts. */}
+      {groups.UNSUITABLE.length + groups.CAUTION.length > 0 && (
+        <div className="mt-4 border-t border-slate-100 pt-3">
+          <div className="eyebrow">{t("bt.heading")}</div>
+          <p className="mt-1 text-xs text-slate-500">{t("bt.sub")}</p>
+          <ul className="mt-2 space-y-1.5 text-xs">
+            {[...groups.UNSUITABLE, ...groups.CAUTION]
+              .map((r) => ({ r, b: bauteileFuer(r.materialSlug, r.materialShortName) }))
+              .filter((x) => x.b)
+              .slice(0, 6)
+              .map(({ r, b }) => (
+                <li key={r.materialId} className="flex flex-wrap items-baseline gap-x-1.5 rounded bg-amber-50/70 p-2">
+                  <span className="font-medium text-slate-800">{b!.bauteile.join(", ")}</span>
+                  <span className="text-slate-500">
+                    ({r.materialShortName}
+                    {b!.eigenheit ? ` — ${b!.eigenheit}` : ""})
+                  </span>
+                  <span className="text-amber-900">
+                    {r.worstRating === "UNSUITABLE" ? t("bt.unsuitable") : t("bt.caution")}
+                  </span>
+                </li>
+              ))}
+          </ul>
+        </div>
+      )}
 
       {/* Driver-Details für die kritischen Materialien */}
       {groups.UNSUITABLE.length + groups.CAUTION.length > 0 && (

@@ -308,6 +308,36 @@ gelöscht**; die Fälle brauchen eine zweite, unabhängige Prüfung.
 | Die **Kennenlernphase (trialDays) bleibt bestehen**, wird aber nur noch auf der Mitgliedschaftsseite genannt — sie betrifft die kostenpflichtigen Stufen, nicht den freien Teil | Nichts entfernt, nur an den richtigen Ort verschoben |
 | Grundsatz: Der erste Knopf auf der Startseite führt **ins Werkzeug, nicht in die Anmeldung** | Ein Werkzeug braucht keine zweite Marktseite; Nutzen zuerst, Registrierung als Folge (Strategie 2026-08-07) |
 
+## Bauteil-Hinweise in Werkstattsprache (2026-08-07)
+
+Recherche 2026-08-07 (drei Läufe) zur Frage, ob es Wissen über Unverträglichkeiten
+mit konkreten Maschinen gibt. Ergebnis:
+
+- **Freigabelisten „Produkt X für Baureihe Y" existieren öffentlich NICHT.** Von 21
+  geprüften Maschinenherstellern haben vier verwertbare öffentliche Vorgaben, und
+  zwar als Ausschlusskriterien: FANUC Robodrill (kein Chlor), INDEX/TRAUB (nur
+  Mineralöl-Schneidöl bei Mehrspindlern, Ansetzwasser 10–20 °dH), Nakamura-Tome,
+  Star Micronics. GROB (Glanzstellentest) und DMG MORI (DMQP) haben Verfahren,
+  veröffentlichen die Listen aber nicht. Was KSS-Hersteller „Freigaben" nennen,
+  sind fast immer Luftfahrt-Spezifikationen (Boeing, Airbus, Rolls-Royce).
+- **Auf Werkstoffebene ist die Beweislage erstklassig** (DGUV/BGHM FBHM-040,
+  VDW, VDI 3035 Blatt 2, Trelleborg/ERIKS, FUCHS, INDEX DAA008DE).
+
+| Entscheidung | Begründung |
+|---|---|
+| Die **Werkstoffangaben bleiben unverändert stehen** (Chips „EPDM, FKM, PA6, POM, PUR …" mit Bewertung und Begründung) — die Bauteil-Ebene kommt **zusätzlich** darunter | Betreiber 2026-08-07 ausdrücklich: bestehende Information stehen lassen, Werkstattsprache ergänzen |
+| Neuer Block **„Was heißt das für die Maschine?"**: nennt zu jedem kritischen Werkstoff die Bauteile, in denen er sitzt (NBR → Dichtungen, Wellendichtringe, Schläuche, Abstreifer; PUR → Abstreifer an Führungen, Faltenbälge; PA6 → Schleppketten; POM → Führungsteile, Spindel-Labyrinthe …) | Kein Instandhalter weiß, welches Elastomer im Abstreifer steckt — er weiß, dass er Abstreifer hat. Zuordnung belegt über INDEX DAA008DE, VDI 3035 Bl. 2, Hennig/Arno Arnold, igus, GMN |
+| Neuer Block **„Bauteile, die bei jedem wassermischbaren KSS zu beachten sind"** mit zwei belegten Hinweisen: **Polycarbonat-Sichtscheibe** (sicherheitsrelevant, unsichtbare Versprödung, −40 % Rückhaltevermögen nach 9 Monaten, 20 % nach 10 Jahren, VDW-Fristen 2/12 Jahre) und **verzinkte Leitungen/Behälter** (Zinkangriff, Chlorid > 30 mg/l = Korrosion) | Gilt produktunabhängig, steht deshalb nicht in der Verträglichkeitsmatrix — verursacht im Betrieb aber die teuersten und gefährlichsten Schäden |
+| Der Sichtscheiben-Hinweis erscheint **nur bei wassermischbaren KSS**, nicht bei Schneidölen | Die Quellen belegen ihn nur dort |
+| **Kupplungen, Bremsen, Reibbeläge und Späneförderer bleiben ausgespart** | Recherche fand dafür KEINEN belastbaren Beleg (nur Kfz-Quellen). Lieber eine Lücke als eine erfundene Warnung |
+| Keine Warnung „greift den Spindel-Wellendichtring an" | Moderne Motorspindeln haben meist berührungslose Labyrinthe mit Sperrluft (GMN: POM oder Metall), keine Elastomerdichtung |
+| Gesundheits-/Umweltverbote (VKIS/VSI-Stoffliste) werden **nicht** mit Bauteilschäden vermischt | Zwei verschiedene Gründe — sonst verliert die Aussage ihre Schärfe |
+
+Nächste Stufen (noch offen): (2) Ausschlussregeln je Maschinenhersteller aus den
+vier belegten Handbüchern als Filter; (3) Maschinen-Profil im Tank-Register —
+Betreiber tragen Sichtscheiben-Werkstoff, Plakettenjahr und Handbuchvorgaben ein,
+dann wird aus dem allgemeinen Hinweis eine maschinenbezogene Fälligkeit.
+
 ## Technik
 
 | Entscheidung | Begründung |
