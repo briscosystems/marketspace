@@ -300,6 +300,14 @@ gelöscht**; die Fälle brauchen eine zweite, unabhängige Prüfung.
 | Der Hinweis **„Immer zuerst Wasser, dann Konzentrat"** steht bei jedem Ergebnis | Umgekehrt entstehen Klumpen und die Emulsion bricht — Standardregel, die trotzdem oft missachtet wird |
 | Reicht selbst reines Konzentrat nicht mehr aus, sagt der Rechner das **ausdrücklich** und empfiehlt, mit fertiger Emulsion (Soll + 0,5 %) statt mit Wasser aufzufüllen | Ohne diesen Hinweis dosiert der Betrieb ins Leere; entspricht der Logik des Brisco-Rechners |
 
+## Kein Anmeldezwang auf der Startseite (2026-08-07)
+
+| Entscheidung | Begründung |
+|---|---|
+| Der Knopf **„{n} Tage kostenlos testen" ist von der Startseite entfernt**. Stattdessen: **„Ohne Konto ausprobieren"** (führt in den KSS-Finder) und daneben als kleiner Textlink **„Konto anlegen — 20 KI-Credits gratis"** | Betreiber 2026-08-07: „Ich dachte, wir machen keinen Zwang mit der Anmeldung." Ein Testzeitraum liest sich wie eine ablaufende Uhr und widersprach dem Satz direkt darunter, wonach Suche, Datenblätter und Anfragen dauerhaft ohne Konto nutzbar sind |
+| Die **Kennenlernphase (trialDays) bleibt bestehen**, wird aber nur noch auf der Mitgliedschaftsseite genannt — sie betrifft die kostenpflichtigen Stufen, nicht den freien Teil | Nichts entfernt, nur an den richtigen Ort verschoben |
+| Grundsatz: Der erste Knopf auf der Startseite führt **ins Werkzeug, nicht in die Anmeldung** | Ein Werkzeug braucht keine zweite Marktseite; Nutzen zuerst, Registrierung als Folge (Strategie 2026-08-07) |
+
 ## Technik
 
 | Entscheidung | Begründung |

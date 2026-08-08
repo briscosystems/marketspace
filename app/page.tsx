@@ -39,11 +39,11 @@ const MIN_ZAHL = 25;
 
 async function PublicLanding() {
   const t = await getT();
-  // Trial-Zahlen aus den Superadmin-Einstellungen — nie fest im Text.
-  const [trialDays, welcomeCredits] = await Promise.all([
-    getSettingInt("trialDays"),
-    getSettingInt("welcomeCredits"),
-  ]);
+  // Begrüßungs-Credits aus den Superadmin-Einstellungen — nie fest im Text.
+  // Die Kennenlernphase (trialDays) steht bewusst NICHT mehr auf der Startseite,
+  // sondern erst auf der Mitgliedschaftsseite: Sie betrifft die kostenpflichtigen
+  // Stufen, während Suche, Datenblätter und Anfragen dauerhaft frei sind.
+  const welcomeCredits = await getSettingInt("welcomeCredits");
   const [listingCount, rfqCount, sdsCount, manufacturerCount, productCount, freshListings] =
     await Promise.all([
       prisma.listing.count({ where: { status: "ACTIVE" } }),
@@ -117,9 +117,16 @@ async function PublicLanding() {
             </Link>
           ))}
         </div>
-        <div className="mt-5">
-          <Link href="/register" className="btn-secondary">
-            {fill(t("home.ctaRegister"), { n: trialDays })}
+        {/* Kein Test-Zeitraum als Aufhänger: „X Tage kostenlos testen" liest sich
+            wie eine ablaufende Uhr und widerspricht dem Satz darunter — Suche,
+            Datenblätter und Anfragen sind dauerhaft ohne Konto nutzbar. Der
+            erste Knopf führt deshalb ins Werkzeug, nicht in die Anmeldung. */}
+        <div className="mt-5 flex flex-wrap items-center gap-3">
+          <Link href="/kss-finder" className="btn-secondary">
+            {t("home.ctaTryFree")}
+          </Link>
+          <Link href="/register" className="text-sm text-slate-600 hover:text-brand-700 hover:underline">
+            {fill(t("home.ctaRegisterPlain"), { c: welcomeCredits })}
           </Link>
         </div>
         {/* Das Angebot stand bisher nirgends — der Knopf sagte nur „Konto anlegen“.
