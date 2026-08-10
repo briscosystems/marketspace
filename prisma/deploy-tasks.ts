@@ -37,6 +37,8 @@ import { fixPhantomprodukte2026_08_05 } from "./fix-phantomprodukte-2026-08-05";
 import { fixGepruefteProdukte2026_08_05 } from "./fix-gepruefte-produkte-2026-08-05";
 import { applyDatenblaetter2026_08_05 } from "./add-datenblaetter-2026-08-05";
 import { applyQrToken2026_08_06 } from "./add-qr-token-2026-08-06";
+import { applyZubora2026_08_10 } from "./add-zubora-2026-08-10";
+import { applyZellerBelege2026_08_10 } from "./add-zeller-belege-2026-08-10";
 
 type Task = {
   name: string;
@@ -198,6 +200,22 @@ const TASKS: Task[] = [
     // QR-Schluessel — ohne ihn laesst sich kein Etikett drucken.
     name: "QR-Schluessel fuer bestehende Tanks nachtragen (2026-08-06)",
     run: () => applyQrToken2026_08_06(),
+  },
+  {
+    // Die Zubora-Linie (Kuehlschmierstoffe von Zeller+Gmelin) fehlte komplett
+    // im Katalog — es stand nur ein einziger Eintrag drin. 39 Produkte mit
+    // Pflege-Sollwerten nachgetragen; Belege je Produkt in
+    // data/zubora-2026-08-10.json. Legt nichts doppelt an.
+    name: "Zubora-Linie 2026-08-10 (Zeller+Gmelin Kuehlschmierstoffe)",
+    run: () => applyZubora2026_08_10(),
+  },
+  {
+    // 15 bestehende Zeller+Gmelin-Produkte (Multicut, Multidraw, Divinol)
+    // standen ohne technisches Datenblatt oder ohne Sicherheitsdatenblatt im
+    // Katalog. Belege je Produkt in data/zeller-belege-2026-08-10.json;
+    // fuellt nur leere Felder.
+    name: "Zeller+Gmelin Belege 2026-08-10 (TDS/SDS nachgetragen)",
+    run: () => applyZellerBelege2026_08_10(),
   },
 ];
 

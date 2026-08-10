@@ -375,6 +375,26 @@ Erfahrung teilen ohne Produktbezug.
 | Der Admin sieht eine **Analyse über alle Berichte**: gesamt / offen / freigegeben / abgelehnt / mit Bild / KI-Urteile, dazu je Bericht die angehängten **Bilder, Videos und Laborberichte** | Betreiber muss Anhänge sehen, bevor er freigibt; ein Laborbericht ohne bestätigte Anonymisierung wird rot markiert |
 | Der Admin darf **jeden Bericht korrigieren oder endgültig löschen** — die Korrektur wird im Bericht vermerkt | Betreiber-Recht (2026-08-10); harte Löschung statt Verstecken, damit keine Datenleichen bleiben |
 
+## Zubora-Linie und Zeller+Gmelin-Belege (2026-08-10)
+
+| Entscheidung | Begründung / Beleg |
+|---|---|
+| Die **komplette Zubora-Linie** (39 wassermischbare KSS von Zeller+Gmelin) ist aufgenommen — 35 mit Refraktometer-Faktor, 36 mit Konzentrations- und pH-Fenster, 38 mit Wasserhärte-Bereich | Zubora ist die KSS-Marke von Zeller+Gmelin; im Katalog stand davon ein einziger Eintrag. Das erklärt auch die Lücke aus der Namensprüfung vom 2026-08-05: Die dort entfernten „Divinol Bohröl B 35/B 50/BS" gibt es nicht — die wassermischbaren heißen Zubora |
+| Quellen: **gespiegelter Zubora-Prospekt 04/2019** und Original-PDFs bei Händlern (oelluxx24.de, oelschueler.de, teils 08/2025) | Zeller+Gmelin legt JEDEN Datenblatt-Download hinter ein Login („Bitte melden Sie sich an…"). Öffentlich sind nur Produktseiten und Marketing-Broschüren |
+| Bei Widerspruch zwischen Prospekt (2019) und heutiger Produktseite gilt der **neuere Wert**; der alte bleibt in der Bemerkung | z. B. Zubora 67 H Extra Faktor 1,0 → 1,1; TEP 1,6 → 1,9 |
+| **„Borfrei" ist belegt, Aminfreiheit nur bei der 30er-Reihe und THG.** Bei 65/67/35 nennen die Datenblätter ausdrücklich primäre Amine (nitrosamin-inhibiert nach TRGS 611). „Monoethanolaminfrei" (20er, 77er) wird NICHT als aminfrei gewertet | Zwei verschiedene Aussagen — wer sie vermischt, gibt eine falsche Unbedenklichkeit weiter |
+| 12 bestehende Zeller-Produkte mit **TDS und SDS belegt**, „Divinol Multicor LF 30" auf den Herstellernamen **Multicor LF 30** korrigiert | Nur Händler setzen „Divinol" davor; auf TDS und SDS steht Multicor LF 30 |
+| **Kennwerte nicht stillschweigend umgerechnet**: Wo das Datenblatt nur die Viskosität bei 20 °C nennt (B Classic, Multicor LF 30) oder die Angabe die Grundölviskosität eines Fetts ist (Fett EP 2), bleibt das Feld leer | Eine umgerechnete Zahl sieht aus wie eine gemessene |
+| Der Schlüssel zu beiden Händler-Spiegeln ist die **Zeller-Artikelnummer** — sie steht in der Datendatei | Damit lässt sich künftig gezielt nachschlagen, statt neu zu suchen |
+
+Weiterhin ohne Beleg (nur per Anfrage bei Zeller+Gmelin zu bekommen):
+Divinol Chain Lube 260 CPS, Divinol Cleaner 9337, Multidraw CU SY.
+
+**Offener Datenmodell-Fehler:** Zeller+Gmelin steht doppelt im Katalog — einmal
+als „Zeller+Gmelin" (jetzt 59 Produkte inkl. Zubora), einmal als „Divinol"
+(15 Produkte). Divinol ist aber die Marke von Zeller+Gmelin, keine eigene Firma.
+Zusammenlegen erfordert Löschungen und wartet auf die Freigabe des Betreibers.
+
 ## Technik
 
 | Entscheidung | Begründung |
