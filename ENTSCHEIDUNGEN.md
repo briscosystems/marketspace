@@ -448,6 +448,15 @@ Unterhaltung ist Teil der Abwicklung und im Streitfall der Beleg. Ob Nutzer
 eigene Nachrichten zurückziehen dürfen (und ob dann „Nachricht zurückgezogen"
 stehen bleibt), ist eine Entscheidung des Betreibers.
 
+## Produkt wandert in die Anfrage (2026-08-10)
+
+| Entscheidung | Begründung |
+|---|---|
+| „Preis anfragen" auf der Produktseite **übergibt das Produkt** an das Anfrage-Formular: Typenbezeichnung, Hersteller, Produkttyp (aus der Katalog-Kategorie), Chemie und ISO-Viskosität | Betreiber 2026-08-10: „Wenn ich ein Produkt gesucht habe und auf Preis anfragen drücke, muss das Folgefenster das ausgewählte Produkt übernehmen." Wer dort klickt, hat sich entschieden — er soll es nicht noch einmal eintippen |
+| Die Übernahme ist **sichtbar**: „Übernommen aus deiner Auswahl: Zeller+Gmelin Zubora 65 H Plus. Du kannst alles noch ändern." | Vorbelegte Felder ohne Erklärung wirken wie ein Fehler |
+| **Alles bleibt änderbar** — die Vorbelegung ist ein Vorschlag, keine Festlegung | Oft ist das angesehene Produkt nur der Ausgangspunkt („so etwas wie das, aber borfrei") |
+| Nur Kategorien, die das Formular auch anbietet, werden zugeordnet; alles andere bleibt beim Standard | Lieber keine Vorauswahl als eine falsche |
+
 ## Technik
 
 | Entscheidung | Begründung |

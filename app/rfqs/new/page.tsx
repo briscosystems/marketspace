@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { fill } from "@/lib/i18n";
 import { CertInput } from "@/components/CertInput";
 import { KssIssueSelect } from "@/components/KssIssueSelect";
 import { Autocomplete } from "@/components/Autocomplete";
@@ -31,6 +33,22 @@ const PRODUCT_TYPE_PRESETS = [
   { value: "Umformöl", scope: "neat" as const, labelKey: "rnew.pt.forming" },
 ];
 
+/**
+ * Produktkategorie aus dem Katalog → Produkttyp im Anfrage-Formular.
+ * Nur Zuordnungen, die das Formular auch anbietet; alles andere bleibt beim
+ * Standard, damit nichts Falsches vorausgewählt wird.
+ */
+const KATEGORIE_ZU_TYP: Record<string, string> = {
+  COOLANT_WATER_MIX: "Kühlschmierstoff (Emulsion, wassermischbar)",
+  COOLANT_NEAT: "Schneidöl (nicht-wassermischbar)",
+  GRINDING_OIL: "Schleiföl",
+  HONING_LAPPING_OIL: "Honöl",
+  FORMING_OIL: "Umformöl",
+  HYDRAULIC_OIL: "Hydrauliköl",
+  GEAR_OIL: "Getriebeöl",
+  GREASE: "Schmierfett",
+};
+
 export default function NewRfqPage() {
   const router = useRouter();
   const { t } = useLocale();
@@ -39,7 +57,17 @@ export default function NewRfqPage() {
   const [loading, setLoading] = useState(false);
   const [requiredCerts, setRequiredCerts] = useState<string[]>([]);
   const [issues, setIssues] = useState<KssIssueId[]>([]);
-  const [productType, setProductType] = useState("Hydrauliköl");
+  // Vorbelegung aus der Produktseite: Wer dort „Preis anfragen" drückt, hat
+  // sich für ein Produkt entschieden — es wird hier übernommen, bleibt aber
+  // änderbar (Betreiber 2026-08-10).
+  const suchParams = useSearchParams();
+  const vorgabeProdukt = suchParams.get("produkt") ?? "";
+  const vorgabeHersteller = suchParams.get("hersteller") ?? "";
+  const vorgabeChemie = suchParams.get("chemie") ?? "";
+  const vorgabeIso = suchParams.get("iso") ?? "";
+  const vorgabeTyp = KATEGORIE_ZU_TYP[suchParams.get("kategorie") ?? ""] ?? "Hydrauliköl";
+
+  const [productType, setProductType] = useState(vorgabeTyp);
   const [manufacturerOptions, setManufacturerOptions] = useState<string[]>([]);
 
   // Anfragen sind ohne Konto möglich (Entscheidung 2026-08-03): Wer nicht
@@ -141,6 +169,16 @@ export default function NewRfqPage() {
       </div>
       <form onSubmit={onSubmit} className="space-y-6">
         {/* GRUNDDATEN */}
+        {/* Aus der Produktseite übernommen — sichtbar machen, damit niemand
+            rätselt, warum Felder schon gefüllt sind (Betreiber 2026-08-10). */}
+        {vorgabeProdukt && (
+          <p className="rounded-xl bg-amber-50 px-4 py-2.5 text-sm text-amber-900 ring-1 ring-amber-200">
+            {fill(t("rnew.uebernommen"), {
+              produkt: [vorgabeHersteller, vorgabeProdukt].filter(Boolean).join(" "),
+            })}
+          </p>
+        )}
+
         <section className="card space-y-4">
           <h2 className="eyebrow">
             {t("rnew.sec1")}
@@ -169,6 +207,7 @@ export default function NewRfqPage() {
                 name="manufacturer"
                 options={manufacturerOptions}
                 placeholder={t("rnew.phManufacturer")}
+                defaultValue={vorgabeHersteller}
               />
             </div>
             <div>
@@ -180,15 +219,21 @@ export default function NewRfqPage() {
                 name="productName"
                 className="input"
                 placeholder={t("rnew.phProductName")}
+                defaultValue={vorgabeProdukt}
               />
             </div>
             <div>
               <label className="label">{t("rnew.isoViscosity")}</label>
-              <Autocomplete name="isoViscosity" options={ISO_VG_PRESETS} placeholder="46" />
+              <Autocomplete
+                name="isoViscosity"
+                options={ISO_VG_PRESETS}
+                placeholder="46"
+                defaultValue={vorgabeIso}
+              />
             </div>
             <div>
               <label className="label">{t("rnew.chemistry")}</label>
-              <select name="chemistry" defaultValue="" className="input">
+              <select name="chemistry" defaultValue={vorgabeChemie} className="input">
                 <option value="">{t("rnew.any")}</option>
                 {chemistries.map((c) => (
                   <option key={c} value={c}>{t(`chem.${c}`)}</option>

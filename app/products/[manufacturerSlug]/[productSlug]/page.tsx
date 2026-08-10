@@ -232,8 +232,17 @@ export default async function ProductDetailPage({
           <div className="mt-3 flex flex-wrap items-center gap-2">
             {/* DIE Handlung der Seite: Preis anfragen — wir holen Angebote ein.
                 Vorher konnte man von hier weder anfragen noch anbieten. */}
+            {/* Das angesehene Produkt wandert mit in die Anfrage (Betreiber
+                2026-08-10): Wer hier auf „Preis anfragen" drückt, hat sich
+                längst entschieden — er soll es nicht noch einmal eintippen. */}
             <Link
-              href="/rfqs/new"
+              href={`/rfqs/new?${new URLSearchParams({
+                produkt: product.name,
+                hersteller: m.name,
+                kategorie: product.category,
+                ...(product.chemistry ? { chemie: product.chemistry } : {}),
+                ...(product.viscosityIso ? { iso: product.viscosityIso } : {}),
+              }).toString()}`}
               className="inline-flex items-center gap-1.5 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-600"
             >
               {t("prod.preisAnfragen")}
