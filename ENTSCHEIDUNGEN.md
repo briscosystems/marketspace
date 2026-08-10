@@ -358,6 +358,23 @@ Offen (Datenmodell steht, Oberfläche fehlt): eigener Bereich `/erfahrungen`
 zum Lesen und Filtern nach Problem, Upload-Oberfläche für Foto/Video/Laborbericht,
 Erfahrung teilen ohne Produktbezug.
 
+## Anfrage-Formular: Typenbezeichnung (2026-08-10)
+
+| Entscheidung | Begründung |
+|---|---|
+| Das Anfrage-Formular hat ein Feld **„Produkt / Typenbezeichnung (optional)"** (z. B. „Blasocut BC 35", „Zubora 60 H") | Betreiber 2026-08-10: „In der Suche kann z. B. kein KSS-Typ eingetragen werden." Wer seinen KSS kennt, musste ihn in die Bemerkungen schreiben — dort findet ihn kein Filter |
+
+## Prüfung der Erfahrungsberichte (2026-08-10)
+
+| Entscheidung | Begründung |
+|---|---|
+| Jeder Bericht durchläuft eine **KI-Plausibilitätskontrolle** — sie liefert ein Urteil (plausibel / unklar / unplausibel) und einen Satz Begründung | Mit wachsender Zahl ist die Handarbeit der Engpass; die Vorprüfung sagt dem Betreiber, worauf er zuerst schauen soll |
+| **Die KI entscheidet nichts.** Jeder Bericht bleibt PENDING und wird von Hand freigegeben. Im Zweifel lautet das Urteil ausdrücklich „unklar" — die KI darf nicht raten | Betreiber 2026-08-10 wörtlich: „Im unklaren Fall darf die KI nicht raten, sondern die manuelle Prüfung an den Administrator geben" |
+| **Negative Berichte gelten nie deshalb als unplausibel.** „Unplausibel" nur bei klarem fachlichem Widerspruch, Werbung, Beleidigung oder fehlendem Produktbezug | Die kritischen Berichte sind die wertvollen — eine Prüfung, die sie aussortiert, zerstört den Datenschatz |
+| Scheitert die Prüfung technisch, wird der Bericht **trotzdem gespeichert** (Urteil „unklar") | Ein Fehler der KI darf niemals einen Bericht kosten |
+| Der Admin sieht eine **Analyse über alle Berichte**: gesamt / offen / freigegeben / abgelehnt / mit Bild / KI-Urteile, dazu je Bericht die angehängten **Bilder, Videos und Laborberichte** | Betreiber muss Anhänge sehen, bevor er freigibt; ein Laborbericht ohne bestätigte Anonymisierung wird rot markiert |
+| Der Admin darf **jeden Bericht korrigieren oder endgültig löschen** — die Korrektur wird im Bericht vermerkt | Betreiber-Recht (2026-08-10); harte Löschung statt Verstecken, damit keine Datenleichen bleiben |
+
 ## Technik
 
 | Entscheidung | Begründung |

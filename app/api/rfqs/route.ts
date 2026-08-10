@@ -8,6 +8,7 @@ import { kontoNebenbei } from "@/lib/konto-nebenbei";
 const rfqSchema = z.object({
   productType: z.string().min(2),
   manufacturer: z.string().optional(),
+  productName: z.string().trim().max(160).optional(),
   isoViscosity: z.string().optional(),
   chemistry: z.enum(["MINERAL", "SYNTHETIC", "SEMI_SYNTHETIC", "ESTER", "PAG", "OTHER"]).optional(),
   applicationArea: z.string().optional(),

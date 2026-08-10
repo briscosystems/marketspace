@@ -88,6 +88,7 @@ export default function NewRfqPage() {
     const payload = {
       productType,
       manufacturer: (fd.get("manufacturer") as string) || undefined,
+      productName: (fd.get("productName") as string) || undefined,
       isoViscosity: (fd.get("isoViscosity") as string) || undefined,
       chemistry: (fd.get("chemistry") as string) || undefined,
       applicationArea: (fd.get("applicationArea") as string) || undefined,
@@ -168,6 +169,17 @@ export default function NewRfqPage() {
                 name="manufacturer"
                 options={manufacturerOptions}
                 placeholder={t("rnew.phManufacturer")}
+              />
+            </div>
+            <div>
+              {/* Typenbezeichnung: Wer seinen KSS kennt, will ihn nennen können —
+                  vorher ging das nur in den Bemerkungen (Betreiber 2026-08-10). */}
+              <label className="label" htmlFor="rfq-productName">{t("rnew.productName")}</label>
+              <input
+                id="rfq-productName"
+                name="productName"
+                className="input"
+                placeholder={t("rnew.phProductName")}
               />
             </div>
             <div>

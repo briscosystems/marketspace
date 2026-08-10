@@ -17,6 +17,8 @@ import {
   sendTestEmail,
   approveExperience,
   rejectExperience,
+  editExperience,
+  deleteExperience,
 } from "./actions";
 import { getAllSettings, AI_ACTION_COSTS, packagePriceEur } from "@/lib/credits";
 import { isMembershipActive } from "@/lib/membership";
@@ -35,19 +37,41 @@ export default async function AdminPage() {
   }
 
   const mailStatus = await checkMailStatus();
-  const offeneErfahrungen = await prisma.experienceReport.findMany({
-    where: { status: "PENDING" },
+  // Alle Erfahrungsberichte — offene zuerst. Der Betreiber sieht nicht nur die
+  // Warteschlange, sondern die ganze Sammlung inklusive Bildern, KI-Vorurteil
+  // und Bearbeitungsvermerk (Betreiber 2026-08-10).
+  const alleErfahrungen = await prisma.experienceReport.findMany({
     select: {
       id: true,
       text: true,
       source: true,
+      status: true,
+      aiVerdict: true,
+      aiNote: true,
+      adminNote: true,
+      problems: true,
+      machine: true,
+      outcome: true,
       productFreetext: true,
       createdAt: true,
+      creditsAwarded: true,
       user: { select: { pseudonym: true, email: true } },
       product: { select: { name: true, manufacturer: { select: { name: true } } } },
+      media: { select: { id: true, kind: true, data: true, caption: true, anonymisiert: true } },
     },
-    orderBy: { createdAt: "asc" },
+    orderBy: [{ status: "asc" }, { createdAt: "asc" }],
+    take: 200,
   });
+  const offeneErfahrungen = alleErfahrungen.filter((e) => e.status === "PENDING");
+  const erfahrungsStatistik = {
+    gesamt: alleErfahrungen.length,
+    offen: offeneErfahrungen.length,
+    freigegeben: alleErfahrungen.filter((e) => e.status === "APPROVED").length,
+    abgelehnt: alleErfahrungen.filter((e) => e.status === "REJECTED").length,
+    mitBild: alleErfahrungen.filter((e) => e.media.length > 0).length,
+    kiUnklar: alleErfahrungen.filter((e) => e.aiVerdict === "UNCLEAR").length,
+    kiUnplausibel: alleErfahrungen.filter((e) => e.aiVerdict === "IMPLAUSIBLE").length,
+  };
   const [users, settings, usageAgg, purchaseAgg, referralCodes, revenueByUser, emailLogs] = await Promise.all([
     prisma.user.findMany({
       where: { role: { in: ["RESELLER", "OEM", "ENDKUNDE"] } },
@@ -349,8 +373,30 @@ export default async function AdminPage() {
             Erfahrungsberichte prüfen{" "}
             <span className="text-sm font-normal text-slate-500">({offeneErfahrungen.length} offen)</span>
           </h2>
+          {/* Analyse über alle Berichte — nicht nur die Warteschlange
+              (Betreiber 2026-08-10). */}
+          <div className="mb-3 flex flex-wrap gap-2 text-xs">
+            <span className="rounded-full bg-slate-100 px-2.5 py-1 text-slate-700">
+              {erfahrungsStatistik.gesamt} Berichte gesamt
+            </span>
+            <span className="rounded-full bg-amber-100 px-2.5 py-1 text-amber-900">
+              {erfahrungsStatistik.offen} offen
+            </span>
+            <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-emerald-900">
+              {erfahrungsStatistik.freigegeben} freigegeben
+            </span>
+            <span className="rounded-full bg-red-50 px-2.5 py-1 text-red-800">
+              {erfahrungsStatistik.abgelehnt} abgelehnt
+            </span>
+            <span className="rounded-full bg-blue-50 px-2.5 py-1 text-blue-900">
+              {erfahrungsStatistik.mitBild} mit Bild/Anhang
+            </span>
+            <span className="rounded-full bg-purple-50 px-2.5 py-1 text-purple-900">
+              KI unklar: {erfahrungsStatistik.kiUnklar} · unplausibel: {erfahrungsStatistik.kiUnplausibel}
+            </span>
+          </div>
           <div className="divide-y divide-slate-100">
-            {offeneErfahrungen.map((e) => (
+            {alleErfahrungen.map((e) => (
               <div key={e.id} className="py-3 first:pt-0 last:pb-0">
                 <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
                   <span className="font-medium text-slate-700">{e.user.pseudonym}</span>
@@ -364,9 +410,73 @@ export default async function AdminPage() {
                   {e.source === "VOICE" && <span className="chip bg-slate-100 text-slate-500">diktiert</span>}
                   <span className="ml-auto">{e.createdAt.toLocaleDateString("de-CH")}</span>
                 </div>
+                {/* Vor-Einschätzung der KI — Entscheidungshilfe, keine
+                    Entscheidung. „unklar" heißt ausdrücklich: nicht geraten. */}
+                {e.aiVerdict !== "NOT_CHECKED" && (
+                  <p
+                    className={`mt-1.5 rounded-lg px-2.5 py-1.5 text-xs ring-1 ${
+                      e.aiVerdict === "PLAUSIBLE"
+                        ? "bg-emerald-50 text-emerald-900 ring-emerald-200"
+                        : e.aiVerdict === "IMPLAUSIBLE"
+                          ? "bg-red-50 text-red-900 ring-red-200"
+                          : "bg-amber-50 text-amber-900 ring-amber-200"
+                    }`}
+                  >
+                    <strong>
+                      KI-Vorprüfung:{" "}
+                      {e.aiVerdict === "PLAUSIBLE"
+                        ? "plausibel"
+                        : e.aiVerdict === "IMPLAUSIBLE"
+                          ? "unplausibel"
+                          : "unklar — bitte selbst ansehen"}
+                    </strong>
+                    {e.aiNote ? ` · ${e.aiNote}` : ""}
+                  </p>
+                )}
+                {(e.problems.length > 0 || e.machine || e.outcome) && (
+                  <div className="mt-1.5 flex flex-wrap gap-1.5 text-xs text-slate-600">
+                    {e.problems.map((pr) => (
+                      <span key={pr} className="rounded bg-slate-100 px-1.5 py-0.5">
+                        {pr}
+                      </span>
+                    ))}
+                    {e.machine && <span className="rounded bg-slate-100 px-1.5 py-0.5">{e.machine}</span>}
+                    {e.outcome && <span className="rounded bg-slate-100 px-1.5 py-0.5">{e.outcome}</span>}
+                  </div>
+                )}
                 <p className="mt-1.5 whitespace-pre-wrap rounded-lg bg-slate-50 p-2.5 text-sm text-slate-800">
                   {e.text}
                 </p>
+                {/* Angehängte Bilder und Laborberichte — der Betreiber muss sie
+                    sehen, bevor er freigibt. */}
+                {e.media.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {e.media.map((m) =>
+                      m.kind === "PHOTO" ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          key={m.id}
+                          src={m.data}
+                          alt={m.caption ?? ""}
+                          className="h-24 w-24 rounded-lg object-cover ring-1 ring-slate-200"
+                        />
+                      ) : (
+                        <a
+                          key={m.id}
+                          href={m.data}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="rounded-lg bg-slate-100 px-2.5 py-1.5 text-xs text-slate-700 hover:bg-slate-200"
+                        >
+                          {m.kind === "VIDEO_LINK" ? "Video ansehen" : "Laborbericht öffnen"}
+                          {m.kind === "LAB_REPORT" && !m.anonymisiert && (
+                            <span className="ml-1 font-semibold text-red-700">· nicht als anonymisiert bestätigt</span>
+                          )}
+                        </a>
+                      ),
+                    )}
+                  </div>
+                )}
                 <div className="mt-2 flex gap-2">
                   <form action={approveExperience}>
                     <input type="hidden" name="id" value={e.id} />
@@ -392,6 +502,39 @@ export default async function AdminPage() {
                       Ablehnen
                     </button>
                   </form>
+                  {/* Betreiber-Rechte: jeden Bericht jederzeit korrigieren
+                      (Tippfehler, versehentlich genannter Firmenname) oder
+                      endgültig löschen (Betreiber 2026-08-10). */}
+                  <details className="w-full">
+                    <summary className="cursor-pointer text-xs text-slate-500 hover:text-slate-700">
+                      Bearbeiten / löschen
+                    </summary>
+                    <form action={editExperience} className="mt-2 space-y-1">
+                      <input type="hidden" name="id" value={e.id} />
+                      <textarea
+                        name="text"
+                        defaultValue={e.text}
+                        rows={4}
+                        className="w-full rounded-md border border-slate-300 p-2 text-xs"
+                      />
+                      <button
+                        type="submit"
+                        className="rounded-md bg-slate-700 px-3 py-1 text-xs font-semibold text-white hover:bg-slate-800"
+                      >
+                        Korrektur speichern
+                      </button>
+                    </form>
+                    <form action={deleteExperience} className="mt-2">
+                      <input type="hidden" name="id" value={e.id} />
+                      <button
+                        type="submit"
+                        className="rounded-md bg-red-700 px-3 py-1 text-xs font-semibold text-white hover:bg-red-800"
+                      >
+                        Endgültig löschen
+                      </button>
+                    </form>
+                    {e.adminNote && <p className="mt-1 text-xs text-slate-500">{e.adminNote}</p>}
+                  </details>
                 </div>
               </div>
             ))}

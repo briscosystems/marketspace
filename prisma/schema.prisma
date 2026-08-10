@@ -817,11 +817,18 @@ model ExperienceReport {
   outcome  ExperienceOutcome?
 
   /// Fotos, Videos und Laborberichte zum Bericht.
-  media          ExperienceMedia[]
-  status         ExperienceStatus  @default(PENDING)
-  creditsAwarded Int               @default(0)
+  media  ExperienceMedia[]
+  status ExperienceStatus  @default(PENDING)
+
+  /// Vor-Einschätzung der KI. Sie entscheidet NICHTS — sie sortiert vor.
+  /// Bei UNCLEAR darf die KI ausdrücklich nicht raten; der Bericht geht
+  /// unverändert an den Betreiber zur manuellen Prüfung.
+  aiVerdict      ExperienceAiVerdict @default(NOT_CHECKED)
+  /// Begründung der KI in einem Satz — Entscheidungshilfe für den Betreiber.
+  aiNote         String?
+  creditsAwarded Int                 @default(0)
   adminNote      String?
-  createdAt      DateTime          @default(now())
+  createdAt      DateTime            @default(now())
   reviewedAt     DateTime?
 
   @@index([status, createdAt])
@@ -871,6 +878,14 @@ enum ExperienceOutcome {
 enum ExperienceSource {
   TEXT
   VOICE
+}
+
+/// Ergebnis der KI-Plausibilitätsprüfung.
+enum ExperienceAiVerdict {
+  NOT_CHECKED // noch nicht geprüft (z. B. kein API-Schlüssel)
+  PLAUSIBLE // fachlich stimmig
+  UNCLEAR // nicht entscheidbar — Betreiber prüft
+  IMPLAUSIBLE // widerspricht Fachwissen oder wirkt wie Werbung/Spam
 }
 
 enum ExperienceStatus {
@@ -1053,6 +1068,10 @@ model Rfq {
   visibility RfqVisibility @default(PUBLIC)
 
   productType     String
+  /// Konkrete Typenbezeichnung, falls bekannt — z. B. „Blasocut BC 35" oder
+  /// „Zubora 60 H". Ohne dieses Feld musste der Einkäufer seinen KSS-Typ in
+  /// die Bemerkungen schreiben, wo ihn kein Filter findet (Betreiber 2026-08-10).
+  productName     String?
   manufacturer    String?
   isoViscosity    String?
   chemistry       ChemistryBase?

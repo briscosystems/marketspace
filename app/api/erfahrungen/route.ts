@@ -10,6 +10,7 @@ import { getServerSession } from "next-auth";
 import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { pruefeErfahrung } from "@/lib/erfahrung-pruefung";
 
 export const ERFAHRUNG_CREDITS = 2;
 
@@ -50,6 +51,26 @@ export async function POST(req: Request) {
     }
   }
 
+  // Plausibilitätskontrolle VOR dem Speichern — sie sortiert nur vor, sie
+  // entscheidet nichts: Jeder Bericht landet als PENDING in der Warteschlange
+  // und wird vom Betreiber von Hand freigegeben. Bei Zweifeln lautet das
+  // Urteil UNCLEAR (die KI darf nicht raten).
+  const produktName = productId
+    ? await prisma.product
+        .findUnique({
+          where: { id: productId },
+          select: { name: true, manufacturer: { select: { name: true } } },
+        })
+        .then((p) => (p ? `${p.manufacturer.name} ${p.name}` : null))
+    : (productFreetext ?? null);
+
+  const pruefung = await pruefeErfahrung({
+    text: text.trim(),
+    produkt: produktName,
+    problems: [],
+    machine: null,
+  });
+
   const bericht = await prisma.experienceReport.create({
     data: {
       userId: session.user.id,
@@ -57,6 +78,8 @@ export async function POST(req: Request) {
       productFreetext: productFreetext ?? null,
       text: text.trim(),
       source,
+      aiVerdict: pruefung.verdict,
+      aiNote: pruefung.note,
     },
     select: { id: true },
   });

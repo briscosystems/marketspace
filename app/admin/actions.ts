@@ -315,3 +315,41 @@ export async function rejectExperience(formData: FormData) {
   });
   revalidatePath("/admin");
 }
+
+/**
+ * Erfahrungsbericht korrigieren (Betreiber-Recht, 2026-08-10).
+ *
+ * Der Betreiber darf jeden Bericht ändern — Tippfehler, unklare Formulierung,
+ * versehentlich mitgeschriebener Firmenname. Die Korrektur wird im Bericht
+ * vermerkt, damit später nachvollziehbar bleibt, dass eingegriffen wurde.
+ */
+export async function editExperience(formData: FormData) {
+  await assertOwner();
+  const id = String(formData.get("id") ?? "");
+  const text = String(formData.get("text") ?? "").trim();
+  if (!id || text.length < 10) return;
+
+  await prisma.experienceReport.update({
+    where: { id },
+    data: {
+      text,
+      adminNote: `Vom Betreiber bearbeitet am ${new Date().toISOString().slice(0, 10)}`,
+    },
+  });
+  revalidatePath("/admin");
+}
+
+/**
+ * Erfahrungsbericht endgültig löschen (Betreiber-Recht).
+ *
+ * Bewusst harte Löschung statt „versteckt": Wer einen Bericht zurückzieht oder
+ * wessen Bericht rechtlich nicht haltbar ist, soll ihn nicht als Datenleiche
+ * hinterlassen. Angehängte Medien gehen über die Datenbank-Beziehung mit.
+ */
+export async function deleteExperience(formData: FormData) {
+  await assertOwner();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  await prisma.experienceReport.delete({ where: { id } });
+  revalidatePath("/admin");
+}
