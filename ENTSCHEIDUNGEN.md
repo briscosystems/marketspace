@@ -390,10 +390,22 @@ Erfahrung teilen ohne Produktbezug.
 Weiterhin ohne Beleg (nur per Anfrage bei Zeller+Gmelin zu bekommen):
 Divinol Chain Lube 260 CPS, Divinol Cleaner 9337, Multidraw CU SY.
 
-**Offener Datenmodell-Fehler:** Zeller+Gmelin steht doppelt im Katalog — einmal
-als „Zeller+Gmelin" (jetzt 59 Produkte inkl. Zubora), einmal als „Divinol"
-(15 Produkte). Divinol ist aber die Marke von Zeller+Gmelin, keine eigene Firma.
-Zusammenlegen erfordert Löschungen und wartet auf die Freigabe des Betreibers.
+**Divinol bleibt als eigener Hersteller stehen** (Betreiber 2026-08-10):
+Divinol ist die Marke, unter der Zeller+Gmelin über den **Fachhandel** verkauft;
+im Direktgeschäft und bei den Industrieprodukten (Multicut, Multidraw, Zubora)
+tritt das Unternehmen unter eigenem Namen auf. Beide Bezeichnungen begegnen dem
+Einkäufer, je nachdem wo er kauft — deshalb wird **nichts zusammengelegt und
+nichts gelöscht**, sondern nur vermerkt:
+
+- Herstellerseite Divinol: erklärt die Handelsmarke und den Vertriebsweg
+- Herstellerseite Zeller+Gmelin: nennt Divinol als Handelsmarke
+- Jede Divinol-Produktseite trägt die Zeile „Divinol ist die Handelsmarke von
+  Zeller+Gmelin für den Vertrieb über den Fachhandel."
+
+Bewusst zurückhaltend formuliert: Das ist eine Aussage über den **Vertriebsweg**,
+keine über Rezeptur-Gleichheit. Ob ein Divinol-Produkt einem gleichnamigen
+Zeller-Produkt entspricht, steht dort ausdrücklich **nicht** — dafür verweist der
+Text auf den Vergleich der Datenblätter.
 
 ## Technik
 

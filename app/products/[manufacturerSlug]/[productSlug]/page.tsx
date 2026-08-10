@@ -188,6 +188,13 @@ export default async function ProductDetailPage({
           {/* Echtes Logo statt Namenstext — Marken erkennt man in Sekundenbruchteilen. */}
           <BrandLogo manufacturer={m.name} size="sm" />
           <h1 className="mt-1 page-title">{product.name}</h1>
+          {/* Divinol ist die Handelsmarke, unter der Zeller+Gmelin über den
+              Fachhandel verkauft (Betreiber 2026-08-10). Bewusst zurückhaltend
+              formuliert: eine Aussage über den Vertriebsweg, KEINE über
+              Rezeptur-Gleichheit mit einem gleichnamigen Zeller-Produkt. */}
+          {m.name === "Divinol" && (
+            <p className="mt-1 text-xs text-slate-500">{t("mfr.divinolHinweis")}</p>
+          )}
           <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
             <span className="rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-medium text-brand-700">
               {t(`cat.${product.category}`)}

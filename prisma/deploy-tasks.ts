@@ -39,6 +39,7 @@ import { applyDatenblaetter2026_08_05 } from "./add-datenblaetter-2026-08-05";
 import { applyQrToken2026_08_06 } from "./add-qr-token-2026-08-06";
 import { applyZubora2026_08_10 } from "./add-zubora-2026-08-10";
 import { applyZellerBelege2026_08_10 } from "./add-zeller-belege-2026-08-10";
+import { applyDivinolMarke2026_08_10 } from "./fix-divinol-marke-2026-08-10";
 
 type Task = {
   name: string;
@@ -216,6 +217,13 @@ const TASKS: Task[] = [
     // fuellt nur leere Felder.
     name: "Zeller+Gmelin Belege 2026-08-10 (TDS/SDS nachgetragen)",
     run: () => applyZellerBelege2026_08_10(),
+  },
+  {
+    // Divinol und Zeller+Gmelin bleiben beide als Hersteller stehen — Divinol
+    // ist die Marke, unter der Zeller+Gmelin ueber den Fachhandel verkauft
+    // (Betreiber 2026-08-10). Es wird nichts zusammengelegt, nur vermerkt.
+    name: "Divinol als Handelsmarke von Zeller+Gmelin vermerken (2026-08-10)",
+    run: () => applyDivinolMarke2026_08_10(),
   },
 ];
 
