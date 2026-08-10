@@ -325,6 +325,7 @@ model Product {
   priceObservations  PriceObservation[]
   issues             ProductIssue[]
   experienceReports  ExperienceReport[]
+  photoHandoffs      PhotoHandoff[]
   coolantTanks       CoolantTank[]
 
   @@unique([manufacturerId, slug])
@@ -591,6 +592,7 @@ model User {
   creditTransactions CreditTransaction[]
   apiKeys            ApiKey[]
   experienceReports  ExperienceReport[]
+  photoHandoffs      PhotoHandoff[]
   adBanners          AdBanner[]          @relation("AdOwner")
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
@@ -1669,4 +1671,36 @@ enum MeasurementSource {
   WEB // am Rechner eingetragen
   QR // per QR-Code an der Maschine (Smartphone)
   VOICE // diktiert
+}
+
+/// Foto-Übergabe vom Handy an den Rechner.
+///
+/// Warum: Am Rechner ist „Foto aufnehmen" ein Bruch — der Nutzer müsste mit
+/// dem Handy fotografieren, das Bild irgendwie auf den Rechner bringen und
+/// dort hochladen. Stattdessen erzeugt der Rechner einen QR-Code, das Handy
+/// scannt ihn, fotografiert, und das Bild erscheint sofort auf dem Rechner.
+///
+/// Der Datensatz ist eine kurzlebige Übergabe, kein Archiv: Er lebt 15 Minuten,
+/// wird nach dem Abholen geleert und trägt das Bild nur in der Zwischenzeit.
+/// Die ID selbst ist der Schlüssel (cuid) — wer sie hat, darf EIN Bild
+/// hochladen, sonst nichts.
+model PhotoHandoff {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// Das Foto als data:-URI — nur zwischen Hochladen und Abholen gefüllt.
+  imageData  String?
+  /// Wann das Handy hochgeladen hat.
+  uploadedAt DateTime?
+  /// Wann der Rechner es abgeholt hat (danach wird imageData geleert).
+  fetchedAt  DateTime?
+
+  createdAt DateTime @default(now())
+  /// Nach Ablauf wird nichts mehr angenommen und nichts mehr herausgegeben.
+  expiresAt DateTime
+  product   Product? @relation(fields: [productId], references: [id])
+  productId String?
+
+  @@index([userId, createdAt])
 }

@@ -407,6 +407,21 @@ keine über Rezeptur-Gleichheit. Ob ein Divinol-Produkt einem gleichnamigen
 Zeller-Produkt entspricht, steht dort ausdrücklich **nicht** — dafür verweist der
 Text auf den Vergleich der Datenblätter.
 
+## Foto-Übergabe vom Handy an den Rechner (2026-08-10)
+
+| Entscheidung | Begründung |
+|---|---|
+| Am Rechner erzeugt „Mit dem Handy fotografieren" einen **QR-Code**. Das Handy scannt ihn, fotografiert das Etikett — und das Bild **erscheint von selbst** am Rechner, wo die Erkennung sofort startet | Betreiber 2026-08-10: „Ich möchte, dass der User nicht ein Foto mühsam hochladen muss." Am Rechner war „Foto aufnehmen" ein Bruch: mit dem Handy knipsen, Bild irgendwie übertragen, dann hochladen |
+| Die Handy-Seite verlangt **keine Anmeldung** | Der Nutzer hat den Code gerade am eigenen Rechner erzeugt und mit dem eigenen Handy gescannt. Ihn dort erneut anmelden zu lassen wäre genau die Hürde, die die Funktion beseitigt |
+| Der Schutz liegt in der Adresse: **15 Minuten gültig, nicht erratbar (cuid), genau ein Bild** | Kein Konto nötig und trotzdem kein offener Upload-Endpunkt |
+| Der Rechner fragt alle **2 Sekunden** nach; das Bild wird **genau einmal** herausgegeben und danach gelöscht | Die Tabelle ist ein Briefkasten, kein Archiv — Fotos liegen nur zwischen Aufnahme und Abholung in der Datenbank |
+| Das Bild wird **auf dem Handy** auf 1400 px verkleinert, bevor es die Mobilfunkverbindung belastet | Ein Handyfoto hat 6–12 MB |
+| Die alten Wege bleiben: „Foto aufnehmen" (auf dem Handy direkt die Kamera) und „Aus der Galerie" | Auf dem Handy ist der Direktweg schneller als der Umweg über den QR-Code |
+
+Getestet: Übergabe eröffnen → Handy-Seite ohne Anmeldung erreichbar (200) →
+Rechner meldet „wartet" → Handy lädt ohne Anmeldung hoch → Rechner holt ab →
+zweiter Abruf liefert „abgeholt" → zweiter Upload 409 → Abruf ohne Anmeldung 401.
+
 ## Technik
 
 | Entscheidung | Begründung |
