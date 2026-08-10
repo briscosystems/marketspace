@@ -805,15 +805,67 @@ model ExperienceReport {
   productFreetext String?
   text            String
   source          ExperienceSource @default(TEXT)
-  status          ExperienceStatus @default(PENDING)
-  creditsAwarded  Int              @default(0)
-  adminNote       String?
-  createdAt       DateTime         @default(now())
-  reviewedAt      DateTime?
+
+  /// Womit hat der Nutzer zu kämpfen — die Sprache, in der Abteilungsleiter
+  /// suchen ("Fleckenbildung Buntmetall", "Geruch am Montag", "Schaum").
+  /// Freie Schlagworte statt starrer Liste: Praxis erfindet ständig neue.
+  problems String[]           @default([])
+  /// Auf welcher Maschine — freiwillig, macht den Bericht wertvoller.
+  machine  String?
+  /// Wie es ausgegangen ist (gelöst / nicht gelöst / offen) — Berichte ohne
+  /// Ausgang helfen niemandem weiter.
+  outcome  ExperienceOutcome?
+
+  /// Fotos, Videos und Laborberichte zum Bericht.
+  media          ExperienceMedia[]
+  status         ExperienceStatus  @default(PENDING)
+  creditsAwarded Int               @default(0)
+  adminNote      String?
+  createdAt      DateTime          @default(now())
+  reviewedAt     DateTime?
 
   @@index([status, createdAt])
   @@index([productId, status])
   @@index([userId])
+}
+
+/// Anhang zu einem Erfahrungsbericht: Foto, Video oder Laborbericht.
+///
+/// Ein Foto vom Tank sagt mehr als drei Absätze — und ein Laborbericht ist der
+/// härteste Beleg, den ein Betrieb hat. Laborberichte enthalten aber
+/// Firmenname, Ansprechpartner und Maschinennummern; sie werden deshalb nur
+/// nach ausdrücklicher Bestätigung der Anonymisierung angenommen und wie jeder
+/// Bericht vor der Veröffentlichung geprüft.
+model ExperienceMedia {
+  id       String              @id @default(cuid())
+  reportId String
+  report   ExperienceReport    @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  kind     ExperienceMediaKind
+
+  /// Bild/PDF als data:-URI (wie bei den Angebotsfotos, Railway hat kein
+  /// dauerhaftes Dateisystem) ODER die Adresse eines Videos.
+  data         String
+  caption      String?
+  /// Nur bei Laborberichten: Der Nutzer hat bestätigt, dass keine Namen,
+  /// Adressen oder Auftragsnummern mehr darin stehen.
+  anonymisiert Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@index([reportId])
+}
+
+enum ExperienceMediaKind {
+  PHOTO
+  VIDEO_LINK
+  LAB_REPORT
+}
+
+enum ExperienceOutcome {
+  SOLVED // Problem gelöst
+  IMPROVED // besser, aber nicht weg
+  UNSOLVED // nicht gelöst
+  ONGOING // läuft noch
 }
 
 enum ExperienceSource {

@@ -11,6 +11,7 @@ import { fill } from "@/lib/i18n";
 import { getSettingInt } from "@/lib/credits";
 import { withBasePath } from "@/lib/base-path";
 import {
+  Camera,
   Building2,
   Search,
   ArrowRight,
@@ -140,7 +141,33 @@ async function PublicLanding() {
           dasselbe zweimal. Jetzt drei Wege — Anbieten (blau), Suchen (amber),
           Hersteller (Marke) — mit Bild, Titel, Knopf. Der Erklärsatz erscheint
           erst beim Darüberfahren. */}
-      <section className="grid gap-4 md:grid-cols-3">
+      {/* Reihenfolge nach Zielgruppengröße (Betreiber 2026-08-10): Einkäufer
+          suchen Verfügbarkeit und Preise, Instandhaltung sucht Problemlösungen
+          — beide zuerst. Reseller und Hersteller danach, sie sind die kleinere
+          Gruppe und wissen ohnehin, warum sie hier sind. */}
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <Link
+          href="/erkennen"
+          className="group rounded-2xl border-t-4 border border-slate-200 border-t-rose-500 bg-white p-5 shadow-soft transition duration-200 hover:-translate-y-1 hover:shadow-lift"
+        >
+          <div className="flex items-center justify-between gap-2">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-rose-50 text-rose-700 transition duration-200 group-hover:scale-105">
+              <Camera className="h-5 w-5" />
+            </span>
+            <span className="rounded-full bg-rose-600 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
+              {t("home.groupProblemBadge")}
+            </span>
+          </div>
+          <h3 className="mt-2 text-lg font-bold text-slate-900 group-hover:text-rose-700">
+            {t("home.groupProblemTitle")}
+          </h3>
+          <p className="hover-hint text-sm text-slate-600">{t("home.groupProblemText")}</p>
+          <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-rose-700">
+            {t("home.groupProblemCta")}{" "}
+            <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+          </div>
+        </Link>
+
         <Link
           href="/listings"
           className="group rounded-2xl border-t-4 border border-slate-200 border-t-blue-600 bg-white p-5 shadow-soft transition duration-200 hover:-translate-y-1 hover:shadow-lift"

@@ -338,6 +338,26 @@ vier belegten Handbüchern als Filter; (3) Maschinen-Profil im Tank-Register —
 Betreiber tragen Sichtscheiben-Werkstoff, Plakettenjahr und Handbuchvorgaben ein,
 dann wird aus dem allgemeinen Hinweis eine maschinenbezogene Fälligkeit.
 
+## Zielgruppen und Etikett-Erkennung (2026-08-10)
+
+Betreiber-Einschätzung der Nutzerverteilung: **Endkunden/Einkäufer** (suchen
+Verfügbarkeit, Preise, Alternativen) und **Abteilungsleiter/Instandhaltung**
+(suchen Problemlösungen und die Erfahrung anderer) sind die große Mehrheit;
+Reseller, Lieferanten und Hersteller sind die kleinere Gruppe.
+
+| Entscheidung | Begründung |
+|---|---|
+| Die Startseite hat jetzt **vier Einstiege in dieser Reihenfolge**: „Etikett fotografieren — was ist bekannt?" (Problem lösen), „Alternativen finden & anfragen" (Einkauf), „Produkte anbieten & verkaufen" (Reseller), „Marke & Katalog präsentieren" (Hersteller) | Die großen Zielgruppen zuerst; wer anbietet oder eine Marke vertritt, weiß ohnehin, warum er hier ist |
+| **Foto vom Produktetikett** → Claude liest Hersteller, Produkt, Gebinde und Charge ab → Treffer im Katalog → sofort Sollwerte, gemeldete Probleme und Erfahrungsberichte anderer Betriebe | Der häufigste Weg zum Produkt ist nicht die Suche, sondern das Gebinde vor einem. Abtippen von „HYCUT ET 46 + ADDITIV ET" ist fehleranfällig |
+| Kosten **1 Credit je Erkennung**, abgebucht nach Erfolg, **Rückbuchung bei Fehlschlag** | gleiche Regel wie bei allen KI-Aktionen |
+| Ohne `ANTHROPIC_API_KEY` antwortet die Route mit **503 statt zu raten** | Ein falsch erkanntes Produkt ist schlimmer als gar keins |
+| Das Foto wird **im Browser auf 1400 px verkleinert**, bevor es hochgeht | Handyfotos haben 6–12 MB |
+| Erfahrungsberichte können künftig **Fotos, Video-Verweise und Laborberichte** tragen (`ExperienceMedia`), dazu Problem-Schlagworte, Maschine und Ausgang (gelöst/besser/ungelöst) | Ein Foto vom Tank sagt mehr als drei Absätze; ein Laborbericht ist der härteste Beleg. Laborberichte nur mit ausdrücklicher Anonymisierungs-Bestätigung und wie jeder Bericht erst nach Prüfung sichtbar |
+
+Offen (Datenmodell steht, Oberfläche fehlt): eigener Bereich `/erfahrungen`
+zum Lesen und Filtern nach Problem, Upload-Oberfläche für Foto/Video/Laborbericht,
+Erfahrung teilen ohne Produktbezug.
+
 ## Technik
 
 | Entscheidung | Begründung |

@@ -52,6 +52,7 @@ export const AI_ACTION_COSTS = {
   alternatives: 1, // Haiku + SDS-Vergleich, ~CHF 0.035
   alternativesWeb: 2, // Sonnet + Websuche, ~CHF 0.07
   kssWizardWeb: 2, // Sonnet + Websuche (Empfehlungen gegen Foren/Hersteller prüfen)
+  labelScan: 1, // Etikett-Foto erkennen (Bildauswertung, kurze Antwort)
 } as const;
 
 export type AiAction = keyof typeof AI_ACTION_COSTS;
@@ -62,6 +63,7 @@ export const AI_ACTION_LABEL: Record<AiAction, string> = {
   alternatives: "KI-Alternativen (SDS-Vergleich)",
   alternativesWeb: "KI-Alternativsuche mit Web-Recherche",
   kssWizardWeb: "KSS-Wizard Web-Prüfung",
+  labelScan: "Produkt vom Etikett-Foto erkannt",
 };
 
 // ---------- Einstellungen (AppSetting) ----------
