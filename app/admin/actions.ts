@@ -353,3 +353,36 @@ export async function deleteExperience(formData: FormData) {
   await prisma.experienceReport.delete({ where: { id } });
   revalidatePath("/admin");
 }
+
+/**
+ * Einzelnes Foto (oder Video/Laborbericht) aus einem Erfahrungsbericht
+ * entfernen — Betreiber-Recht (2026-08-10).
+ *
+ * Warum einzeln: Ein Bericht kann fachlich wertvoll sein und trotzdem ein Foto
+ * enthalten, das nicht bleiben darf — ein erkennbares Firmenschild im
+ * Hintergrund, ein Laborbericht mit Namen. Dann soll der Betreiber das Bild
+ * entfernen können, ohne den ganzen Bericht zu verlieren.
+ */
+export async function deleteExperienceMedia(formData: FormData) {
+  await assertOwner();
+  const id = String(formData.get("mediaId") ?? "");
+  if (!id) return;
+  await prisma.experienceMedia.delete({ where: { id } });
+  revalidatePath("/admin");
+}
+
+/**
+ * Einzelnes Angebotsfoto entfernen — Betreiber-Recht.
+ *
+ * Anbieter laden eigene Fotos hoch; gelegentlich landet dort etwas, das nicht
+ * bleiben kann (fremde Katalogbilder, versehentlich mitfotografierte Papiere).
+ * Der Anbieter selbst kann seine Fotos ohnehin löschen — das hier ist das
+ * Eingriffsrecht des Betreibers.
+ */
+export async function deleteListingPhoto(formData: FormData) {
+  await assertOwner();
+  const id = String(formData.get("photoId") ?? "");
+  if (!id) return;
+  await prisma.listingPhoto.delete({ where: { id } });
+  revalidatePath("/admin");
+}

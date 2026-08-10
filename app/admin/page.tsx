@@ -19,6 +19,8 @@ import {
   rejectExperience,
   editExperience,
   deleteExperience,
+  deleteExperienceMedia,
+  deleteListingPhoto,
 } from "./actions";
 import { getAllSettings, AI_ACTION_COSTS, packagePriceEur } from "@/lib/credits";
 import { isMembershipActive } from "@/lib/membership";
@@ -63,6 +65,25 @@ export default async function AdminPage() {
     take: 200,
   });
   const offeneErfahrungen = alleErfahrungen.filter((e) => e.status === "PENDING");
+
+  // Angebotsfotos: neueste zuerst. Anbieter können ihre eigenen Fotos selbst
+  // löschen — hier hat der Betreiber zusätzlich das Eingriffsrecht
+  // (Betreiber 2026-08-10).
+  const angebotsFotos = await prisma.listingPhoto.findMany({
+    select: {
+      id: true,
+      createdAt: true,
+      listing: {
+        select: {
+          id: true,
+          productName: true,
+          seller: { select: { pseudonym: true, email: true } },
+        },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+    take: 60,
+  });
   const erfahrungsStatistik = {
     gesamt: alleErfahrungen.length,
     offen: offeneErfahrungen.length,
@@ -364,6 +385,54 @@ export default async function AdminPage() {
         </p>
       </section>
 
+      <section className="rounded-xl border border-slate-200 bg-white p-5">
+          <h2 className="mb-1 text-lg font-semibold text-slate-900">
+            Hochgeladene Angebotsfotos{" "}
+            <span className="text-sm font-normal text-slate-500">
+              (neueste {angebotsFotos.length})
+            </span>
+          </h2>
+          <p className="mb-3 text-xs text-slate-500">
+            Anbieter können ihre eigenen Fotos selbst löschen. Hier greift der Betreiber ein, wenn
+            ein Bild nicht bleiben kann — fremdes Katalogbild, mitfotografierte Papiere, falsches
+            Motiv.
+          </p>
+          {angebotsFotos.length === 0 ? (
+            <p className="text-sm text-slate-500">Noch keine Fotos hochgeladen.</p>
+          ) : (
+            <div className="flex flex-wrap gap-3">
+              {angebotsFotos.map((f) => (
+                <div key={f.id} className="w-28">
+                  <div className="relative">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`/api/listing-photos/${f.id}?v=klein`}
+                      alt=""
+                      className="h-28 w-28 rounded-lg object-cover ring-1 ring-slate-200"
+                    />
+                    <form action={deleteListingPhoto} className="absolute right-1 top-1">
+                      <input type="hidden" name="photoId" value={f.id} />
+                      <button
+                        type="submit"
+                        title="Dieses Foto löschen"
+                        className="rounded-full bg-white/90 px-1.5 py-0.5 text-xs font-bold text-red-700 shadow hover:bg-red-50"
+                      >
+                        ✕
+                      </button>
+                    </form>
+                  </div>
+                  <p className="mt-1 truncate text-[11px] text-slate-600" title={f.listing.productName}>
+                    {f.listing.productName}
+                  </p>
+                  <p className="truncate text-[11px] text-slate-400" title={f.listing.seller.email}>
+                    {f.listing.seller.pseudonym}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
       {/* Moderations-Warteschlange: Erfahrungsberichte freigeben (= Prämie
           gutschreiben) oder ablehnen. Jede geprüfte Erfahrung wird gleich
           belohnt — positiv wie negativ. */}
@@ -453,13 +522,26 @@ export default async function AdminPage() {
                   <div className="mt-2 flex flex-wrap gap-2">
                     {e.media.map((m) =>
                       m.kind === "PHOTO" ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          key={m.id}
-                          src={m.data}
-                          alt={m.caption ?? ""}
-                          className="h-24 w-24 rounded-lg object-cover ring-1 ring-slate-200"
-                        />
+                        <div key={m.id} className="relative">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={m.data}
+                            alt={m.caption ?? ""}
+                            className="h-24 w-24 rounded-lg object-cover ring-1 ring-slate-200"
+                          />
+                          {/* Einzelnes Bild entfernen, ohne den Bericht zu
+                              verlieren (Betreiber 2026-08-10). */}
+                          <form action={deleteExperienceMedia} className="absolute right-1 top-1">
+                            <input type="hidden" name="mediaId" value={m.id} />
+                            <button
+                              type="submit"
+                              title="Dieses Bild entfernen"
+                              className="rounded-full bg-white/90 px-1.5 py-0.5 text-xs font-bold text-red-700 shadow hover:bg-red-50"
+                            >
+                              ✕
+                            </button>
+                          </form>
+                        </div>
                       ) : (
                         <a
                           key={m.id}

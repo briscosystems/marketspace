@@ -422,6 +422,32 @@ Getestet: Übergabe eröffnen → Handy-Seite ohne Anmeldung erreichbar (200) �
 Rechner meldet „wartet" → Handy lädt ohne Anmeldung hoch → Rechner holt ab →
 zweiter Abruf liefert „abgeholt" → zweiter Upload 409 → Abruf ohne Anmeldung 401.
 
+## Rechte an eigenen Inhalten und Betreiber-Eingriff (2026-08-10)
+
+Prüfung des Ist-Stands (Betreiber-Auftrag): Was darf ein Nutzer mit dem, was er
+selbst hochgeladen oder geschrieben hat?
+
+| Inhalt | Nutzer darf | Betreiber darf |
+|---|---|---|
+| **Angebote** | bearbeiten und löschen (bestand bereits) | — |
+| **Angebotsfotos** | einzeln löschen (bestand bereits, fremde Angebote sind gesperrt) | **neu:** in der Foto-Übersicht jedes Foto löschen |
+| **Erfahrungsberichte** | **neu:** ändern **solange offen**, zurückziehen **jederzeit** | freigeben, ablehnen, korrigieren, löschen |
+| **Fotos/Laborberichte am Bericht** | mit dem Bericht | **neu:** einzeln entfernen, ohne den Bericht zu verlieren |
+| **Nachrichten im Chat** | *weder ändern noch löschen* — bewusst offen, siehe unten | — |
+
+| Entscheidung | Begründung |
+|---|---|
+| Ein **freigegebener** Erfahrungsbericht ist für den Nutzer **nicht mehr änderbar** — nur noch zurückziehbar | Sonst ließe sich ein harmloser Text freigeben und danach umschreiben; die Prüfung wäre wertlos |
+| Wird ein offener Bericht geändert, läuft die **KI-Plausibilitätsprüfung erneut** | Sonst umgeht man die Vorprüfung, indem man nach dem Absenden umschreibt |
+| Beim Zurückziehen **bleiben gutgeschriebene Credits** | Die Prüfarbeit ist geleistet; eine Rückbuchung bestrafte gerade die, die aus gutem Grund zurückziehen (z. B. versehentlich genannter Kundenname) |
+| Der Betreiber kann **einzelne Anhänge** entfernen statt nur ganze Berichte | Ein Bericht kann fachlich wertvoll sein und trotzdem ein Foto enthalten, das nicht bleiben darf — Firmenschild im Hintergrund, Laborbericht mit Namen |
+
+**Offen und bewusst nicht entschieden:** Nachrichten im Chat lassen sich weder
+ändern noch löschen. Das ist bei einem Geschäftsverlauf kein Versehen — die
+Unterhaltung ist Teil der Abwicklung und im Streitfall der Beleg. Ob Nutzer
+eigene Nachrichten zurückziehen dürfen (und ob dann „Nachricht zurückgezogen"
+stehen bleibt), ist eine Entscheidung des Betreibers.
+
 ## Technik
 
 | Entscheidung | Begründung |
