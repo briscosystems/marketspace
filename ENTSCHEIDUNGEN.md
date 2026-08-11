@@ -457,6 +457,23 @@ stehen bleibt), ist eine Entscheidung des Betreibers.
 | **Alles bleibt änderbar** — die Vorbelegung ist ein Vorschlag, keine Festlegung | Oft ist das angesehene Produkt nur der Ausgangspunkt („so etwas wie das, aber borfrei") |
 | Nur Kategorien, die das Formular auch anbietet, werden zugeordnet; alles andere bleibt beim Standard | Lieber keine Vorauswahl als eine falsche |
 
+## Kachel-Texte kurz und eindeutig (2026-08-11)
+
+Betreiber-Vorgabe: „Klare Worte, kurz und prägnant. Je weniger Worte, umso besser."
+
+| Kachel | vorher | jetzt |
+|---|---|---|
+| Problem lösen | „Etikett fotografieren — was ist bekannt?" / „Foto aufnehmen" | **„Etikett fotografieren" / „Produkt erkennen"** |
+| Anbieten | „Produkte anbieten & verkaufen" / „Angebote durchsuchen" | **„Produkt anbieten" / „Angebot einstellen"** |
+| Suchen | „Alternativen finden & anfragen" / „KI-Suche starten" | **„Alternative finden" / „KI-Suche starten"** |
+| Hersteller | „Marke & Katalog präsentieren" / „Marke präsentieren" | **„Marke zeigen" / „Schaufenster anlegen"** |
+
+| Entscheidung | Begründung |
+|---|---|
+| Titel = **was es ist**, Knopf = **was passiert**. Keine Doppelungen („Marke präsentieren" stand zweimal), keine Fragen im Titel | Wer scannt, liest zwei Zeilen — die müssen tragen |
+| **Die Anbieten-Kachel führt jetzt zu `/listings/new`** statt zur Angebotsliste | Titel und Knopf sagten „anbieten", das Ziel führte zum Durchsuchen. Angebote durchsuchen geht über die Kopfzeilen-Suche und `/listings` |
+| Die Kennzeichen bleiben: Anbieten (blau), Suchen (amber), Hersteller (Marke), Problem lösen (rot) | Farb- und Wortkonvention aus der Marken-Festlegung bleibt unberührt |
+
 ## Technik
 
 | Entscheidung | Begründung |

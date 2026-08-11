@@ -37,8 +37,11 @@ export function EinstiegsKarten({ t }: { t: (k: string) => string }) {
         </div>
       </Link>
 
+      {/* Titel, Knopf und Ziel sagen jetzt dasselbe (Betreiber 2026-08-11):
+          „Produkt anbieten" führte vorher auf die Angebotsliste — also zum
+          Durchsuchen statt zum Anbieten. */}
       <Link
-        href="/listings"
+        href="/listings/new"
         className="group rounded-2xl border-t-4 border border-slate-200 border-t-blue-600 bg-white p-5 shadow-soft transition duration-200 hover:-translate-y-1 hover:shadow-lift"
       >
         <div className="flex items-center justify-between gap-2">
