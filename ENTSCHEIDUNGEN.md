@@ -474,6 +474,20 @@ Betreiber-Vorgabe: „Klare Worte, kurz und prägnant. Je weniger Worte, umso be
 | **Die Anbieten-Kachel führt jetzt zu `/listings/new`** statt zur Angebotsliste | Titel und Knopf sagten „anbieten", das Ziel führte zum Durchsuchen. Angebote durchsuchen geht über die Kopfzeilen-Suche und `/listings` |
 | Die Kennzeichen bleiben: Anbieten (blau), Suchen (amber), Hersteller (Marke), Problem lösen (rot) | Farb- und Wortkonvention aus der Marken-Festlegung bleibt unberührt |
 
+## Dashboard entdoppelt (2026-08-11)
+
+Betreiber-Befund: „Produkt anbieten ist zweimal auf der Seite. Anfragen bedienen
+ist redundant mit Eingegangene Angebote."
+
+| Entscheidung | Begründung |
+|---|---|
+| Die **rollenbezogene Aktionsreihe zeigt nur noch EINE Kachel**: Endkunden „Bedarf einstellen", Reseller und Hersteller „Anfragen bedienen" | Anbieten, Alternative finden und Marke zeigen stehen bereits in den vier Einstiegskacheln — dieselbe Handlung zweimal auf einer Seite macht die Bedienung unklar, nicht bequemer |
+| Die Zähler-Kachel heißt jetzt **„Angebote auf meine Anfragen"** statt „Eingegangene Angebote" | Sie sah aus wie eine Dopplung zu „Anfragen bedienen", meint aber das Gegenteil: dort gebe ICH Angebote ab, hier bekomme ICH welche |
+| „Anfragen bedienen" heißt im Erklärtext jetzt „Anfragen anderer ansehen und ein Angebot abgeben" | Macht die Richtung eindeutig |
+
+Ergebnis: Auf dem Dashboard steht jede Handlung genau einmal — eine
+Rollen-Aktion, vier Einstiege, zwei Zähler.
+
 ## Technik
 
 | Entscheidung | Begründung |

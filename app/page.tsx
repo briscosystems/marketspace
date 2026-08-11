@@ -221,22 +221,15 @@ async function PersonalDashboard({ userId }: { userId: string }) {
   const creditBalance = me?.creditBalance ?? 0;
   const role = me?.role ?? "RESELLER";
 
-  // Rollenbasierte Haupt-Aktionen: jede Zielgruppe wird direkt abgeholt.
-  //   RESELLER   → viele Produkte anbieten + offene Anfragen bedienen
-  //   ENDKUNDE   → KI-Alternative finden + Anfrage einstellen
-  //   OEM        → Produkte anbieten + Marke präsentieren
+  // Nur noch EINE rollenbezogene Aktion (Betreiber 2026-08-11): Anbieten,
+  // Alternative finden und Marke zeigen stehen bereits in den vier
+  // Einstiegskacheln darunter — dieselbe Handlung zweimal auf einer Seite
+  // macht die Bedienung unklar, nicht bequemer.
+  //   ENDKUNDE → Bedarf einstellen (Anfrage schreiben)
+  //   RESELLER/OEM → Anfragen bedienen (offene Käufer-Anfragen)
   const actions =
     role === "ENDKUNDE"
       ? [
-          {
-            href: "/kss-finder",
-            cls: "border-purple-200 hover:border-purple-400",
-            iconBg: "bg-purple-600",
-            icon: <Sparkles className="h-6 w-6" />,
-            title: t("dashact.altTitel"),
-            text: t("dashact.altText"),
-            linkCls: "text-purple-700",
-          },
           {
             href: "/rfqs/new",
             cls: "border-amber-200 hover:border-amber-400",
@@ -247,47 +240,17 @@ async function PersonalDashboard({ userId }: { userId: string }) {
             linkCls: "text-amber-700",
           },
         ]
-      : role === "OEM"
-        ? [
-            {
-              href: "/listings/new",
-              cls: "border-blue-200 hover:border-blue-400",
-              iconBg: "bg-blue-600",
-              icon: <Plus className="h-6 w-6" />,
-              title: t("dashact.anbietenTitel"),
-              text: t("dashact.anbietenTextOem"),
-              linkCls: "text-blue-700",
-            },
-            {
-              href: "/mitgliedschaft",
-              cls: "border-brand-200 hover:border-brand-400",
-              iconBg: "bg-brand-600",
-              icon: <Building2 className="h-6 w-6" />,
-              title: t("dashact.markeTitel"),
-              text: t("dashact.markeText"),
-              linkCls: "text-brand-700",
-            },
-          ]
-        : [
-            {
-              href: "/listings/new",
-              cls: "border-blue-200 hover:border-blue-400",
-              iconBg: "bg-blue-600",
-              icon: <Plus className="h-6 w-6" />,
-              title: t("dashact.anbietenTitel"),
-              text: t("dashact.anbietenText"),
-              linkCls: "text-blue-700",
-            },
-            {
-              href: "/rfqs",
-              cls: "border-amber-200 hover:border-amber-400",
-              iconBg: "bg-amber-500",
-              icon: <Inbox className="h-6 w-6" />,
-              title: t("dashact.bedienenTitel"),
-              text: t("dashact.bedienenText"),
-              linkCls: "text-amber-700",
-            },
-          ];
+      : [
+          {
+            href: "/rfqs",
+            cls: "border-amber-200 hover:border-amber-400",
+            iconBg: "bg-amber-500",
+            icon: <Inbox className="h-6 w-6" />,
+            title: t("dashact.bedienenTitel"),
+            text: t("dashact.bedienenText"),
+            linkCls: "text-amber-700",
+          },
+        ];
 
   return (
     <div className="space-y-8">
