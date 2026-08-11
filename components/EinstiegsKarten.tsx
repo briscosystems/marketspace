@@ -1,86 +1,124 @@
 /**
  * Die vier Einstiege der Plattform — nach Zielgruppengröße geordnet:
- * Probleme lösen (Instandhaltung), Anbieten (Reseller), Alternative finden
- * (Einkauf), Angebot Hersteller.
+ * Problem klären (Instandhaltung), Anbieten (Reseller), Passendes finden
+ * (Einkauf), Marke zeigen (Hersteller).
  *
- * Beschriftung: **nur die Überschrift** (Betreiber 2026-08-11). Vorher trug
- * jede Kachel zusätzlich eine Marken-Ecke und eine Aktionszeile — dreimal
- * dasselbe in anderen Worten. Der Erklärsatz erscheint weiter beim Überfahren.
+ * Beschriftung (Betreiber 2026-08-11): **Überschrift plus eine kurze Zeile,
+ * die sagt, was passiert.** Die Überschrift allein war zu blass („Probleme
+ * lösen" — womit?), und der Erklärsatz stand nur beim Überfahren mit der Maus:
+ * auf dem Handy hat ihn niemand gesehen. Genau davor warnt die Recherche zu
+ * B2B-Startseiten — Wichtiges gehört sichtbar auf die Kachel, nicht in ein
+ * Hover-Element.
+ *
+ * Gestaltung: keine harte Farbleiste mehr, sondern ein farbiges Symbolfeld,
+ * ein weicher Farbschleier beim Überfahren und ein Ring in der Kachelfarbe —
+ * dieselbe Sprache wie die übrigen Karten der Seite (rounded-2xl, shadow-soft
+ * → shadow-lift).
  *
  * Steht bewusst auf BEIDEN Startseiten: für Gäste UND im angemeldeten
- * Dashboard (Betreiber 2026-08-10). Wer angemeldet ist, braucht dieselben
- * Einstiege — vorher sah er nur „Anbieten" und „Anfragen bedienen" und fand
- * die Werkzeuge gar nicht.
+ * Dashboard (Betreiber 2026-08-10).
  */
 import Link from "next/link";
 import { OilBarrels, SearchCanister } from "@/components/OilBarrels";
 import { Camera, Building2, ArrowRight } from "lucide-react";
 
+type Kachel = {
+  href: string;
+  titel: string;
+  zeile: string;
+  symbol: React.ReactNode;
+  /** Farbklassen fest je Kachel — Tailwind baut nur, was wörtlich dasteht. */
+  verlauf: string;
+  ring: string;
+  titelHover: string;
+  pfeil: string;
+  symbolFeld: string;
+};
+
 export function EinstiegsKarten({ t }: { t: (k: string) => string }) {
+  const kacheln: Kachel[] = [
+    {
+      href: "/erkennen",
+      titel: t("home.groupProblemTitle"),
+      zeile: t("home.groupProblemLine"),
+      symbol: <Camera className="h-6 w-6" />,
+      verlauf: "from-rose-50",
+      ring: "hover:ring-rose-300",
+      titelHover: "group-hover:text-rose-700",
+      pfeil: "group-hover:text-rose-500",
+      symbolFeld: "bg-rose-50 text-rose-600",
+    },
+    {
+      href: "/listings/new",
+      titel: t("home.groupResellerTitle"),
+      zeile: t("home.groupResellerLine"),
+      symbol: <OilBarrels className="h-11 w-auto" />,
+      verlauf: "from-blue-50",
+      ring: "hover:ring-blue-300",
+      titelHover: "group-hover:text-blue-700",
+      pfeil: "group-hover:text-blue-500",
+      symbolFeld: "",
+    },
+    {
+      href: "/kss-finder",
+      titel: t("home.groupBuyerTitle"),
+      zeile: t("home.groupBuyerLine"),
+      symbol: <SearchCanister className="h-11 w-auto" />,
+      verlauf: "from-amber-50",
+      ring: "hover:ring-amber-300",
+      titelHover: "group-hover:text-amber-700",
+      pfeil: "group-hover:text-amber-500",
+      symbolFeld: "",
+    },
+    {
+      href: "/register",
+      titel: t("home.groupMfrTitle"),
+      zeile: t("home.groupMfrLine"),
+      symbol: <Building2 className="h-6 w-6" />,
+      verlauf: "from-brand-50",
+      ring: "hover:ring-brand-300",
+      titelHover: "group-hover:text-brand-700",
+      pfeil: "group-hover:text-brand-500",
+      symbolFeld: "bg-brand-50 text-brand-700",
+    },
+  ];
+
   return (
     <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <Link
-        href="/erkennen"
-        className="group rounded-2xl border-t-4 border border-slate-200 border-t-rose-500 bg-white p-5 shadow-soft transition duration-200 hover:-translate-y-1 hover:shadow-lift"
-      >
-        <div className="flex items-center justify-between gap-2">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-rose-50 text-rose-700 transition duration-200 group-hover:scale-105">
-            <Camera className="h-5 w-5" />
-          </span>
-          <ArrowRight className="h-5 w-5 text-slate-300 transition-transform duration-200 group-hover:translate-x-1" />
-        </div>
-        <h3 className="mt-2 text-lg font-bold text-slate-900 group-hover:text-rose-700">
-          {t("home.groupProblemTitle")}
-        </h3>
-        <p className="hover-hint text-sm text-slate-600">{t("home.groupProblemText")}</p>
-      </Link>
-
-      {/* Titel, Knopf und Ziel sagen jetzt dasselbe (Betreiber 2026-08-11):
-          „Produkt anbieten" führte vorher auf die Angebotsliste — also zum
-          Durchsuchen statt zum Anbieten. */}
-      <Link
-        href="/listings/new"
-        className="group rounded-2xl border-t-4 border border-slate-200 border-t-blue-600 bg-white p-5 shadow-soft transition duration-200 hover:-translate-y-1 hover:shadow-lift"
-      >
-        <div className="flex items-center justify-between gap-2">
-          <OilBarrels className="h-10 w-auto transition duration-200 group-hover:scale-105" />
-          <ArrowRight className="h-5 w-5 text-slate-300 transition-transform duration-200 group-hover:translate-x-1" />
-        </div>
-        <h3 className="mt-2 text-lg font-bold text-slate-900 group-hover:text-blue-700">
-          {t("home.groupResellerTitle")}
-        </h3>
-        <p className="hover-hint text-sm text-slate-600">{t("home.groupResellerText")}</p>
-      </Link>
-
-      <Link
-        href="/kss-finder"
-        className="group rounded-2xl border-t-4 border border-slate-200 border-t-amber-500 bg-white p-5 shadow-soft transition duration-200 hover:-translate-y-1 hover:shadow-lift"
-      >
-        <div className="flex items-center justify-between gap-2">
-          <SearchCanister className="h-10 w-auto transition duration-200 group-hover:scale-105" />
-          <ArrowRight className="h-5 w-5 text-slate-300 transition-transform duration-200 group-hover:translate-x-1" />
-        </div>
-        <h3 className="mt-2 text-lg font-bold text-slate-900 group-hover:text-amber-700">
-          {t("home.groupBuyerTitle")}
-        </h3>
-        <p className="hover-hint text-sm text-slate-600">{t("home.groupBuyerText")}</p>
-      </Link>
-
-      <Link
-        href="/register"
-        className="group rounded-2xl border-t-4 border border-slate-200 border-t-brand-500 bg-white p-5 shadow-soft transition duration-200 hover:-translate-y-1 hover:shadow-lift"
-      >
-        <div className="flex items-center justify-between gap-2">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand-50 text-brand-700 transition duration-200 group-hover:scale-105">
-            <Building2 className="h-5 w-5" />
-          </span>
-          <ArrowRight className="h-5 w-5 text-slate-300 transition-transform duration-200 group-hover:translate-x-1" />
-        </div>
-        <h3 className="mt-2 text-lg font-bold text-slate-900 group-hover:text-brand-700">
-          {t("home.groupMfrTitle")}
-        </h3>
-        <p className="hover-hint text-sm text-slate-600">{t("home.groupMfrText")}</p>
-      </Link>
+      {kacheln.map((k) => (
+        <Link
+          key={k.href}
+          href={k.href}
+          className={`group relative flex flex-col overflow-hidden rounded-2xl bg-white p-5 shadow-soft ring-1 ring-slate-200/80 transition duration-200 hover:-translate-y-1 hover:shadow-lift ${k.ring}`}
+        >
+          {/* Weicher Farbschleier beim Überfahren — Farbe ohne harte Kante. */}
+          <span
+            className={`pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b ${k.verlauf} to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100`}
+          />
+          <div className="relative flex h-12 items-center">
+            {k.symbolFeld ? (
+              <span
+                className={`grid h-11 w-11 place-items-center rounded-xl transition duration-200 group-hover:scale-105 ${k.symbolFeld}`}
+              >
+                {k.symbol}
+              </span>
+            ) : (
+              <span className="inline-flex transition duration-200 group-hover:scale-105">
+                {k.symbol}
+              </span>
+            )}
+          </div>
+          <h3
+            className={`relative mt-3 text-lg font-bold leading-tight text-slate-900 transition-colors ${k.titelHover}`}
+          >
+            {k.titel}
+          </h3>
+          <p className="relative mt-1 text-sm leading-snug text-slate-600">{k.zeile}</p>
+          <ArrowRight
+            className={`relative mt-3 h-5 w-5 text-slate-300 transition duration-200 group-hover:translate-x-1 ${k.pfeil}`}
+          />
+        </Link>
+      ))}
     </section>
   );
 }

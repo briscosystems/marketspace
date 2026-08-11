@@ -541,7 +541,24 @@ Die KI kann danach anhand der Fotos eventuell weitere Probleme erkennen."
 
 Kosten: 1 Credit je Prüfung, wie beim Etikett-Foto.
 
-## Einstiegskacheln: nur noch die Überschrift (2026-08-11)
+## Einstiegskacheln: Überschrift plus eine Zeile (2026-08-11, ersetzt den Eintrag darunter)
+
+Betreiber-Befund am selben Tag: Die nackten Überschriften sind zu blass —
+„aussagekräftiger, leicht verständlich, modernes Design passend zum Rest".
+
+Recherche zu B2B-Startseiten (u. a. CXL, Ironpaper, Directive 2026): Wer den
+Erklärtext in ein Hover-Element legt, verliert ihn — auf dem Handy gibt es kein
+Überfahren, und niemand klickt „nur mal so". Wichtiges gehört sichtbar auf die
+Kachel; die Aussage soll in unter zehn Wörtern stehen.
+
+| Entscheidung | Begründung |
+|---|---|
+| Jede Kachel trägt jetzt **Überschrift + eine kurze, immer sichtbare Zeile** | „Probleme lösen" allein sagt nicht, womit. „Problem per Foto klären / Etikett oder Tank fotografieren — die Seite sagt, was bekannt ist" sagt es in einem Blick |
+| Neue Überschriften: **„Problem per Foto klären", „Produkt anbieten", „Passendes Produkt finden", „Marke sichtbar machen"** | Jede nennt Handlung UND Gegenstand. „Angebot Hersteller" war ein Etikett, kein Satz; „Alternative finden" verschwieg, dass die KI Datenblätter vergleicht |
+| Die **Hover-Sprechblase** auf diesen vier Kacheln ist **entfernt** | Ihr Inhalt steht jetzt sichtbar da. Zweimal dasselbe wäre wieder die alte Dopplung. (Auf anderen Abschnitten bleibt sie.) |
+| Gestaltung: **keine harte Farbleiste** mehr, sondern farbiges Symbolfeld, weicher Farbschleier und farbiger Ring beim Überfahren, Pfeil unten | Dieselbe Sprache wie die übrigen Karten der Seite (rounded-2xl, shadow-soft → shadow-lift) — ruhiger und moderner als der bunte Balken oben |
+
+## Einstiegskacheln: nur noch die Überschrift (2026-08-11, überholt)
 
 Betreiber-Vorgabe: „Beschrifte die Kacheln nur mit den Überschriften."
 
