@@ -1,7 +1,11 @@
 /**
  * Die vier Einstiege der Plattform — nach Zielgruppengröße geordnet:
- * Problem lösen (Instandhaltung), Suchen (Einkauf), Anbieten (Reseller),
- * Marke (Hersteller).
+ * Probleme lösen (Instandhaltung), Anbieten (Reseller), Alternative finden
+ * (Einkauf), Angebot Hersteller.
+ *
+ * Beschriftung: **nur die Überschrift** (Betreiber 2026-08-11). Vorher trug
+ * jede Kachel zusätzlich eine Marken-Ecke und eine Aktionszeile — dreimal
+ * dasselbe in anderen Worten. Der Erklärsatz erscheint weiter beim Überfahren.
  *
  * Steht bewusst auf BEIDEN Startseiten: für Gäste UND im angemeldeten
  * Dashboard (Betreiber 2026-08-10). Wer angemeldet ist, braucht dieselben
@@ -23,18 +27,12 @@ export function EinstiegsKarten({ t }: { t: (k: string) => string }) {
           <span className="grid h-10 w-10 place-items-center rounded-xl bg-rose-50 text-rose-700 transition duration-200 group-hover:scale-105">
             <Camera className="h-5 w-5" />
           </span>
-          <span className="rounded-full bg-rose-600 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
-            {t("home.groupProblemBadge")}
-          </span>
+          <ArrowRight className="h-5 w-5 text-slate-300 transition-transform duration-200 group-hover:translate-x-1" />
         </div>
         <h3 className="mt-2 text-lg font-bold text-slate-900 group-hover:text-rose-700">
           {t("home.groupProblemTitle")}
         </h3>
         <p className="hover-hint text-sm text-slate-600">{t("home.groupProblemText")}</p>
-        <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-rose-700">
-          {t("home.groupProblemCta")}{" "}
-          <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-        </div>
       </Link>
 
       {/* Titel, Knopf und Ziel sagen jetzt dasselbe (Betreiber 2026-08-11):
@@ -46,18 +44,12 @@ export function EinstiegsKarten({ t }: { t: (k: string) => string }) {
       >
         <div className="flex items-center justify-between gap-2">
           <OilBarrels className="h-10 w-auto transition duration-200 group-hover:scale-105" />
-          <span className="rounded-full bg-blue-600 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
-            {t("home.offerBadge")}
-          </span>
+          <ArrowRight className="h-5 w-5 text-slate-300 transition-transform duration-200 group-hover:translate-x-1" />
         </div>
         <h3 className="mt-2 text-lg font-bold text-slate-900 group-hover:text-blue-700">
           {t("home.groupResellerTitle")}
         </h3>
         <p className="hover-hint text-sm text-slate-600">{t("home.groupResellerText")}</p>
-        <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-blue-700">
-          {t("home.offerLink")}{" "}
-          <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-        </div>
       </Link>
 
       <Link
@@ -66,18 +58,12 @@ export function EinstiegsKarten({ t }: { t: (k: string) => string }) {
       >
         <div className="flex items-center justify-between gap-2">
           <SearchCanister className="h-10 w-auto transition duration-200 group-hover:scale-105" />
-          <span className="rounded-full bg-amber-600 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
-            {t("home.seekBadge")}
-          </span>
+          <ArrowRight className="h-5 w-5 text-slate-300 transition-transform duration-200 group-hover:translate-x-1" />
         </div>
         <h3 className="mt-2 text-lg font-bold text-slate-900 group-hover:text-amber-700">
           {t("home.groupBuyerTitle")}
         </h3>
         <p className="hover-hint text-sm text-slate-600">{t("home.groupBuyerText")}</p>
-        <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-amber-700">
-          {t("home.groupBuyerCta")}{" "}
-          <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-        </div>
       </Link>
 
       <Link
@@ -88,18 +74,12 @@ export function EinstiegsKarten({ t }: { t: (k: string) => string }) {
           <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand-50 text-brand-700 transition duration-200 group-hover:scale-105">
             <Building2 className="h-5 w-5" />
           </span>
-          <span className="rounded-full bg-brand-600 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
-            {t("home.groupMfrBadge")}
-          </span>
+          <ArrowRight className="h-5 w-5 text-slate-300 transition-transform duration-200 group-hover:translate-x-1" />
         </div>
         <h3 className="mt-2 text-lg font-bold text-slate-900 group-hover:text-brand-700">
           {t("home.groupMfrTitle")}
         </h3>
         <p className="hover-hint text-sm text-slate-600">{t("home.groupMfrText")}</p>
-        <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand-700">
-          {t("home.groupMfrCta")}{" "}
-          <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-        </div>
       </Link>
     </section>
   );

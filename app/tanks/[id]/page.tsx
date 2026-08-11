@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { getT } from "@/lib/i18n-server";
 import { fill } from "@/lib/i18n";
 import { MessungErfassen } from "@/components/MessungErfassen";
+import { OberflaechenScanner } from "@/components/OberflaechenScanner";
 import {
   bewerteMessung,
   schlechteste,
@@ -44,6 +45,7 @@ export default async function TankDetailPage({ params }: { params: Promise<{ id:
     include: {
       product: {
         select: {
+          id: true,
           name: true,
           slug: true,
           refractometerFactor: true,
@@ -171,6 +173,10 @@ export default async function TankDetailPage({ params }: { params: Promise<{ id:
       </section>
 
       <MessungErfassen tankId={tank.id} refraktometerFaktor={soll.refractometerFactor} />
+
+      {/* Messwerte sagen, wie der Tank dasteht — das Foto zeigt, was kein
+          Messgerät sieht: Fremdöl, Schaum, Beläge, Späne (Betreiber 2026-08-11). */}
+      <OberflaechenScanner produktId={tank.product?.id} />
 
       <Mischungsrechner
         tankVolumen={tank.volumeLiters}

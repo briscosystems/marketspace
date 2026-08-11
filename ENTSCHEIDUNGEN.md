@@ -524,6 +524,34 @@ Produkte nur von Brisco Systems bzw. Dosimetrix nennen.
 | Kennt das gewählte Produkt Einsatzbereiche, werden sie **automatisch eingetragen** (bis zu drei) | Spart den Griff zur Tastatur und hält die Angebotskarte gefüllt |
 | Bleibt das Feld leer, trägt das Angebot die **Produktart** ein | Die Angebotskarte braucht eine Zeile; die Produktart ist die ehrlichste Ersatzangabe |
 
+## Foto der KSS-Oberfläche — die zweite Aufnahme (2026-08-11)
+
+Betreiber-Auftrag: „Der User soll auch Fotos von der Oberfläche des KSS machen.
+Die KI kann danach anhand der Fotos eventuell weitere Probleme erkennen."
+
+| Entscheidung | Begründung |
+|---|---|
+| Neben dem Etikett-Foto gibt es ein **zweites Foto: die Oberfläche im Tank** ([components/OberflaechenScanner.tsx](components/OberflaechenScanner.tsx), [app/api/oberflaeche-pruefen/route.ts](app/api/oberflaeche-pruefen/route.ts)) | Das Etikett sagt, WAS im Tank ist. Die Oberfläche sagt, wie es ihm geht: Fremdöl, Schaum, Trübung, Verfärbung, Beläge, Späne, gebrochene Emulsion — das sieht man, bevor ein Messwert anschlägt |
+| Aufnahmewege wie beim Etikett: Kamera, Datei oder **Handy per QR-Code** | Am Rechner steht niemand vor der Maschine; der QR-Weg ist bereits erprobt |
+| Die Auswertung nennt zu jedem Befund **Beobachtung, Bedeutung und Maßnahme** und dazu, **wie sicher** sie ist (deutlich zu sehen / wahrscheinlich / nur ein Verdacht) | Ein Instandhalter braucht keine Diagnose, sondern den nächsten Handgriff — und muss wissen, worauf er sich verlassen kann |
+| Die KI **rät nicht**: Unsicheres wird „unklar" genannt, und jede Antwort sagt, was jetzt zu **messen** ist | Ein falscher Befund kostet einen Betrieb eine unnötige Tankreinigung. pH, Nitrit, Keimzahl und Konzentration sind auf einem Foto nicht erkennbar — das steht auch so unter dem Ergebnis |
+| Zeigt das Bild **keine KSS-Oberfläche**, sagt die Antwort das und der **Credit wird zurückgebucht** | Für eine Auskunft, die nichts gebracht hat, nehmen wir kein Guthaben |
+| Die KI darf **keine fremden Marken, Geräte oder Systeme** nennen | Gleiche Regel wie oben: nur Brisco und Dosimetrix |
+| Der Oberflächen-Scanner steht auf **/erkennen** und zusätzlich auf der **Tankseite** unter der Messwert-Eingabe | Dort ist der Anwender ohnehin am Tank — und das Produkt ist bekannt, die Beurteilung also genauer |
+
+Kosten: 1 Credit je Prüfung, wie beim Etikett-Foto.
+
+## Einstiegskacheln: nur noch die Überschrift (2026-08-11)
+
+Betreiber-Vorgabe: „Beschrifte die Kacheln nur mit den Überschriften."
+
+| Entscheidung | Begründung |
+|---|---|
+| Die vier Kacheln heißen **„Probleme lösen", „Produkt anbieten", „Alternative finden", „Angebot Hersteller"** — mehr steht nicht drauf | Vorher trug jede Kachel eine Marken-Ecke („PROBLEM LÖSEN"), eine Überschrift und eine Aktionszeile („Produkt erkennen →") — dreimal dasselbe in anderen Worten |
+| Marken-Ecke und Aktionszeile sind **entfernt**; ein Pfeil rechts oben zeigt weiter, dass es weitergeht | Weniger Wörter, gleiche Bedienung |
+| Der Erklärsatz bleibt als **Einblendung beim Überfahren** | Wer mehr wissen will, bekommt es — ohne dass die Kachel voll ist |
+| Die Seite hinter „Probleme lösen" heißt jetzt **„Probleme lösen — mit zwei Fotos"** | Sie kann seit heute mehr als Etiketten lesen |
+
 ## Technik
 
 | Entscheidung | Begründung |

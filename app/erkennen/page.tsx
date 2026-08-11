@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getT } from "@/lib/i18n-server";
 import { EtikettScanner } from "@/components/EtikettScanner";
+import { OberflaechenScanner } from "@/components/OberflaechenScanner";
 import { Camera } from "lucide-react";
 
 export const metadata = { title: "Produkt am Etikett erkennen — Brisco Marketplace" };
@@ -22,7 +23,12 @@ export default async function ErkennenPage() {
       </header>
 
       {session?.user?.id ? (
-        <EtikettScanner />
+        <>
+          <EtikettScanner />
+          {/* Zweiter Schritt (Betreiber 2026-08-11): Das Etikett sagt, WAS im
+              Tank ist — die Oberfläche sagt, wie es ihm geht. */}
+          <OberflaechenScanner />
+        </>
       ) : (
         <div className="card space-y-3">
           <p className="text-sm text-slate-700">{t("scan.needLogin")}</p>
