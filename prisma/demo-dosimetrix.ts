@@ -22,7 +22,7 @@ async function main() {
       productFamilies: ["eMix1500", "Fluid-Management-Software", "Sensorik"],
       knownForApplications: ["KSS-Management", "Automatisches Mischen & Dosieren", "Zerspanung"],
       description:
-        "Hybrides Automatisierungssystem für das Kühlschmierstoff-Management — digitale Messtechnik, Fluid-Management-Software und der automatische Misch- und Dosierautomat eMix1500 in einem System. Von Brisco Systems und GIMAT Liquid Monitoring.",
+        "Hybrides Automatisierungssystem für das Kühlschmierstoff-Management — digitale Messtechnik, Fluid-Management-Software und der automatische Misch- und Dosierautomat eMix1500 in einem System. Von Brisco Systems.",
     },
   });
 
@@ -43,7 +43,7 @@ async function main() {
         "automatischen Misch- und Dosierautomaten eMix1500 zu einem System. Füllstände in den " +
         "Maschinentanks werden in Echtzeit erfasst, Mischen und Dosieren laufen automatisch — " +
         "für mehr Prozessstabilität und eine wirtschaftliche Digitalisierung der Zerspanung. " +
-        "Ein System von Brisco Systems und GIMAT Liquid Monitoring.",
+        "Ein System von Brisco Systems.",
     },
     create: {
       email: "dosimetrix@example.com",
@@ -62,7 +62,7 @@ async function main() {
         "automatischen Misch- und Dosierautomaten eMix1500 zu einem System. Füllstände in den " +
         "Maschinentanks werden in Echtzeit erfasst, Mischen und Dosieren laufen automatisch — " +
         "für mehr Prozessstabilität und eine wirtschaftliche Digitalisierung der Zerspanung. " +
-        "Ein System von Brisco Systems und GIMAT Liquid Monitoring.",
+        "Ein System von Brisco Systems.",
     },
   });
 

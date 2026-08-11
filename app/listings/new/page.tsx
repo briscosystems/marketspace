@@ -69,6 +69,7 @@ export default function NewListingPage() {
     kategorie: string;
     chemie: string | null;
     iso: string | null;
+  einsatz?: string[];
   };
   const [katalog, setKatalog] = useState<Katalogtreffer[]>([]);
   const [gewaehlt, setGewaehlt] = useState<Katalogtreffer | null>(null);
@@ -154,6 +155,9 @@ export default function NewListingPage() {
     setManufacturer(k.hersteller);
     setProductType(KATEGORIE_LABEL[k.kategorie] ?? productType);
     if (k.chemie) setChemistry(k.chemie as (typeof chemistries)[number]);
+    // Steht der Einsatzbereich am Produkt, übernehmen wir ihn — sonst bleibt das
+    // Feld leer und ist ab jetzt freiwillig (Betreiber 2026-08-11).
+    if (k.einsatz?.length) setApplicationArea(k.einsatz.slice(0, 3).join(", "));
     setKatalog([]);
   }
 
@@ -204,7 +208,9 @@ export default function NewListingPage() {
       productName,
       isoViscosity: (fd.get("isoViscosity") as string) || undefined,
       chemistry,
-      applicationArea,
+      // Leer erlaubt, sobald ein Katalogprodukt gewählt ist — dann steht der
+      // Einsatzbereich am Produkt. Für die Karte tragen wir die Produktart ein.
+      applicationArea: applicationArea.trim() || productType,
       quantity: Number(fd.get("quantity")),
       quantityUnit: fd.get("quantityUnit") || "L",
       minOrderQty: fd.get("minOrderQty") ? Number(fd.get("minOrderQty")) : undefined,
@@ -396,17 +402,19 @@ export default function NewListingPage() {
               </select>
             </div>
             <div className="md:col-span-2">
-              <label className="label">{t("lnew.applicationArea")}</label>
+              <label className="label">
+                {gewaehlt ? t("lnew.applicationAreaOpt") : t("lnew.applicationArea")}
+              </label>
               <SuggestInput
                 value={applicationArea}
                 onChange={setApplicationArea}
                 suggest={applicationSuggestions}
                 validate={knownCheck(APPLICATION_AREAS)}
                 placeholder={t("lnew.phApplicationArea")}
-                required
+                required={!gewaehlt}
               />
               <p className="mt-1 text-xs text-slate-500">
-                {t("lnew.applicationHint")}
+                {gewaehlt ? t("lnew.applicationHintKatalog") : t("lnew.applicationHint")}
               </p>
             </div>
           </div>

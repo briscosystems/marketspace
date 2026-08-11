@@ -118,7 +118,7 @@ export const MEASUREMENT_METHODS: MeasurementMethod[] = [
     label: "Inline-Refraktometer",
     short: "Inline-Refraktometer",
     details:
-      "Im KSS-Kreislauf fest verbautes Refraktometer, das laufend misst und Daten an eine Steuerung gibt (Liquidtool, GIMAT, Bosch). Voraussetzung: klare Emulsion ohne Filmbildung am Sensor — bei glykolhaltigen KSS oder hoher Schaumneigung treten Drifts und Wartungsbedarf auf.",
+      "Im KSS-Kreislauf fest verbautes Refraktometer, das laufend misst und Daten an eine Steuerung gibt. Voraussetzung: klare Emulsion ohne Filmbildung am Sensor — bei glykolhaltigen KSS oder hoher Schaumneigung treten Drifts und Wartungsbedarf auf.",
     automationLevel: 4,
     glycolCompatible: false,
     trampOilTolerant: false,

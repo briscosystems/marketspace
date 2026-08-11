@@ -501,6 +501,29 @@ im Kopf — er soll es auswählen können und nicht Suchkriterien ausfüllen mü
 | Meldungen erscheinen **nie automatisch** im Katalog, sondern im Admin-Bereich unter „Gemeldete Produkte" — mit beiden Dateien zum Öffnen, Freigeben oder Ablehnen mit internem Grund | Die Freigabe legt Hersteller (falls neu) und Produkt an, mit `sourceConfidence = "anbieter-meldung"` — die Herkunft bleibt später erkennbar |
 | Doppelte Meldungen werden abgewiesen: steht das Produkt schon im Katalog, verweist die Meldung darauf; eine eigene offene Meldung blockiert die zweite | Verhindert Karteileichen in der Prüfliste |
 
+## Keine Fremdwerbung — nur Brisco und Dosimetrix (2026-08-11)
+
+Betreiber-Vorgabe: „Die Seite darf nur Brisco.ch oder dosimetrix.eu Produkte
+werben." Mitbewerber dürfen auf der Plattform nicht genannt werden.
+
+| Entscheidung | Begründung |
+|---|---|
+| Im Erklärtext zum **Inline-Refraktometer** ist die Klammer „(Liquidtool, GIMAT, Bosch)" **ersatzlos gestrichen** ([lib/kss-automation.ts](lib/kss-automation.ts)) | Das war eine Nennung fremder Systeme im eigenen Schaufenster. Das Verfahren wird weiter neutral erklärt — nur ohne Anbieternamen |
+| In den Dosimetrix-Beispieldaten heißt es jetzt „Von Brisco Systems." statt „Von Brisco Systems und GIMAT Liquid Monitoring." ([prisma/demo-dosimetrix.ts](prisma/demo-dosimetrix.ts)) | Gleiche Regel; die Texte standen noch nicht in der Datenbank, es war nur die Vorlage |
+| **Bewusst stehen geblieben:** Hersteller-Freigaben wie „Bosch Rexroth RDE 90235" und die „Bosch-Negativliste" | Das sind technische Freigabe-Normen für Hydrauliköle, keine Produkte im Wettbewerb zu Brisco oder Dosimetrix. Sie zu löschen würde belegte Produktdaten verfälschen. Ebenso bleiben Schmierstoff-Hersteller (Blaser Swisslube, Fuchs, Zeller+Gmelin …) — sie sind der Katalog, nicht der Wettbewerb |
+
+Regel für die Zukunft: Auf der Plattform wird **kein fremdes System, Gerät oder
+Dienstleistungsangebot** namentlich empfohlen. Verfahren neutral erklären,
+Produkte nur von Brisco Systems bzw. Dosimetrix nennen.
+
+## Anwendungsbereich freiwillig bei gewähltem Produkt (2026-08-11)
+
+| Entscheidung | Begründung |
+|---|---|
+| Ist oben ein **Katalogprodukt gewählt**, ist „Anwendungsbereich" **kein Pflichtfeld** mehr; das Feld heißt dann „Anwendungsbereich (freiwillig)" | Der Einsatzbereich steht bereits am Produkt — ihn noch einmal abzutippen ist reine Arbeit ohne Gewinn |
+| Kennt das gewählte Produkt Einsatzbereiche, werden sie **automatisch eingetragen** (bis zu drei) | Spart den Griff zur Tastatur und hält die Angebotskarte gefüllt |
+| Bleibt das Feld leer, trägt das Angebot die **Produktart** ein | Die Angebotskarte braucht eine Zeile; die Produktart ist die ehrlichste Ersatzangabe |
+
 ## Technik
 
 | Entscheidung | Begründung |

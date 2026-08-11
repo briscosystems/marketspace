@@ -33,6 +33,7 @@ export async function GET(req: Request) {
       category: true,
       chemistry: true,
       viscosityIso: true,
+      applicationAreas: true,
       manufacturer: { select: { name: true } },
     },
     orderBy: [{ manufacturer: { name: "asc" } }, { name: "asc" }],
@@ -47,6 +48,7 @@ export async function GET(req: Request) {
       kategorie: p.category,
       chemie: p.chemistry,
       iso: p.viscosityIso,
+      einsatz: p.applicationAreas,
     })),
   });
 }
