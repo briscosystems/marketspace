@@ -488,6 +488,19 @@ ist redundant mit Eingegangene Angebote."
 Ergebnis: Auf dem Dashboard steht jede Handlung genau einmal — eine
 Rollen-Aktion, vier Einstiege, zwei Zähler.
 
+## Angebot beginnt beim Produkt (2026-08-11)
+
+Betreiber-Auftrag: Wer ein Angebot einstellt, hat meistens ein konkretes Produkt
+im Kopf — er soll es auswählen können und nicht Suchkriterien ausfüllen müssen.
+
+| Entscheidung | Begründung |
+|---|---|
+| Im Angebots-Formular sucht das Namensfeld **live im Katalog** (`/api/produkt-suche`) und zeigt bis zu 10 echte Produkte mit Hersteller, Art und Chemie | Bisher schlug das Feld nur Produkt*familien* aus einer festen Liste vor; das half beim konkreten Angebot nicht |
+| Wird ein Produkt gewählt, füllt es Hersteller, Produktart und Chemie und die **weiteren Abschnitte klappen zu** (`<details>`) | Der Regelfall ist damit in drei Feldern erledigt; wer mehr angeben will, klappt auf |
+| Steht das Produkt **nicht** im Katalog, kann der Anbieter es melden — **Datenblatt und Sicherheitsdatenblatt sind Pflicht**, dazu zwei Bestätigungen: die Angaben stimmen, und die Plattform darf die Unterlagen verwenden | Ohne Beleg kommt nichts mehr in den Katalog. Genau daran ist die automatische Anreicherung gescheitert (53 erfundene Produkte, Prüfung 2026-08-05) |
+| Meldungen erscheinen **nie automatisch** im Katalog, sondern im Admin-Bereich unter „Gemeldete Produkte" — mit beiden Dateien zum Öffnen, Freigeben oder Ablehnen mit internem Grund | Die Freigabe legt Hersteller (falls neu) und Produkt an, mit `sourceConfidence = "anbieter-meldung"` — die Herkunft bleibt später erkennbar |
+| Doppelte Meldungen werden abgewiesen: steht das Produkt schon im Katalog, verweist die Meldung darauf; eine eigene offene Meldung blockiert die zweite | Verhindert Karteileichen in der Prüfliste |
+
 ## Technik
 
 | Entscheidung | Begründung |

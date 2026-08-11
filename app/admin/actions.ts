@@ -3,6 +3,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { buildSearchTokens } from "@/lib/normalize-search";
 import { revalidatePath } from "next/cache";
 import { grantCredits, setSetting, createReferralCode, type SettingKey } from "@/lib/credits";
 import { sendEmail } from "@/lib/mailer";
@@ -384,5 +385,86 @@ export async function deleteListingPhoto(formData: FormData) {
   const id = String(formData.get("photoId") ?? "");
   if (!id) return;
   await prisma.listingPhoto.delete({ where: { id } });
+  revalidatePath("/admin");
+}
+
+/**
+ * Gemeldetes Produkt freigeben — legt es im Katalog an (2026-08-11).
+ *
+ * Die hochgeladenen Unterlagen bleiben an der Meldung hängen; das Katalog-
+ * produkt bekommt den Vermerk, dass die Daten von einem Anbieter stammen und
+ * geprüft wurden. Quellenangabe bleibt damit ehrlich.
+ */
+export async function approveProductSubmission(formData: FormData) {
+  await assertOwner();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+
+  const m = await prisma.productSubmission.findUnique({ where: { id } });
+  if (!m || m.status !== "PENDING") return;
+
+  // Hersteller anlegen, falls unbekannt — rein additiv.
+  const slugify = (x: string) =>
+    x.toLowerCase().replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss")
+      .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+  let hersteller = await prisma.manufacturer.findFirst({
+    where: { name: { equals: m.manufacturer, mode: "insensitive" } },
+    select: { id: true },
+  });
+  if (!hersteller) {
+    // Der Slug muss eindeutig sein — bei Zusammenstoß hängen wir eine Zahl an,
+    // statt die Freigabe mit einem Fehler abbrechen zu lassen.
+    const basis = slugify(m.manufacturer) || "hersteller";
+    let slugH = basis;
+    for (let i = 2; await prisma.manufacturer.findUnique({ where: { slug: slugH }, select: { id: true } }); i++) {
+      slugH = `${basis}-${i}`;
+    }
+    hersteller = await prisma.manufacturer.create({
+      data: { name: m.manufacturer, slug: slugH },
+      select: { id: true },
+    });
+  }
+
+  const slug = slugify(m.name);
+  const schonDa = await prisma.product.findFirst({
+    where: { manufacturerId: hersteller.id, slug },
+    select: { id: true },
+  });
+
+  const produkt =
+    schonDa ??
+    (await prisma.product.create({
+      data: {
+        manufacturerId: hersteller.id,
+        name: m.name,
+        slug,
+        category: "OTHER",
+        description: m.notes ?? `${m.productType} — von einem Anbieter gemeldet und geprüft.`,
+        viscosityIso: m.isoViscosity ?? undefined,
+        sourceConfidence: "anbieter-meldung",
+        notes: `Gemeldet über das Angebots-Formular am ${m.createdAt.toISOString().slice(0, 10)}; Datenblatt und Sicherheitsdatenblatt liegen der Meldung bei. Freigegeben ${new Date().toISOString().slice(0, 10)}.`,
+        searchTokens: buildSearchTokens({ productName: m.name, manufacturer: m.manufacturer }),
+      },
+      select: { id: true },
+    }));
+
+  await prisma.productSubmission.update({
+    where: { id },
+    data: { status: "APPROVED", reviewedAt: new Date(), productId: produkt.id },
+  });
+  revalidatePath("/admin");
+}
+
+/** Gemeldetes Produkt ablehnen — mit internem Grund. */
+export async function rejectProductSubmission(formData: FormData) {
+  await assertOwner();
+  const id = String(formData.get("id") ?? "");
+  const grund = String(formData.get("grund") ?? "").trim();
+  if (!id) return;
+  await prisma.productSubmission.updateMany({
+    where: { id, status: "PENDING" },
+    data: { status: "REJECTED", adminNote: grund || null, reviewedAt: new Date() },
+  });
   revalidatePath("/admin");
 }

@@ -21,6 +21,7 @@ import {
   type MachiningOperationId,
 } from "@/lib/kss-automation";
 import { Autocomplete } from "@/components/Autocomplete";
+import { ProduktMelden } from "@/components/ProduktMelden";
 import { Droplet, Gauge } from "lucide-react";
 import { withBasePath } from "@/lib/base-path";
 import { REGION_OPTIONS, REGION_PLACEHOLDER } from "@/lib/regionen";
@@ -34,6 +35,22 @@ const packagings = ["DRUM", "IBC", "TANK", "CANISTER", "BULK", "OTHER"] as const
 const ISO_VG_PRESETS = ["5", "7", "10", "15", "22", "32", "46", "68", "100", "150", "220", "320", "460", "680"];
 const UNIT_PRESETS = ["L", "kg", "IBC (1000 L)", "Fass (200 L)", "Kanister (20 L)", "Stück", "t"];
 
+/** Katalog-Kategorie → Produktart im Angebots-Formular. */
+const KATEGORIE_LABEL: Record<string, string> = {
+  COOLANT_WATER_MIX: "Kühlschmierstoff (Emulsion, wassermischbar)",
+  COOLANT_NEAT: "Schneidöl (nicht-wassermischbar)",
+  GRINDING_OIL: "Schleiföl",
+  HONING_LAPPING_OIL: "Honöl",
+  FORMING_OIL: "Umformöl",
+  HYDRAULIC_OIL: "Hydrauliköl",
+  GEAR_OIL: "Getriebeöl",
+  GREASE: "Schmierfett",
+  SLIDEWAY_OIL: "Gleitbahnöl",
+  COMPRESSOR_OIL: "Kompressorenöl",
+  CLEANER: "Reiniger",
+  CORROSION_PROTECTION: "Korrosionsschutz",
+};
+
 export default function NewListingPage() {
   const router = useRouter();
   const { t } = useLocale();
@@ -43,6 +60,18 @@ export default function NewListingPage() {
   const [certificates, setCertificates] = useState<string[]>([]);
 
   const [productName, setProductName] = useState("");
+  // Echte Katalogprodukte statt nur Produktfamilien (Betreiber 2026-08-11):
+  // Wer ein Angebot einstellt, wählt fast immer ein konkretes Produkt.
+  type Katalogtreffer = {
+    id: string;
+    name: string;
+    hersteller: string;
+    kategorie: string;
+    chemie: string | null;
+    iso: string | null;
+  };
+  const [katalog, setKatalog] = useState<Katalogtreffer[]>([]);
+  const [gewaehlt, setGewaehlt] = useState<Katalogtreffer | null>(null);
   const [manufacturer, setManufacturer] = useState("");
   const [productType, setProductType] = useState("");
   const [chemistry, setChemistry] = useState<(typeof chemistries)[number]>("MINERAL");
@@ -99,6 +128,34 @@ export default function NewListingPage() {
     productType.toLowerCase().includes("kuehlschmier") ||
     productType.toLowerCase().includes("emulsion") ||
     productType.toLowerCase().includes("kss");
+
+  // Katalog durchsuchen, während getippt wird. Kurz verzögert, damit nicht
+  // jeder Tastendruck eine Abfrage auslöst.
+  useEffect(() => {
+    if (gewaehlt && gewaehlt.name === productName) return;
+    if (productName.trim().length < 2) {
+      setKatalog([]);
+      return;
+    }
+    const t = setTimeout(() => {
+      fetch(withBasePath(`/api/produkt-suche?q=${encodeURIComponent(productName)}`))
+        .then((r) => (r.ok ? r.json() : { treffer: [] }))
+        .then((d: { treffer: Katalogtreffer[] }) => setKatalog(d.treffer ?? []))
+        .catch(() => setKatalog([]));
+    }, 250);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [productName]);
+
+  /** Ein Katalogprodukt übernehmen — füllt die Felder darunter. */
+  function katalogWaehlen(k: Katalogtreffer) {
+    setGewaehlt(k);
+    setProductName(k.name);
+    setManufacturer(k.hersteller);
+    setProductType(KATEGORIE_LABEL[k.kategorie] ?? productType);
+    if (k.chemie) setChemistry(k.chemie as (typeof chemistries)[number]);
+    setKatalog([]);
+  }
 
   const productNameSuggestions = useMemo<(q: string) => Suggestion[]>(
     () => (q: string) =>
@@ -231,6 +288,55 @@ export default function NewListingPage() {
                   )
                 }
               />
+
+              {/* Katalog-Treffer direkt unter dem Feld: auswählen statt
+                  abtippen (Betreiber 2026-08-11). */}
+              {katalog.length > 0 && (
+                <ul className="mt-2 divide-y divide-slate-100 rounded-lg border border-slate-200 bg-white">
+                  {katalog.map((k) => (
+                    <li key={k.id}>
+                      <button
+                        type="button"
+                        onClick={() => katalogWaehlen(k)}
+                        className="flex w-full items-baseline gap-2 px-3 py-2 text-left text-sm hover:bg-brand-50"
+                      >
+                        <span className="font-medium text-slate-900">{k.name}</span>
+                        <span className="text-xs text-slate-500">
+                          {k.hersteller}
+                          {k.iso ? ` · ISO VG ${k.iso.replace(/^ISO\s*VG\s*/i, "")}` : ""}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {gewaehlt && (
+                <p className="mt-2 rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-900 ring-1 ring-emerald-200">
+                  {t("lnew.ausKatalog")} <strong>{gewaehlt.hersteller} {gewaehlt.name}</strong>
+                  {" — "}
+                  <button
+                    type="button"
+                    onClick={() => setGewaehlt(null)}
+                    className="underline hover:no-underline"
+                  >
+                    {t("lnew.andereWahl")}
+                  </button>
+                </p>
+              )}
+
+              {/* Nicht im Katalog? Dann melden — mit Pflicht-Belegen. */}
+              {!gewaehlt && productName.trim().length >= 3 && katalog.length === 0 && (
+                <div className="mt-3">
+                  <ProduktMelden
+                    name={productName.trim()}
+                    manufacturer={manufacturer}
+                    productType={productType}
+                    chemistry={chemistry}
+                    isoViscosity={undefined}
+                  />
+                </div>
+              )}
             </div>
 
             <div>
@@ -306,8 +412,15 @@ export default function NewListingPage() {
           </div>
         </section>
 
-        {/* 2. FERTIGUNG / EINSATZBEREICHE */}
-        <section className="card space-y-4">
+        {/* 2. FERTIGUNG / EINSATZBEREICHE — aufklappbar (Betreiber 2026-08-11):
+            Wer ein Katalogprodukt gewählt hat, muss die Suchkriterien nicht
+            ausfüllen; sie stehen dann schon am Produkt. */}
+        <details open={!gewaehlt} className="card group">
+          <summary className="cursor-pointer list-none text-sm font-semibold text-slate-800">
+            <span className="eyebrow">{t("lnew.sec2")}</span>
+            <span className="ml-2 text-xs font-normal text-slate-500">{t("lnew.aufklappen")}</span>
+          </summary>
+          <section className="mt-4 space-y-4">
           <div>
             <h2 className="eyebrow">
               {t("lnew.sec2")}
@@ -318,9 +431,15 @@ export default function NewListingPage() {
           </div>
           <MachiningSelect value={machiningOperations} onChange={setMachiningOperations} />
         </section>
+        </details>
 
-        {/* 3. REZEPTUR */}
-        <section className="card space-y-4">
+        {/* 3. REZEPTUR — ebenfalls aufklappbar. */}
+        <details open={!gewaehlt} className="card group">
+          <summary className="cursor-pointer list-none text-sm font-semibold text-slate-800">
+            <span className="eyebrow">{t("lnew.sec3")}</span>
+            <span className="ml-2 text-xs font-normal text-slate-500">{t("lnew.aufklappen")}</span>
+          </summary>
+          <section className="mt-4 space-y-4">
           <div>
             <h2 className="eyebrow">
               {t("lnew.sec3")}
@@ -380,6 +499,7 @@ export default function NewListingPage() {
             </div>
           </div>
         </section>
+        </details>
 
         {/* 4. AUTOMATION */}
         {isCoolant && (

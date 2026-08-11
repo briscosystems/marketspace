@@ -21,6 +21,8 @@ import {
   deleteExperience,
   deleteExperienceMedia,
   deleteListingPhoto,
+  approveProductSubmission,
+  rejectProductSubmission,
 } from "./actions";
 import { getAllSettings, AI_ACTION_COSTS, packagePriceEur } from "@/lib/credits";
 import { isMembershipActive } from "@/lib/membership";
@@ -65,6 +67,29 @@ export default async function AdminPage() {
     take: 200,
   });
   const offeneErfahrungen = alleErfahrungen.filter((e) => e.status === "PENDING");
+
+  // Von Anbietern gemeldete Produkte — mit Pflicht-Belegen (2026-08-11).
+  const produktMeldungen = await prisma.productSubmission.findMany({
+    select: {
+      id: true,
+      name: true,
+      manufacturer: true,
+      productType: true,
+      chemistry: true,
+      isoViscosity: true,
+      sdsFileName: true,
+      tdsFileName: true,
+      sdsFile: true,
+      tdsFile: true,
+      status: true,
+      adminNote: true,
+      createdAt: true,
+      user: { select: { pseudonym: true, email: true } },
+    },
+    orderBy: [{ status: "asc" }, { createdAt: "asc" }],
+    take: 100,
+  });
+  const offeneMeldungen = produktMeldungen.filter((m) => m.status === "PENDING");
 
   // Angebotsfotos: neueste zuerst. Anbieter können ihre eigenen Fotos selbst
   // löschen — hier hat der Betreiber zusätzlich das Eingriffsrecht
@@ -386,6 +411,97 @@ export default async function AdminPage() {
       </section>
 
       <section className="rounded-xl border border-slate-200 bg-white p-5">
+        <h2 className="mb-1 text-lg font-semibold text-slate-900">
+          Gemeldete Produkte{" "}
+          <span className="text-sm font-normal text-slate-500">
+            ({offeneMeldungen.length} offen, {produktMeldungen.length} gesamt)
+          </span>
+        </h2>
+        <p className="mb-3 text-xs text-slate-500">
+          Anbieter melden Produkte, die noch nicht im Katalog stehen. Datenblatt und
+          Sicherheitsdatenblatt sind Pflicht; der Melder hat bestätigt, dass die Angaben stimmen
+          und wir die Unterlagen verwenden dürfen. Freigabe legt das Produkt im Katalog an.
+        </p>
+        {produktMeldungen.length === 0 ? (
+          <p className="text-sm text-slate-500">Noch keine Meldungen.</p>
+        ) : (
+          <div className="divide-y divide-slate-100">
+            {produktMeldungen.map((m) => (
+              <div key={m.id} className="py-3 first:pt-0 last:pb-0">
+                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                  <span className="font-medium text-slate-800">
+                    {m.manufacturer} {m.name}
+                  </span>
+                  <span>· {m.productType}</span>
+                  {m.chemistry && <span>· {m.chemistry}</span>}
+                  {m.isoViscosity && <span>· ISO {m.isoViscosity}</span>}
+                  <span className="ml-auto">
+                    {m.user.pseudonym} · {m.createdAt.toLocaleDateString("de-CH")}
+                  </span>
+                  <span
+                    className={`rounded-full px-2 py-0.5 ${
+                      m.status === "PENDING"
+                        ? "bg-amber-100 text-amber-900"
+                        : m.status === "APPROVED"
+                          ? "bg-emerald-100 text-emerald-900"
+                          : "bg-red-50 text-red-800"
+                    }`}
+                  >
+                    {m.status === "PENDING" ? "offen" : m.status === "APPROVED" ? "freigegeben" : "abgelehnt"}
+                  </span>
+                </div>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <a
+                    href={m.tdsFile}
+                    download={m.tdsFileName}
+                    className="rounded-lg bg-slate-100 px-2.5 py-1 text-xs text-slate-700 hover:bg-slate-200"
+                  >
+                    Datenblatt: {m.tdsFileName}
+                  </a>
+                  <a
+                    href={m.sdsFile}
+                    download={m.sdsFileName}
+                    className="rounded-lg bg-slate-100 px-2.5 py-1 text-xs text-slate-700 hover:bg-slate-200"
+                  >
+                    Sicherheitsdatenblatt: {m.sdsFileName}
+                  </a>
+                </div>
+                {m.status === "PENDING" && (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <form action={approveProductSubmission}>
+                      <input type="hidden" name="id" value={m.id} />
+                      <button
+                        type="submit"
+                        className="rounded-md bg-emerald-600 px-3 py-1 text-xs font-semibold text-white hover:bg-emerald-700"
+                      >
+                        Freigeben (Produkt anlegen)
+                      </button>
+                    </form>
+                    <form action={rejectProductSubmission} className="flex gap-1">
+                      <input type="hidden" name="id" value={m.id} />
+                      <input
+                        type="text"
+                        name="grund"
+                        placeholder="Grund (intern)"
+                        className="w-40 rounded-md border border-slate-300 px-2 py-1 text-xs"
+                      />
+                      <button
+                        type="submit"
+                        className="rounded-md bg-red-50 px-3 py-1 text-xs font-semibold text-red-700 ring-1 ring-red-200 hover:bg-red-100"
+                      >
+                        Ablehnen
+                      </button>
+                    </form>
+                  </div>
+                )}
+                {m.adminNote && <p className="mt-1 text-xs text-slate-500">{m.adminNote}</p>}
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+            <section className="rounded-xl border border-slate-200 bg-white p-5">
           <h2 className="mb-1 text-lg font-semibold text-slate-900">
             Hochgeladene Angebotsfotos{" "}
             <span className="text-sm font-normal text-slate-500">

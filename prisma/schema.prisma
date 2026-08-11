@@ -326,6 +326,7 @@ model Product {
   issues             ProductIssue[]
   experienceReports  ExperienceReport[]
   photoHandoffs      PhotoHandoff[]
+  productSubmissions ProductSubmission[]
   coolantTanks       CoolantTank[]
 
   @@unique([manufacturerId, slug])
@@ -593,6 +594,7 @@ model User {
   apiKeys            ApiKey[]
   experienceReports  ExperienceReport[]
   photoHandoffs      PhotoHandoff[]
+  productSubmissions ProductSubmission[]
   adBanners          AdBanner[]          @relation("AdOwner")
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
@@ -1703,4 +1705,54 @@ model PhotoHandoff {
   productId String?
 
   @@index([userId, createdAt])
+}
+
+/// Vom Anbieter gemeldetes, noch nicht im Katalog stehendes Produkt.
+///
+/// Warum: Wer ein Angebot einstellt, wählt fast immer ein konkretes Produkt.
+/// Steht es noch nicht im Katalog, soll er es melden können — aber nicht
+/// ungeprüft: Datenblatt und Sicherheitsdatenblatt sind Pflicht, dazu die
+/// Bestätigung, dass die Angaben stimmen und die Plattform sie verwenden darf.
+/// Freigegeben wird von Hand im Admin-Bereich.
+model ProductSubmission {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name         String
+  manufacturer String
+  productType  String
+  chemistry    String?
+  isoViscosity String?
+  notes        String?
+
+  /// Pflicht-Anhänge als data:-URI (PDF oder Bild) — wie bei den Angebotsfotos,
+  /// weil Railway kein dauerhaftes Dateisystem hat.
+  sdsFile     String
+  sdsFileName String
+  tdsFile     String
+  tdsFileName String
+
+  /// Der Anbieter bestätigt: Angaben korrekt UND Plattform darf die Daten
+  /// verwenden. Beides ist Voraussetzung fürs Absenden.
+  confirmedAccurate Boolean @default(false)
+  consentToUse      Boolean @default(false)
+
+  status    ProductSubmissionStatus @default(PENDING)
+  adminNote String?
+  /// Angelegtes Katalogprodukt nach Freigabe.
+  productId String?
+
+  createdAt  DateTime  @default(now())
+  reviewedAt DateTime?
+  product    Product?  @relation(fields: [productId], references: [id])
+
+  @@index([status, createdAt])
+  @@index([userId])
+}
+
+enum ProductSubmissionStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
