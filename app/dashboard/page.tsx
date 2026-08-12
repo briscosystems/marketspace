@@ -88,6 +88,9 @@ export default async function DashboardPage() {
   const matchingRfqs = await prisma.rfq.findMany({
     where: {
       status: "OPEN",
+      // Doppelt gesichert: Selbst wenn der Ablauf-Lauf noch nicht durch ist,
+      // taucht hier nichts auf, dessen Frist vorbei ist (2026-08-12).
+      deadline: { gte: new Date() },
       NOT: { buyerId: me },
       ...(myManufacturers.length > 0 && { OR: myManufacturers.map((m) => ({ manufacturer: m })) }),
     },

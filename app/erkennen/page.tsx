@@ -28,10 +28,14 @@ export default async function ErkennenPage() {
           {/* Der Hauptweg (Betreiber 2026-08-12): alles beilegen, was hilft.
               Die beiden Foto-Werkzeuge stehen darunter als schnelle Abkürzung. */}
           <ProblemKlaeren />
-          <EtikettScanner />
+          <div id="etikett" className="scroll-mt-24">
+            <EtikettScanner />
+          </div>
           {/* Zweiter Schritt (Betreiber 2026-08-11): Das Etikett sagt, WAS im
               Tank ist — die Oberfläche sagt, wie es ihm geht. */}
-          <OberflaechenScanner />
+          <div id="oberflaeche" className="scroll-mt-24">
+            <OberflaechenScanner />
+          </div>
         </>
       ) : (
         <div className="card space-y-3">

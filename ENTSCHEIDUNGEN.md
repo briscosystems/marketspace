@@ -643,6 +643,27 @@ informiert werden und das Angebot auf ausgelaufen stehen."
 einem Klick verlängern — der Einkäufer stellt sie neu ein. Wenn das gewünscht
 ist, kommt ein Knopf „Frist verlängern" dazu.
 
+## Einstiege: farbige Bereiche mit den Handlungen darin (2026-08-12, gilt)
+
+Betreiber: „Die Funktionen sind immer noch zu verwirrend. Viel zu viele. Der
+User weiss gar nicht, was er alles machen kann. Die Kacheln müssen viel besser
+präsentiert werden. Eventuell mit Farben hinterlegt."
+
+Recherche zu Dashboard-Gestaltung (Eleken, UX Collective, Pencil & Paper,
+Smashing 2025): Der Ausweg aus „zu viele Funktionen" ist **nicht weniger
+zeigen**, sondern **nach Absicht gruppieren**, Farbe **sparsam als
+Kategorie-Kennung** einsetzen und die häufigen Handlungen **direkt sichtbar**
+machen statt hinter einem Klick.
+
+| Entscheidung | Begründung |
+|---|---|
+| Aus vier weißen Kacheln werden **vier farbig hinterlegte Bereiche**: rot = Problem, amber = Suchen, blau = Anbieten, grün = Marke | Die Farbe ist die Kennung, an der man den Bereich wiedererkennt — und sie erfüllt den Betreiber-Wunsch nach Farbe. Amber/Blau bleibt die Hausregel („Suchen" amber, „Anbieten" blau) |
+| In jedem Bereich stehen **drei konkrete Handlungen** als anklickbare Zeilen (z. B. „Problem schildern", „Etikett oder Oberfläche fotografieren", „Tank anlegen und messen") | Damit beantwortet die Startseite die eigentliche Frage: Was kann ich hier tun? Vorher musste man klicken, um es zu erfahren |
+| Über den Bereichen steht **„Was möchtest du tun?"** | Sagt in vier Wörtern, wozu der Block da ist |
+| Darunter eine **ruhige Zeile „Nachschlagen"**: Wissen, Sicherheitsdatenblätter, Preis-Richtwerte, Hersteller, Beständigkeiten | Diese Seiten gab es längst, sie waren aber nur über das Menü zu finden. Als Textzeile stören sie nicht und sind trotzdem da |
+| Reihenfolge jetzt **Problem → Suchen → Anbieten → Marke** | Stellt die Entscheidung vom 2026-08-10 wieder her: Instandhaltung und Einkauf zuerst, Reseller und Hersteller danach. Zuletzt stand „Anbieten" an zweiter Stelle |
+| Auf `/dashboard` zeigt „Offene Anfragen zu deinen Herstellern" zusätzlich nur noch Anfragen mit **laufender Frist** | Doppelt gesichert, falls der Ablauf-Lauf noch nicht durch ist |
+
 ## Technik
 
 | Entscheidung | Begründung |
