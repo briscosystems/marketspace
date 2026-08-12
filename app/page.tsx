@@ -216,10 +216,21 @@ async function PersonalDashboard({ userId }: { userId: string }) {
     prisma.rfqOffer.count({
       where: { status: "PENDING", rfq: { buyerId: userId } },
     }),
-    prisma.user.findUnique({ where: { id: userId }, select: { creditBalance: true, role: true } }),
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        creditBalance: true,
+        role: true,
+        // Wer schon ein Schaufenster hat, will es sehen — nicht die Preisliste.
+        brandManufacturer: { select: { slug: true } },
+      },
+    }),
   ]);
   const creditBalance = me?.creditBalance ?? 0;
   const role = me?.role ?? "RESELLER";
+  const markeHref = me?.brandManufacturer?.slug
+    ? `/manufacturers/${me.brandManufacturer.slug}`
+    : "/mitgliedschaft#marke";
 
   // Nur noch EINE rollenbezogene Aktion (Betreiber 2026-08-11): Anbieten,
   // Alternative finden und Marke zeigen stehen bereits in den vier
@@ -297,7 +308,7 @@ async function PersonalDashboard({ userId }: { userId: string }) {
           angemeldet ist, sah vorher nur „Anbieten" und „Anfragen bedienen"
           und fand die Werkzeuge — Etikett-Erkennung, KSS-Finder, Marken-
           Schaufenster — gar nicht. */}
-      <EinstiegsKarten t={t} angemeldet />
+      <EinstiegsKarten t={t} angemeldet markeHref={markeHref} />
 
       <section className="grid grid-cols-2 gap-4">
         <QuickStat

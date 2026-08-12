@@ -148,7 +148,9 @@ export default async function MembershipPage() {
         </div>
       )}
 
-      <div className="card">
+      {/* Anker „#marke": Die Kachel „Marke sichtbar machen" springt hierher —
+          hier stehen die Stufen samt Marke mit Schaufenster (2026-08-12). */}
+      <div id="marke" className="card scroll-mt-24">
         <MembershipActions
           active={active}
           hasSubscription={!!user?.stripeSubscriptionId}
@@ -224,7 +226,7 @@ export default async function MembershipPage() {
 
       {/* Marken-Schaufenster (nur Stufe Marke) */}
       {currentTier === "MARKE" && (
-        <div className="card space-y-3">
+        <div id="schaufenster" className="card space-y-3 scroll-mt-24">
           <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
             <Store size={18} className="text-brand-600" />
             {t("mem.storefrontTitle")}

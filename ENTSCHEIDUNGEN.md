@@ -606,6 +606,17 @@ Betreiber: „Mach die Icons grösser, dafür den kleinen Text darunter weg."
 | Die erklärende Zeile unter der Überschrift ist **wieder entfernt**; das Symbol ist dafür deutlich größer (Symbolfeld 64 px statt 44 px) | Betreiber-Entscheid. Damit gilt die Fassung von gestern Mittag (Zeile sichtbar) **nicht mehr** |
 | Die Texte `home.group*Line` **bleiben in [lib/i18n.ts](lib/i18n.ts) stehen** | Sie sind in drei Sprachen gepflegt; sollten sie zurückkommen, ist nichts verloren |
 
+## „Marke sichtbar machen" führt zum Schaufenster (2026-08-12)
+
+Betreiber-Befund: „Wenn ich auf Marke sichtbar klicke, komme ich auf diese
+Seite" — die Kachel landete auf der Kosten-/Abo-Seite.
+
+| Entscheidung | Begründung |
+|---|---|
+| Wer **schon ein Marken-Schaufenster hat**, kommt direkt dorthin (`/manufacturers/<slug>`) | Das ist das, was „Marke sichtbar machen" verspricht |
+| Wer **noch keines hat**, springt auf `/mitgliedschaft#marke` — den Anker bei der Stufenwahl, nicht an den Seitenanfang mit Abo-Status und Kündigung | Das Schaufenster gehört zur Stufe Marke; die Wahl steht dort. Der Anker (`scroll-mt-24`) führt direkt hin, statt den Nutzer im Kleingedruckten abzusetzen |
+| Wer **nicht angemeldet** ist, kommt weiter auf `/register` | Unverändert |
+
 ## Die Werkzeuge auch auf /dashboard (2026-08-12)
 
 Betreiber-Befund: „Im eingeloggten Zustand zeigt es mir eine alte Version."

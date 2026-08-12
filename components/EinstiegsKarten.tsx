@@ -36,10 +36,16 @@ type Kachel = {
 export function EinstiegsKarten({
   t,
   angemeldet = false,
+  markeHref,
 }: {
   t: (k: string) => string;
-  /** Angemeldete landen bei der Marke-Stufe, nicht auf der Registrierung. */
+  /** Angemeldete landen nicht auf der Registrierung. */
   angemeldet?: boolean;
+  /**
+   * Ziel der Marken-Kachel. Der Aufrufer weiß, ob schon ein Schaufenster
+   * besteht (dann dorthin) oder nicht (dann zur Marke-Stufe).
+   */
+  markeHref?: string;
 }) {
   const kacheln: Kachel[] = [
     {
@@ -73,7 +79,7 @@ export function EinstiegsKarten({
       symbolFeld: "",
     },
     {
-      href: angemeldet ? "/mitgliedschaft" : "/register",
+      href: markeHref ?? (angemeldet ? "/mitgliedschaft#marke" : "/register"),
       titel: t("home.groupMfrTitle"),
       symbol: <Building2 className="h-9 w-9" />,
       verlauf: "from-brand-50",

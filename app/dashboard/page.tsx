@@ -31,6 +31,7 @@ export default async function DashboardPage() {
         companyName: true,
         country: true,
         createdAt: true,
+        brandManufacturer: { select: { slug: true } },
       },
     }),
     prisma.rfq.findMany({
@@ -119,7 +120,15 @@ export default async function DashboardPage() {
           Konto-Menü kommt, landet auf DIESER Seite und sah bis jetzt nur
           Zahlen und Listen. Problem klären, Anbieten, Alternative finden und
           Marke zeigen gehören dorthin, wo der Angemeldete tatsächlich ankommt. */}
-      <EinstiegsKarten t={t} angemeldet />
+      <EinstiegsKarten
+        t={t}
+        angemeldet
+        markeHref={
+          user?.brandManufacturer?.slug
+            ? `/manufacturers/${user.brandManufacturer.slug}`
+            : "/mitgliedschaft#marke"
+        }
+      />
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
         <div className="card">
