@@ -1,95 +1,74 @@
-// Realitätsnahe Ölfässer für die Startseite (Vektor, kein externes Bild):
-// Metall-Verläufe, Sicken mit Licht-/Schattenkante, Deckel mit Falzring und
-// Spundloch — gleiche Bildsprache wie im Fact Sheet. Skaliert über className.
+// Ölfässer für die Startseite (Vektor, kein externes Bild).
+//
+// Zweite Fassung (Betreiber 2026-08-12): „Die Fässer müssen klarer dargestellt
+// sein, so dass man tatsächlich erkennt, dass es sich um Fässer handelt." Die
+// erste Fassung hatte feine Sicken und weiche Verläufe — bei 44 px sahen sie
+// aus wie Zylinder. Jetzt: kräftige dunkle Umrisse, breite Spannringe, ein
+// deutlich abgesetzter Deckel mit Falzring und zwei Spundlöchern — die Merkmale,
+// an denen man ein Fass auch klein erkennt.
 export function OilBarrels({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 132 62" className={className} role="img" aria-label="Ölfässer" fill="none">
       <defs>
-        {/* Graphit */}
         <linearGradient id="obG" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#232122" />
-          <stop offset=".16" stopColor="#3f3d3e" />
-          <stop offset=".34" stopColor="#636162" />
-          <stop offset=".46" stopColor="#8d8b8c" />
-          <stop offset=".52" stopColor="#636162" />
-          <stop offset=".82" stopColor="#312f30" />
-          <stop offset="1" stopColor="#1d1b1c" />
+          <stop offset="0" stopColor="#26242a" />
+          <stop offset=".38" stopColor="#6b6870" />
+          <stop offset=".5" stopColor="#8d8a92" />
+          <stop offset=".62" stopColor="#57545b" />
+          <stop offset="1" stopColor="#201e23" />
         </linearGradient>
-        <radialGradient id="obGc" cx="40%" cy="30%" r="80%">
-          <stop offset="0" stopColor="#8f8d8b" />
-          <stop offset="1" stopColor="#3a3839" />
-        </radialGradient>
-        {/* Lime (Brisco-Akzent) */}
         <linearGradient id="obL" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#41560a" />
-          <stop offset=".16" stopColor="#6f9310" />
-          <stop offset=".34" stopColor="#a6d21e" />
-          <stop offset=".46" stopColor="#cbe95f" />
-          <stop offset=".52" stopColor="#a6d21e" />
-          <stop offset=".82" stopColor="#54700b" />
-          <stop offset="1" stopColor="#3a4e08" />
+          <stop offset="0" stopColor="#3f5409" />
+          <stop offset=".38" stopColor="#94bd18" />
+          <stop offset=".5" stopColor="#b7dd3c" />
+          <stop offset=".62" stopColor="#7ba014" />
+          <stop offset="1" stopColor="#38490a" />
         </linearGradient>
-        <radialGradient id="obLc" cx="40%" cy="30%" r="80%">
-          <stop offset="0" stopColor="#d2ed74" />
-          <stop offset="1" stopColor="#7c9f13" />
-        </radialGradient>
-        {/* Stahl */}
         <linearGradient id="obS" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#5d6264" />
-          <stop offset=".16" stopColor="#8e9395" />
-          <stop offset=".34" stopColor="#bfc4c5" />
-          <stop offset=".46" stopColor="#eef1f1" />
-          <stop offset=".52" stopColor="#bfc4c5" />
-          <stop offset=".82" stopColor="#787d7f" />
-          <stop offset="1" stopColor="#575c5e" />
+          <stop offset="0" stopColor="#6a6f72" />
+          <stop offset=".38" stopColor="#b6bbbe" />
+          <stop offset=".5" stopColor="#e3e7e9" />
+          <stop offset=".62" stopColor="#9ca1a4" />
+          <stop offset="1" stopColor="#63686b" />
         </linearGradient>
-        <radialGradient id="obSc" cx="40%" cy="30%" r="80%">
-          <stop offset="0" stopColor="#f0f3f3" />
-          <stop offset="1" stopColor="#9fa4a6" />
-        </radialGradient>
       </defs>
 
       {/* Bodenschatten */}
-      <ellipse cx="66" cy="58" rx="52" ry="3.4" fill="#000" opacity=".14" />
+      <ellipse cx="66" cy="57.5" rx="50" ry="3.2" fill="#000" opacity=".13" />
 
       {/* Fass links: graphit */}
-      <g transform="translate(2 8)">
-        <path d="M0,6 L0,44 A16,3.4 0 0 0 32,44 L32,6 Z" fill="url(#obG)" />
-        <path d="M0,17 A16,3.2 0 0 0 32,17" stroke="#141314" strokeWidth="1.4" />
-        <path d="M0,16.2 A16,3.2 0 0 0 32,16.2" stroke="#9b999a" strokeWidth=".5" opacity=".5" />
-        <path d="M0,33 A16,3.2 0 0 0 32,33" stroke="#141314" strokeWidth="1.4" />
-        <path d="M0,32.2 A16,3.2 0 0 0 32,32.2" stroke="#9b999a" strokeWidth=".5" opacity=".5" />
-        <ellipse cx="10" cy="25" rx="2.4" ry="16" fill="#fff" opacity=".1" />
-        <ellipse cx="16" cy="6" rx="16" ry="3.4" fill="url(#obGc)" stroke="#232122" strokeWidth=".7" />
-        <ellipse cx="16" cy="6.1" rx="12.6" ry="2.6" fill="none" stroke="#161516" strokeWidth=".5" opacity=".7" />
-        <ellipse cx="10.5" cy="5.6" rx="2" ry=".85" fill="#2c2a2b" stroke="#8a8889" strokeWidth=".3" />
+      <g transform="translate(3 12)">
+        <path d="M1,6 L1,40 A15,3.6 0 0 0 31,40 L31,6 Z" fill="url(#obG)" stroke="#141317" strokeWidth="1.6" strokeLinejoin="round" />
+        {/* Spannringe: breit und dunkel — das Fass-Merkmal schlechthin */}
+        <path d="M1,14.5 A15,3.4 0 0 0 31,14.5 L31,18 A15,3.4 0 0 1 1,18 Z" fill="#141317" opacity=".85" />
+        <path d="M1,28 A15,3.4 0 0 0 31,28 L31,31.5 A15,3.4 0 0 1 1,31.5 Z" fill="#141317" opacity=".85" />
+        <ellipse cx="16" cy="6" rx="15" ry="3.6" fill="#4c4950" stroke="#141317" strokeWidth="1.6" />
+        <ellipse cx="16" cy="6" rx="11.5" ry="2.5" fill="none" stroke="#141317" strokeWidth="1.1" opacity=".8" />
+        <ellipse cx="10.5" cy="5.4" rx="2" ry=".9" fill="#26242a" stroke="#8f8c94" strokeWidth=".5" />
+        <ellipse cx="8" cy="24" rx="1.8" ry="12" fill="#fff" opacity=".1" />
       </g>
 
       {/* Fass rechts: stahl */}
-      <g transform="translate(98 8)">
-        <path d="M0,6 L0,44 A16,3.4 0 0 0 32,44 L32,6 Z" fill="url(#obS)" />
-        <path d="M0,17 A16,3.2 0 0 0 32,17" stroke="#54595b" strokeWidth="1.4" />
-        <path d="M0,16.2 A16,3.2 0 0 0 32,16.2" stroke="#fdfefe" strokeWidth=".5" opacity=".7" />
-        <path d="M0,33 A16,3.2 0 0 0 32,33" stroke="#54595b" strokeWidth="1.4" />
-        <path d="M0,32.2 A16,3.2 0 0 0 32,32.2" stroke="#fdfefe" strokeWidth=".5" opacity=".7" />
-        <ellipse cx="10" cy="25" rx="2.4" ry="16" fill="#fff" opacity=".2" />
-        <ellipse cx="16" cy="6" rx="16" ry="3.4" fill="url(#obSc)" stroke="#6f7476" strokeWidth=".7" />
-        <ellipse cx="16" cy="6.1" rx="12.6" ry="2.6" fill="none" stroke="#63686a" strokeWidth=".5" opacity=".7" />
-        <ellipse cx="10.5" cy="5.6" rx="2" ry=".85" fill="#b9bec0" stroke="#fdfefe" strokeWidth=".3" />
+      <g transform="translate(97 12)">
+        <path d="M1,6 L1,40 A15,3.6 0 0 0 31,40 L31,6 Z" fill="url(#obS)" stroke="#3f4447" strokeWidth="1.6" strokeLinejoin="round" />
+        <path d="M1,14.5 A15,3.4 0 0 0 31,14.5 L31,18 A15,3.4 0 0 1 1,18 Z" fill="#3f4447" opacity=".8" />
+        <path d="M1,28 A15,3.4 0 0 0 31,28 L31,31.5 A15,3.4 0 0 1 1,31.5 Z" fill="#3f4447" opacity=".8" />
+        <ellipse cx="16" cy="6" rx="15" ry="3.6" fill="#cfd4d6" stroke="#3f4447" strokeWidth="1.6" />
+        <ellipse cx="16" cy="6" rx="11.5" ry="2.5" fill="none" stroke="#3f4447" strokeWidth="1.1" opacity=".75" />
+        <ellipse cx="10.5" cy="5.4" rx="2" ry=".9" fill="#9ca1a4" stroke="#f4f7f7" strokeWidth=".5" />
+        <ellipse cx="8" cy="24" rx="1.8" ry="12" fill="#fff" opacity=".22" />
       </g>
 
-      {/* Fass Mitte: lime, leicht größer und vorn */}
-      <g transform="translate(45 2)">
-        <path d="M0,7 L0,50 A19,4 0 0 0 38,50 L38,7 Z" fill="url(#obL)" />
-        <path d="M0,20 A19,3.8 0 0 0 38,20" stroke="#2f3f07" strokeWidth="1.6" />
-        <path d="M0,19.1 A19,3.8 0 0 0 38,19.1" stroke="#d8f08a" strokeWidth=".6" opacity=".6" />
-        <path d="M0,38 A19,3.8 0 0 0 38,38" stroke="#2f3f07" strokeWidth="1.6" />
-        <path d="M0,37.1 A19,3.8 0 0 0 38,37.1" stroke="#d8f08a" strokeWidth=".6" opacity=".6" />
-        <ellipse cx="12" cy="28" rx="2.8" ry="19" fill="#fff" opacity=".14" />
-        <ellipse cx="19" cy="7" rx="19" ry="4" fill="url(#obLc)" stroke="#4e6b09" strokeWidth=".8" />
-        <ellipse cx="19" cy="7.1" rx="15" ry="3.1" fill="none" stroke="#48620a" strokeWidth=".6" opacity=".75" />
-        <ellipse cx="12.5" cy="6.5" rx="2.3" ry="1" fill="#7ea315" stroke="#e2f3a4" strokeWidth=".35" />
-        <ellipse cx="26" cy="5.9" rx="1.5" ry=".7" fill="#7ea315" stroke="#e2f3a4" strokeWidth=".3" />
+      {/* Fass Mitte: lime, größer und vorn */}
+      <g transform="translate(44 5)">
+        <path d="M1,7 L1,47 A18,4.2 0 0 0 37,47 L37,7 Z" fill="url(#obL)" stroke="#2b3907" strokeWidth="1.8" strokeLinejoin="round" />
+        <path d="M1,17.5 A18,4 0 0 0 37,17.5 L37,21.6 A18,4 0 0 1 1,21.6 Z" fill="#2b3907" opacity=".85" />
+        <path d="M1,33 A18,4 0 0 0 37,33 L37,37.1 A18,4 0 0 1 1,37.1 Z" fill="#2b3907" opacity=".85" />
+        <ellipse cx="19" cy="7" rx="18" ry="4.2" fill="#a8cf2a" stroke="#2b3907" strokeWidth="1.8" />
+        <ellipse cx="19" cy="7" rx="13.8" ry="3" fill="none" stroke="#2b3907" strokeWidth="1.2" opacity=".8" />
+        <ellipse cx="12.5" cy="6.3" rx="2.4" ry="1.1" fill="#78a013" stroke="#e6f6ac" strokeWidth=".5" />
+        <ellipse cx="26" cy="5.8" rx="1.6" ry=".8" fill="#78a013" stroke="#e6f6ac" strokeWidth=".45" />
+        <ellipse cx="9" cy="27" rx="2.2" ry="14" fill="#fff" opacity=".14" />
       </g>
     </svg>
   );

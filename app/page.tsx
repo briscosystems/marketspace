@@ -297,7 +297,7 @@ async function PersonalDashboard({ userId }: { userId: string }) {
           angemeldet ist, sah vorher nur „Anbieten" und „Anfragen bedienen"
           und fand die Werkzeuge — Etikett-Erkennung, KSS-Finder, Marken-
           Schaufenster — gar nicht. */}
-      <EinstiegsKarten t={t} />
+      <EinstiegsKarten t={t} angemeldet />
 
       <section className="grid grid-cols-2 gap-4">
         <QuickStat

@@ -569,6 +569,34 @@ Betreiber-Vorgabe: „Beschrifte die Kacheln nur mit den Überschriften."
 | Der Erklärsatz bleibt als **Einblendung beim Überfahren** | Wer mehr wissen will, bekommt es — ohne dass die Kachel voll ist |
 | Die Seite hinter „Probleme lösen" heißt jetzt **„Probleme lösen — mit zwei Fotos"** | Sie kann seit heute mehr als Etiketten lesen |
 
+## „Problem klären" — mehr als ein Foto (2026-08-12)
+
+Betreiber: „Entferne das Wort Foto. Denn die Problemlösung geht viel weiter.
+Der User kann Fotos, Text, SDS, Datenblätter, Laborberichte, Beiträge in Foren,
+Benutzererfahrungen etc. hochladen. Die Plattform speichert die Informationen.
+Bei der Problemlösung soll die KI mithelfen (KI darf nicht raten)."
+
+| Entscheidung | Begründung |
+|---|---|
+| Neuer Bereich **„Problem schildern"** auf `/erkennen` ([components/ProblemKlaeren.tsx](components/ProblemKlaeren.tsx), [app/api/problem/route.ts](app/api/problem/route.ts)): Beschreibung, Produkt aus dem Katalog, Maschine, **bis zu acht Belege** (Foto, Datenblatt, SDS, Laborbericht als PDF oder Bild) und **Links zu Quellen** | Ein Foto allein klärt selten ein Problem. Der Laborbericht sagt die Zahlen, das Datenblatt die Sollwerte, der Forenbeitrag den Verdacht — die KI liest alles zusammen |
+| **Alles wird gespeichert** (`ProblemCase` + `ProblemFile`), auch wenn die KI-Prüfung scheitert | Der Fall darf nicht verloren gehen, weil gerade kein Schlüssel gesetzt oder die KI nicht erreichbar ist. Gespeichert wird VOR der Prüfung |
+| Die KI bekommt zusätzlich **das Plattform-Wissen zum Produkt**: Sollwerte, gemeldete Praxis-Probleme, freigegebene Erfahrungen anderer Betriebe | Genau dafür sammeln wir sie |
+| **Raten ist verboten.** Jede Ursache muss sagen, worauf sie sich stützt; reicht es nicht, gibt es KEINE Ursache, sondern „fehlende Angaben" und der Fall geht an den Betreiber (`aiVerdict = UNKLAR`) | Ein falscher Verdacht kostet einen Betrieb Tage und Geld |
+| Sicherheitsrelevantes (pH < 8,5 nach DGUV 109-003, Nitrit > 20 mg/l nach TRGS 611, Hautkontakt, Aerosole) wird **immer** genannt | Das ist keine Ermessensfrage |
+| Im Admin-Bereich: Abschnitt **„Problemfälle"** mit Text, Belegen (Bilder als Vorschau, PDFs zum Öffnen), Links, KI-Urteil — dazu Antworten, Schließen, Löschen | Der Betreiber hat das letzte Wort, besonders bei den Fällen, die die KI offen gelassen hat |
+| Kosten: **2 Credits** (Etikett/Oberfläche je 1) | Es werden Dokumente mitgelesen, das ist mehr Arbeit |
+
+## Kachel-Beschriftung, dritte Fassung (2026-08-12)
+
+| Entscheidung | Begründung |
+|---|---|
+| „Problem per Foto klären" → **„Problem klären"** mit der Zeile „Fotos, Datenblätter, Laborberichte, Erfahrungen — die KI hilft beim Eingrenzen." | Das Wort „Foto" verengte auf eine einzige Quelle |
+| Neues Symbol: **Kopf mit Fragezeichen und drei Belegen** ([components/ProblemIcon.tsx](components/ProblemIcon.tsx)) statt Fotoapparat | Das Symbol muss das Denken zeigen, nicht die Kamera |
+| Die **Fässer neu gezeichnet**: kräftige dunkle Umrisse, breite Spannringe, deutlicher Deckel mit Falzring und Spundlöchern | Bei 44 px sahen die feinen Sicken der ersten Fassung aus wie Zylinder |
+| „KI vergleicht Datenblätter und findet Ersatz" → **„KI-gestützte Alternativsuche: Rezeptur, Freigaben, Praxis-Erfahrungen."** | Für einen reinen Datenbankvergleich braucht es keine KI — der Satz verkaufte die Funktion unter Wert |
+| „Sortiment und Datenblätter dort zeigen, wo gesucht wird" → **„Gefunden werden, wenn Betriebe Ersatz für ein Produkt suchen."** | Sagt den Nutzen statt der Tätigkeit |
+| **Angemeldete Nutzer landen auf `/mitgliedschaft`** statt auf der Registrierung | Fehler aus der Praxis: Als Admin führte die Kachel „Marke sichtbar machen" auf die Anmelde-/Registrierungsseite, obwohl man längst angemeldet war |
+
 ## Technik
 
 | Entscheidung | Begründung |

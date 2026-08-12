@@ -2,9 +2,10 @@ import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getT } from "@/lib/i18n-server";
+import { ProblemKlaeren } from "@/components/ProblemKlaeren";
 import { EtikettScanner } from "@/components/EtikettScanner";
 import { OberflaechenScanner } from "@/components/OberflaechenScanner";
-import { Camera } from "lucide-react";
+import { HelpCircle } from "lucide-react";
 
 export const metadata = { title: "Produkt am Etikett erkennen — Brisco Marketplace" };
 
@@ -16,7 +17,7 @@ export default async function ErkennenPage() {
     <div className="mx-auto max-w-3xl space-y-6">
       <header className="space-y-2">
         <h1 className="flex items-center gap-2 text-2xl font-bold text-slate-900">
-          <Camera className="h-6 w-6 text-brand-600" />
+          <HelpCircle className="h-6 w-6 text-rose-600" />
           {t("scan.pageTitle")}
         </h1>
         <p className="text-sm text-slate-600">{t("scan.pageIntro")}</p>
@@ -24,6 +25,9 @@ export default async function ErkennenPage() {
 
       {session?.user?.id ? (
         <>
+          {/* Der Hauptweg (Betreiber 2026-08-12): alles beilegen, was hilft.
+              Die beiden Foto-Werkzeuge stehen darunter als schnelle Abkürzung. */}
+          <ProblemKlaeren />
           <EtikettScanner />
           {/* Zweiter Schritt (Betreiber 2026-08-11): Das Etikett sagt, WAS im
               Tank ist — die Oberfläche sagt, wie es ihm geht. */}

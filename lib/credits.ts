@@ -54,6 +54,7 @@ export const AI_ACTION_COSTS = {
   kssWizardWeb: 2, // Sonnet + Websuche (Empfehlungen gegen Foren/Hersteller prüfen)
   labelScan: 1, // Etikett-Foto erkennen (Bildauswertung, kurze Antwort)
   surfaceScan: 1, // Foto der KSS-Oberfläche auf sichtbare Probleme prüfen
+  problemCase: 2, // Problemfall mit Text, Dokumenten und Bildern eingrenzen
 } as const;
 
 export type AiAction = keyof typeof AI_ACTION_COSTS;
@@ -66,6 +67,7 @@ export const AI_ACTION_LABEL: Record<AiAction, string> = {
   kssWizardWeb: "KSS-Wizard Web-Prüfung",
   labelScan: "Produkt vom Etikett-Foto erkannt",
   surfaceScan: "KSS-Oberfläche auf dem Foto geprüft",
+  problemCase: "Problemfall von der KI eingegrenzt",
 };
 
 // ---------- Einstellungen (AppSetting) ----------

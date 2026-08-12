@@ -20,7 +20,8 @@
  */
 import Link from "next/link";
 import { OilBarrels, SearchCanister } from "@/components/OilBarrels";
-import { Camera, Building2, ArrowRight } from "lucide-react";
+import { Building2, ArrowRight } from "lucide-react";
+import { BrainQuestion } from "@/components/ProblemIcon";
 
 type Kachel = {
   href: string;
@@ -35,13 +36,20 @@ type Kachel = {
   symbolFeld: string;
 };
 
-export function EinstiegsKarten({ t }: { t: (k: string) => string }) {
+export function EinstiegsKarten({
+  t,
+  angemeldet = false,
+}: {
+  t: (k: string) => string;
+  /** Angemeldete landen bei der Marke-Stufe, nicht auf der Registrierung. */
+  angemeldet?: boolean;
+}) {
   const kacheln: Kachel[] = [
     {
       href: "/erkennen",
       titel: t("home.groupProblemTitle"),
       zeile: t("home.groupProblemLine"),
-      symbol: <Camera className="h-6 w-6" />,
+      symbol: <BrainQuestion className="h-7 w-7" />,
       verlauf: "from-rose-50",
       ring: "hover:ring-rose-300",
       titelHover: "group-hover:text-rose-700",
@@ -71,7 +79,7 @@ export function EinstiegsKarten({ t }: { t: (k: string) => string }) {
       symbolFeld: "",
     },
     {
-      href: "/register",
+      href: angemeldet ? "/mitgliedschaft" : "/register",
       titel: t("home.groupMfrTitle"),
       zeile: t("home.groupMfrLine"),
       symbol: <Building2 className="h-6 w-6" />,

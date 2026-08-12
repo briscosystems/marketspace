@@ -468,3 +468,38 @@ export async function rejectProductSubmission(formData: FormData) {
   });
   revalidatePath("/admin");
 }
+
+/**
+ * Problemfall beantworten (2026-08-12): Die KI grenzt ein, aber die letzte
+ * Auskunft gibt der Betreiber — vor allem in den Fällen, die die KI bewusst
+ * offen gelassen hat.
+ */
+export async function answerProblemCase(formData: FormData) {
+  await assertOwner();
+  const id = String(formData.get("id") ?? "");
+  const antwort = String(formData.get("antwort") ?? "").trim();
+  if (!id || !antwort) return;
+  await prisma.problemCase.update({
+    where: { id },
+    data: { adminNote: antwort, status: "BEANTWORTET", answeredAt: new Date() },
+  });
+  revalidatePath("/admin");
+}
+
+/** Problemfall schließen — erledigt, ohne dass noch etwas zu schreiben wäre. */
+export async function closeProblemCase(formData: FormData) {
+  await assertOwner();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  await prisma.problemCase.update({ where: { id }, data: { status: "GESCHLOSSEN" } });
+  revalidatePath("/admin");
+}
+
+/** Problemfall löschen — mit allen Belegen. */
+export async function deleteProblemCase(formData: FormData) {
+  await assertOwner();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  await prisma.problemCase.delete({ where: { id } }).catch(() => {});
+  revalidatePath("/admin");
+}

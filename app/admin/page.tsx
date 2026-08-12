@@ -22,6 +22,9 @@ import {
   deleteExperienceMedia,
   deleteListingPhoto,
   approveProductSubmission,
+  answerProblemCase,
+  closeProblemCase,
+  deleteProblemCase,
   rejectProductSubmission,
 } from "./actions";
 import { getAllSettings, AI_ACTION_COSTS, packagePriceEur } from "@/lib/credits";
@@ -67,6 +70,29 @@ export default async function AdminPage() {
     take: 200,
   });
   const offeneErfahrungen = alleErfahrungen.filter((e) => e.status === "PENDING");
+
+  // Problemfälle: was Anwender geschildert und beigelegt haben (2026-08-12).
+  const problemFaelle = await prisma.problemCase.findMany({
+    select: {
+      id: true,
+      text: true,
+      machine: true,
+      links: true,
+      aiVerdict: true,
+      aiSummary: true,
+      status: true,
+      adminNote: true,
+      createdAt: true,
+      productFreetext: true,
+      product: { select: { name: true, manufacturer: { select: { name: true } } } },
+      user: { select: { pseudonym: true } },
+      files: { select: { id: true, kind: true, name: true, data: true } },
+    },
+    orderBy: [{ status: "asc" }, { createdAt: "desc" }],
+    take: 60,
+  });
+  const offeneFaelle = problemFaelle.filter((f) => f.status === "OFFEN");
+  const unklareFaelle = problemFaelle.filter((f) => f.aiVerdict === "UNKLAR" && f.status === "OFFEN");
 
   // Von Anbietern gemeldete Produkte — mit Pflicht-Belegen (2026-08-11).
   const produktMeldungen = await prisma.productSubmission.findMany({
@@ -408,6 +434,141 @@ export default async function AdminPage() {
           {users.length} Kundenkonten gesamt (ohne Admin). „Basis" umfasst auch aktive Abos ohne
           gesetzte Stufe.
         </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-5">
+        <h2 className="mb-1 text-lg font-semibold text-slate-900">
+          Problemfälle{" "}
+          <span className="text-sm font-normal text-slate-500">
+            ({offeneFaelle.length} offen, davon {unklareFaelle.length} von der KI bewusst offen gelassen)
+          </span>
+        </h2>
+        <p className="mb-3 text-xs text-slate-500">
+          Anwender schildern ihr Problem und legen Fotos, Datenblätter, Sicherheitsdatenblätter,
+          Laborberichte und Links bei. Die KI grenzt ein und rät nicht — was sie nicht belegen kann,
+          landet hier zur Beantwortung von Hand.
+        </p>
+        {problemFaelle.length === 0 ? (
+          <p className="text-sm text-slate-500">Noch keine Fälle.</p>
+        ) : (
+          <div className="divide-y divide-slate-100">
+            {problemFaelle.map((f) => (
+              <div key={f.id} className="py-3 first:pt-0 last:pb-0">
+                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                  <span
+                    className={`rounded-full px-2 py-0.5 ${
+                      f.aiVerdict === "EINGEGRENZT"
+                        ? "bg-emerald-100 text-emerald-900"
+                        : f.aiVerdict === "UNKLAR"
+                          ? "bg-amber-100 text-amber-900"
+                          : "bg-slate-100 text-slate-700"
+                    }`}
+                  >
+                    {f.aiVerdict === "EINGEGRENZT"
+                      ? "KI: eingegrenzt"
+                      : f.aiVerdict === "UNKLAR"
+                        ? "KI: unklar → prüfen"
+                        : "ohne KI-Prüfung"}
+                  </span>
+                  <span className="rounded-full bg-slate-100 px-2 py-0.5">
+                    {f.status === "OFFEN" ? "offen" : f.status === "BEANTWORTET" ? "beantwortet" : "geschlossen"}
+                  </span>
+                  <span className="font-medium text-slate-800">
+                    {f.product
+                      ? `${f.product.manufacturer.name} ${f.product.name}`
+                      : f.productFreetext || "ohne Produktangabe"}
+                  </span>
+                  {f.machine && <span>· {f.machine}</span>}
+                  <span className="ml-auto">
+                    {f.user.pseudonym} · {f.createdAt.toLocaleDateString("de-CH")}
+                  </span>
+                </div>
+                <p className="mt-1 whitespace-pre-line text-sm text-slate-700">{f.text}</p>
+                {f.aiSummary && (
+                  <p className="mt-1 rounded-lg bg-slate-50 p-2 text-xs text-slate-600">
+                    <strong>KI:</strong> {f.aiSummary}
+                  </p>
+                )}
+                {f.links.length > 0 && (
+                  <ul className="mt-1 text-xs text-blue-700">
+                    {f.links.map((l) => (
+                      <li key={l}>
+                        <a href={l} target="_blank" rel="noreferrer" className="underline">
+                          {l}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {f.files.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {f.files.map((datei) =>
+                      datei.kind === "FOTO" ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <a key={datei.id} href={datei.data} target="_blank" rel="noreferrer">
+                          <img
+                            src={datei.data}
+                            alt={datei.name}
+                            className="h-20 w-20 rounded-lg object-cover ring-1 ring-slate-200"
+                          />
+                        </a>
+                      ) : (
+                        <a
+                          key={datei.id}
+                          href={datei.data}
+                          download={datei.name}
+                          className="rounded-lg bg-slate-100 px-2.5 py-1 text-xs text-slate-700 hover:bg-slate-200"
+                        >
+                          {datei.name}
+                        </a>
+                      ),
+                    )}
+                  </div>
+                )}
+                {f.adminNote && (
+                  <p className="mt-2 rounded-lg bg-emerald-50 p-2 text-sm text-emerald-900">
+                    <strong>Antwort:</strong> {f.adminNote}
+                  </p>
+                )}
+                <div className="mt-2 flex flex-wrap items-start gap-2">
+                  <form action={answerProblemCase} className="flex flex-1 gap-1">
+                    <input type="hidden" name="id" value={f.id} />
+                    <input
+                      type="text"
+                      name="antwort"
+                      placeholder="Antwort an den Anwender"
+                      className="min-w-0 flex-1 rounded-md border border-slate-300 px-2 py-1 text-xs"
+                    />
+                    <button
+                      type="submit"
+                      className="rounded-md bg-emerald-600 px-3 py-1 text-xs font-semibold text-white hover:bg-emerald-700"
+                    >
+                      Antworten
+                    </button>
+                  </form>
+                  <form action={closeProblemCase}>
+                    <input type="hidden" name="id" value={f.id} />
+                    <button
+                      type="submit"
+                      className="rounded-md bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-200"
+                    >
+                      Schließen
+                    </button>
+                  </form>
+                  <form action={deleteProblemCase}>
+                    <input type="hidden" name="id" value={f.id} />
+                    <button
+                      type="submit"
+                      className="rounded-md bg-red-50 px-3 py-1 text-xs font-semibold text-red-700 ring-1 ring-red-200 hover:bg-red-100"
+                    >
+                      Löschen
+                    </button>
+                  </form>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="rounded-xl border border-slate-200 bg-white p-5">

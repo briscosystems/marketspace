@@ -327,6 +327,7 @@ model Product {
   experienceReports  ExperienceReport[]
   photoHandoffs      PhotoHandoff[]
   productSubmissions ProductSubmission[]
+  problemCases       ProblemCase[]
   coolantTanks       CoolantTank[]
 
   @@unique([manufacturerId, slug])
@@ -595,6 +596,7 @@ model User {
   experienceReports  ExperienceReport[]
   photoHandoffs      PhotoHandoff[]
   productSubmissions ProductSubmission[]
+  problemCases       ProblemCase[]
   adBanners          AdBanner[]          @relation("AdOwner")
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
@@ -1755,4 +1757,71 @@ enum ProductSubmissionStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+/// Problemfall eines Anwenders — der Kern von „Problem klären" (2026-08-12).
+///
+/// Betreiber: „Der User kann Fotos, Text, SDS, Datenblätter, Laborberichte,
+/// Beiträge in Foren, Benutzererfahrungen etc. hochladen. Die Plattform
+/// speichert die Informationen. Bei der Problemlösung soll die KI mithelfen
+/// (KI darf nicht raten), das Problem zu identifizieren."
+model ProblemCase {
+  id              String         @id @default(cuid())
+  userId          String
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// Produkt aus dem Katalog, falls bekannt
+  productId       String?
+  product         Product?       @relation(fields: [productId], references: [id])
+  /// Produktname als Freitext, wenn es (noch) nicht im Katalog steht
+  productFreetext String?
+  /// Maschine oder Anlage, an der das Problem auftritt
+  machine         String?
+  /// Beschreibung in eigenen Worten
+  text            String
+  /// Quellen im Netz (Forenbeiträge, Herstellerhinweise)
+  links           String[]       @default([])
+  aiVerdict       ProblemVerdict @default(NOT_CHECKED)
+  aiSummary       String?
+  /// Vollständige KI-Antwort als JSON — für die Anzeige und die Prüfung
+  aiJson          String?
+  status          ProblemStatus  @default(OFFEN)
+  adminNote       String?
+  createdAt       DateTime       @default(now())
+  answeredAt      DateTime?
+  files           ProblemFile[]
+
+  @@index([status, createdAt])
+  @@index([userId])
+}
+
+/// Beleg zu einem Problemfall: Foto, Datenblatt, Sicherheitsdatenblatt,
+/// Laborbericht — alles, was bei der Einordnung hilft.
+model ProblemFile {
+  id        String          @id @default(cuid())
+  caseId    String
+  case      ProblemCase     @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  kind      ProblemFileKind
+  name      String
+  /// data:-URI (Bild oder PDF)
+  data      String
+  createdAt DateTime        @default(now())
+
+  @@index([caseId])
+}
+
+enum ProblemFileKind {
+  FOTO
+  DOKUMENT
+}
+
+enum ProblemVerdict {
+  NOT_CHECKED
+  EINGEGRENZT
+  UNKLAR
+}
+
+enum ProblemStatus {
+  OFFEN
+  BEANTWORTET
+  GESCHLOSSEN
 }
