@@ -28,7 +28,9 @@ export type RfqCardData = {
 const statusMeta: Record<RfqStatus, { label: string; classes: string }> = {
   OPEN: { label: "offen", classes: "bg-emerald-100 text-emerald-800" },
   ACCEPTED: { label: "vergeben", classes: "bg-blue-100 text-blue-800" },
-  EXPIRED: { label: "abgelaufen", classes: "bg-amber-100 text-amber-800" },
+  // Rot statt amber: „ausgelaufen" ist das Gegenteil von „offen" und darf
+  // nicht wie ein aktiver Zustand aussehen (Betreiber 2026-08-12).
+  EXPIRED: { label: "ausgelaufen", classes: "bg-red-50 text-red-700 ring-1 ring-red-200" },
   CANCELED: { label: "storniert", classes: "bg-slate-200 text-slate-600" },
 };
 
