@@ -39,6 +39,7 @@ import { applyDatenblaetter2026_08_05 } from "./add-datenblaetter-2026-08-05";
 import { applyQrToken2026_08_06 } from "./add-qr-token-2026-08-06";
 import { applyZubora2026_08_10 } from "./add-zubora-2026-08-10";
 import { applyZellerBelege2026_08_10 } from "./add-zeller-belege-2026-08-10";
+import { anfragenAblaufenLassen } from "../lib/anfragen-ablauf";
 import { applyDivinolMarke2026_08_10 } from "./fix-divinol-marke-2026-08-10";
 
 type Task = {
@@ -224,6 +225,14 @@ const TASKS: Task[] = [
     // (Betreiber 2026-08-10). Es wird nichts zusammengelegt, nur vermerkt.
     name: "Divinol als Handelsmarke von Zeller+Gmelin vermerken (2026-08-10)",
     run: () => applyDivinolMarke2026_08_10(),
+  },
+  {
+    // Anfragen, deren Frist verstrichen ist, auf „ausgelaufen" stellen und den
+    // Einkaeufer benachrichtigen (Betreiber 2026-08-12). Laeuft bei jedem Start
+    // und raeumt damit auch den Rueckstand auf; im Betrieb erledigen es
+    // zusaetzlich die Anfragen-Seiten.
+    name: "Abgelaufene Anfragen auf ausgelaufen setzen (2026-08-12)",
+    run: async () => `${await anfragenAblaufenLassen()} Anfrage(n) umgestellt`,
   },
 ];
 

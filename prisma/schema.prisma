@@ -679,6 +679,7 @@ enum EmailKind {
   MEMBERSHIP_RENEWED // Bestätigung nach erfolgter Verlängerung
   PASSWORD_RESET // Link zum Zurücksetzen des Passworts
   ADMIN_NEW_USER // Benachrichtigung an den Betreiber bei jeder Registrierung
+  RFQ_EXPIRED // Anfrage ist wegen abgelaufener Frist ausgelaufen (2026-08-12)
 }
 
 model EmailLog {

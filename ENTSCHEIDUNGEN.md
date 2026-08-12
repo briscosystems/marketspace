@@ -626,6 +626,23 @@ Betreiber-Befund: „Im eingeloggten Zustand zeigt es mir eine alte Version."
 | Die vier Einstiegskacheln stehen jetzt **auch auf `/dashboard`**, direkt unter der Überschrift | Das Konto-Menü führt auf `/dashboard`, nicht auf die Startseite. Dort standen bisher nur Zahlen und Listen — die neuen Werkzeuge fand man von dort aus gar nicht |
 | **Offen:** Es gibt weiterhin **zwei** angemeldete Übersichten — `/` (Startseite angemeldet) und `/dashboard` | Beide sind jetzt aktuell. Ob sie zu einer verschmolzen werden, entscheidet der Betreiber |
 
+## Abgelaufene Anfragen laufen aus — und der Einkäufer erfährt es (2026-08-12)
+
+Betreiber: „Wenn Anfragen aufgrund des Datums abgelaufen sind, so muss der User
+informiert werden und das Angebot auf ausgelaufen stehen."
+
+| Entscheidung | Begründung |
+|---|---|
+| Anfragen mit verstrichener Frist wechseln automatisch auf **`EXPIRED`** ([lib/anfragen-ablauf.ts](lib/anfragen-ablauf.ts)) | Vorher stand eine Anfrage nach der Frist weiter auf „offen" — Anbieter hielten sie für lebendig und boten ins Leere |
+| Das Wort heißt jetzt überall **„ausgelaufen"** (vorher „abgelaufen") und die Marke ist **rot** statt grau | Betreiber-Wortwahl; rot, weil es eine Änderung ist, die auffallen soll |
+| Der Einkäufer bekommt eine **E-Mail** (`EmailKind.RFQ_EXPIRED`) mit Anfrage, Menge, Zahl der eingegangenen Angebote und dem Weg, sie neu einzustellen | „Informiert werden" heißt nicht, es beim nächsten Login selbst zu entdecken |
+| Umgestellt wird **Zeile für Zeile mit Status-Bedingung**; nur wer die Zeile tatsächlich umstellt, verschickt die Mail | Zwei gleichzeitige Seitenaufrufe dürfen nicht zwei Mails auslösen |
+| Ausgelöst wird beim Aufruf von `/rfqs`, `/rfqs/[id]` und `/dashboard` **und** bei jedem Deploy ([prisma/deploy-tasks.ts](prisma/deploy-tasks.ts)) | Kein Cron nötig; der Deploy räumt zusätzlich den Rückstand auf. Die Funktion **wirft nie** — Aufräumen darf keine Seite zerlegen |
+
+**Bewusst nicht gemacht:** Eine ausgelaufene Anfrage lässt sich (noch) nicht mit
+einem Klick verlängern — der Einkäufer stellt sie neu ein. Wenn das gewünscht
+ist, kommt ein Knopf „Frist verlängern" dazu.
+
 ## Technik
 
 | Entscheidung | Begründung |

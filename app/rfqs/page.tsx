@@ -1,3 +1,4 @@
+import { anfragenAblaufenLassen } from "@/lib/anfragen-ablauf";
 import Link from "next/link";
 import { LeerHinweis } from "@/components/LeerHinweis";
 import { getServerSession } from "next-auth";
@@ -25,11 +26,14 @@ type SearchParams = Promise<{
 const STATUS_LABEL: Record<string, string> = {
   OPEN: "offen",
   ACCEPTED: "vergeben",
-  EXPIRED: "abgelaufen",
+  EXPIRED: "ausgelaufen",
   CANCELED: "storniert",
 };
 
+// Vor dem Anzeigen aufräumen: Was die Frist überschritten hat, steht auf
+// „ausgelaufen" — sonst sähe es für Anbieter noch offen aus (2026-08-12).
 export default async function RfqListPage({ searchParams }: { searchParams: SearchParams }) {
+  await anfragenAblaufenLassen();
   const t = await getT();
   const sp = await searchParams;
   const { q, productType, isoViscosity, region, status } = sp;

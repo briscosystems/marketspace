@@ -1,3 +1,4 @@
+import { anfragenAblaufenLassen } from "@/lib/anfragen-ablauf";
 import { notFound } from "next/navigation";
 
 // Nutzer dürfen nie rohe Datenbank-Werte sehen („OPEN"). Gleiche Beschriftungen
@@ -5,7 +6,7 @@ import { notFound } from "next/navigation";
 const RFQ_STATUS_LABEL: Record<string, string> = {
   OPEN: "offen",
   ACCEPTED: "angenommen",
-  EXPIRED: "abgelaufen",
+  EXPIRED: "ausgelaufen",
   CANCELED: "zurückgezogen",
 };
 import Link from "next/link";
@@ -25,6 +26,7 @@ export default async function RfqDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await anfragenAblaufenLassen();
   const t = await getT();
   const { id } = await params;
   const [rfq, session] = await Promise.all([
@@ -96,6 +98,8 @@ export default async function RfqDetailPage({
                 ? "bg-amber-100 text-amber-800"
                 : rfq.status === "ACCEPTED"
                 ? "bg-emerald-100 text-emerald-800"
+                : rfq.status === "EXPIRED"
+                ? "bg-red-50 text-red-700 ring-1 ring-red-200"
                 : "bg-slate-100 text-slate-600"
             }`}
           >
