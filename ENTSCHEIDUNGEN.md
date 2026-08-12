@@ -597,6 +597,24 @@ Bei der Problemlösung soll die KI mithelfen (KI darf nicht raten)."
 | „Sortiment und Datenblätter dort zeigen, wo gesucht wird" → **„Gefunden werden, wenn Betriebe Ersatz für ein Produkt suchen."** | Sagt den Nutzen statt der Tätigkeit |
 | **Angemeldete Nutzer landen auf `/mitgliedschaft`** statt auf der Registrierung | Fehler aus der Praxis: Als Admin führte die Kachel „Marke sichtbar machen" auf die Anmelde-/Registrierungsseite, obwohl man längst angemeldet war |
 
+## Kacheln: großes Symbol, nur die Überschrift (2026-08-12, gilt)
+
+Betreiber: „Mach die Icons grösser, dafür den kleinen Text darunter weg."
+
+| Entscheidung | Begründung |
+|---|---|
+| Die erklärende Zeile unter der Überschrift ist **wieder entfernt**; das Symbol ist dafür deutlich größer (Symbolfeld 64 px statt 44 px) | Betreiber-Entscheid. Damit gilt die Fassung von gestern Mittag (Zeile sichtbar) **nicht mehr** |
+| Die Texte `home.group*Line` **bleiben in [lib/i18n.ts](lib/i18n.ts) stehen** | Sie sind in drei Sprachen gepflegt; sollten sie zurückkommen, ist nichts verloren |
+
+## Die Werkzeuge auch auf /dashboard (2026-08-12)
+
+Betreiber-Befund: „Im eingeloggten Zustand zeigt es mir eine alte Version."
+
+| Entscheidung | Begründung |
+|---|---|
+| Die vier Einstiegskacheln stehen jetzt **auch auf `/dashboard`**, direkt unter der Überschrift | Das Konto-Menü führt auf `/dashboard`, nicht auf die Startseite. Dort standen bisher nur Zahlen und Listen — die neuen Werkzeuge fand man von dort aus gar nicht |
+| **Offen:** Es gibt weiterhin **zwei** angemeldete Übersichten — `/` (Startseite angemeldet) und `/dashboard` | Beide sind jetzt aktuell. Ob sie zu einer verschmolzen werden, entscheidet der Betreiber |
+
 ## Technik
 
 | Entscheidung | Begründung |

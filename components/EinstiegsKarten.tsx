@@ -3,12 +3,10 @@
  * Problem klären (Instandhaltung), Anbieten (Reseller), Passendes finden
  * (Einkauf), Marke zeigen (Hersteller).
  *
- * Beschriftung (Betreiber 2026-08-11): **Überschrift plus eine kurze Zeile,
- * die sagt, was passiert.** Die Überschrift allein war zu blass („Probleme
- * lösen" — womit?), und der Erklärsatz stand nur beim Überfahren mit der Maus:
- * auf dem Handy hat ihn niemand gesehen. Genau davor warnt die Recherche zu
- * B2B-Startseiten — Wichtiges gehört sichtbar auf die Kachel, nicht in ein
- * Hover-Element.
+ * Beschriftung (Betreiber 2026-08-12): **großes Symbol und Überschrift, sonst
+ * nichts.** Die erklärende Zeile ist auf Wunsch des Betreibers wieder
+ * entfallen; die Aussage trägt jetzt das Bild. Die Texte bleiben in
+ * lib/i18n.ts (home.group*Line) stehen, falls sie zurückkommen sollen.
  *
  * Gestaltung: keine harte Farbleiste mehr, sondern ein farbiges Symbolfeld,
  * ein weicher Farbschleier beim Überfahren und ein Ring in der Kachelfarbe —
@@ -26,7 +24,6 @@ import { BrainQuestion } from "@/components/ProblemIcon";
 type Kachel = {
   href: string;
   titel: string;
-  zeile: string;
   symbol: React.ReactNode;
   /** Farbklassen fest je Kachel — Tailwind baut nur, was wörtlich dasteht. */
   verlauf: string;
@@ -48,8 +45,7 @@ export function EinstiegsKarten({
     {
       href: "/erkennen",
       titel: t("home.groupProblemTitle"),
-      zeile: t("home.groupProblemLine"),
-      symbol: <BrainQuestion className="h-7 w-7" />,
+      symbol: <BrainQuestion className="h-10 w-10" />,
       verlauf: "from-rose-50",
       ring: "hover:ring-rose-300",
       titelHover: "group-hover:text-rose-700",
@@ -59,8 +55,7 @@ export function EinstiegsKarten({
     {
       href: "/listings/new",
       titel: t("home.groupResellerTitle"),
-      zeile: t("home.groupResellerLine"),
-      symbol: <OilBarrels className="h-11 w-auto" />,
+      symbol: <OilBarrels className="h-16 w-auto" />,
       verlauf: "from-blue-50",
       ring: "hover:ring-blue-300",
       titelHover: "group-hover:text-blue-700",
@@ -70,8 +65,7 @@ export function EinstiegsKarten({
     {
       href: "/kss-finder",
       titel: t("home.groupBuyerTitle"),
-      zeile: t("home.groupBuyerLine"),
-      symbol: <SearchCanister className="h-11 w-auto" />,
+      symbol: <SearchCanister className="h-16 w-auto" />,
       verlauf: "from-amber-50",
       ring: "hover:ring-amber-300",
       titelHover: "group-hover:text-amber-700",
@@ -81,8 +75,7 @@ export function EinstiegsKarten({
     {
       href: angemeldet ? "/mitgliedschaft" : "/register",
       titel: t("home.groupMfrTitle"),
-      zeile: t("home.groupMfrLine"),
-      symbol: <Building2 className="h-6 w-6" />,
+      symbol: <Building2 className="h-9 w-9" />,
       verlauf: "from-brand-50",
       ring: "hover:ring-brand-300",
       titelHover: "group-hover:text-brand-700",
@@ -103,10 +96,10 @@ export function EinstiegsKarten({
           <span
             className={`pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b ${k.verlauf} to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100`}
           />
-          <div className="relative flex h-12 items-center">
+          <div className="relative flex h-16 items-center">
             {k.symbolFeld ? (
               <span
-                className={`grid h-11 w-11 place-items-center rounded-xl transition duration-200 group-hover:scale-105 ${k.symbolFeld}`}
+                className={`grid h-16 w-16 place-items-center rounded-2xl transition duration-200 group-hover:scale-105 ${k.symbolFeld}`}
               >
                 {k.symbol}
               </span>
@@ -121,7 +114,6 @@ export function EinstiegsKarten({
           >
             {k.titel}
           </h3>
-          <p className="relative mt-1 text-sm leading-snug text-slate-600">{k.zeile}</p>
           <ArrowRight
             className={`relative mt-3 h-5 w-5 text-slate-300 transition duration-200 group-hover:translate-x-1 ${k.pfeil}`}
           />

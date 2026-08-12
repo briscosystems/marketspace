@@ -5,6 +5,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { TrustBadge } from "@/components/TrustBadge";
 import { QuickStatusToggle } from "@/components/QuickStatusToggle";
+import { EinstiegsKarten } from "@/components/EinstiegsKarten";
 import { ListingCard } from "@/components/ListingCard";
 import { ProductImage } from "@/components/ProductImage";
 import { getT } from "@/lib/i18n-server";
@@ -113,6 +114,12 @@ export default async function DashboardPage() {
           {user?.trustTier && <TrustBadge tier={user.trustTier} size="xs" />}
         </p>
       </div>
+
+      {/* Die vier Werkzeuge — auch hier (Betreiber 2026-08-12): Wer über das
+          Konto-Menü kommt, landet auf DIESER Seite und sah bis jetzt nur
+          Zahlen und Listen. Problem klären, Anbieten, Alternative finden und
+          Marke zeigen gehören dorthin, wo der Angemeldete tatsächlich ankommt. */}
+      <EinstiegsKarten t={t} angemeldet />
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
         <div className="card">
