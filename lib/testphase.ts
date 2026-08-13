@@ -1,0 +1,34 @@
+/**
+ * Testphase: die Willkommensseite vor dem Marktplatz.
+ *
+ * Betreiber 2026-08-13: Testkunden sollen zuerst erfahren, worauf sie sich
+ * einlassen — dass dies ein **Prototyp** ist, dass noch zu wenige echte Daten
+ * im System stehen und dass die Plattform mit jedem Feedback besser wird. Erst
+ * nach „Eintreten" geht es weiter; damit bestätigt der Testkunde zugleich, den
+ * Zugang während der Testphase nicht weiterzugeben.
+ *
+ * Verhältnis zum Gate (lib/gate.ts): Das Gate ist die Passwortsperre und
+ * kommt zuerst. Diese Seite kommt danach — sie sperrt nichts, sie klärt auf
+ * und holt eine bewusste Bestätigung ein.
+ *
+ * Es wird nichts serverseitig gespeichert: Ein Cookie mit dem Datum der
+ * Bestätigung genügt. Ein signiertes Token wäre Sicherheitstheater — die Seite
+ * schützt nichts, sie informiert.
+ */
+export const TESTPHASE_COOKIE = "mp_testkunde";
+
+/** Ein halbes Jahr — lange genug, dass niemand die Seite zweimal die Woche sieht. */
+export const TESTPHASE_COOKIE_MAXAGE = 60 * 60 * 24 * 180;
+
+/**
+ * Läuft die Testphase? Standard: ja. Abschaltbar mit TESTPHASE=false, sobald
+ * der Betrieb öffentlich ist.
+ */
+export function testphaseAktiv(): boolean {
+  return process.env.TESTPHASE !== "false";
+}
+
+/** Hat der Besucher „Eintreten" schon gedrückt? */
+export function testphaseBestaetigt(cookieWert: string | undefined): boolean {
+  return typeof cookieWert === "string" && cookieWert.length > 0;
+}

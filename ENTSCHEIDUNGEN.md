@@ -664,6 +664,24 @@ machen statt hinter einem Klick.
 | Reihenfolge jetzt **Problem → Suchen → Anbieten → Marke** | Stellt die Entscheidung vom 2026-08-10 wieder her: Instandhaltung und Einkauf zuerst, Reseller und Hersteller danach. Zuletzt stand „Anbieten" an zweiter Stelle |
 | Auf `/dashboard` zeigt „Offene Anfragen zu deinen Herstellern" zusätzlich nur noch Anfragen mit **laufender Frist** | Doppelt gesichert, falls der Ablauf-Lauf noch nicht durch ist |
 
+## Willkommensseite für den Testbetrieb (2026-08-13)
+
+Betreiber: „Mach für den Testbetrieb eine vorgeschaltete Seite … Der User muss
+informiert werden, dass dies ein Prototyp ist und aktuell noch zu wenig ECHTE
+Daten im System sind. Das System wird aber immer besser, je mehr User Feedback
+eintragen. Danach muss der Kunde einen Button ‚Eintreten' drücken. Damit
+bestätigt er, dass er diesen Link in der Testphase nicht weiter versendet."
+
+| Entscheidung | Begründung |
+|---|---|
+| Vor dem Marktplatz steht eine **Willkommensseite** ([components/TestkundenWillkommen.tsx](components/TestkundenWillkommen.tsx)), gerendert im Root-Layout nach dem Gate | Das Gate ist die Passwortsperre; diese Seite sperrt nichts, sie klärt auf. Beides getrennt halten |
+| Sie sagt in drei Blöcken: **Prototyp** · **noch zu wenige echte Daten** · **jede Rückmeldung macht es besser** | Wortlaut bewusst ehrlich: „Der Marktplatz ist praktisch leer, weil er gerade erst öffnet." Wer das vorher weiß, urteilt fair |
+| Der Knopf heißt **„Eintreten"**; damit bestätigt der Testkunde ausdrücklich, den Zugang während der Testphase nicht weiterzugeben — **mit vier Gründen**, nicht als Floskel | Verlangte Zusagen ohne Begründung werden ignoriert. Die Gründe: Zuordenbarkeit der Rückmeldung, falscher Eindruck bei Unvorbereiteten, Geschäftsdaten anderer Teilnehmer, noch nicht endgültige Rechtstexte |
+| Bestätigung wird als **Cookie mit Datum** gespeichert (180 Tage), kein Serverzustand, kein signiertes Token | Die Seite schützt nichts — ein signiertes Token wäre Sicherheitstheater |
+| Abschaltbar über **`TESTPHASE=false`**; ohne die Variable ist sie aktiv | Nach dem Testbetrieb eine Umgebungsvariable, kein Code-Umbau |
+| Der **QR-Code für das Handy** zeigt jetzt auf `/api/handy/<id>`: Diese Route setzt die Bestätigung und leitet auf die Aufnahmeseite | Sonst landet das Handy an der Maschine auf der Willkommensseite statt bei der Kamera. Die Passwortsperre bleibt davon unberührt |
+| Text bewusst **nur deutsch** | Wie die Rechtstexte: Das Testkunden-Programm läuft im deutschsprachigen Raum, und der Text muss unmissverständlich sein |
+
 ## Technik
 
 | Entscheidung | Begründung |

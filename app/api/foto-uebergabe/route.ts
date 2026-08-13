@@ -39,7 +39,9 @@ export async function POST() {
     select: { id: true, expiresAt: true },
   });
 
-  const url = `${siteUrl()}/f/${uebergabe.id}`;
+  // Über /api/handy/<id>, damit das Handy nicht auf der Testkunden-
+  // Willkommensseite landet, sondern direkt bei der Kamera (2026-08-13).
+  const url = `${siteUrl()}/api/handy/${uebergabe.id}`;
   const qr = await QRCode.toDataURL(url, { errorCorrectionLevel: "M", margin: 1, width: 420 });
 
   return NextResponse.json({ id: uebergabe.id, url, qr, gueltigBis: uebergabe.expiresAt });

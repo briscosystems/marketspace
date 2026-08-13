@@ -12,6 +12,8 @@ import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistratio
 import { GateLogin } from "@/components/GateLogin";
 import { AnalyticsTracker } from "@/components/AnalyticsTracker";
 import { GATE_COOKIE, gateEnabled, isGateTokenValid } from "@/lib/gate";
+import { TESTPHASE_COOKIE, testphaseAktiv, testphaseBestaetigt } from "@/lib/testphase";
+import { TestkundenWillkommen } from "@/components/TestkundenWillkommen";
 import { DEFAULT_LOCALE, LOCALE_COOKIE, toLocale, translate } from "@/lib/i18n";
 import { withBasePath } from "@/lib/base-path";
 import { Search, ShieldCheck, FileText, Check } from "lucide-react";
@@ -73,6 +75,21 @@ export default async function RootLayout({
         </html>
       );
     }
+  }
+
+  // Testbetrieb: Vor dem Marktplatz steht die Willkommensseite für Testkunden
+  // (Betreiber 2026-08-13). Sie sperrt nichts — das tut das Gate darüber —,
+  // sondern sagt ehrlich, dass dies ein Prototyp mit noch wenigen echten Daten
+  // ist, und holt die Zusage ein, den Zugang nicht weiterzugeben. Nach
+  // „Eintreten" ist sie ein halbes Jahr lang erledigt. Abschaltbar: TESTPHASE=false.
+  if (testphaseAktiv() && !testphaseBestaetigt(store.get(TESTPHASE_COOKIE)?.value)) {
+    return (
+      <html lang={locale}>
+        <body>
+          <TestkundenWillkommen />
+        </body>
+      </html>
+    );
   }
 
   const session = await getServerSession(authOptions);
