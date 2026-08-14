@@ -110,13 +110,16 @@ export function TestkundenWillkommen() {
           ))}
         </div>
 
-        {/* Ehrlichkeit in EINEM Satz — nicht als Entschuldigung in drei Kästen. */}
+        {/* Aufbaustand als sachlicher Hinweis (Betreiber 2026-08-14):
+            trainiert aus vielen Quellen, aber noch nicht vollständig —
+            und mit jeder Interaktion besser. */}
         <p className="mt-4 flex items-start gap-2 rounded-xl bg-white p-4 text-sm leading-relaxed text-slate-700 ring-1 ring-slate-200">
           <Info className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
           <span>
-            <strong>Ehrlich gesagt:</strong> Katalog, Datenblätter und Beständigkeiten sind echt
-            und belegt — Angebote und Erfahrungen anderer Betriebe fehlen noch, der Marktplatz
-            öffnet gerade erst. Genau deshalb zählt Ihre Stimme jetzt am meisten.
+            <strong>Hinweis:</strong> Wir haben die Plattform mit Informationen aus vielen Quellen
+            trainiert — Datenblätter, Sicherheitsdatenblätter, Herstellerseiten, Fachforen.
+            Einzelne Angaben können trotzdem noch fehlen oder noch nicht eingearbeitet sein. Mit
+            jeder Interaktion wird die Plattform besser.
           </span>
         </p>
 
