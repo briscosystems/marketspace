@@ -1,20 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { FlaskConical, Database, TrendingUp, ArrowRight, Loader2 } from "lucide-react";
+import { Sparkles, Wrench, MessagesSquare, ArrowRight, Loader2, Info } from "lucide-react";
 import { BASE_PATH } from "@/lib/base-path";
 
 /**
  * Willkommensseite für Testkunden — steht vor dem Marktplatz.
  *
- * Zweite Fassung (Betreiber 2026-08-13): „Viel zu viel Text auf der
- * Einstiegsseite!" Die erste Fassung erklärte in ganzen Absätzen. Jetzt: drei
- * kurze Karten, drei Halbsätze zur Begründung, ein Knopf — alles auf einen
- * Blick, ohne Scrollen.
+ * Dritte Fassung (Betreiber 2026-08-13): „Das ist überhaupt nicht motivierend
+ * und einladend … Der Text muss klar und deutlich sein, nicht zu viel und
+ * nicht zu wenig."
  *
- * Die Aussagen bleiben dieselben und sind Betreiber-Vorgabe:
- * Prototyp · noch zu wenige echte Daten · besser mit jedem Feedback ·
- * „Eintreten" bestätigt, den Zugang nicht weiterzugeben.
+ * Gelernt: Die zweite Fassung war kurz, aber sie führte mit lauter Einschränkungen
+ * („Prototyp", „wenig Daten", „behalten Sie es für sich"). Jetzt steht vorn,
+ * was der Testkunde bekommt und bewirken kann; die Ehrlichkeit über den
+ * Aufbaustand bleibt — als EIN klarer Satz, nicht als Entschuldigung in drei
+ * Kästen. Die Zusage zur Vertraulichkeit steht knapp beim Knopf.
+ *
+ * Betreiber-Vorgaben, die drinbleiben müssen: Prototyp benennen · noch wenige
+ * echte Daten · wird besser mit jedem Feedback · „Eintreten" bestätigt, den
+ * Zugang nicht weiterzugeben.
  *
  * Bewusst deutsch, wie die Rechtstexte.
  */
@@ -37,29 +42,30 @@ export function TestkundenWillkommen() {
 
   const karten = [
     {
-      icon: <FlaskConical className="h-5 w-5" />,
-      titel: "Prototyp",
-      text: "Noch nicht fertig — Ecken und Kanten inklusive.",
-      farbe: "bg-amber-50 text-amber-900 ring-amber-200",
+      icon: <Sparkles className="h-5 w-5" />,
+      titel: "Alles frei für Sie",
+      text: "200 KI-Credits und ein Jahr Mitgliedschaft geschenkt. Keine Karte, keine Provision.",
+      farbe: "bg-brand-50 text-brand-900 ring-brand-200",
     },
     {
-      icon: <Database className="h-5 w-5" />,
-      titel: "Wenig echte Daten",
-      text: "Katalog und Datenblätter sind echt. Angebote und Erfahrungen fehlen noch.",
+      icon: <Wrench className="h-5 w-5" />,
+      titel: "Sofort nutzbar",
+      text: "Problem per Foto und Laborbericht klären, Alternativen finden, Tanks überwachen.",
       farbe: "bg-white text-slate-800 ring-slate-200",
     },
     {
-      icon: <TrendingUp className="h-5 w-5" />,
-      titel: "Wird mit Ihnen besser",
-      text: "Jede Rückmeldung verbessert die Plattform. Kritik ausdrücklich erwünscht.",
-      farbe: "bg-brand-50 text-brand-900 ring-brand-200",
+      icon: <MessagesSquare className="h-5 w-5" />,
+      titel: "Sie bauen mit",
+      text: "Ihre Rückmeldung ändert die Plattform — oft noch am selben Tag.",
+      farbe: "bg-amber-50 text-amber-900 ring-amber-200",
     },
   ];
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50">
-      <div className="bg-graphite-900 px-6 py-8 text-white sm:px-10">
-        <div className="mx-auto max-w-3xl">
+      <div className="relative overflow-hidden bg-graphite-900 px-6 py-9 text-white sm:px-10">
+        <span className="pointer-events-none absolute -right-24 -top-32 h-80 w-80 rounded-full bg-brand-500/25 blur-3xl" />
+        <div className="relative mx-auto max-w-3xl">
           <div className="flex items-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -72,9 +78,12 @@ export function TestkundenWillkommen() {
               Testbetrieb
             </span>
           </div>
-          <h1 className="mt-5 text-3xl font-extrabold sm:text-4xl">Willkommen, Testkunde.</h1>
-          <p className="mt-2 text-white/80">
-            200 Credits und ein Jahr Mitgliedschaft sind für Sie hinterlegt.
+          <h1 className="mt-5 text-3xl font-extrabold leading-tight sm:text-4xl">
+            Sie sind einer der Ersten.
+          </h1>
+          <p className="mt-2 max-w-xl text-white/85">
+            Herstellerunabhängig den richtigen Kühlschmierstoff finden, Probleme klären, faire
+            Preise sehen. Sie testen das vor allen anderen — und bestimmen mit, wie es wird.
           </p>
         </div>
       </div>
@@ -82,7 +91,7 @@ export function TestkundenWillkommen() {
       <div className="mx-auto w-full max-w-3xl px-6 py-7 sm:px-10">
         <div className="grid gap-3 sm:grid-cols-3">
           {karten.map((k) => (
-            <div key={k.titel} className={`rounded-xl p-4 ring-1 ${k.farbe}`}>
+            <div key={k.titel} className={`rounded-xl p-4 shadow-soft ring-1 ${k.farbe}`}>
               <p className="flex items-center gap-2 font-bold">
                 {k.icon}
                 {k.titel}
@@ -92,37 +101,41 @@ export function TestkundenWillkommen() {
           ))}
         </div>
 
-        <div className="mt-6 rounded-xl bg-white p-5 shadow-soft ring-1 ring-slate-200">
-          <p className="font-bold text-slate-900">Bitte behalten Sie den Zugang für sich.</p>
-          <ul className="mt-2 space-y-1 text-sm text-slate-700">
-            <li>· Wir müssen wissen, von wem eine Rückmeldung kommt.</li>
-            <li>· Wer unvorbereitet kommt, hält den leeren Marktplatz für gescheitert.</li>
-            <li>· Hier stehen Angebote und Preise anderer Betriebe.</li>
-          </ul>
+        {/* Ehrlichkeit in EINEM Satz — nicht als Entschuldigung in drei Kästen. */}
+        <p className="mt-4 flex items-start gap-2 rounded-xl bg-white p-4 text-sm leading-relaxed text-slate-700 ring-1 ring-slate-200">
+          <Info className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
+          <span>
+            <strong>Ehrlich gesagt:</strong> Katalog, Datenblätter und Beständigkeiten sind echt
+            und belegt — Angebote und Erfahrungen anderer Betriebe fehlen noch, der Marktplatz
+            öffnet gerade erst. Genau deshalb zählt Ihre Stimme jetzt am meisten.
+          </span>
+        </p>
 
-          {fehler && (
-            <p className="mt-3 text-sm text-red-600">
-              Hat nicht geklappt — bitte Seite neu laden.
+        <div className="mt-5 rounded-xl bg-white p-5 shadow-soft ring-1 ring-slate-200">
+          <div className="flex flex-wrap items-center gap-4">
+            <button
+              type="button"
+              onClick={eintreten}
+              disabled={busy}
+              className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-7 py-3.5 text-base font-bold text-white shadow-soft transition hover:bg-brand-700 hover:shadow-lift disabled:cursor-not-allowed disabled:bg-slate-300"
+            >
+              {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : null}
+              Eintreten
+              {!busy && <ArrowRight className="h-5 w-5" />}
+            </button>
+            <p className="min-w-0 flex-1 text-sm text-slate-600">
+              Damit bestätigen Sie, den Zugang während der Testphase{" "}
+              <strong>für sich zu behalten</strong> — hier stehen Angebote und Preise anderer
+              Betriebe, und wir wollen wissen, von wem eine Rückmeldung kommt.
             </p>
+          </div>
+          {fehler && (
+            <p className="mt-3 text-sm text-red-600">Hat nicht geklappt — bitte Seite neu laden.</p>
           )}
-
-          <button
-            type="button"
-            onClick={eintreten}
-            disabled={busy}
-            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-brand-600 px-6 py-3 text-base font-bold text-white shadow-soft transition hover:bg-brand-700 hover:shadow-lift disabled:cursor-not-allowed disabled:bg-slate-300"
-          >
-            {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : null}
-            Eintreten
-            {!busy && <ArrowRight className="h-5 w-5" />}
-          </button>
-          <p className="mt-2 text-xs text-slate-500">
-            Mit dem Klick bestätige ich: Prototyp verstanden, Zugang gebe ich nicht weiter.
-          </p>
         </div>
 
         <p className="mt-6 text-center text-xs text-slate-500">
-          Brisco Systems GmbH · CH-8335 Hittnau ·{" "}
+          Jemand, der dabei sein sollte? Schreiben Sie uns, wir laden ihn ein ·{" "}
           <a href="mailto:jgosch@brisco.ch" className="underline">
             jgosch@brisco.ch
           </a>
