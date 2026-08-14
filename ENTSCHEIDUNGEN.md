@@ -684,6 +684,20 @@ bestätigt er, dass er diesen Link in der Testphase nicht weiter versendet."
 | Der **QR-Code für das Handy** zeigt jetzt auf `/api/handy/<id>`: Diese Route setzt die Bestätigung und leitet auf die Aufnahmeseite | Sonst landet das Handy an der Maschine auf der Willkommensseite statt bei der Kamera. Die Passwortsperre bleibt davon unberührt |
 | Text bewusst **nur deutsch** | Wie die Rechtstexte: Das Testkunden-Programm läuft im deutschsprachigen Raum, und der Text muss unmissverständlich sein |
 
+## Betreiber kann Angebote und Suchen löschen (2026-08-14)
+
+Betreiber: „Der Admin muss in der Lage sein, Angebote oder Inhalte zu löschen,
+falls es notwendig ist. Z. B. gibt es in der Live-Datenbank noch Fake-Angebote."
+
+| Entscheidung | Begründung |
+|---|---|
+| Neuer Admin-Abschnitt **„Angebote & Suchen verwalten"**: die 100 neuesten Angebote und Suchen mit Verkäufer/Käufer (Pseudonym + E-Mail), Status, Datum und rotem **Löschen**-Knopf | Fake-Einträge aus der Aufbauphase müssen raus, ohne dass jemand in die Datenbank greift |
+| Löschen ist **endgültig**, aber die Historie bleibt: Gespräche und Transaktionen behalten ihre Daten, nur ihr Verweis auf den Eintrag wird geleert (`onDelete: SetNull`); Fotos gehen mit dem Angebot | Vorab geprüft: Ein Angebot mit Gespräch und Transaktion wurde testweise gelöscht — beide blieben vollständig erhalten |
+| Bei jeder Zeile stehen Warnzeichen: Zahl der Transaktionen und Gespräche | Der Betreiber sieht VOR dem Klick, ob an dem Eintrag echtes Geschehen hängt |
+
+Die Fake-Angebote auf dem Live-Server löscht der Betreiber selbst über /admin —
+die Live-Datenbank wird nie von Hand aus dem Code heraus verändert.
+
 ## Technik
 
 | Entscheidung | Begründung |

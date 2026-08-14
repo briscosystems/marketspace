@@ -503,3 +503,28 @@ export async function deleteProblemCase(formData: FormData) {
   await prisma.problemCase.delete({ where: { id } }).catch(() => {});
   revalidatePath("/admin");
 }
+
+/**
+ * Angebot löschen (2026-08-14): Der Betreiber muss Inhalte entfernen können —
+ * z. B. Fake-Angebote aus der Aufbauphase. Gespräche und Transaktionen
+ * bleiben erhalten (ihr Verweis auf das Angebot wird geleert), Fotos gehen mit.
+ */
+export async function adminDeleteListing(formData: FormData) {
+  await assertOwner();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  await prisma.listing.delete({ where: { id } }).catch(() => {});
+  revalidatePath("/admin");
+  revalidatePath("/listings");
+  revalidatePath("/");
+}
+
+/** Suche (Anfrage) löschen — Angebote darauf gehen mit, Transaktionen bleiben. */
+export async function adminDeleteRfq(formData: FormData) {
+  await assertOwner();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  await prisma.rfq.delete({ where: { id } }).catch(() => {});
+  revalidatePath("/admin");
+  revalidatePath("/rfqs");
+}

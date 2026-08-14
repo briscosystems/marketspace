@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { BlockUserButton } from "@/components/admin/BlockUserButton";
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
@@ -25,6 +26,8 @@ import {
   answerProblemCase,
   closeProblemCase,
   deleteProblemCase,
+  adminDeleteListing,
+  adminDeleteRfq,
   rejectProductSubmission,
 } from "./actions";
 import { getAllSettings, AI_ACTION_COSTS, packagePriceEur } from "@/lib/credits";
@@ -120,6 +123,41 @@ export default async function AdminPage() {
   // Angebotsfotos: neueste zuerst. Anbieter können ihre eigenen Fotos selbst
   // löschen — hier hat der Betreiber zusätzlich das Eingriffsrecht
   // (Betreiber 2026-08-10).
+  // Alle Angebote und Suchen — der Betreiber muss Inhalte löschen können,
+  // z. B. Fake-Angebote aus der Aufbauphase (2026-08-14).
+  const alleAngebote = await prisma.listing.findMany({
+    select: {
+      id: true,
+      productName: true,
+      manufacturer: true,
+      productType: true,
+      status: true,
+      quantity: true,
+      quantityUnit: true,
+      createdAt: true,
+      seller: { select: { pseudonym: true, email: true } },
+      _count: { select: { transactions: true, conversations: true } },
+    },
+    orderBy: { createdAt: "desc" },
+    take: 100,
+  });
+  const alleSuchen = await prisma.rfq.findMany({
+    select: {
+      id: true,
+      productType: true,
+      productName: true,
+      manufacturer: true,
+      status: true,
+      quantity: true,
+      quantityUnit: true,
+      createdAt: true,
+      buyer: { select: { pseudonym: true, email: true } },
+      _count: { select: { offers: true } },
+    },
+    orderBy: { createdAt: "desc" },
+    take: 100,
+  });
+
   const angebotsFotos = await prisma.listingPhoto.findMany({
     select: {
       id: true,
@@ -656,6 +694,100 @@ export default async function AdminPage() {
                   </div>
                 )}
                 {m.adminNote && <p className="mt-1 text-xs text-slate-500">{m.adminNote}</p>}
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-5">
+        <h2 className="mb-1 text-lg font-semibold text-slate-900">
+          Angebote &amp; Suchen verwalten{" "}
+          <span className="text-sm font-normal text-slate-500">
+            ({alleAngebote.length} Angebote, {alleSuchen.length} Suchen)
+          </span>
+        </h2>
+        <p className="mb-3 text-xs text-slate-500">
+          Löschen entfernt den Eintrag endgültig. Gespräche und abgeschlossene Transaktionen
+          bleiben erhalten — nur ihr Verweis auf den Eintrag wird geleert.
+        </p>
+
+        <h3 className="mb-1 text-sm font-semibold text-slate-800">Angebote</h3>
+        {alleAngebote.length === 0 ? (
+          <p className="text-sm text-slate-500">Keine Angebote.</p>
+        ) : (
+          <div className="mb-4 divide-y divide-slate-100">
+            {alleAngebote.map((l) => (
+              <div key={l.id} className="flex flex-wrap items-center gap-2 py-2 text-sm">
+                <Link href={`/listings/${l.id}`} className="font-medium text-slate-900 hover:underline">
+                  {l.manufacturer} {l.productName}
+                </Link>
+                <span className="text-xs text-slate-500">
+                  · {l.productType} · {l.quantity} {l.quantityUnit}
+                </span>
+                <span
+                  className={`rounded-full px-2 py-0.5 text-xs ${
+                    l.status === "ACTIVE"
+                      ? "bg-emerald-100 text-emerald-900"
+                      : "bg-slate-100 text-slate-600"
+                  }`}
+                >
+                  {l.status}
+                </span>
+                <span className="ml-auto text-xs text-slate-500">
+                  {l.seller.pseudonym} ({l.seller.email}) · {l.createdAt.toLocaleDateString("de-CH")}
+                  {l._count.transactions > 0 && ` · ${l._count.transactions} Transaktion(en)`}
+                  {l._count.conversations > 0 && ` · ${l._count.conversations} Gespräch(e)`}
+                </span>
+                <form action={adminDeleteListing}>
+                  <input type="hidden" name="id" value={l.id} />
+                  <button
+                    type="submit"
+                    className="rounded-md bg-red-50 px-3 py-1 text-xs font-semibold text-red-700 ring-1 ring-red-200 hover:bg-red-100"
+                  >
+                    Löschen
+                  </button>
+                </form>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <h3 className="mb-1 text-sm font-semibold text-slate-800">Suchen</h3>
+        {alleSuchen.length === 0 ? (
+          <p className="text-sm text-slate-500">Keine Suchen.</p>
+        ) : (
+          <div className="divide-y divide-slate-100">
+            {alleSuchen.map((r) => (
+              <div key={r.id} className="flex flex-wrap items-center gap-2 py-2 text-sm">
+                <Link href={`/rfqs/${r.id}`} className="font-medium text-slate-900 hover:underline">
+                  {[r.manufacturer, r.productName ?? r.productType].filter(Boolean).join(" ")}
+                </Link>
+                <span className="text-xs text-slate-500">
+                  · {r.quantity} {r.quantityUnit}
+                </span>
+                <span
+                  className={`rounded-full px-2 py-0.5 text-xs ${
+                    r.status === "OPEN"
+                      ? "bg-amber-100 text-amber-900"
+                      : "bg-slate-100 text-slate-600"
+                  }`}
+                >
+                  {r.status}
+                </span>
+                <span className="ml-auto text-xs text-slate-500">
+                  {r.buyer.pseudonym} ({r.buyer.email}) · {r.createdAt.toLocaleDateString("de-CH")}
+                  {r._count.offers > 0 && ` · ${r._count.offers} Angebot(e) darauf`}
+                </span>
+                <form action={adminDeleteRfq}>
+                  <input type="hidden" name="id" value={r.id} />
+                  <button
+                    type="submit"
+                    className="rounded-md bg-red-50 px-3 py-1 text-xs font-semibold text-red-700 ring-1 ring-red-200 hover:bg-red-100"
+                  >
+                    Löschen
+                  </button>
+                </form>
               </div>
             ))}
           </div>
