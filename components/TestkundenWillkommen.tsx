@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Sparkles, Wrench, MessagesSquare, ArrowRight, Loader2, Info } from "lucide-react";
 import { BASE_PATH } from "@/lib/base-path";
+import { OilBarrels } from "@/components/OilBarrels";
 
 /**
  * Willkommensseite für Testkunden — steht vor dem Marktplatz.
@@ -78,13 +79,21 @@ export function TestkundenWillkommen() {
               Testbetrieb
             </span>
           </div>
-          <h1 className="mt-5 text-3xl font-extrabold leading-tight sm:text-4xl">
-            Sie sind einer der Ersten.
-          </h1>
-          <p className="mt-2 max-w-xl text-white/85">
-            Herstellerunabhängig den richtigen Kühlschmierstoff finden, Probleme klären, faire
-            Preise sehen. Sie testen das vor allen anderen — und bestimmen mit, wie es wird.
-          </p>
+          <div className="mt-5 flex items-end gap-6">
+            <div className="min-w-0 flex-1">
+              <h1 className="text-3xl font-extrabold leading-tight sm:text-4xl">
+                Sie sind einer der Ersten.
+              </h1>
+              <p className="mt-2 max-w-xl text-white/85">
+                Den richtigen Kühlschmierstoff finden, Probleme klären, faire Preise sehen —
+                herstellerunabhängig. Und gerade jetzt, wo Lieferengpässe den Einkauf ausbremsen:
+                Ersatzprodukt und Bezugsquelle in Minuten statt Wochen. Sie testen das vor allen
+                anderen — und bestimmen mit, wie es wird.
+              </p>
+            </div>
+            {/* Auflockerung: die Haus-Grafik mit dem Lime-Fass — kein Stockfoto. */}
+            <OilBarrels className="hidden h-28 w-auto shrink-0 sm:block" />
+          </div>
         </div>
       </div>
 
