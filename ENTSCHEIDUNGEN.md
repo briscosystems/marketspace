@@ -698,6 +698,23 @@ falls es notwendig ist. Z. B. gibt es in der Live-Datenbank noch Fake-Angebote."
 Die Fake-Angebote auf dem Live-Server löscht der Betreiber selbst über /admin —
 die Live-Datenbank wird nie von Hand aus dem Code heraus verändert.
 
+## Testphasen-Login auf der Willkommensseite (2026-08-15)
+
+Betreiber: „Inkludiere auf der ersten Welcome-Seite für die Tester einen
+einfachen Login. Das Passwort ist fix und lautet: BriscoMarketspace2026."
+
+| Entscheidung | Begründung |
+|---|---|
+| Der Knopf „Eintreten" verlangt jetzt ein **Passwortfeld** („Passwort aus Ihrer Einladung"); geprüft wird **auf dem Server** ([app/api/testkunde-eintritt/route.ts](app/api/testkunde-eintritt/route.ts)), zeitkonstanter Vergleich, bei Fehler „Falsches Passwort" ohne Cookie | Das Passwort steht nirgends im Browser-Code. Ein fixes Gemeinschafts-Passwort ist bewusst einfach — es soll Testkunden einlassen, keine Angreifer abwehren |
+| Das Passwort ist im Code hinterlegt, aber per **`TESTPHASE_PASSWORT`** (Umgebungsvariable) ohne Deploy änderbar | Wenn der Link doch die Runde macht, lässt sich das Passwort in Railway sofort wechseln |
+| Der **Handy-QR-Weg** (`/api/handy/<id>`) bleibt ohne Passwort | Wer den QR-Code auf dem Rechner sieht, hat das Passwort bereits eingegeben |
+| Die Bestätigungszeile heißt jetzt: „Mit dem Eintreten bestätigen Sie, **Passwort und Zugang** … für sich zu behalten" | Das Passwort ist Teil des Zugangs |
+
+Hinweis: Die alte weiße Passwortsperre (GATE_PASSWORD, nur in Produktion) steht
+live noch VOR dieser Seite. Mit dem neuen Login ist sie doppelt — der Betreiber
+kann sie in Railway mit `GATE_ENABLED=false` abschalten, dann ist die
+Willkommensseite mit Passwort der einzige Zugangsschritt.
+
 ## Technik
 
 | Entscheidung | Begründung |

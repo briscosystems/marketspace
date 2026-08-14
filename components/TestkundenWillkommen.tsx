@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, Wrench, MessagesSquare, ArrowRight, Loader2, Info } from "lucide-react";
+import { Sparkles, Wrench, MessagesSquare, ArrowRight, Loader2, Info, KeyRound } from "lucide-react";
 import { BASE_PATH } from "@/lib/base-path";
 import { OilBarrels } from "@/components/OilBarrels";
 
@@ -26,17 +26,31 @@ import { OilBarrels } from "@/components/OilBarrels";
  */
 export function TestkundenWillkommen() {
   const [busy, setBusy] = useState(false);
-  const [fehler, setFehler] = useState(false);
+  const [passwort, setPasswort] = useState("");
+  const [fehler, setFehler] = useState<string | null>(null);
 
-  async function eintreten() {
+  // Einfacher Test-Login (Betreiber 2026-08-15): ein fixes Passwort für alle
+  // Testkunden. Geprüft wird auf dem Server — hier steht es nirgends.
+  async function eintreten(e?: React.FormEvent) {
+    e?.preventDefault();
+    if (!passwort.trim() || busy) return;
     setBusy(true);
-    setFehler(false);
+    setFehler(null);
     try {
-      const res = await fetch(`${BASE_PATH}/api/testkunde-eintritt`, { method: "POST" });
+      const res = await fetch(`${BASE_PATH}/api/testkunde-eintritt`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ passwort }),
+      });
+      if (res.status === 401) {
+        setFehler("Falsches Passwort — bitte prüfen Sie Ihre Einladung.");
+        setBusy(false);
+        return;
+      }
       if (!res.ok) throw new Error();
       window.location.reload();
     } catch {
-      setFehler(true);
+      setFehler("Hat nicht geklappt — bitte Seite neu laden.");
       setBusy(false);
     }
   }
@@ -124,26 +138,34 @@ export function TestkundenWillkommen() {
         </p>
 
         <div className="mt-5 rounded-xl bg-white p-5 shadow-soft ring-1 ring-slate-200">
-          <div className="flex flex-wrap items-center gap-4">
+          <form onSubmit={eintreten} className="flex flex-wrap items-center gap-3">
+            <label className="relative min-w-0 flex-1 sm:max-w-xs">
+              <KeyRound className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <input
+                type="password"
+                value={passwort}
+                onChange={(e) => setPasswort(e.target.value)}
+                placeholder="Passwort aus Ihrer Einladung"
+                autoComplete="off"
+                className="w-full rounded-xl border border-slate-300 py-3 pl-9 pr-3 text-base focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
+              />
+            </label>
             <button
-              type="button"
-              onClick={eintreten}
-              disabled={busy}
-              className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-7 py-3.5 text-base font-bold text-white shadow-soft transition hover:bg-brand-700 hover:shadow-lift disabled:cursor-not-allowed disabled:bg-slate-300"
+              type="submit"
+              disabled={busy || !passwort.trim()}
+              className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-7 py-3 text-base font-bold text-white shadow-soft transition hover:bg-brand-700 hover:shadow-lift disabled:cursor-not-allowed disabled:bg-slate-300"
             >
               {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : null}
               Eintreten
               {!busy && <ArrowRight className="h-5 w-5" />}
             </button>
-            <p className="min-w-0 flex-1 text-sm text-slate-600">
-              Damit bestätigen Sie, den Zugang während der Testphase{" "}
-              <strong>für sich zu behalten</strong> — hier stehen Angebote und Preise anderer
-              Betriebe, und wir wollen wissen, von wem eine Rückmeldung kommt.
-            </p>
-          </div>
-          {fehler && (
-            <p className="mt-3 text-sm text-red-600">Hat nicht geklappt — bitte Seite neu laden.</p>
-          )}
+          </form>
+          {fehler && <p className="mt-3 text-sm font-medium text-red-600">{fehler}</p>}
+          <p className="mt-3 text-sm text-slate-600">
+            Mit dem Eintreten bestätigen Sie, Passwort und Zugang während der Testphase{" "}
+            <strong>für sich zu behalten</strong> — hier stehen Angebote und Preise anderer
+            Betriebe, und wir wollen wissen, von wem eine Rückmeldung kommt.
+          </p>
         </div>
 
         <p className="mt-6 text-center text-xs text-slate-500">

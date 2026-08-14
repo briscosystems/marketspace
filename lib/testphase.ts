@@ -28,6 +28,16 @@ export function testphaseAktiv(): boolean {
   return process.env.TESTPHASE !== "false";
 }
 
+/**
+ * Das Testphasen-Passwort (Betreiber 2026-08-15): fix vergeben und an die
+ * Testkunden kommuniziert. Per Umgebungsvariable TESTPHASE_PASSWORT
+ * änderbar, ohne den Code anzufassen — z. B. wenn der Link doch die Runde
+ * macht und das Passwort gewechselt werden muss.
+ */
+export function testphasePasswort(): string {
+  return process.env.TESTPHASE_PASSWORT || "BriscoMarketspace2026";
+}
+
 /** Hat der Besucher „Eintreten" schon gedrückt? */
 export function testphaseBestaetigt(cookieWert: string | undefined): boolean {
   return typeof cookieWert === "string" && cookieWert.length > 0;
