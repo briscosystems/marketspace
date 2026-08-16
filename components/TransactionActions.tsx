@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { withBasePath } from "@/lib/base-path";
+import { useLocale } from "@/components/LocaleProvider";
 
 type Status = "PENDING" | "SHIPPED" | "COMPLETED" | "CANCELED" | "DISPUTED";
 
@@ -15,6 +16,7 @@ export function TransactionActions({
   status: Status;
   role: "BUYER" | "SELLER";
 }) {
+  const { t } = useLocale();
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -31,7 +33,7 @@ export function TransactionActions({
     setLoading(null);
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
-      setError(data.error ?? "Aktion fehlgeschlagen.");
+      setError(data.error ?? t("txa.fehler"));
       return;
     }
     router.refresh();
@@ -41,7 +43,7 @@ export function TransactionActions({
   if (role === "SELLER" && status === "PENDING") {
     buttons.push(
       <button key="ship" disabled={loading !== null} className="btn-primary" onClick={() => act("SHIP")}>
-        {loading === "SHIP" ? "…" : "Als versendet markieren"}
+        {loading === "SHIP" ? "…" : t("txa.versendet")}
       </button>
     );
   }
@@ -51,14 +53,9 @@ export function TransactionActions({
         key="complete"
         disabled={loading !== null}
         className="btn-primary"
-        onClick={() =>
-          act(
-            "COMPLETE",
-            "Lieferung erhalten und Transaktion als abgeschlossen markieren? Danach kannst du bewerten."
-          )
-        }
+        onClick={() => act("COMPLETE", t("txa.confirmComplete"))}
       >
-        {loading === "COMPLETE" ? "…" : "Erhalten – Abschluss bestätigen"}
+        {loading === "COMPLETE" ? "…" : t("txa.erhalten")}
       </button>
     );
   }
@@ -68,9 +65,9 @@ export function TransactionActions({
         key="cancel"
         disabled={loading !== null}
         className="btn-secondary"
-        onClick={() => act("CANCEL", "Transaktion wirklich stornieren?")}
+        onClick={() => act("CANCEL", t("txa.confirmCancel"))}
       >
-        Stornieren
+        {t("txa.stornieren")}
       </button>
     );
   }
@@ -80,9 +77,9 @@ export function TransactionActions({
         key="dispute"
         disabled={loading !== null}
         className="text-sm text-red-600 hover:text-red-700"
-        onClick={() => act("DISPUTE", "Dispute eröffnen? Ein Admin schaut sich das an.")}
+        onClick={() => act("DISPUTE", t("txa.confirmDispute"))}
       >
-        Dispute eröffnen
+        {t("txa.dispute")}
       </button>
     );
   }

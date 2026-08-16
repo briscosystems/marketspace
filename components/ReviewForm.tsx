@@ -3,12 +3,14 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { withBasePath } from "@/lib/base-path";
+import { useLocale } from "@/components/LocaleProvider";
+import { fill } from "@/lib/i18n";
 
 const TAGS = [
-  { id: "FAST_RESPONSE", label: "Schnelle Antwort" },
-  { id: "QUALITY_AS_DESCRIBED", label: "Qualität wie beschrieben" },
-  { id: "ON_TIME_DELIVERY", label: "Pünktliche Lieferung" },
-  { id: "FAIR_NEGOTIATION", label: "Faire Verhandlung" },
+  { id: "FAST_RESPONSE", labelKey: "revf.tagFast" },
+  { id: "QUALITY_AS_DESCRIBED", labelKey: "revf.tagQuality" },
+  { id: "ON_TIME_DELIVERY", labelKey: "revf.tagOnTime" },
+  { id: "FAIR_NEGOTIATION", labelKey: "revf.tagFair" },
 ] as const;
 
 type Tag = (typeof TAGS)[number]["id"];
@@ -22,6 +24,7 @@ export function ReviewForm({
   initial?: { rating: number; comment: string | null; tags: Tag[] } | null;
   revieweeLabel: string;
 }) {
+  const { t } = useLocale();
   const router = useRouter();
   const [rating, setRating] = useState<number>(initial?.rating ?? 0);
   const [hover, setHover] = useState<number | null>(null);
@@ -30,14 +33,14 @@ export function ReviewForm({
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
-  function toggleTag(t: Tag) {
-    setTags((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]));
+  function toggleTag(tag: Tag) {
+    setTags((prev) => (prev.includes(tag) ? prev.filter((x) => x !== tag) : [...prev, tag]));
   }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (rating < 1) {
-      setError("Bitte mindestens 1 Stern vergeben.");
+      setError(t("revf.minStern"));
       return;
     }
     setSaving(true);
@@ -50,7 +53,7 @@ export function ReviewForm({
     setSaving(false);
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
-      setError(data.error ?? "Speichern fehlgeschlagen.");
+      setError(data.error ?? t("revf.fehler"));
       return;
     }
     router.refresh();
@@ -60,7 +63,7 @@ export function ReviewForm({
     <form onSubmit={onSubmit} className="card space-y-4">
       <div>
         <div className="text-sm text-slate-600">
-          Bewerte {revieweeLabel} (1–5 Sterne)
+          {fill(t("revf.bewerte"), { name: revieweeLabel })}
         </div>
         <div className="mt-1 flex gap-1 text-2xl">
           {[1, 2, 3, 4, 5].map((n) => {
@@ -73,7 +76,7 @@ export function ReviewForm({
                 onMouseLeave={() => setHover(null)}
                 onClick={() => setRating(n)}
                 className={`leading-none transition-colors ${active ? "text-amber-500" : "text-slate-300"}`}
-                aria-label={`${n} Sterne`}
+                aria-label={fill(t("revf.sterneAria"), { n })}
               >
                 ★
               </button>
@@ -82,40 +85,40 @@ export function ReviewForm({
         </div>
       </div>
       <div>
-        <div className="text-sm text-slate-600">Tags (Mehrfachauswahl)</div>
+        <div className="text-sm text-slate-600">{t("revf.tags")}</div>
         <div className="mt-2 flex flex-wrap gap-2">
-          {TAGS.map((t) => {
-            const active = tags.includes(t.id);
+          {TAGS.map((tag) => {
+            const active = tags.includes(tag.id);
             return (
               <button
-                key={t.id}
+                key={tag.id}
                 type="button"
-                onClick={() => toggleTag(t.id)}
+                onClick={() => toggleTag(tag.id)}
                 className={`rounded-full px-3 py-1 text-xs transition-colors ${
                   active
                     ? "bg-brand-500 text-white"
                     : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                 }`}
               >
-                {t.label}
+                {t(tag.labelKey)}
               </button>
             );
           })}
         </div>
       </div>
       <div>
-        <label className="label">Kommentar (optional)</label>
+        <label className="label">{t("revf.kommentar")}</label>
         <textarea
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           rows={3}
           className="input"
-          placeholder="Wie ist der Deal gelaufen?"
+          placeholder={t("revf.kommentarPlatzhalter")}
         />
       </div>
       {error && <div className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>}
       <button type="submit" disabled={saving} className="btn-primary">
-        {saving ? "Speichern …" : initial ? "Bewertung aktualisieren" : "Bewertung absenden"}
+        {saving ? t("revf.speichert") : initial ? t("revf.aktualisieren") : t("revf.absenden")}
       </button>
     </form>
   );

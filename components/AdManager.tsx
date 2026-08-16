@@ -38,7 +38,7 @@ const emptyForm = {
   headline: "",
   chipsText: "",
   image: "",
-  ctaLabel: "Mehr erfahren",
+  ctaLabel: "",
   ctaUrl: "",
   origin: "",
   placements: ["HOME"] as Placement[],
@@ -49,7 +49,7 @@ const emptyForm = {
 type Form = typeof emptyForm;
 
 /** Datei clientseitig auf max. 720px Breite verkleinern → JPEG-Data-URI. */
-function fileToResizedDataUrl(file: File): Promise<string> {
+function fileToResizedDataUrl(file: File, t: (key: string) => string): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
@@ -63,14 +63,14 @@ function fileToResizedDataUrl(file: File): Promise<string> {
         canvas.width = w;
         canvas.height = h;
         const ctx = canvas.getContext("2d");
-        if (!ctx) return reject(new Error("Canvas nicht verfügbar"));
+        if (!ctx) return reject(new Error(t("adm.errCanvas")));
         ctx.drawImage(img, 0, 0, w, h);
         resolve(canvas.toDataURL("image/jpeg", 0.85));
       };
-      img.onerror = () => reject(new Error("Bild konnte nicht geladen werden"));
+      img.onerror = () => reject(new Error(t("adm.errBild")));
       img.src = reader.result as string;
     };
-    reader.onerror = () => reject(new Error("Datei konnte nicht gelesen werden"));
+    reader.onerror = () => reject(new Error(t("adm.errDatei")));
     reader.readAsDataURL(file);
   });
 }
@@ -92,7 +92,7 @@ export function AdManager({
   const set = <K extends keyof Form>(k: K, v: Form[K]) => setForm((f) => ({ ...f, [k]: v }));
 
   function openNew() {
-    setForm(emptyForm);
+    setForm({ ...emptyForm, ctaLabel: t("adm.mehrErfahren") });
     setError(null);
     setEditingId("new");
   }
@@ -118,7 +118,7 @@ export function AdManager({
     const file = e.target.files?.[0];
     if (!file) return;
     try {
-      const dataUrl = await fileToResizedDataUrl(file);
+      const dataUrl = await fileToResizedDataUrl(file, t);
       set("image", dataUrl);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -147,7 +147,7 @@ export function AdManager({
         headline: form.headline.trim(),
         chips,
         image: form.image,
-        ctaLabel: form.ctaLabel.trim() || "Mehr erfahren",
+        ctaLabel: form.ctaLabel.trim() || t("adm.mehrErfahren"),
         ctaUrl: form.ctaUrl.trim(),
         origin: form.origin.trim() || null,
         placements: form.placements,
@@ -187,7 +187,7 @@ export function AdManager({
   }
 
   async function remove(ad: Ad) {
-    if (!confirm("Diese Anzeige wirklich löschen?")) return;
+    if (!confirm(t("adm.confirmDelete"))) return;
     setBusy(true);
     try {
       await fetch(withBasePath(`/api/ads/${ad.id}`), { method: "DELETE" });
@@ -241,7 +241,7 @@ export function AdManager({
                   type="button"
                   onClick={() => toggleActive(ad)}
                   disabled={busy}
-                  title={ad.active ? "Pausieren" : "Aktivieren"}
+                  title={ad.active ? t("adm.pausieren") : t("adm.aktivieren")}
                   className="rounded-md p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 disabled:opacity-50"
                 >
                   {ad.active ? <Pause size={16} /> : <Play size={16} />}
@@ -258,7 +258,7 @@ export function AdManager({
                   type="button"
                   onClick={() => remove(ad)}
                   disabled={busy}
-                  title="Löschen"
+                  title={t("adm.loeschen")}
                   className="rounded-md p-2 text-slate-500 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
                 >
                   <Trash2 size={16} />
@@ -275,12 +275,12 @@ export function AdManager({
           onClick={openNew}
           className="inline-flex items-center gap-2 rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700"
         >
-          <Plus size={16} /> Neue Anzeige
+          <Plus size={16} /> {t("adm.neu")}
         </button>
       ) : (
         <div className="card space-y-4">
           <div className="text-sm font-semibold text-slate-800">
-            {editingId === "new" ? "Neue Anzeige" : "Anzeige bearbeiten"}
+            {editingId === "new" ? t("adm.neu") : t("adm.bearbeitenTitel")}
           </div>
 
           {error && (
@@ -293,15 +293,15 @@ export function AdManager({
           {form.image ? (
             <div>
               <div className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-slate-400">
-                Vorschau
+                {t("adm.vorschau")}
               </div>
               <AdBannerView
                 ad={{
                   eyebrow: form.eyebrow || null,
-                  headline: form.headline || "Ihre Schlagzeile",
+                  headline: form.headline || t("adm.headlinePlatzhalter"),
                   chips: previewChips,
                   image: form.image,
-                  ctaLabel: form.ctaLabel || "Mehr erfahren",
+                  ctaLabel: form.ctaLabel || t("adm.mehrErfahren"),
                   ctaUrl: form.ctaUrl || "#",
                   origin: form.origin || null,
                 }}
@@ -311,51 +311,51 @@ export function AdManager({
 
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="block">
-              <span className="label">Bild</span>
+              <span className="label">{t("adm.bild")}</span>
               <label className="flex cursor-pointer items-center gap-2 rounded-md border border-dashed border-slate-300 bg-white px-3 py-2 text-sm text-slate-600 hover:border-brand-400">
                 <ImagePlus size={16} className="text-slate-400" />
-                {form.image ? "Bild ändern" : "Bild wählen"}
+                {form.image ? t("adm.bildAendern") : t("adm.bildWaehlen")}
                 <input type="file" accept="image/*" onChange={onPickImage} className="hidden" />
               </label>
             </label>
             <label className="block">
-              <span className="label">Kleine Zeile (Eyebrow)</span>
+              <span className="label">{t("adm.eyebrowLabel")}</span>
               <input
                 className="input"
                 value={form.eyebrow}
                 onChange={(e) => set("eyebrow", e.target.value)}
-                placeholder="z. B. DOSIMETRIX® hybrid"
+                placeholder={t("adm.eyebrowPlatzhalter")}
               />
             </label>
           </div>
 
           <label className="block">
-            <span className="label">Schlagzeile</span>
+            <span className="label">{t("adm.schlagzeile")}</span>
             <input
               className="input"
               value={form.headline}
               onChange={(e) => set("headline", e.target.value)}
-              placeholder="Mehr Standzeit. Weniger Verbrauch."
+              placeholder={t("adm.schlagzeilePlatzhalter")}
             />
           </label>
 
           <label className="block">
-            <span className="label">Vorteile (eine pro Zeile)</span>
+            <span className="label">{t("adm.vorteile")}</span>
             <textarea
               className="input min-h-[80px]"
               value={form.chipsText}
               onChange={(e) => set("chipsText", e.target.value)}
-              placeholder={"−25 % KSS-Verbrauch\n2–3× Standzeit\nSpänepressen-Schnittstelle"}
+              placeholder={t("adm.vorteilePlatzhalter")}
             />
           </label>
 
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="block">
-              <span className="label">Button-Text</span>
+              <span className="label">{t("adm.buttonText")}</span>
               <input className="input" value={form.ctaLabel} onChange={(e) => set("ctaLabel", e.target.value)} />
             </label>
             <label className="block">
-              <span className="label">Button-Link (URL)</span>
+              <span className="label">{t("adm.buttonLink")}</span>
               <input
                 className="input"
                 value={form.ctaUrl}
@@ -366,17 +366,17 @@ export function AdManager({
           </div>
 
           <label className="block">
-            <span className="label">Zusatzzeile (optional)</span>
+            <span className="label">{t("adm.zusatzzeile")}</span>
             <input
               className="input"
               value={form.origin}
               onChange={(e) => set("origin", e.target.value)}
-              placeholder="Made in Switzerland"
+              placeholder={t("adm.zusatzzeilePlatzhalter")}
             />
           </label>
 
           <div>
-            <span className="label">Werbeplätze</span>
+            <span className="label">{t("adm.werbeplaetze")}</span>
             <div className="flex flex-wrap gap-2">
               {placements.map((p) => {
                 const on = form.placements.includes(p.value);
@@ -400,7 +400,7 @@ export function AdManager({
 
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="block">
-              <span className="label">Start (optional)</span>
+              <span className="label">{t("adm.start")}</span>
               <input
                 type="date"
                 className="input"
@@ -409,7 +409,7 @@ export function AdManager({
               />
             </label>
             <label className="block">
-              <span className="label">Ende (optional)</span>
+              <span className="label">{t("adm.ende")}</span>
               <input
                 type="date"
                 className="input"
@@ -421,7 +421,7 @@ export function AdManager({
 
           <label className="flex items-center gap-2 text-sm text-slate-700">
             <input type="checkbox" checked={form.active} onChange={(e) => set("active", e.target.checked)} />
-            Sofort aktiv schalten
+            {t("adm.sofortAktiv")}
           </label>
 
           <div className="flex items-center gap-3">
@@ -432,14 +432,14 @@ export function AdManager({
               className="inline-flex items-center gap-2 rounded-md bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-50"
             >
               {busy ? <Loader2 size={16} className="animate-spin" /> : null}
-              Speichern
+              {t("adm.speichern")}
             </button>
             <button
               type="button"
               onClick={() => setEditingId(null)}
               className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
             >
-              Abbrechen
+              {t("adm.abbrechen")}
             </button>
           </div>
         </div>

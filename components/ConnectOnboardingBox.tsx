@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ShieldCheck } from "lucide-react";
 import { withBasePath } from "@/lib/base-path";
+import { useLocale } from "@/components/LocaleProvider";
 
 /**
  * Verkäufer-Seite des Käuferschutzes (auf /mitgliedschaft): einmaliges
@@ -10,6 +11,7 @@ import { withBasePath } from "@/lib/base-path";
  * "Käuferschutz verfügbar" und Käufer können geschützt bezahlen.
  */
 export function ConnectOnboardingBox({ onboarded }: { onboarded: boolean }) {
+  const { t } = useLocale();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,7 +21,7 @@ export function ConnectOnboardingBox({ onboarded }: { onboarded: boolean }) {
     const res = await fetch(withBasePath("/api/connect/onboard"), { method: "POST" });
     const data = await res.json().catch(() => ({}));
     if (!res.ok || !data.url) {
-      setError(data.error ?? "Onboarding konnte nicht gestartet werden.");
+      setError(data.error ?? t("conb.fehler"));
       setLoading(false);
       return;
     }
@@ -30,7 +32,7 @@ export function ConnectOnboardingBox({ onboarded }: { onboarded: boolean }) {
     return (
       <div className="flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
         <ShieldCheck size={16} />
-        Käuferschutz ist aktiv — dein Profil trägt das Abzeichen „Käuferschutz verfügbar".
+        {t("conb.aktiv")}
       </div>
     );
   }
@@ -43,13 +45,11 @@ export function ConnectOnboardingBox({ onboarded }: { onboarded: boolean }) {
         disabled={loading}
         className="rounded-full bg-brand-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50"
       >
-        {loading ? "Öffne Stripe …" : "Käuferschutz freischalten (Stripe-Prüfung)"}
+        {loading ? t("conb.oeffneStripe") : t("conb.freischalten")}
       </button>
       {error && <p className="text-sm text-red-600">{error}</p>}
       <p className="text-xs text-slate-500">
-        Einmalige Identitäts- und Bankdaten-Prüfung durch Stripe. Danach können Käufer
-        bei dir „mit Käuferschutz" bezahlen: Das Geld wird sicher geparkt und nach der
-        Lieferbestätigung automatisch an dich überwiesen.
+        {t("conb.hinweis")}
       </p>
     </div>
   );

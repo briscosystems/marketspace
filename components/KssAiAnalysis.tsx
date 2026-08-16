@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Sparkles, Loader2, CheckCircle2, AlertTriangle, Brain, Upload, FileText, X, Globe } from "lucide-react";
 import { withBasePath } from "@/lib/base-path";
 import { sdsFlagChips } from "@/lib/sds-summary";
+import { useLocale } from "@/components/LocaleProvider";
+import { fill } from "@/lib/i18n";
 
 const CHIP_TONE: Record<"red" | "amber" | "green", string> = {
   red: "bg-red-100 text-red-800",
@@ -40,10 +42,10 @@ type ApiResult = {
   webSources?: WebSource[];
 };
 
-const CRED_BADGE: Record<string, { label: string; cls: string }> = {
-  hoch: { label: "Glaubwürdigkeit: hoch", cls: "bg-emerald-100 text-emerald-800" },
-  mittel: { label: "Glaubwürdigkeit: mittel", cls: "bg-amber-100 text-amber-800" },
-  niedrig: { label: "Glaubwürdigkeit: niedrig", cls: "bg-slate-200 text-slate-600" },
+const CRED_BADGE: Record<string, { labelKey: string; cls: string }> = {
+  hoch: { labelKey: "kwiz.credHoch", cls: "bg-emerald-100 text-emerald-800" },
+  mittel: { labelKey: "kwiz.credMittel", cls: "bg-amber-100 text-amber-800" },
+  niedrig: { labelKey: "kwiz.credNiedrig", cls: "bg-slate-200 text-slate-600" },
 };
 
 /**
@@ -71,6 +73,7 @@ export function KssAiAnalysis({
   concentrateForm?: string;
   unsureDimensions: string[];
 }) {
+  const { t } = useLocale();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ApiResult | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -97,7 +100,7 @@ export function KssAiAnalysis({
       const resp = await fetch(withBasePath("/api/sds/parse"), { method: "POST", body: fd });
       const data = await resp.json();
       if (!resp.ok || !data.ok) {
-        setSdsError(data?.error ?? "SDB konnte nicht gelesen werden.");
+        setSdsError(data?.error ?? t("kssai.sdsFehlerLesen"));
         return;
       }
       setSds({
@@ -106,7 +109,7 @@ export function KssAiAnalysis({
         chips: sdsFlagChips({ hStatements: data.hStatements, ...data.flags }),
       });
     } catch {
-      setSdsError("Upload fehlgeschlagen.");
+      setSdsError(t("kssai.sdsFehlerUpload"));
     } finally {
       setSdsLoading(false);
     }
@@ -199,21 +202,19 @@ export function KssAiAnalysis({
     <div className="rounded-xl border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-white p-4">
       <div className="flex items-center gap-2">
         <Brain size={18} className="text-purple-600" />
-        <h3 className="text-base font-semibold text-slate-900">KI-Analyse & Alternativen</h3>
+        <h3 className="text-base font-semibold text-slate-900">{t("kssai.titel")}</h3>
       </div>
 
       <p className="mt-1 text-xs text-slate-600">
-        Beschreibe dein spezielles Problem in eigenen Worten — die KI prüft es kritisch und
-        schlägt passende Alternativen aus dem Katalog vor. (Leer lassen geht auch: dann
-        wertet die KI nur die oben gewählten Filter aus.)
+        {t("kssai.intro")}
       </p>
 
-      <label className="label mt-3">Dein Problem (Freitext)</label>
+      <label className="label mt-3">{t("kssai.problemLabel")}</label>
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
         rows={3}
-        placeholder="z.B. Emulsion kippt nach 3 Wochen trotz Pflege / Bediener klagen über Hautreizungen / Aluminium läuft an …"
+        placeholder={t("kssai.problemPlatzhalter")}
         className="input mt-1 font-normal leading-relaxed"
       />
 
@@ -223,8 +224,8 @@ export function KssAiAnalysis({
           <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-dashed border-purple-300 bg-white px-3 py-2 text-xs font-medium text-purple-700 hover:bg-purple-50">
             {sdsLoading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
             {sdsLoading
-              ? "SDB wird gelesen…"
-              : "Sicherheitsdatenblatt des aktuellen Produkts (PDF) hochladen — optional"}
+              ? t("kssai.sdsLaedt")
+              : t("kssai.sdsUpload")}
             <input
               type="file"
               accept="application/pdf,.pdf"
@@ -244,7 +245,7 @@ export function KssAiAnalysis({
                 type="button"
                 onClick={() => setSds(null)}
                 className="shrink-0 rounded p-0.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
-                aria-label="SDB entfernen"
+                aria-label={t("kssai.sdsEntfernen")}
               >
                 <X size={14} />
               </button>
@@ -262,7 +263,7 @@ export function KssAiAnalysis({
               </div>
             )}
             <p className="mt-2 text-[11px] text-slate-500">
-              Die KI berücksichtigt dieses SDB bei der Auswahl der Alternativen.
+              {t("kssai.sdsHinweis")}
             </p>
           </div>
         )}
@@ -276,12 +277,12 @@ export function KssAiAnalysis({
         className="mt-2 inline-flex items-center gap-1.5 rounded-md bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-1.5 text-sm font-semibold text-white hover:from-purple-700 hover:to-blue-700 disabled:opacity-60"
       >
         {loading ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
-        {loading ? "Analysiere…" : "Kritisch analysieren & Alternativen finden · 1 Credit"}
+        {loading ? t("kssai.analysiere") : t("kssai.analysieren")}
       </button>
 
       {error && (
         <div className="mt-3 rounded border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
-          Analyse fehlgeschlagen: {error}
+          {t("kssai.fehler")} {error}
         </div>
       )}
 
@@ -289,10 +290,10 @@ export function KssAiAnalysis({
         <div className="mt-3 space-y-3">
           <div className="flex items-baseline justify-between gap-3">
             <span className="text-xs font-semibold uppercase tracking-wide text-purple-700">
-              Kritische Einschätzung
+              {t("kssai.einschaetzung")}
             </span>
             <span className="text-[10px] uppercase tracking-wide text-slate-400">
-              {result.source === "anthropic-claude" ? "KI (Claude)" : "Heuristik"}
+              {result.source === "anthropic-claude" ? t("kssai.kiClaude") : t("kwiz.resHeuristik")}
             </span>
           </div>
           <p className="rounded bg-white/80 p-3 text-sm text-slate-700 ring-1 ring-purple-100">
@@ -307,8 +308,7 @@ export function KssAiAnalysis({
 
           {result.recommendations.length === 0 ? (
             <div className="rounded border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
-              Keine klare Alternative gefunden. Beschreibe das Problem genauer oder weiche die
-              Filter auf.
+              {t("kssai.leer")}
             </div>
           ) : (
             <div className="grid gap-2 md:grid-cols-2">
@@ -338,7 +338,7 @@ export function KssAiAnalysis({
                     <p className="mt-2 flex items-start gap-1.5 rounded bg-purple-50 px-2 py-1 text-[11px] text-purple-900">
                       <Globe size={11} className="mt-0.5 shrink-0 text-purple-600" />
                       <span>
-                        <span className="font-semibold">Web-Recherche:</span> {r.webNote}
+                        <span className="font-semibold">{t("kwiz.webLabel")}</span> {r.webNote}
                       </span>
                     </p>
                   )}
@@ -346,7 +346,7 @@ export function KssAiAnalysis({
                     <p className="mt-2 flex items-start gap-1.5 rounded bg-amber-50 px-2 py-1 text-[11px] text-amber-900">
                       <AlertTriangle size={11} className="mt-0.5 shrink-0 text-amber-600" />
                       <span>
-                        <span className="font-semibold">Dichtungs-Hinweis:</span> {r.sealWarning}
+                        <span className="font-semibold">{t("kwiz.dichtung")}</span> {r.sealWarning}
                       </span>
                     </p>
                   )}
@@ -361,11 +361,10 @@ export function KssAiAnalysis({
                 <div className="rounded-lg border border-purple-200 bg-purple-50/70 p-3">
                   <div className="flex items-center gap-2 text-sm font-semibold text-purple-800">
                     <Loader2 size={16} className="animate-spin text-purple-600" />
-                    Web-Recherche läuft … {webSeconds}s
+                    {fill(t("kwiz.webLaeuft"), { s: webSeconds })}
                   </div>
                   <p className="mt-1 text-xs text-purple-700">
-                    Durchsucht Foren, Herstellerseiten und Fachartikel zu den {result.recommendations.length} Empfehlungen —
-                    dauert typischerweise 20–40 Sekunden. Bitte offen lassen.
+                    {fill(t("kwiz.webHint"), { n: result.recommendations.length })}
                   </p>
                   <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-purple-100">
                     <div
@@ -381,7 +380,7 @@ export function KssAiAnalysis({
                   className="inline-flex items-center gap-1.5 rounded-md border border-purple-300 bg-white px-3 py-1.5 text-sm font-semibold text-purple-700 hover:bg-purple-50"
                 >
                   <Globe size={14} />
-                  Im Web prüfen (Foren & Hersteller) · 2 Credits
+                  {t("kwiz.webButton")}
                 </button>
               )}
               {webError && <p className="mt-1 text-xs text-red-600">{webError}</p>}
@@ -391,13 +390,13 @@ export function KssAiAnalysis({
           {result.webSummary && (
             <div className="rounded-lg border border-purple-200 bg-purple-50/60 p-3 text-sm text-slate-700">
               <Globe size={14} className="mr-1 inline text-purple-600" />
-              <span className="font-semibold">Web-Recherche:</span> {result.webSummary}
+              <span className="font-semibold">{t("kwiz.webLabel")}</span> {result.webSummary}
             </div>
           )}
 
           {result.webSources && result.webSources.length > 0 && (
             <div className="rounded-lg border border-slate-200 bg-white p-3">
-              <div className="mb-1.5 text-xs font-semibold text-slate-600">Quellen aus dem Web</div>
+              <div className="mb-1.5 text-xs font-semibold text-slate-600">{t("kwiz.quellen")}</div>
               <ul className="space-y-1.5 text-xs">
                 {result.webSources.slice(0, 8).map((s, i) => (
                   <li key={i} className="flex flex-wrap items-center gap-1.5">
@@ -414,7 +413,7 @@ export function KssAiAnalysis({
                         className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${CRED_BADGE[s.credibility].cls}`}
                         title={s.credibilityNote}
                       >
-                        {CRED_BADGE[s.credibility].label}
+                        {t(CRED_BADGE[s.credibility].labelKey)}
                       </span>
                     )}
                   </li>

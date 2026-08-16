@@ -4,12 +4,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PencilLine } from "lucide-react";
 import { withBasePath } from "@/lib/base-path";
+import { useLocale } from "@/components/LocaleProvider";
 
 /**
  * "Über uns"-Text auf dem eigenen Schaufenster bearbeiten.
  * Wird nur gerendert, wenn der Betrachter das eigene Profil ansieht.
  */
 export function AboutEditor({ initial }: { initial: string | null }) {
+  const { t } = useLocale();
   const router = useRouter();
   const [editing, setEditing] = useState(false);
   const [text, setText] = useState(initial ?? "");
@@ -26,7 +28,7 @@ export function AboutEditor({ initial }: { initial: string | null }) {
     });
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
-      setError(data.error ?? "Speichern fehlgeschlagen.");
+      setError(data.error ?? t("abed.fehler"));
       setSaving(false);
       return;
     }
@@ -43,7 +45,7 @@ export function AboutEditor({ initial }: { initial: string | null }) {
         className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-700 hover:text-brand-800 hover:underline"
       >
         <PencilLine size={14} />
-        {initial ? "Über uns bearbeiten" : "Über uns ergänzen"}
+        {initial ? t("abed.bearbeiten") : t("abed.ergaenzen")}
       </button>
     );
   }
@@ -55,7 +57,7 @@ export function AboutEditor({ initial }: { initial: string | null }) {
         onChange={(e) => setText(e.target.value)}
         rows={5}
         maxLength={1500}
-        placeholder="Stellen Sie Ihr Unternehmen fachlich vor: Schwerpunkte, Sortiment, Lieferregionen …"
+        placeholder={t("abed.platzhalter")}
         className="w-full rounded-xl border border-slate-300 p-3 text-sm focus:border-brand-500 focus:outline-none"
       />
       {error && <p className="text-sm text-red-600">{error}</p>}
@@ -66,7 +68,7 @@ export function AboutEditor({ initial }: { initial: string | null }) {
           disabled={saving}
           className="rounded-full bg-brand-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50"
         >
-          {saving ? "Speichert …" : "Speichern"}
+          {saving ? t("abed.speichert") : t("abed.speichern")}
         </button>
         <button
           type="button"
@@ -76,7 +78,7 @@ export function AboutEditor({ initial }: { initial: string | null }) {
           }}
           className="rounded-full border border-slate-300 px-4 py-1.5 text-sm text-slate-700 hover:bg-slate-50"
         >
-          Abbrechen
+          {t("abed.abbrechen")}
         </button>
       </div>
     </div>

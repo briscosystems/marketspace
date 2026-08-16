@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCompareList } from "@/components/compare/CompareStore";
 import { Sparkles } from "lucide-react";
+import { useLocale } from "@/components/LocaleProvider";
+import { fill } from "@/lib/i18n";
 
 /**
  * Schalter "Nur ähnliche Produkte" für die Marktpreise-Seite.
@@ -14,6 +16,7 @@ import { Sparkles } from "lucide-react";
  * Ändert sich die Auswahl bei aktivem Schalter, zieht die URL automatisch nach.
  */
 export function SimilarToggle() {
+  const { t } = useLocale();
   const { ids } = useCompareList("products");
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -46,11 +49,7 @@ export function SimilarToggle() {
       className={`inline-flex items-center gap-2 text-xs ${
         disabled ? "cursor-not-allowed text-slate-300" : "cursor-pointer text-slate-600"
       }`}
-      title={
-        disabled
-          ? "Zuerst rechts in der Spalte „Vergleich“ Produkte anhaken"
-          : "Liste auf Produkte einschränken, die den angehakten ähnlich sind"
-      }
+      title={disabled ? t("simt.titleDisabled") : t("simt.titleEnabled")}
     >
       <input
         type="checkbox"
@@ -63,10 +62,10 @@ export function SimilarToggle() {
       />
       <span className="inline-flex items-center gap-1 font-medium">
         <Sparkles size={13} className={active ? "text-brand-600" : "text-slate-400"} />
-        Nur ähnliche Produkte
+        {t("simt.label")}
       </span>
       {ids.length > 0 ? (
-        <span className="text-slate-400">({ids.length} als Referenz)</span>
+        <span className="text-slate-400">{fill(t("simt.referenz"), { n: ids.length })}</span>
       ) : null}
     </label>
   );

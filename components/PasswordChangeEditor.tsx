@@ -4,9 +4,11 @@ import { useState } from "react";
 import { KeyRound } from "lucide-react";
 import { withBasePath } from "@/lib/base-path";
 import { PasswordInput } from "@/components/PasswordInput";
+import { useLocale } from "@/components/LocaleProvider";
 
 /** Passwort im eigenen Profil ändern (eingeloggt, mit aktuellem Passwort zur Bestätigung). */
 export function PasswordChangeEditor() {
+  const { t } = useLocale();
   const [editing, setEditing] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -26,11 +28,11 @@ export function PasswordChangeEditor() {
   async function save() {
     setError(null);
     if (newPassword !== confirmPassword) {
-      setError("Die beiden neuen Passwörter stimmen nicht überein.");
+      setError(t("pwd.mismatch"));
       return;
     }
     if (newPassword.length < 8) {
-      setError("Das neue Passwort muss mindestens 8 Zeichen haben.");
+      setError(t("pwd.tooShort"));
       return;
     }
     setSaving(true);
@@ -42,7 +44,7 @@ export function PasswordChangeEditor() {
     setSaving(false);
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
-      setError(data.error ?? "Speichern fehlgeschlagen.");
+      setError(data.error ?? t("pwd.fehler"));
       return;
     }
     reset();
@@ -59,9 +61,9 @@ export function PasswordChangeEditor() {
           className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-700 hover:text-brand-800 hover:underline"
         >
           <KeyRound size={14} />
-          Passwort ändern
+          {t("pwd.aendern")}
         </button>
-        {done && <p className="text-sm text-emerald-700">Passwort geändert.</p>}
+        {done && <p className="text-sm text-emerald-700">{t("pwd.geaendert")}</p>}
       </div>
     );
   }
@@ -69,7 +71,7 @@ export function PasswordChangeEditor() {
   return (
     <div className="max-w-sm space-y-2">
       <div>
-        <label className="label">Aktuelles Passwort</label>
+        <label className="label">{t("pwd.aktuell")}</label>
         <PasswordInput
           value={currentPassword}
           onChange={(e) => setCurrentPassword(e.target.value)}
@@ -77,7 +79,7 @@ export function PasswordChangeEditor() {
         />
       </div>
       <div>
-        <label className="label">Neues Passwort (min. 8 Zeichen)</label>
+        <label className="label">{t("pwd.neu")}</label>
         <PasswordInput
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
@@ -85,7 +87,7 @@ export function PasswordChangeEditor() {
         />
       </div>
       <div>
-        <label className="label">Neues Passwort wiederholen</label>
+        <label className="label">{t("pwd.wiederholen")}</label>
         <PasswordInput
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
@@ -100,14 +102,14 @@ export function PasswordChangeEditor() {
           disabled={saving}
           className="rounded-full bg-brand-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50"
         >
-          {saving ? "Speichert …" : "Speichern"}
+          {saving ? t("pwd.speichert") : t("pwd.speichern")}
         </button>
         <button
           type="button"
           onClick={reset}
           className="rounded-full border border-slate-300 px-4 py-1.5 text-sm text-slate-700 hover:bg-slate-50"
         >
-          Abbrechen
+          {t("pwd.abbrechen")}
         </button>
       </div>
     </div>

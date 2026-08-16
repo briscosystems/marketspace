@@ -12,6 +12,8 @@ import {
   COOLANT_FORMS,
 } from "@/lib/kss-knowledge";
 import { withBasePath } from "@/lib/base-path";
+import { useLocale } from "@/components/LocaleProvider";
+import { fill } from "@/lib/i18n";
 
 type ProductLite = { id: string; name: string; manufacturer: string };
 
@@ -48,15 +50,16 @@ type WizardWebSource = {
   credibilityNote?: string;
 };
 
-const WIZARD_CRED_BADGE: Record<string, { label: string; cls: string }> = {
-  hoch: { label: "Glaubwürdigkeit: hoch", cls: "bg-emerald-100 text-emerald-800" },
-  mittel: { label: "Glaubwürdigkeit: mittel", cls: "bg-amber-100 text-amber-800" },
-  niedrig: { label: "Glaubwürdigkeit: niedrig", cls: "bg-slate-200 text-slate-600" },
+const WIZARD_CRED_BADGE: Record<string, { labelKey: string; cls: string }> = {
+  hoch: { labelKey: "kwiz.credHoch", cls: "bg-emerald-100 text-emerald-800" },
+  mittel: { labelKey: "kwiz.credMittel", cls: "bg-amber-100 text-amber-800" },
+  niedrig: { labelKey: "kwiz.credNiedrig", cls: "bg-slate-200 text-slate-600" },
 };
 
 const TOTAL_STEPS = 6;
 
 export function KssWizardDialog({ onClose }: { onClose: () => void }) {
+  const { t } = useLocale();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{
@@ -175,7 +178,7 @@ export function KssWizardDialog({ onClose }: { onClose: () => void }) {
         <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-slate-200 bg-white px-5 py-3">
           <div className="flex items-center gap-2">
             <Sparkles size={18} className="text-purple-600" />
-            <h2 className="section-title">KSS-Berater (KI-Wizard)</h2>
+            <h2 className="section-title">{t("kwiz.titel")}</h2>
           </div>
           <button onClick={onClose} className="rounded-md p-1.5 hover:bg-slate-100">
             <X size={18} />
@@ -194,7 +197,7 @@ export function KssWizardDialog({ onClose }: { onClose: () => void }) {
               ))}
             </div>
             <div className="mt-1 text-xs text-slate-500">
-              Schritt {step} von {TOTAL_STEPS}
+              {fill(t("kwiz.schritt"), { s: step, n: TOTAL_STEPS })}
             </div>
           </div>
         )}
@@ -226,8 +229,8 @@ export function KssWizardDialog({ onClose }: { onClose: () => void }) {
               )}
               {step === 3 && (
                 <Step3MultiChoice
-                  title="Bearbeitungsverfahren"
-                  hint="Was wird auf der Maschine gemacht? (Mehrfachauswahl)"
+                  title={t("kwiz.s3Titel")}
+                  hint={t("kwiz.s3Hint")}
                   options={[...APPLICATION_AREAS]}
                   selected={state.applicationAreas}
                   onToggle={(v) => toggleArr("applicationAreas", v)}
@@ -235,8 +238,8 @@ export function KssWizardDialog({ onClose }: { onClose: () => void }) {
               )}
               {step === 4 && (
                 <Step3MultiChoice
-                  title="Werkstoffe"
-                  hint="Welche Materialien werden bearbeitet?"
+                  title={t("kwiz.s4Titel")}
+                  hint={t("kwiz.s4Hint")}
                   options={[...MATERIALS]}
                   selected={state.materials}
                   onToggle={(v) => toggleArr("materials", v)}
@@ -265,7 +268,7 @@ export function KssWizardDialog({ onClose }: { onClose: () => void }) {
               disabled={step === 1 || loading}
               className="inline-flex items-center gap-1 rounded-md px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100 disabled:opacity-40"
             >
-              <ChevronLeft size={14} /> Zurück
+              <ChevronLeft size={14} /> {t("kwiz.zurueck")}
             </button>
             {error && <div className="text-xs text-red-600">{error}</div>}
             {step < TOTAL_STEPS ? (
@@ -274,7 +277,7 @@ export function KssWizardDialog({ onClose }: { onClose: () => void }) {
                 onClick={() => setStep((s) => s + 1)}
                 className="inline-flex items-center gap-1 rounded-md bg-purple-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-purple-700"
               >
-                Weiter <ChevronRight size={14} />
+                {t("kwiz.weiter")} <ChevronRight size={14} />
               </button>
             ) : (
               <button
@@ -284,7 +287,7 @@ export function KssWizardDialog({ onClose }: { onClose: () => void }) {
                 className="inline-flex items-center gap-1.5 rounded-md bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-1.5 text-sm font-semibold text-white hover:from-purple-700 hover:to-blue-700 disabled:opacity-60"
               >
                 {loading ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
-                {loading ? "Suche läuft..." : "KI-Empfehlung holen · 1 Credit"}
+                {loading ? t("kwiz.sucheLaeuft") : t("kwiz.holen")}
               </button>
             )}
           </div>
@@ -304,6 +307,7 @@ function Step1Satisfaction({
   update: <K extends keyof WizardState>(k: K, v: WizardState[K]) => void;
   onCurrentProductSelect: (id: string | null) => void;
 }) {
+  const { t } = useLocale();
   const [searchQ, setSearchQ] = useState("");
   const [results, setResults] = useState<ProductLite[]>([]);
   const [selectedName, setSelectedName] = useState<string | null>(null);
@@ -333,18 +337,18 @@ function Step1Satisfaction({
   return (
     <div className="space-y-5">
       <div>
-        <h3 className="text-base font-semibold">Bist du mit deinem aktuellen KSS zufrieden?</h3>
-        <p className="text-sm text-slate-500">Hilft mir die Empfehlung zu schärfen.</p>
+        <h3 className="text-base font-semibold">{t("kwiz.s1Frage")}</h3>
+        <p className="text-sm text-slate-500">{t("kwiz.s1Hint")}</p>
         <div className="mt-3 flex gap-2">
-          <SatBtn label="Ja, voll" selected={state.satisfied === true} onClick={() => update("satisfied", true)} />
-          <SatBtn label="Eher nein" selected={state.satisfied === false} onClick={() => update("satisfied", false)} />
-          <SatBtn label="Suche neu" selected={state.satisfied === null} onClick={() => update("satisfied", null)} />
+          <SatBtn label={t("kwiz.s1Ja")} selected={state.satisfied === true} onClick={() => update("satisfied", true)} />
+          <SatBtn label={t("kwiz.s1Nein")} selected={state.satisfied === false} onClick={() => update("satisfied", false)} />
+          <SatBtn label={t("kwiz.s1Neu")} selected={state.satisfied === null} onClick={() => update("satisfied", null)} />
         </div>
       </div>
       <div>
-        <h3 className="text-base font-semibold">Aktuell verwendeter KSS (optional)</h3>
+        <h3 className="text-base font-semibold">{t("kwiz.s1Aktuell")}</h3>
         <p className="text-sm text-slate-500">
-          So kann ich Alternative vorschlagen statt dasselbe Produkt.
+          {t("kwiz.s1AktuellHint")}
         </p>
         <input
           type="text"
@@ -354,7 +358,7 @@ function Step1Satisfaction({
             setSearchQ(e.target.value);
             onCurrentProductSelect(null);
           }}
-          placeholder="z.B. Hocut, Cimstar, Blasocut, …"
+          placeholder={t("kwiz.s1Platzhalter")}
           className="input mt-2"
         />
         {!selectedName && results.length > 0 && (
@@ -398,6 +402,7 @@ function SatBtn({ label, selected, onClick }: { label: string; selected: boolean
 
 // ────────────────────────────────────────────────────────────────────────────
 function Step2Problem({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const { t } = useLocale();
   const [listening, setListening] = useState(false);
   // SpeechRecognition ist Browser-API ohne Standard-TS-Typ
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -408,7 +413,7 @@ function Step2Problem({ value, onChange }: { value: string; onChange: (v: string
     const w = window as any;
     const SR = w.SpeechRecognition || w.webkitSpeechRecognition;
     if (!SR) {
-      alert("Sprach-Erkennung im Browser nicht verfügbar (am besten Chrome/Edge).");
+      alert(t("kwiz.s2KeinMikro"));
       return;
     }
     if (listening) {
@@ -441,11 +446,9 @@ function Step2Problem({ value, onChange }: { value: string; onChange: (v: string
   return (
     <div className="space-y-3">
       <div>
-        <h3 className="text-base font-semibold">Was ist das Problem? Oder: was suchst du?</h3>
+        <h3 className="text-base font-semibold">{t("kwiz.s2Frage")}</h3>
         <p className="text-sm text-slate-500">
-          Beschreibe in eigenen Worten oder per Mikrofon (Chrome/Edge). Beispiele: „Riecht nach
-          2 Wochen schon faulig", „Brauche etwas für Inconel-Bearbeitung", „Bediener bekommen
-          Hautausschlag".
+          {t("kwiz.s2Hint")}
         </p>
       </div>
       <div className="relative">
@@ -453,7 +456,7 @@ function Step2Problem({ value, onChange }: { value: string; onChange: (v: string
           rows={6}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="Frei sprechen oder tippen…"
+          placeholder={t("kwiz.s2Platzhalter")}
           className="input pr-12 font-normal leading-relaxed"
         />
         <button
@@ -462,13 +465,13 @@ function Step2Problem({ value, onChange }: { value: string; onChange: (v: string
           className={`absolute right-2 top-2 inline-flex items-center justify-center rounded-full p-2 ${
             listening ? "bg-red-500 text-white animate-pulse" : "bg-slate-100 text-slate-700 hover:bg-slate-200"
           }`}
-          title={listening ? "Aufnahme stoppen" : "Sprach-Eingabe starten"}
+          title={listening ? t("kwiz.s2MikroStop") : t("kwiz.s2MikroStart")}
         >
           {listening ? <MicOff size={16} /> : <Mic size={16} />}
         </button>
       </div>
       <p className="text-xs text-slate-400">
-        Tipp: Je konkreter du beschreibst, desto besser kann die KI Alternativen vorschlagen.
+        {t("kwiz.s2Tipp")}
       </p>
     </div>
   );
@@ -518,11 +521,12 @@ function Step3MultiChoice({
 
 // ────────────────────────────────────────────────────────────────────────────
 function Step5Form({ state, update }: { state: WizardState; update: <K extends keyof WizardState>(k: K, v: WizardState[K]) => void }) {
+  const { t } = useLocale();
   return (
     <div className="space-y-5">
       <div>
-        <h3 className="text-base font-semibold">Produktionsart</h3>
-        <p className="text-sm text-slate-500">Lohnfertigung braucht universellere Produkte.</p>
+        <h3 className="text-base font-semibold">{t("kwiz.s5Prod")}</h3>
+        <p className="text-sm text-slate-500">{t("kwiz.s5ProdHint")}</p>
         <div className="mt-2 grid gap-2 sm:grid-cols-2">
           {PRODUCTION_TYPES.map((p) => (
             <button
@@ -542,7 +546,7 @@ function Step5Form({ state, update }: { state: WizardState; update: <K extends k
         </div>
       </div>
       <div>
-        <h3 className="text-base font-semibold">Bevorzugte KSS-Form</h3>
+        <h3 className="text-base font-semibold">{t("kwiz.s5Form")}</h3>
         <div className="mt-2 grid gap-2 sm:grid-cols-2">
           {COOLANT_FORMS.map((p) => (
             <button
@@ -562,12 +566,12 @@ function Step5Form({ state, update }: { state: WizardState; update: <K extends k
         </div>
       </div>
       <div>
-        <label className="text-sm font-medium text-slate-700">Wasserhärte am Standort (°dH, optional)</label>
+        <label className="text-sm font-medium text-slate-700">{t("kwiz.s5Wasser")}</label>
         <input
           type="number"
           value={state.waterHardness ?? ""}
           onChange={(e) => update("waterHardness", e.target.value ? parseInt(e.target.value, 10) : null)}
-          placeholder="z.B. 14"
+          placeholder={t("kwiz.s5WasserPlatzhalter")}
           className="input mt-1"
           min={0}
           max={50}
@@ -586,11 +590,12 @@ function Step6Issues({
   update: <K extends keyof WizardState>(k: K, v: WizardState[K]) => void;
   toggleArr: (k: "applicationAreas" | "materials" | "criticalIssues" | "certifications", v: string) => void;
 }) {
+  const { t } = useLocale();
   return (
     <div className="space-y-5">
       <div>
-        <h3 className="text-base font-semibold">Kritische Punkte / Anforderungen</h3>
-        <p className="text-sm text-slate-500">Was muss der neue KSS besser machen?</p>
+        <h3 className="text-base font-semibold">{t("kwiz.s6Titel")}</h3>
+        <p className="text-sm text-slate-500">{t("kwiz.s6Hint")}</p>
         <div className="mt-2 flex flex-wrap gap-1.5">
           {CRITICAL_ISSUES.map((c) => {
             const sel = state.criticalIssues.includes(c);
@@ -611,7 +616,7 @@ function Step6Issues({
         </div>
       </div>
       <div>
-        <h3 className="text-base font-semibold">Erforderliche Zertifizierungen</h3>
+        <h3 className="text-base font-semibold">{t("kwiz.s6Zert")}</h3>
         <div className="mt-2 flex flex-wrap gap-1.5">
           {CERTIFICATIONS.map((c) => {
             const sel = state.certifications.includes(c.label);
@@ -656,6 +661,7 @@ function ResultView({
   webLoading: boolean;
   webError: string | null;
 }) {
+  const { t } = useLocale();
   // Sekundenzähler während der Web-Recherche — zeigt sichtbar, dass sie läuft.
   const [webSeconds, setWebSeconds] = useState(0);
   useEffect(() => {
@@ -667,9 +673,9 @@ function ResultView({
   return (
     <div className="space-y-4">
       <div className="flex items-baseline justify-between gap-3">
-        <h3 className="text-lg font-semibold">Empfehlungen ({result.recommendations.length})</h3>
+        <h3 className="text-lg font-semibold">{fill(t("kwiz.resTitel"), { n: result.recommendations.length })}</h3>
         <span className="text-[10px] uppercase tracking-wide text-slate-400">
-          {result.source === "anthropic-claude" ? "KI-Begründung (Claude)" : "Heuristik"}
+          {result.source === "anthropic-claude" ? t("kwiz.resKi") : t("kwiz.resHeuristik")}
         </span>
       </div>
       <p className="rounded bg-slate-50 p-3 text-sm text-slate-700">{result.summary}</p>
@@ -682,8 +688,7 @@ function ResultView({
 
       {result.recommendations.length === 0 ? (
         <div className="rounded border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
-          Keine passenden KSS gefunden. Filter weiter aufmachen oder Wizard nochmal mit weniger
-          Einschränkungen starten.
+          {t("kwiz.resLeer")}
         </div>
       ) : (
         <div className="space-y-3">
@@ -696,9 +701,9 @@ function ResultView({
                     {r.sponsored && (
                       <span
                         className="rounded-full bg-brand-100 px-1.5 py-0.5 text-[10px] font-semibold normal-case tracking-normal text-brand-700"
-                        title="Bezahlte Hervorhebung eines Marke-Mitglieds"
+                        title={t("kwiz.gesponsertTitle")}
                       >
-                        Gesponsert
+                        {t("kwiz.gesponsert")}
                       </span>
                     )}
                   </div>
@@ -722,7 +727,7 @@ function ResultView({
                 <p className="mt-2 flex items-start gap-2 rounded bg-purple-50 px-2 py-1 text-xs text-purple-900">
                   <Globe size={12} className="mt-0.5 shrink-0 text-purple-600" />
                   <span>
-                    <span className="font-semibold">Web-Recherche:</span> {r.webNote}
+                    <span className="font-semibold">{t("kwiz.webLabel")}</span> {r.webNote}
                   </span>
                 </p>
               )}
@@ -730,7 +735,7 @@ function ResultView({
                 <p className="mt-2 flex items-start gap-2 rounded bg-amber-50 px-2 py-1 text-xs text-amber-900">
                   <AlertTriangle size={12} className="mt-0.5 shrink-0 text-amber-600" />
                   <span>
-                    <span className="font-semibold">Dichtungs-Hinweis:</span> {r.sealWarning}
+                    <span className="font-semibold">{t("kwiz.dichtung")}</span> {r.sealWarning}
                   </span>
                 </p>
               )}
@@ -745,11 +750,10 @@ function ResultView({
             <div className="rounded-lg border border-purple-200 bg-purple-50/70 p-3">
               <div className="flex items-center gap-2 text-sm font-semibold text-purple-800">
                 <Loader2 size={16} className="animate-spin text-purple-600" />
-                Web-Recherche läuft … {webSeconds}s
+                {fill(t("kwiz.webLaeuft"), { s: webSeconds })}
               </div>
               <p className="mt-1 text-xs text-purple-700">
-                Durchsucht Foren, Herstellerseiten und Fachartikel zu den {result.recommendations.length} Empfehlungen —
-                dauert typischerweise 20–40 Sekunden. Bitte offen lassen.
+                {fill(t("kwiz.webHint"), { n: result.recommendations.length })}
               </p>
               <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-purple-100">
                 <div
@@ -765,7 +769,7 @@ function ResultView({
               className="inline-flex items-center gap-1.5 rounded-md border border-purple-300 bg-white px-3 py-1.5 text-sm font-semibold text-purple-700 hover:bg-purple-50"
             >
               <Globe size={14} />
-              Im Web prüfen (Foren & Hersteller) · 2 Credits
+              {t("kwiz.webButton")}
             </button>
           )}
           {webError && <p className="mt-1 text-xs text-red-600">{webError}</p>}
@@ -775,13 +779,13 @@ function ResultView({
       {result.webSummary && (
         <div className="rounded-lg border border-purple-200 bg-purple-50/60 p-3 text-sm text-slate-700">
           <Globe size={14} className="mr-1 inline text-purple-600" />
-          <span className="font-semibold">Web-Recherche:</span> {result.webSummary}
+          <span className="font-semibold">{t("kwiz.webLabel")}</span> {result.webSummary}
         </div>
       )}
 
       {result.webSources && result.webSources.length > 0 && (
         <div className="rounded-lg border border-slate-200 bg-white p-3">
-          <div className="mb-1.5 text-xs font-semibold text-slate-600">Quellen aus dem Web</div>
+          <div className="mb-1.5 text-xs font-semibold text-slate-600">{t("kwiz.quellen")}</div>
           <ul className="space-y-1.5 text-xs">
             {result.webSources.slice(0, 8).map((s, i) => (
               <li key={i} className="flex flex-wrap items-center gap-1.5">
@@ -793,7 +797,7 @@ function ResultView({
                     className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${WIZARD_CRED_BADGE[s.credibility].cls}`}
                     title={s.credibilityNote}
                   >
-                    {WIZARD_CRED_BADGE[s.credibility].label}
+                    {t(WIZARD_CRED_BADGE[s.credibility].labelKey)}
                   </span>
                 )}
               </li>
@@ -807,7 +811,7 @@ function ResultView({
           onClick={onClose}
           className="w-full rounded-md bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200"
         >
-          Schließen
+          {t("kwiz.schliessen")}
         </button>
       </div>
     </div>
