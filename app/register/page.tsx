@@ -33,6 +33,7 @@ export default function RegisterPage() {
     vatId: "",
     country: "DE",
     referralCode: "",
+    aktionsCode: "",
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -292,6 +293,20 @@ export default function RegisterPage() {
           <p className="mt-1 text-xs text-slate-500">
 {t("reg.referralHint")}
           </p>
+        </div>
+
+        {/* Aktions-Code (2026-08-16): für Aktionen MIT Code. Codelose Aktionen
+            (z. B. Messe-Flyer) gelten automatisch — Feld darf leer bleiben. */}
+        <div>
+          <label className="label">{t("reg.aktionLabel")}</label>
+          <input
+            type="text"
+            value={form.aktionsCode}
+            onChange={(e) => update("aktionsCode", e.target.value)}
+            placeholder={t("reg.aktionPlaceholder")}
+            className="input"
+          />
+          <p className="mt-1 text-xs text-slate-500">{t("reg.aktionHint")}</p>
         </div>
 
         {error && <div className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>}

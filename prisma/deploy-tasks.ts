@@ -40,6 +40,7 @@ import { applyQrToken2026_08_06 } from "./add-qr-token-2026-08-06";
 import { applyZubora2026_08_10 } from "./add-zubora-2026-08-10";
 import { applyZellerBelege2026_08_10 } from "./add-zeller-belege-2026-08-10";
 import { anfragenAblaufenLassen } from "../lib/anfragen-ablauf";
+import { applyMesseAktion2026_08_16 } from "./add-messe-aktion-2026-08-16";
 import { applyDivinolMarke2026_08_10 } from "./fix-divinol-marke-2026-08-10";
 
 type Task = {
@@ -233,6 +234,11 @@ const TASKS: Task[] = [
     // zusaetzlich die Anfragen-Seiten.
     name: "Abgelaufene Anfragen auf ausgelaufen setzen (2026-08-12)",
     run: async () => `${await anfragenAblaufenLassen()} Anfrage(n) umgestellt`,
+  },
+  {
+    // Messe-Flyer: 25 EUR je Anmeldung bis 31.10.2026, 10 EUR je Empfehlung.
+    name: "Messe-Aktion 2026 anlegen (2026-08-16)",
+    run: () => applyMesseAktion2026_08_16(),
   },
 ];
 

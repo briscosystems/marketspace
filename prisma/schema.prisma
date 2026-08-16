@@ -1826,3 +1826,29 @@ enum ProblemStatus {
   BEANTWORTET
   GESCHLOSSEN
 }
+
+/// Zeitlich begrenzte Anmelde-Aktion (Betreiber 2026-08-16), z. B. die
+/// Messe-Aktion: „Jede Anmeldung bis 31.10.2026 erhält 25 € Gutschrift,
+/// je Weiterempfehlung 10 € extra."
+///
+/// Regeln:
+///  - Gilt im Zeitfenster [startsAt, endsAt]. Läuft bei jeder Registrierung mit.
+///  - `code` leer = gilt für JEDE Anmeldung im Zeitraum (Messe-Flyer hat keinen
+///    Code). `code` gesetzt = gilt nur, wenn der Code bei der Registrierung
+///    eingegeben wird.
+///  - Beträge in CREDITS (1 Credit = 0,10 €): 25 € = 250 Credits.
+///  - `creditsEmpfehlung` kommt ZUSÄTZLICH zur normalen Referral-Prämie.
+model CreditAktion {
+  id                String   @id @default(cuid())
+  titel             String
+  /// leer = ohne Code gültig; sonst Groß-/Kleinschreibung egal
+  code              String   @default("")
+  creditsAnmeldung  Int
+  creditsEmpfehlung Int      @default(0)
+  startsAt          DateTime
+  endsAt            DateTime
+  active            Boolean  @default(true)
+  createdAt         DateTime @default(now())
+
+  @@index([active, startsAt, endsAt])
+}

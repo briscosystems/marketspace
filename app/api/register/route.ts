@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { findPseudonymLeak, generatePseudonym } from "@/lib/pseudonym";
 import { getAllSettings, grantCredits } from "@/lib/credits";
+import { passendeAktion } from "@/lib/aktionen";
 import { sendEmail } from "@/lib/mailer";
 
 // Betreiber-Benachrichtigung bei jeder Registrierung
@@ -26,6 +27,9 @@ const registerSchema = z.object({
   country: z.string().length(2).optional(),
   // Empfehlungs-Code = Pseudonym des Werbers (optional, aus ?ref=…)
   referralCode: z.string().max(40).optional(),
+  // Aktions-Code (optional) — z. B. von einem Flyer. Leer ist ok: codelose
+  // Aktionen (Messe) gelten für jede Anmeldung im Zeitraum.
+  aktionsCode: z.string().max(40).optional(),
 });
 
 export async function POST(req: Request) {
@@ -37,7 +41,7 @@ export async function POST(req: Request) {
       { status: 400 }
     );
   }
-  const { email, password, role, vatId, referralCode } = parsed.data;
+  const { email, password, role, vatId, referralCode, aktionsCode } = parsed.data;
   const companyName = parsed.data.companyName ?? null;
   const country = (parsed.data.country ?? "CH").toUpperCase();
 
@@ -128,6 +132,31 @@ export async function POST(req: Request) {
       "REFERRAL",
       `Neukunde geworben: ${user.pseudonym}`,
     );
+  }
+
+  // Anmelde-Aktion (z. B. Messe 2026): Gutschrift für den Neukunden, bei
+  // geworbener Anmeldung zusätzlich für den Werber. Fehler hier dürfen die
+  // Registrierung nie scheitern lassen.
+  try {
+    const aktion = await passendeAktion(aktionsCode);
+    if (aktion) {
+      await grantCredits(
+        user.id,
+        aktion.creditsAnmeldung,
+        "CODE",
+        `Aktion „${aktion.titel}": ${(aktion.creditsAnmeldung / 10).toFixed(0)} € Gutschrift`,
+      );
+      if (referrer && aktion.creditsEmpfehlung > 0) {
+        await grantCredits(
+          referrer.id,
+          aktion.creditsEmpfehlung,
+          "CODE",
+          `Aktion „${aktion.titel}": Weiterempfehlung ${user.pseudonym}`,
+        );
+      }
+    }
+  } catch {
+    /* Aktion darf die Registrierung nicht blockieren */
   }
 
   // Betreiber-Benachrichtigung — fire-and-forget, darf die Registrierung nie blockieren

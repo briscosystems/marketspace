@@ -27,6 +27,8 @@ import {
   closeProblemCase,
   deleteProblemCase,
   adminDeleteListing,
+  createCreditAktion,
+  toggleCreditAktion,
   adminDeleteRfq,
   rejectProductSubmission,
 } from "./actions";
@@ -123,6 +125,12 @@ export default async function AdminPage() {
   // Angebotsfotos: neueste zuerst. Anbieter können ihre eigenen Fotos selbst
   // löschen — hier hat der Betreiber zusätzlich das Eingriffsrecht
   // (Betreiber 2026-08-10).
+  // Anmelde-Aktionen (Messe usw.) — Verwaltung im Abschnitt „Aktionen".
+  const alleAktionen = await prisma.creditAktion.findMany({
+    orderBy: { createdAt: "desc" },
+    take: 30,
+  });
+
   // Alle Angebote und Suchen — der Betreiber muss Inhalte löschen können,
   // z. B. Fake-Angebote aus der Aufbauphase (2026-08-14).
   const alleAngebote = await prisma.listing.findMany({
@@ -696,6 +704,76 @@ export default async function AdminPage() {
                 {m.adminNote && <p className="mt-1 text-xs text-slate-500">{m.adminNote}</p>}
               </div>
             ))}
+          </div>
+        )}
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-5">
+        <h2 className="mb-1 text-lg font-semibold text-slate-900">Anmelde-Aktionen</h2>
+        <p className="mb-3 text-xs text-slate-500">
+          Zeitlich begrenzte Gutschriften für Neuanmeldungen — z. B. die Messe-Aktion. Ohne Code
+          gilt die Aktion für jede Anmeldung im Zeitraum; mit Code nur bei Eingabe des Codes.
+          Beträge in Euro; gespeichert wird in Credits (1 Credit = 0,10&nbsp;€).
+        </p>
+
+        <form action={createCreditAktion} className="mb-4 grid gap-2 sm:grid-cols-6">
+          <input name="titel" placeholder="Titel (z. B. Messe Herbst 2026)" required className="rounded-md border border-slate-300 px-2 py-1.5 text-sm sm:col-span-2" />
+          <input name="code" placeholder="Code (leer = ohne Code)" className="rounded-md border border-slate-300 px-2 py-1.5 text-sm" />
+          <input name="eurAnmeldung" placeholder="€ je Anmeldung" required inputMode="decimal" className="rounded-md border border-slate-300 px-2 py-1.5 text-sm" />
+          <input name="eurEmpfehlung" placeholder="€ je Empfehlung" inputMode="decimal" className="rounded-md border border-slate-300 px-2 py-1.5 text-sm" />
+          <div className="flex gap-2 sm:col-span-6">
+            <label className="flex items-center gap-1 text-xs text-slate-600">von
+              <input type="date" name="von" required className="rounded-md border border-slate-300 px-2 py-1 text-sm" />
+            </label>
+            <label className="flex items-center gap-1 text-xs text-slate-600">bis
+              <input type="date" name="bis" required className="rounded-md border border-slate-300 px-2 py-1 text-sm" />
+            </label>
+            <button type="submit" className="ml-auto rounded-md bg-brand-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-brand-700">
+              Aktion anlegen
+            </button>
+          </div>
+        </form>
+
+        {alleAktionen.length === 0 ? (
+          <p className="text-sm text-slate-500">Noch keine Aktionen.</p>
+        ) : (
+          <div className="divide-y divide-slate-100">
+            {alleAktionen.map((a) => {
+              const jetzt = new Date();
+              const laeuft = a.active && a.startsAt <= jetzt && a.endsAt >= jetzt;
+              return (
+                <div key={a.id} className="flex flex-wrap items-center gap-2 py-2 text-sm">
+                  <span className="font-medium text-slate-900">{a.titel}</span>
+                  {a.code && <code className="rounded bg-slate-100 px-1.5 text-xs">{a.code}</code>}
+                  <span className="text-xs text-slate-500">
+                    {(a.creditsAnmeldung / 10).toFixed(0)} € je Anmeldung
+                    {a.creditsEmpfehlung > 0 && ` · ${(a.creditsEmpfehlung / 10).toFixed(0)} € je Empfehlung`}
+                    {" · "}
+                    {a.startsAt.toLocaleDateString("de-CH")} – {a.endsAt.toLocaleDateString("de-CH")}
+                  </span>
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-xs ${
+                      laeuft
+                        ? "bg-emerald-100 text-emerald-900"
+                        : a.active
+                          ? "bg-amber-100 text-amber-900"
+                          : "bg-slate-100 text-slate-600"
+                    }`}
+                  >
+                    {laeuft ? "läuft" : a.active ? "außerhalb Zeitraum" : "beendet"}
+                  </span>
+                  <form action={toggleCreditAktion} className="ml-auto">
+                    <input type="hidden" name="id" value={a.id} />
+                    <button
+                      type="submit"
+                      className="rounded-md bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-200"
+                    >
+                      {a.active ? "Beenden" : "Reaktivieren"}
+                    </button>
+                  </form>
+                </div>
+              );
+            })}
           </div>
         )}
       </section>

@@ -528,3 +528,43 @@ export async function adminDeleteRfq(formData: FormData) {
   revalidatePath("/admin");
   revalidatePath("/rfqs");
 }
+
+/**
+ * Anmelde-Aktion anlegen (2026-08-16): Zeitraum, optionaler Code, Gutschrift
+ * in Euro (wird als Credits gespeichert, 1 Credit = 0,10 €).
+ */
+export async function createCreditAktion(formData: FormData) {
+  await assertOwner();
+  const titel = String(formData.get("titel") ?? "").trim();
+  const code = String(formData.get("code") ?? "").trim();
+  const eurAnmeldung = parseFloat(String(formData.get("eurAnmeldung") ?? "0").replace(",", "."));
+  const eurEmpfehlung = parseFloat(String(formData.get("eurEmpfehlung") ?? "0").replace(",", "."));
+  const von = String(formData.get("von") ?? "");
+  const bis = String(formData.get("bis") ?? "");
+  if (!titel || !von || !bis || !Number.isFinite(eurAnmeldung) || eurAnmeldung <= 0) return;
+  const startsAt = new Date(`${von}T00:00:00`);
+  const endsAt = new Date(`${bis}T23:59:59`);
+  if (!(startsAt < endsAt)) return;
+  await prisma.creditAktion.create({
+    data: {
+      titel,
+      code,
+      creditsAnmeldung: Math.round(eurAnmeldung * 10),
+      creditsEmpfehlung: Number.isFinite(eurEmpfehlung) ? Math.max(0, Math.round(eurEmpfehlung * 10)) : 0,
+      startsAt,
+      endsAt,
+    },
+  });
+  revalidatePath("/admin");
+}
+
+/** Aktion beenden/reaktivieren — beendet wirkt sofort, gebuchte Gutschriften bleiben. */
+export async function toggleCreditAktion(formData: FormData) {
+  await assertOwner();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  const a = await prisma.creditAktion.findUnique({ where: { id }, select: { active: true } });
+  if (!a) return;
+  await prisma.creditAktion.update({ where: { id }, data: { active: !a.active } });
+  revalidatePath("/admin");
+}
