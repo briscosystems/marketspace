@@ -28,6 +28,8 @@ import {
   deleteProblemCase,
   adminDeleteListing,
   createCreditAktion,
+  redactMessage,
+  deleteMessage,
   toggleCreditAktion,
   adminDeleteRfq,
   rejectProductSubmission,
@@ -125,6 +127,24 @@ export default async function AdminPage() {
   // Angebotsfotos: neueste zuerst. Anbieter können ihre eigenen Fotos selbst
   // löschen — hier hat der Betreiber zusätzlich das Eingriffsrecht
   // (Betreiber 2026-08-10).
+  // Neueste Chat-Nachrichten — Notfall-Eingriff (2026-08-16).
+  const letzteNachrichten = await prisma.message.findMany({
+    select: {
+      id: true,
+      body: true,
+      createdAt: true,
+      sender: { select: { pseudonym: true } },
+      conversation: {
+        select: {
+          buyer: { select: { pseudonym: true } },
+          seller: { select: { pseudonym: true } },
+        },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+    take: 40,
+  });
+
   // Anmelde-Aktionen (Messe usw.) — Verwaltung im Abschnitt „Aktionen".
   const alleAktionen = await prisma.creditAktion.findMany({
     orderBy: { createdAt: "desc" },
@@ -702,6 +722,56 @@ export default async function AdminPage() {
                   </div>
                 )}
                 {m.adminNote && <p className="mt-1 text-xs text-slate-500">{m.adminNote}</p>}
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-5">
+        <h2 className="mb-1 text-lg font-semibold text-slate-900">Chat-Aufsicht</h2>
+        <p className="mb-3 text-xs text-slate-500">
+          Die 40 neuesten Nachrichten. Nur für den Notfall (Beleidigung, Kontaktdaten-Tausch,
+          versehentlich geteilte Geheimnisse): „Entfernen" ersetzt den Text durch einen sichtbaren
+          Vermerk — beide Seiten sehen, dass eingegriffen wurde. „Löschen" entfernt die Nachricht
+          ganz.
+        </p>
+        {letzteNachrichten.length === 0 ? (
+          <p className="text-sm text-slate-500">Keine Nachrichten.</p>
+        ) : (
+          <div className="divide-y divide-slate-100">
+            {letzteNachrichten.map((m) => (
+              <div key={m.id} className="flex flex-wrap items-start gap-2 py-2 text-sm">
+                <span className="text-xs text-slate-500">
+                  {m.createdAt.toLocaleString("de-CH")} · {m.sender.pseudonym} →{" "}
+                  {m.conversation.buyer.pseudonym === m.sender.pseudonym
+                    ? m.conversation.seller.pseudonym
+                    : m.conversation.buyer.pseudonym}
+                </span>
+                <p className="w-full whitespace-pre-line text-slate-800">
+                  {m.body.slice(0, 500)}
+                  {m.body.length > 500 ? "…" : ""}
+                </p>
+                <div className="flex gap-2">
+                  <form action={redactMessage}>
+                    <input type="hidden" name="id" value={m.id} />
+                    <button
+                      type="submit"
+                      className="rounded-md bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-800 ring-1 ring-amber-200 hover:bg-amber-100"
+                    >
+                      Entfernen (mit Vermerk)
+                    </button>
+                  </form>
+                  <form action={deleteMessage}>
+                    <input type="hidden" name="id" value={m.id} />
+                    <button
+                      type="submit"
+                      className="rounded-md bg-red-50 px-3 py-1 text-xs font-semibold text-red-700 ring-1 ring-red-200 hover:bg-red-100"
+                    >
+                      Löschen
+                    </button>
+                  </form>
+                </div>
               </div>
             ))}
           </div>

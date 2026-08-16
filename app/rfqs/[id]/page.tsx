@@ -1,4 +1,5 @@
 import { anfragenAblaufenLassen } from "@/lib/anfragen-ablauf";
+import { FristVerlaengern } from "@/components/FristVerlaengern";
 import { notFound } from "next/navigation";
 
 // Nutzer dürfen nie rohe Datenbank-Werte sehen („OPEN"). Gleiche Beschriftungen
@@ -125,6 +126,13 @@ export default async function RfqDetailPage({
             value={`${rfq.offers.length} ${rfq.offers.length === 1 ? "Angebot" : "Angebote"}`}
           />
         </div>
+
+        {/* Frist verlängern (Betreiber 2026-08-16): nur der Ersteller, nur bei
+            offenen oder ausgelaufenen Anfragen — Ausgelaufene werden damit
+            wieder geöffnet. */}
+        {isBuyer && (rfq.status === "OPEN" || rfq.status === "EXPIRED") && (
+          <FristVerlaengern rfqId={rfq.id} />
+        )}
 
         {rfq.workpieceMaterial && (
           <div>

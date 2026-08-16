@@ -93,7 +93,7 @@ export function EinstiegsKarten({
       aktionen: [
         { href: "/listings/new", text: t("ek.anbieten1") },
         { href: "/rfqs", text: t("ek.anbieten2") },
-        { href: "/dashboard", text: t("ek.anbieten3") },
+        { href: "/#mein-bereich", text: t("ek.anbieten3") },
       ],
       karte: "bg-blue-50 ring-blue-200 hover:ring-blue-400",
       symbolFeld: "",

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MeinBereich } from "@/components/MeinBereich";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -310,23 +311,6 @@ async function PersonalDashboard({ userId }: { userId: string }) {
           Schaufenster — gar nicht. */}
       <EinstiegsKarten t={t} angemeldet markeHref={markeHref} />
 
-      <section className="grid grid-cols-2 gap-4">
-        <QuickStat
-          href="/conversations"
-          icon={<MessageSquare className="h-5 w-5" />}
-          label={t("dash.tileMsg")}
-          value={String(unreadConversations.length)}
-          hint={t("dash.tileMsgHint")}
-        />
-        <QuickStat
-          href="/rfqs"
-          icon={<Inbox className="h-5 w-5" />}
-          label={t("dash.tileOffersIn")}
-          value={String(openOffersToMe)}
-          hint={t("dash.tileOffersInHint")}
-        />
-      </section>
-
       {/* Werbeplatzierung — kompakt, unterhalb der eigenen Kennzahlen */}
       <AdSlot placement="HOME" />
 
@@ -434,6 +418,11 @@ async function PersonalDashboard({ userId }: { userId: string }) {
 
       {/* Einstieg über die Aufgabe statt über den Produktnamen */}
       <ApplicationEntry />
+
+      {/* Verwaltung (früher /dashboard): Kennzahlen, Ich biete an, Ich suche,
+          Transaktionen, abgegebene Angebote — zwei Übersichten sind zu einer
+          verschmolzen (Betreiber 2026-08-16). */}
+      <MeinBereich userId={userId} />
     </div>
   );
 }

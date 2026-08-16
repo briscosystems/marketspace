@@ -568,3 +568,30 @@ export async function toggleCreditAktion(formData: FormData) {
   await prisma.creditAktion.update({ where: { id }, data: { active: !a.active } });
   revalidatePath("/admin");
 }
+
+/**
+ * Notfall-Eingriff in Chats (Betreiber 2026-08-16): Der Admin kann einzelne
+ * Nachrichten löschen — z. B. bei Beleidigungen, Kontaktdaten-Tausch oder
+ * versehentlich geteilten Geheimnissen. Der Text wird durch einen sichtbaren
+ * Vermerk ersetzt statt spurlos zu verschwinden: Beide Gesprächspartner sehen,
+ * DASS eingegriffen wurde.
+ */
+export async function redactMessage(formData: FormData) {
+  await assertOwner();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  await prisma.message.updateMany({
+    where: { id },
+    data: { body: "[Nachricht vom Betreiber entfernt]" },
+  });
+  revalidatePath("/admin");
+}
+
+/** Nachricht endgültig löschen — für Fälle, in denen auch der Vermerk stört. */
+export async function deleteMessage(formData: FormData) {
+  await assertOwner();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  await prisma.message.delete({ where: { id } }).catch(() => {});
+  revalidatePath("/admin");
+}

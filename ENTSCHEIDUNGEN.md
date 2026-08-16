@@ -740,6 +740,15 @@ falsch. Prüfe das und schreibe das rechtlich korrekt."
 Der Text ist Laienwerk nach bestem Wissen — die ohnehin geplante anwaltliche
 Prüfung (siehe „Offen") soll ihn mitprüfen.
 
+## Paket vom 2026-08-16 (Betreiber-Auftrag in einem Zug)
+
+| Entscheidung | Begründung |
+|---|---|
+| **Anmelde-Aktionen** (`CreditAktion`): Registrierungen im Aktionszeitraum erhalten die Gutschrift automatisch; Werber die Empfehlungs-Gutschrift zusätzlich zur normalen Prämie. Admin-Abschnitt „Anmelde-Aktionen" mit Zeitraum, optionalem Code und Euro-Beträgen (gespeichert als Credits, 1 Credit = 0,10 €). Messe-Aktion 2026 (25 €/10 €, bis 31.10.2026, ohne Code) wird per Deploy-Aufgabe angelegt | Der Messe-Flyer verspricht es — die Plattform muss es ohne Handarbeit einlösen. Codelos = jede Anmeldung zählt (der Flyer nennt keinen Code); Aktionen mit Code verlangen die Eingabe im neuen Registrierungsfeld |
+| **Frist verlängern**: Der Ersteller kann bei offenen UND ausgelaufenen Anfragen ein neues Datum setzen (max. 1 Jahr voraus); Ausgelaufene werden damit wieder geöffnet | „Neu einstellen" war unnötige Tipparbeit |
+| **Chat-Aufsicht** im Admin: die 40 neuesten Nachrichten, mit zwei Stufen — „Entfernen (mit Vermerk)" ersetzt den Text durch „[Nachricht vom Betreiber entfernt]", „Löschen" entfernt ganz | Notfall-Eingriff (Beleidigung, Kontaktdaten-Tausch). Der Vermerk ist die Regel: Beide Seiten sollen SEHEN, dass eingegriffen wurde — heimliches Verschwinden zerstört Vertrauen in den Chatverlauf |
+| **Dashboards verschmolzen**: `/dashboard` leitet auf `/#mein-bereich` weiter; die Verwaltungs-Abschnitte (Kennzahlen jetzt 6 Kacheln, Ich biete an, Ich suche, Transaktionen, abgegebene Angebote) stehen als „Mein Bereich" ([components/MeinBereich.tsx](components/MeinBereich.tsx)) am Ende der Startseite | Zwei angemeldete Übersichten zeigten Ähnliches doppelt — deshalb sah der Betreiber wiederholt eine „alte Version". Jetzt gibt es genau eine |
+
 ## Technik
 
 | Entscheidung | Begründung |

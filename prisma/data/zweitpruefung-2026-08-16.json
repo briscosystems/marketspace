@@ -1,0 +1,194 @@
+[
+ {
+  "hersteller": "Fuchs",
+  "name": "Plantogel 0 S",
+  "urteil": "existiert_nicht",
+  "korrektName": null,
+  "beleg": "https://www.fuchs.com/de/en/product/product/153635-PLANTOGEL-ECO-0-N/",
+  "bemerkung": "Mehrere Suchen (Herstellerseiten, Händler, SDS-Datenbanken) finden nur PLANTOGEL 2 S sowie ECO 000 S/0 N/2 N/2 S/2 FS — keine Spur eines PLANTOGEL 0 S."
+ },
+ {
+  "hersteller": "Fuchs",
+  "name": "Plantogel WP 2",
+  "urteil": "existiert_nicht",
+  "korrektName": null,
+  "beleg": "https://www.fuchs.com/at/en/product/product/56754-PLANTOGEL-2-FS/",
+  "bemerkung": "Auch mit Schreibvarianten (WP2, WP-2) kein einziger Treffer bei Fuchs, Händlern oder SDS-Datenbanken — eine WP-Variante der Plantogel-Reihe ist nirgends belegt."
+ },
+ {
+  "hersteller": "Fuchs",
+  "name": "RENOCAST RA 3107",
+  "urteil": "existiert",
+  "korrektName": null,
+  "beleg": "https://www.fuchs.com/de/de/produkt/product/153250-RENOCAST-RA-3107/",
+  "bemerkung": "Offizielle FUCHS-Produktseite vorhanden (Betontrennmittel, ehemals SOK ECO 107) — die Erstprüfung lag falsch."
+ },
+ {
+  "hersteller": "Fuchs",
+  "name": "RENOFORM",
+  "urteil": "existiert_nicht",
+  "korrektName": null,
+  "beleg": "https://www.fuchs.com/pl/en/product/product/146160-RENOFORM/",
+  "bemerkung": "RENOFORM ist nur der Name der Umformschmierstoff-Produktlinie (Einzelprodukte heißen z. B. RENOFORM MZAN 51, MZA 20); als eigenständiges Produkt nicht belegbar."
+ },
+ {
+  "hersteller": "Fuchs",
+  "name": "RENOFORM MZAN 51",
+  "urteil": "existiert",
+  "korrektName": null,
+  "beleg": "https://www.fuchs.com/fr-fr/fr/produit/product/29919-renoform-mzan-51/",
+  "bemerkung": "Offizielle FUCHS-Produktseiten in FR/FI/CN (chlorhaltiges Feinschneid- und Tiefziehöl, auch Variante MZAN 51 H) — die Erstprüfung lag falsch."
+ },
+ {
+  "hersteller": "Fuchs",
+  "name": "RENOLIN ZAF B HT PLUS Low Viscosity Series",
+  "urteil": "existiert",
+  "korrektName": null,
+  "beleg": "https://www.fuchs.com/us/en/product/product/122667-renolin-zaf-b-ht-plus-low-viscosity-series/",
+  "bemerkung": "Exakt dieser Serienname ist ein offizielles Produkt von FUCHS LUBRICANTS CO. (USA) für die niedrigviskosen Klassen — die Erstprüfung kannte nur den deutschen Katalog."
+ },
+ {
+  "hersteller": "Fuchs",
+  "name": "Renep Compound 104",
+  "urteil": "existiert",
+  "korrektName": null,
+  "beleg": "https://medialibrary.dana-industrial.com/wp-content/uploads/Manual-Helical-and-Bevel-Helical-Posiplan.pdf",
+  "bemerkung": "In Dana-/Brevini-Getriebehandbüchern als FUCHS-Schmierstoff (ISO VG 150) gelistet; historisches Produkt, im aktuellen FUCHS-Katalog nicht mehr geführt."
+ },
+ {
+  "hersteller": "Fuchs",
+  "name": "Renep Compound 106",
+  "urteil": "existiert",
+  "korrektName": null,
+  "beleg": "https://manualzz.com/doc/en/5816570/brevini-gear-units-installation-and-maintenance-manual",
+  "bemerkung": "Brevini-/Dana-Getriebehandbücher führen RENEP COMPOUND 106 (ISO VG 220) als FUCHS-Produkt; historisch, nicht mehr im aktuellen Katalog."
+ },
+ {
+  "hersteller": "Castrol",
+  "name": "Optileb GR 0",
+  "urteil": "umbenennen",
+  "korrektName": "Optileb GR UF 00",
+  "beleg": "https://thelubricantoracle.castrol.com/product/optileb-gr-uf-00/industrial/ja-JP",
+  "bemerkung": "Die Reihe heißt Optileb GR UF (früher Obeen UF) mit den Klassen 000/00/1/2; ein 'GR 0' oder 'UF 0' ist nirgends belegt, das Fließfett der Reihe ist GR UF 00."
+ },
+ {
+  "hersteller": "Castrol",
+  "name": "Optileb GR 2",
+  "urteil": "umbenennen",
+  "korrektName": "Optileb GR UF 2",
+  "beleg": "https://msdspds.castrol.com/bpglis/FusionPDS.nsf/Files/7C2B2CFDD4C5A0E980257EA6005787DC/$File/BPXE-9ZS3NH.pdf",
+  "bemerkung": "Castrol führt das NLGI-2-Lebensmittelfett offiziell als Optileb GR UF 2 (eigenes Castrol-PDS vorhanden)."
+ },
+ {
+  "hersteller": "Mobil",
+  "name": "Jet Oil 291",
+  "urteil": "existiert",
+  "korrektName": null,
+  "beleg": "https://www.sicherheitsdatenblatt-suche.de/unternehmen/exxonmobile.html",
+  "bemerkung": "Historisches ExxonMobil-Turbinenöl der 4. Generation (MIL-PRF-23699), in SDS-Datenbank und Fachforen belegt; heute eingestellt, daher fehlt es im aktuellen Aviation-Programm."
+ },
+ {
+  "hersteller": "TotalEnergies",
+  "name": "Nateria ML 40",
+  "urteil": "umbenennen",
+  "korrektName": "Nateria ML 406",
+  "beleg": "https://catalog.totalenergies.my/en-my/products/h1h/NATERIA-ML-406",
+  "bemerkung": "Ein 'ML 40' existiert nicht; das einzige ML-Produkt der Nateria-Reihe ist das Deponiegas-Motorenöl ML 406 im offiziellen TotalEnergies-Katalog."
+ },
+ {
+  "hersteller": "Klüber Lubrication",
+  "name": "Klüberalfa YV 93-2 W",
+  "urteil": "existiert_nicht",
+  "korrektName": null,
+  "beleg": "https://www.klueber.com/us/en/products-service/products/klueberalfa-yv-93-302/10198/",
+  "bemerkung": "Klüber führt in der Reihe nur Klüberalfa YV 93-302 und YV 93-1202 (plus Klübertemp-Varianten); eine Type '93-2 W' ist nirgends belegt."
+ },
+ {
+  "hersteller": "Petrofer",
+  "name": "Emulcut 1015",
+  "urteil": "existiert",
+  "korrektName": null,
+  "beleg": "https://www.galindberg.se/processvatskor_industri/skarande-bearbetning/skarvatskor/ec1015-200",
+  "bemerkung": "Beim offiziellen schwedischen Petrofer-Distributor GA Lindberg als aktueller halbsynthetischer wassermischbarer KSS (200-kg-Fass und IBC) gelistet — die Erstprüfung lag falsch."
+ },
+ {
+  "hersteller": "Petrofer",
+  "name": "Feroform",
+  "urteil": "existiert_nicht",
+  "korrektName": null,
+  "beleg": "https://petrofer.com/products/metal-forming-lubricants/",
+  "bemerkung": "Kein Petrofer-Produkt auffindbar; FEROFORM ist eine Marke des Werkstoffherstellers Tenmat, die Petrofer-Umformschmierstoffe heißen ISOFORM, DRAWLUB und ISOLUBE."
+ },
+ {
+  "hersteller": "Petrofer",
+  "name": "Isocut",
+  "urteil": "existiert_nicht",
+  "korrektName": null,
+  "beleg": "https://www.haberkorn.com/at/de/schmierstoffe-kfz-bedarf/schmierstoffe-fuer-die-metallbearbeitung/nichtwassermischbare-kuehlschmierstoffe/bohroele-schneidoele/2006871-schneidoel-petrofer-isocut-a-32",
+  "bemerkung": "ISOCUT ist nur der Serienname; real existieren Typen wie ISOCUT A 10/22/32, TU, TU 22, T 400 und VG 15 — 'Isocut' allein ist kein Produkt."
+ },
+ {
+  "hersteller": "Petrofer",
+  "name": "Isogrind",
+  "urteil": "existiert_nicht",
+  "korrektName": null,
+  "beleg": "https://petrofer.com/products/metal-cutting-fluids/",
+  "bemerkung": "ISOGRIND ist nur der Serienname der mineralölfreien Schleif-Fluids (real z. B. ISOGRIND A 1000) — 'Isogrind' allein ist kein Produkt."
+ },
+ {
+  "hersteller": "Rhenus Lub",
+  "name": "rhenus PFK 1",
+  "urteil": "existiert_nicht",
+  "korrektName": null,
+  "beleg": "https://www.findling.com/fileadmin/Inhalt/Datenbl%C3%A4tter/Schmierstoffe/RHENUS_Schmierfette.pdf",
+  "bemerkung": "Weder in der Rhenus-Schmierfett-Broschüre noch auf rhenuslub.de oder bei Händlern findet sich irgendein Fett namens PFK."
+ },
+ {
+  "hersteller": "Rhenus Lub",
+  "name": "rhenus PFK 2",
+  "urteil": "existiert_nicht",
+  "korrektName": null,
+  "beleg": "https://www.findling.com/fileadmin/Inhalt/Datenbl%C3%A4tter/Schmierstoffe/RHENUS_Schmierfette.pdf",
+  "bemerkung": "Wie PFK 1: keinerlei Beleg für eine PFK-Bezeichnung im Rhenus-Sortiment."
+ },
+ {
+  "hersteller": "Zeller+Gmelin",
+  "name": "Divinol T 7 EP ISO 68",
+  "urteil": "existiert",
+  "korrektName": null,
+  "beleg": "https://www.zeller-gmelin.de/zgSite/de/Industrieschmierstoffe/Maschinenschmierung/F%C3%BChrungs--und-Gleitbahn%C3%B6le/Divinol-T-7-EP-ISO-68/p/21660",
+  "bemerkung": "Offizielle Zeller+Gmelin-Produktseite für Divinol T 7 EP ISO 68 (Gleitbahnöl, abgestimmt auf ZUBORA-KSS) vorhanden — die vorgeschlagene Umbenennung in T 6 EP ist unnötig."
+ },
+ {
+  "hersteller": "LE",
+  "name": "Quinplex 1245 Synthetic FM Oil",
+  "urteil": "existiert_nicht",
+  "korrektName": null,
+  "beleg": "https://lelubricants.com/about-us/proprietary-additives/quinplex/",
+  "bemerkung": "Quinplex ist bei Lubrication Engineers ein Additiv-/Markenname mit Produktnummern wie 4022-4025 und 4140; eine Nummer 1245 ist nirgends belegt."
+ },
+ {
+  "hersteller": "ML Lubrication",
+  "name": "ML-Serie nicht wassermischbar (allgemein)",
+  "urteil": "existiert_nicht",
+  "korrektName": null,
+  "beleg": "https://www.ml-lubrication.com/en/",
+  "bemerkung": "Platzhalter-/Sammeleintrag: ML Lubrication bietet zwar nicht wassermischbare KSS an, aber ein Produkt dieses Namens gibt es nicht."
+ },
+ {
+  "hersteller": "ML Lubrication",
+  "name": "ML-Serie wassermischbar (allgemein)",
+  "urteil": "existiert_nicht",
+  "korrektName": null,
+  "beleg": "https://www.ml-lubrication.com/en/",
+  "bemerkung": "Platzhalter-/Sammeleintrag: die wassermischbaren KSS von ML Lubrication tragen konkrete Produktnamen, 'ML-Serie (allgemein)' existiert nicht als Produkt."
+ },
+ {
+  "hersteller": "Oemeta",
+  "name": "ADDI-PROX LC",
+  "urteil": "existiert_nicht",
+  "korrektName": null,
+  "beleg": "https://www.techtool.com/collections/addi-prox",
+  "bemerkung": "Die ADDI-PROX-Reihe umfasst C, G, B, EP, Y2, LM, LT, AF/C, AF/S, SC/F, ST046, W 894 u. a., aber kein 'LC'; ob LM (Leichtmetall-Additiv) oder LT (Korrosionsschutz) gemeint war, ist nicht belegbar — die Umbenennung der Erstprüfung in LM wäre Spekulation."
+ }
+]
