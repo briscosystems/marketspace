@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { PdfHinweis } from "@/components/PdfHinweis";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -478,6 +479,7 @@ export default async function ListingDetailPage({
               );
             })}
           </div>
+          <PdfHinweis className="mt-3" />
         </section>
       )}
 

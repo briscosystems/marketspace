@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { PdfHinweis } from "@/components/PdfHinweis";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getT } from "@/lib/i18n-server";
@@ -140,7 +141,10 @@ export default async function SdsDetailPage({ params }: { params: Promise<{ id: 
           />
         </div>
 
+        <PdfHinweis className="mt-1" />
+
         <div className="flex flex-wrap gap-3 pt-2">
+
           <a
             href={`/api/sds/${sds.id}/download`}
             target="_blank"

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PdfHinweis } from "@/components/PdfHinweis";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { RefractometerCalculator } from "@/components/RefractometerCalculator";
@@ -653,6 +654,7 @@ export default async function ProductDetailPage({
                   </li>
                 ) : null}
               </ul>
+              <PdfHinweis className="mt-3" />
             </section>
         </aside>
       </div>

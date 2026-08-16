@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PdfHinweis } from "@/components/PdfHinweis";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getT } from "@/lib/i18n-server";
@@ -222,6 +223,7 @@ export default async function TdsPage({
             </>
           )}
         </footer>
+        <PdfHinweis className="mt-3 print:hidden" />
       </article>
     </div>
   );

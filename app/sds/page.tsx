@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PdfHinweis } from "@/components/PdfHinweis";
 import { LeerHinweis } from "@/components/LeerHinweis";
 import { prisma } from "@/lib/prisma";
 import { getT } from "@/lib/i18n-server";
@@ -175,6 +176,8 @@ export default async function SdsLibraryPage({ searchParams }: { searchParams: S
         <FilterDropdown label={t("sds.filterBactericide")} paramKey="bactericide" options={triOptions} />
         <FilterDropdown label={t("sds.filterFungicide")} paramKey="fungicide" options={triOptions} />
       </FilterBar>
+
+      <PdfHinweis />
 
       {/* ERGEBNISSE */}
       <div className="space-y-2">

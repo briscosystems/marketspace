@@ -725,6 +725,21 @@ Betreiber: „Entferne die eine weiße Passwortsperre, eine genügt."
 | **Suchmaschinen bleiben trotzdem draußen:** robots.txt sperrt alles und die Sitemap bleibt leer, solange die **Testphase** läuft (vorher hing das am Gate) | Der Schutz vor wertlosen Google-Treffern war ein Nebeneffekt des Gates und darf mit ihm nicht verschwinden |
 | Die Railway-Variablen `GATE_PASSWORD`/`GATE_ENABLED`/`GATE_USER` sind damit wirkungslos und können gelöscht werden | Aufräumen, aber ohne Eile — sie stören nicht |
 
+## Herkunfts-Hinweis an jedem PDF (2026-08-15)
+
+Betreiber: „Mach einen Disclaimer überall, wo der Kunde ein PDF herunterladen
+kann, dass die PDFs aus dem Internet stammen und wir nicht haftbar sind, falls
+falsch. Prüfe das und schreibe das rechtlich korrekt."
+
+| Entscheidung | Begründung |
+|---|---|
+| Ein einheitlicher Hinweis ([components/PdfHinweis.tsx](components/PdfHinweis.tsx)) steht an **allen fünf Stellen**, an denen PDFs geöffnet werden können: Datenblatt-Übersicht `/sds`, SDS-Detailseite, Produktseite (Dokumente-Block), TDS-Ansicht, Angebots-Detail (SDS-Block) | Sichtbar am Dokument, nicht nur in den AGB — dort steht die ausführliche Klausel „Dokumente Dritter" schon seit der AGB-Fassung |
+| Wortlaut: Dokumente stammen **aus öffentlich zugänglichen Quellen im Internet**, werden unverändert wiedergegeben; **maßgeblich ist allein das aktuelle Original des Herstellers/Lieferanten**; keine Gewähr für Richtigkeit/Vollständigkeit/Aktualität; Haftung **„soweit gesetzlich zulässig" ausgeschlossen**; sicherheitsrelevante Angaben stets am aktuellen SDS des Lieferanten prüfen | Rechtlich sauber: Ein pauschales „wir haften nie" wäre unwirksam (zwingende Haftung, z. B. bei Vorsatz/grober Fahrlässigkeit, lässt sich nicht abbedingen) — deshalb die Einschränkung. Der Verweis aufs Original ist bei Sicherheitsdatenblättern fachlich zwingend, weil Fassungen veralten |
+| In allen drei Sprachen (`pdf.disclaimer` in [lib/i18n.ts](lib/i18n.ts)), dezent gestaltet (grauer Kasten, kleines Warnsymbol) | Muss lesbar sein, darf aber die Arbeitsseiten nicht dominieren |
+
+Der Text ist Laienwerk nach bestem Wissen — die ohnehin geplante anwaltliche
+Prüfung (siehe „Offen") soll ihn mitprüfen.
+
 ## Technik
 
 | Entscheidung | Begründung |
