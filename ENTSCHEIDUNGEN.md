@@ -749,6 +749,13 @@ Prüfung (siehe „Offen") soll ihn mitprüfen.
 | **Chat-Aufsicht** im Admin: die 40 neuesten Nachrichten, mit zwei Stufen — „Entfernen (mit Vermerk)" ersetzt den Text durch „[Nachricht vom Betreiber entfernt]", „Löschen" entfernt ganz | Notfall-Eingriff (Beleidigung, Kontaktdaten-Tausch). Der Vermerk ist die Regel: Beide Seiten sollen SEHEN, dass eingegriffen wurde — heimliches Verschwinden zerstört Vertrauen in den Chatverlauf |
 | **Dashboards verschmolzen**: `/dashboard` leitet auf `/#mein-bereich` weiter; die Verwaltungs-Abschnitte (Kennzahlen jetzt 6 Kacheln, Ich biete an, Ich suche, Transaktionen, abgegebene Angebote) stehen als „Mein Bereich" ([components/MeinBereich.tsx](components/MeinBereich.tsx)) am Ende der Startseite | Zwei angemeldete Übersichten zeigten Ähnliches doppelt — deshalb sah der Betreiber wiederholt eine „alte Version". Jetzt gibt es genau eine |
 
+## Erfahrungs-Bereich und Compliance-Ampel (2026-08-16)
+
+| Entscheidung | Begründung |
+|---|---|
+| Neue Seite **/erfahrungen**: alle freigegebenen Praxis-Berichte, filterbar nach **Problem** (Schlagworte aus den Berichten selbst), **Hersteller**, **Ausgang** (gelöst/verbessert/nicht gelöst/läuft noch) plus Volltextsuche; Problem-Schlagworte sind anklickbar | Die Erfahrungen sind der Kern der Strategie — bisher konnte man sie nur erfassen, nicht lesen. Das Filter-Vokabular kommt aus der Praxis, keine starre Liste |
+| **Compliance-Ampel** nach dem Konzept vom 2026-07-21: ROT (CMR-H-Sätze, SVHC, Chlorparaffine, Gefahr+GHS08) / GELB (Bor, Formaldehyd-Abspalter, sek. Amine, PAA, REACH unbestätigt, WGK 3) / GRÜN nur bei **ausdrücklich** unauffälliger Datenlage / UNBEKANNT sonst — berechnet zur Laufzeit ([lib/compliance-ampel.ts](lib/compliance-ampel.ts)), angezeigt auf der Produktseite mit Klartext-Gründen und Disclaimer | „Niemals fälschlich grün": Fehlende Daten sind UNBEKANNT. Harte Einstufung schlägt Heuristik. v1 ohne neue Datenbank-Felder, wie im Konzept empfohlen |
+
 ## Technik
 
 | Entscheidung | Begründung |

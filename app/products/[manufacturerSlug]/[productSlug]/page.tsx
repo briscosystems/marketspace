@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { berechneAmpel } from "@/lib/compliance-ampel";
+import { ComplianceAmpel } from "@/components/ComplianceAmpel";
 import { PdfHinweis } from "@/components/PdfHinweis";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
@@ -107,6 +109,8 @@ export default async function ProductDetailPage({
           containsFormaldehydeReleaser: true,
           containsSecondaryAmines: true,
           containsChlorinatedParaffins: true,
+          containsPrimaryAromaticAmines: true,
+          wgkClass: true,
           phValue: true,
           flashpointC: true,
           densityGcm3: true,
@@ -390,6 +394,16 @@ export default async function ProductDetailPage({
               </ul>
             </section>
           )}
+
+          {/* Compliance-Ampel (2026-08-16): berechnet aus SDS- und
+              Produktfeldern — GRÜN nur bei ausdrücklich belegter Datenlage. */}
+          <ComplianceAmpel
+            ergebnis={berechneAmpel(product.safetyDataSheet, {
+              containsBor: product.containsBor,
+              containsFormaldehydeDepot: product.containsFormaldehydeDepot,
+              containsChlorine: product.containsChlorine,
+            })}
+          />
 
           {/* Verlinktes SDS aus eigener Bibliothek */}
           {product.safetyDataSheet && <LinkedSdsCard sds={product.safetyDataSheet} t={t} />}

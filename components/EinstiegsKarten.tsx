@@ -64,7 +64,7 @@ export function EinstiegsKarten({
       symbol: <BrainQuestion className="h-10 w-10" />,
       aktionen: [
         { href: "/erkennen", text: t("ek.problem1") },
-        { href: "/erkennen#etikett", text: t("ek.problem2") },
+        { href: "/erfahrungen", text: t("ek.problem4") },
         { href: "/tanks", text: t("ek.problem3") },
       ],
       karte: "bg-rose-50 ring-rose-200 hover:ring-rose-400",
