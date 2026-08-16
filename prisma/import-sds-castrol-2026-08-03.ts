@@ -19,6 +19,7 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import { execFileSync } from "node:child_process";
+import zlib from "node:zlib";
 import { prisma } from "../lib/prisma";
 import { buildSearchTokens, normalizeForSearch } from "../lib/normalize-search";
 import type { SdsCategory, SdsLanguage } from "@prisma/client";
@@ -32,6 +33,33 @@ const QUELLEN = [
 ];
 const ZIEL = path.join(process.cwd(), "data", "sds", "castrol");
 const HERSTELLER = "Castrol";
+
+/**
+ * Text eines PDFs: zuerst pdftotext (lokal vorhanden), sonst der im Repo
+ * mitgelieferte, vorab extrahierte Text (prisma/data/castrol-sds-texte.json.gz,
+ * gekeyt über sha256). Grund: Auf Railway fehlt pdftotext — deshalb fehlten
+ * live 113 Castrol-Datenblätter (Betreiber 2026-08-16: „bereite Texte lokal auf").
+ */
+let texteCache: Record<string, string> | null = null;
+function vorabTexte(): Record<string, string> {
+  if (!texteCache) {
+    const pfad = path.join(process.cwd(), "prisma", "data", "castrol-sds-texte.json.gz");
+    texteCache = fs.existsSync(pfad)
+      ? (JSON.parse(zlib.gunzipSync(fs.readFileSync(pfad)).toString()) as Record<string, string>)
+      : {};
+  }
+  return texteCache;
+}
+
+function pdfText(pfadPdf: string, sha256: string): string {
+  try {
+    return execFileSync("pdftotext", ["-q", pfadPdf, "-"], { maxBuffer: 32 * 1024 * 1024 }).toString();
+  } catch {
+    const vorab = vorabTexte()[sha256];
+    if (vorab) return vorab;
+    throw new Error("kein pdftotext und kein vorab extrahierter Text");
+  }
+}
 
 /**
  * Produktart bestimmen. WICHTIG: nur aus Abschnitt 1.2 (Verwendungszweck) plus
@@ -157,7 +185,7 @@ export async function importCastrolSds2026_08_03(): Promise<string> {
 
     let text = "";
     try {
-      text = execFileSync("pdftotext", ["-q", quellPfad, "-"], { maxBuffer: 32 * 1024 * 1024 }).toString();
+      text = pdfText(quellPfad, sha256);
     } catch {
       // Ohne Text kein verwertbarer Datensatz — lieber überspringen als leer anlegen.
       ohneName++;
