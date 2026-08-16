@@ -756,6 +756,14 @@ Prüfung (siehe „Offen") soll ihn mitprüfen.
 | Neue Seite **/erfahrungen**: alle freigegebenen Praxis-Berichte, filterbar nach **Problem** (Schlagworte aus den Berichten selbst), **Hersteller**, **Ausgang** (gelöst/verbessert/nicht gelöst/läuft noch) plus Volltextsuche; Problem-Schlagworte sind anklickbar | Die Erfahrungen sind der Kern der Strategie — bisher konnte man sie nur erfassen, nicht lesen. Das Filter-Vokabular kommt aus der Praxis, keine starre Liste |
 | **Compliance-Ampel** nach dem Konzept vom 2026-07-21: ROT (CMR-H-Sätze, SVHC, Chlorparaffine, Gefahr+GHS08) / GELB (Bor, Formaldehyd-Abspalter, sek. Amine, PAA, REACH unbestätigt, WGK 3) / GRÜN nur bei **ausdrücklich** unauffälliger Datenlage / UNBEKANNT sonst — berechnet zur Laufzeit ([lib/compliance-ampel.ts](lib/compliance-ampel.ts)), angezeigt auf der Produktseite mit Klartext-Gründen und Disclaimer | „Niemals fälschlich grün": Fehlende Daten sind UNBEKANNT. Harte Einstufung schlägt Heuristik. v1 ohne neue Datenbank-Felder, wie im Konzept empfohlen |
 
+## Castrol-SDS, Verlauf-Backup, Zweitprüfung (2026-08-16, Fortsetzung)
+
+| Entscheidung | Begründung |
+|---|---|
+| Die Texte aller 639 lokalen Castrol-PDFs liegen **vorab extrahiert** im Repo (`prisma/data/castrol-sds-texte.json.gz`, 4,3 MB, gekeyt über sha256); der Import fällt darauf zurück, wenn `pdftotext` fehlt | Auf Railway fehlt pdftotext — deshalb fehlten live 113 Castrol-Datenblätter. Der nächste Deploy zieht sie automatisch nach |
+| **Chatverlauf-Backup off-machine**: `scripts/verlauf-backup.sh` packt Gespräche + Memory (ohne die großen Arbeitsdaten) und pusht das Archiv auf den **eigenen Zweig `verlauf-backup`** im privaten Repo — der Zweig wird jedes Mal ersetzt. Läuft automatisch bei jedem `scripts/start.sh` | Bewusst NICHT auf main: main würde mit jedem Backup dauerhaft wachsen (Git vergisst nie) und jeder Push löst einen Railway-Deploy aus. Erster Versuch über main wurde deshalb zurückgenommen |
+| Die unabhängige **Zweitprüfung der 24 Verdachts-Produkte** liegt in `prisma/data/zweitpruefung-2026-08-16.json`: 8 existieren doch, 3 sind falsch benannt, 13 ohne jeden Beleg | Erst fragen, dann löschen — Entscheidung des Betreibers steht aus |
+
 ## Technik
 
 | Entscheidung | Begründung |
