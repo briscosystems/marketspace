@@ -154,9 +154,9 @@ Nach jeder Änderung, die hier etwas berührt: **Eintrag ergänzen oder anpassen
 
 | Entscheidung | Stand |
 |---|---|
-| Die **Zugangssperre bleibt an**, bis die Plattform fehlerfrei ist. Kein Go-Live „auf Verdacht" | gesetzt 2026-08-03 |
+| ~~Die **Zugangssperre bleibt an**, bis die Plattform fehlerfrei ist~~ — **überholt 2026-08-15:** Die weiße Gate-Sperre ist entfernt; den Zugang schützt jetzt die Testphasen-Willkommensseite mit Passwort („eine genügt", Betreiber) | gesetzt 2026-08-03, ersetzt 2026-08-15 |
 | Der Start muss **flächendeckend, schnell und prägnant** wirken — ein halber Start lädt Wettbewerber ein | gesetzt 2026-08-03 |
-| **Auffindbarkeit ist die Startgrundlage:** Sitemap (`app/sitemap.ts`) und `robots.txt` melden alle 4.600 Fachseiten; Produkt-, Datenblatt- und Herstellerseiten haben eigene Seitentitel. Solange die Zugangssperre an ist, sperrt robots.txt alles und die Sitemap bleibt leer | gesetzt 2026-08-03 |
+| **Auffindbarkeit ist die Startgrundlage:** Sitemap (`app/sitemap.ts`) und `robots.txt` melden alle 4.600 Fachseiten; Produkt-, Datenblatt- und Herstellerseiten haben eigene Seitentitel. Solange die **Testphase** läuft, sperrt robots.txt alles und die Sitemap bleibt leer (bis 2026-08-15 hing das am Gate) | gesetzt 2026-08-03, angepasst 2026-08-15 |
 | **Registrierung: nur E-Mail + Passwort.** Rolle, Firma, Land, Umsatzsteuer-Nummer und Anzeigename sind freiwillig und stehen unter „Weitere Angaben"; das Pseudonym vergibt die Plattform, wenn nichts eingegeben wird | gesetzt 2026-08-03; Baymard: 18–26 % Abbruch allein durch Kontozwang |
 
 ## Business Case — Erkenntnisse der Recherche vom 2026-08-03
@@ -714,6 +714,16 @@ Hinweis: Die alte weiße Passwortsperre (GATE_PASSWORD, nur in Produktion) steht
 live noch VOR dieser Seite. Mit dem neuen Login ist sie doppelt — der Betreiber
 kann sie in Railway mit `GATE_ENABLED=false` abschalten, dann ist die
 Willkommensseite mit Passwort der einzige Zugangsschritt.
+
+## Weiße Passwortsperre entfernt — ein Zugangsschritt genügt (2026-08-15)
+
+Betreiber: „Entferne die eine weiße Passwortsperre, eine genügt."
+
+| Entscheidung | Begründung |
+|---|---|
+| Die alte weiße Gate-Seite ist **ersatzlos entfernt** (`lib/gate.ts`, `components/GateLogin.tsx`, `app/api/gate/route.ts` gelöscht, Block im Root-Layout raus) | Seit gestern verlangt die Testkunden-Willkommensseite selbst ein Passwort — zwei Passwortsperren hintereinander sind eine zu viel |
+| **Suchmaschinen bleiben trotzdem draußen:** robots.txt sperrt alles und die Sitemap bleibt leer, solange die **Testphase** läuft (vorher hing das am Gate) | Der Schutz vor wertlosen Google-Treffern war ein Nebeneffekt des Gates und darf mit ihm nicht verschwinden |
+| Die Railway-Variablen `GATE_PASSWORD`/`GATE_ENABLED`/`GATE_USER` sind damit wirkungslos und können gelöscht werden | Aufräumen, aber ohne Eile — sie stören nicht |
 
 ## Technik
 

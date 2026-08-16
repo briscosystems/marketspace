@@ -1,17 +1,18 @@
 /**
  * Anweisungen für Suchmaschinen.
  *
- * Solange die Zugangssperre („Gate") aktiv ist, wird ALLES gesperrt — sonst
- * würde Google die Passwortseite indexieren und der spätere Start begänne mit
- * wertlosen Treffern. Fällt die Sperre, gibt diese Datei die Fachseiten frei
+ * Solange die Testphase läuft (Willkommensseite mit Passwort), wird ALLES
+ * gesperrt — sonst würde Google die Passwortseite indexieren und der spätere
+ * Start begänne mit wertlosen Treffern. Endet die Testphase
+ * (TESTPHASE=false), gibt diese Datei die Fachseiten frei
  * und hält private Bereiche (Konto, Verwaltung, Schnittstellen) draußen.
  */
 import type { MetadataRoute } from "next";
-import { gateEnabled } from "@/lib/gate";
+import { testphaseAktiv } from "@/lib/testphase";
 import { siteUrl } from "@/lib/site-url";
 
 export default function robots(): MetadataRoute.Robots {
-  if (gateEnabled()) {
+  if (testphaseAktiv()) {
     return { rules: [{ userAgent: "*", disallow: "/" }] };
   }
   return {

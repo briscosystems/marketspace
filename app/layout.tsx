@@ -9,9 +9,7 @@ import { Providers } from "./providers";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { ConciergeWidget } from "@/components/ConciergeWidget";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
-import { GateLogin } from "@/components/GateLogin";
 import { AnalyticsTracker } from "@/components/AnalyticsTracker";
-import { GATE_COOKIE, gateEnabled, isGateTokenValid } from "@/lib/gate";
 import { TESTPHASE_COOKIE, testphaseAktiv, testphaseBestaetigt } from "@/lib/testphase";
 import { TestkundenWillkommen } from "@/components/TestkundenWillkommen";
 import { DEFAULT_LOCALE, LOCALE_COOKIE, toLocale, translate } from "@/lib/i18n";
@@ -61,21 +59,6 @@ export default async function RootLayout({
   // Server-Komponenten unten können `translate(locale, …)` benutzen.
   const locale = toLocale(store.get(LOCALE_COOKIE)?.value);
   const t = (key: string) => translate(locale, key);
-
-  // Vorgeschaltete Zugangssperre: solange kein gültiges Gate-Cookie vorliegt, nur die
-  // weiße Login-Seite zeigen (nur in Produktion aktiv, siehe gateEnabled()).
-  if (gateEnabled()) {
-    const ok = await isGateTokenValid(store.get(GATE_COOKIE)?.value);
-    if (!ok) {
-      return (
-        <html lang={locale}>
-          <body>
-            <GateLogin />
-          </body>
-        </html>
-      );
-    }
-  }
 
   // Testbetrieb: Vor dem Marktplatz steht die Willkommensseite für Testkunden
   // (Betreiber 2026-08-13). Sie sperrt nichts — das tut das Gate darüber —,

@@ -11,13 +11,14 @@
  */
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
-import { gateEnabled } from "@/lib/gate";
+import { testphaseAktiv } from "@/lib/testphase";
 import { siteUrl } from "@/lib/site-url";
 
 export const revalidate = 86400; // einmal täglich neu bauen
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  if (gateEnabled()) return [];
+  // Während der Testphase bleibt die Sitemap leer — wie zuvor beim Gate.
+  if (testphaseAktiv()) return [];
   const basis = siteUrl();
 
   const feste: MetadataRoute.Sitemap = [

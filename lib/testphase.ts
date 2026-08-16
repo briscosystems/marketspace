@@ -7,9 +7,9 @@
  * nach „Eintreten" geht es weiter; damit bestätigt der Testkunde zugleich, den
  * Zugang während der Testphase nicht weiterzugeben.
  *
- * Verhältnis zum Gate (lib/gate.ts): Das Gate ist die Passwortsperre und
- * kommt zuerst. Diese Seite kommt danach — sie sperrt nichts, sie klärt auf
- * und holt eine bewusste Bestätigung ein.
+ * Seit 2026-08-15 ist diese Seite mit ihrem Passwort der EINZIGE
+ * Zugangsschritt — die frühere weiße Passwortsperre (lib/gate.ts) ist
+ * entfernt: „eine genügt" (Betreiber).
  *
  * Es wird nichts serverseitig gespeichert: Ein Cookie mit dem Datum der
  * Bestätigung genügt. Ein signiertes Token wäre Sicherheitstheater — die Seite
