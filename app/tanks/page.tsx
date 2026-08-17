@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { QrTankScanner } from "@/components/QrTankScanner";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -68,6 +69,11 @@ export default async function TanksPage() {
           {t("tank.title")}
         </h1>
         <p className="max-w-3xl text-sm text-slate-600">{t("tank.intro")}</p>
+        {/* Am Tank steht der QR-Aufkleber: scannen führt direkt ins
+            Messformular dieses Tanks (Betreiber 2026-08-17). */}
+        <div className="pt-1">
+          <QrTankScanner />
+        </div>
       </header>
 
       {tanks.length === 0 ? (

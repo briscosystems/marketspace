@@ -597,6 +597,8 @@ model User {
   photoHandoffs      PhotoHandoff[]
   productSubmissions ProductSubmission[]
   problemCases       ProblemCase[]
+  tankFreigabenAls   TankFreigabe[]      @relation("TankFreigabeOwner")
+  tankFreigabenFuer  TankFreigabe[]      @relation("TankFreigabeEmpfaenger")
   adBanners          AdBanner[]          @relation("AdOwner")
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
@@ -1621,6 +1623,7 @@ model CoolantTank {
   qrToken String?
 
   measurements TankMeasurement[]
+  freigaben    TankFreigabe[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1851,4 +1854,27 @@ model CreditAktion {
   createdAt         DateTime @default(now())
 
   @@index([active, startsAt, endsAt])
+}
+
+/// Ein Tank, den ein Nutzer für einen anderen freigegeben hat
+/// (Betreiber 2026-08-17: „Optional kann der User sämtliche Messdaten mit
+/// seinen Bemerkungen und Fotos mit einem anderen User teilen").
+///
+/// Bewusst LESEND: Der Empfänger sieht Messreihe, Bemerkungen und Bilder,
+/// kann aber nichts ändern und nichts eintragen. Wer teilt, gibt Betriebsdaten
+/// preis — das muss jederzeit und mit einem Klick widerrufbar sein.
+model TankFreigabe {
+  id        String      @id @default(cuid())
+  tankId    String
+  tank      CoolantTank @relation(fields: [tankId], references: [id], onDelete: Cascade)
+  /// Wer freigibt (der Besitzer des Tanks)
+  ownerId   String
+  owner     User        @relation("TankFreigabeOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  /// Wer sehen darf
+  userId    String
+  user      User        @relation("TankFreigabeEmpfaenger", fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+
+  @@unique([tankId, userId])
+  @@index([userId])
 }

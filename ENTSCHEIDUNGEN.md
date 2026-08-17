@@ -764,6 +764,17 @@ Prüfung (siehe „Offen") soll ihn mitprüfen.
 | **Chatverlauf-Backup off-machine**: `scripts/verlauf-backup.sh` packt Gespräche + Memory (ohne die großen Arbeitsdaten) und pusht das Archiv auf den **eigenen Zweig `verlauf-backup`** im privaten Repo — der Zweig wird jedes Mal ersetzt. Läuft automatisch bei jedem `scripts/start.sh` | Bewusst NICHT auf main: main würde mit jedem Backup dauerhaft wachsen (Git vergisst nie) und jeder Push löst einen Railway-Deploy aus. Erster Versuch über main wurde deshalb zurückgenommen |
 | Die unabhängige **Zweitprüfung der 24 Verdachts-Produkte** liegt in `prisma/data/zweitpruefung-2026-08-16.json`: 8 existieren doch, 3 sind falsch benannt, 13 ohne jeden Beleg | Erst fragen, dann löschen — Entscheidung des Betreibers steht aus |
 
+## Tank-Bereich ausgebaut: QR-Scan, Verlauf, Bericht, Teilen (2026-08-17)
+
+| Entscheidung | Begründung |
+|---|---|
+| „Füllmenge in Litern" heißt jetzt **„Tankvolumen total in Liter"** | Betreiber-Wortlaut; „Füllmenge" war mit der Nachfüllmenge verwechselbar |
+| **QR-Scanner im Browser** ([components/QrTankScanner.tsx](components/QrTankScanner.tsx)) auf der Tankliste und im Mischungsrechner: Kamera auf den Aufkleber, fertig | Bisher musste man die Kamera-App verlassen. Technik: die eingebaute Strichcode-Erkennung des Browsers, KEIN Zusatzpaket. Fehlt sie (Safari/Firefox), sagen wir das ehrlich und verweisen auf die Kamera-App — der Aufkleber führt ja ohnehin zur richtigen Seite |
+| **Verlaufs-Diagramm** ([components/MessreiheChart.tsx](components/MessreiheChart.tsx)) ab zwei Messwerten, auf Knopfdruck: Konzentration, pH und Nitrit mit **grünem Sollband aus Datenblatt/SDS**, roter Linie für die harten Grenzen (pH 8,5 DGUV 109-003, Nitrit 20 mg/l TRGS 611); Punkte außerhalb sind rot und größer | Betreiber-Vorgabe. Als eigenes SVG gezeichnet statt mit einem Diagramm-Paket — schlanker und in der Hausgrafik |
+| **Mischungsrechner:** neuer Einleitungstext (Betreiber-Wortlaut mit der Warnung „immer zuerst Wasser, dann Konzentrat"), Feldreihenfolge jetzt **Tankvolumen → Fehlvolumen → Sollkonzentration → gemessene Konzentration** | Entspricht dem Ablauf am Tank |
+| **PDF-Messbericht** ([app/api/tanks/[id]/bericht/route.ts](app/api/tanks/[id]/bericht/route.ts)): Brisco-Logo im Kopf, Stammdaten, Sollwerte, komplette Messreihe mit **roten Werten außerhalb** — dazu am Fuß **dezent** der Hinweis, dass DOSIMETRIX® hybrid diese Arbeit automatisch übernimmt und typischerweise über 25 % Konzentrat spart | Der Bericht taugt als Nachweis für Audit und Berufsgenossenschaft. Die Werbung steht klein und ganz unten — der Bericht ist ein Werkzeug, keine Anzeige |
+| **Tank teilen** (`TankFreigabe`): lesende Freigabe an ein anderes Konto über dessen Anzeigenamen, jederzeit widerrufbar | Der Empfänger sieht Messreihe, Bemerkungen und Bilder, kann aber nichts eintragen und nichts ändern. Wer Betriebsdaten preisgibt, muss das mit einem Klick zurücknehmen können; die E-Mail bleibt wie überall verborgen |
+
 ## Technik
 
 | Entscheidung | Begründung |

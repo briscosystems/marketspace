@@ -5,6 +5,7 @@ import { Calculator, Droplet, TriangleAlert } from "lucide-react";
 import { useLocale } from "@/components/LocaleProvider";
 import { fill } from "@/lib/i18n";
 import { berechneMischung } from "@/lib/mischungsrechner";
+import { QrTankScanner } from "@/components/QrTankScanner";
 
 /**
  * Mischungsrechner: „Was muss ich jetzt reinkippen?"
@@ -60,6 +61,15 @@ export function Mischungsrechner({
       </div>
       <p className="text-sm text-slate-600">{t("mix.intro")}</p>
 
+      {/* Tank per QR-Code wählen: der Aufkleber kennt das Gesamtvolumen
+          (Betreiber 2026-08-17). Nur zeigen, wenn nicht ohnehin am Tank. */}
+      {tankVolumen == null && (
+        <div className="flex flex-wrap items-center gap-2">
+          <QrTankScanner kompakt />
+          <span className="text-xs text-slate-500">{t("mix.qrHint")}</span>
+        </div>
+      )}
+
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
           <label htmlFor="mix-vol" className="mb-1 block text-sm font-medium text-slate-700">
@@ -71,6 +81,19 @@ export function Mischungsrechner({
             value={volumen}
             onChange={(e) => setVolumen(e.target.value)}
             placeholder="400"
+            className="input"
+          />
+        </div>
+        <div>
+          <label htmlFor="mix-fehl" className="mb-1 block text-sm font-medium text-slate-700">
+            {t("mix.fMissing")}
+          </label>
+          <input
+            id="mix-fehl"
+            inputMode="decimal"
+            value={fehl}
+            onChange={(e) => setFehl(e.target.value)}
+            placeholder="80"
             className="input"
           />
         </div>
@@ -91,19 +114,6 @@ export function Mischungsrechner({
               {fill(t("mix.fTargetHint"), { min: komma(sollMin), max: komma(sollMax) })}
             </p>
           )}
-        </div>
-        <div>
-          <label htmlFor="mix-fehl" className="mb-1 block text-sm font-medium text-slate-700">
-            {t("mix.fMissing")}
-          </label>
-          <input
-            id="mix-fehl"
-            inputMode="decimal"
-            value={fehl}
-            onChange={(e) => setFehl(e.target.value)}
-            placeholder="80"
-            className="input"
-          />
         </div>
         <div>
           <label htmlFor="mix-ist" className="mb-1 block text-sm font-medium text-slate-700">

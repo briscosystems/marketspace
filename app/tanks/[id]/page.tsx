@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { MessreiheChart } from "@/components/MessreiheChart";
+import { TankTeilen } from "@/components/TankTeilen";
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -57,6 +59,7 @@ export default async function TankDetailPage({ params }: { params: Promise<{ id:
         },
       },
       measurements: { orderBy: { measuredAt: "desc" }, take: 50 },
+      freigaben: { select: { userId: true, user: { select: { pseudonym: true } } } },
     },
   });
   if (!tank) notFound();
@@ -177,6 +180,27 @@ export default async function TankDetailPage({ params }: { params: Promise<{ id:
       {/* Messwerte sagen, wie der Tank dasteht — das Foto zeigt, was kein
           Messgerät sieht: Fremdöl, Schaum, Beläge, Späne (Betreiber 2026-08-11). */}
       <OberflaechenScanner produktId={tank.product?.id} />
+
+      {/* Verlauf als Diagramm mit hinterlegten Sollwerten (Betreiber 2026-08-17). */}
+      <MessreiheChart
+        punkte={tank.measurements.map((m) => ({
+          datum: m.measuredAt.toISOString(),
+          konzentration: m.concentrationPct,
+          ph: m.ph,
+          nitrit: m.nitritePpm,
+        }))}
+        sollKonzMin={soll.recommendedConcentrationMin}
+        sollKonzMax={soll.recommendedConcentrationMax}
+        sollPhMin={soll.phEmulsionMin}
+        sollPhMax={soll.phEmulsionMax}
+      />
+
+      {/* Bericht als PDF holen und den Tank lesend mit anderen teilen. */}
+      <TankTeilen
+        tankId={tank.id}
+        hatMessungen={tank.measurements.length > 0}
+        freigaben={tank.freigaben.map((f) => ({ userId: f.userId, pseudonym: f.user.pseudonym }))}
+      />
 
       <Mischungsrechner
         tankVolumen={tank.volumeLiters}
