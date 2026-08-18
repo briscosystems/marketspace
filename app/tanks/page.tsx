@@ -9,7 +9,7 @@ import { TankAnlegen } from "@/components/TankAnlegen";
 import { bewerteMessung, schlechteste, standzeitWochen, type Ampel } from "@/lib/tank-bewertung";
 import { Droplets, Gauge } from "lucide-react";
 
-export const metadata = { title: "Tank-Register — Brisco Marketplace" };
+export const metadata = { title: "KSS-Management — Brisco Marketplace" };
 
 const AMPEL_STIL: Record<Ampel, string> = {
   gut: "bg-emerald-50 text-emerald-700 ring-emerald-200",

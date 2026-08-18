@@ -798,6 +798,13 @@ gibt. Deshalb muss mit mindestens 0,5 % nachbefüllt werden."
 | Die **Test-E-Mail** lässt sich an eine **beliebige Adresse** schicken, nicht nur an das eigene Postfach | Um genau den gemeldeten Fall zu prüfen: Mail an die betroffene Adresse senden und im Protokoll nachsehen |
 | Auf der Testkunden-Willkommensseite gibt es ein **Auge zum Anzeigen des Passworts** | Auf dem Handy vertippt man sich sonst und weiß nicht, woran es lag |
 
+## „Tank-Register" heißt „KSS-Management" (2026-08-18)
+
+| Entscheidung | Begründung |
+|---|---|
+| Der Bereich heißt jetzt **KSS-Management** (EN „Coolant management", NL „Koelsmeermiddel-beheer") — Überschrift, Menü, Seitentitel und alle abgeleiteten Texte | Betreiber-Wortlaut. Geschrieben mit Bindestrich, wie es die deutsche Rechtschreibung bei Abkürzungs-Zusammensetzungen verlangt |
+| Dabei die englische Falschübersetzung **„Sump register" → „Coolant management"** ersetzt; auch „sump life" heißt jetzt „tank life" | „Sumpf" ist laut Festlegung eine Falschübersetzung und darf nirgends stehen — sie hatte sich in der englischen Fassung noch gehalten |
+
 ## Technik
 
 | Entscheidung | Begründung |
