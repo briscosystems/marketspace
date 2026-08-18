@@ -817,6 +817,7 @@ groß ist. Ein Etikett pro Tank."
 | Etikett-Format **halbe A4-Seite** statt der bisherigen vier kleinen pro Blatt: QR-Code 190 pt, Tankname 26 pt, Sollkonzentration 19 pt in Grün | Der Code muss aus Distanz und mit öliger Hand sicher zu treffen sein; die Sollwerte müssen ohne Bücken lesbar sein |
 | Gezeichnet wird aus **einem gemeinsamen Baustein** ([lib/tank-etikett.ts](lib/tank-etikett.ts)); die Einzel-Route auf der Tankseite nutzt ihn ebenfalls und liefert jetzt zwei identische Etiketten (Tank + Reserve) | Ein Design an einer Stelle — Einzel- und Sammeldruck können nicht auseinanderlaufen |
 | Tanks ohne QR-Schlüssel bekommen ihn beim Druck **nachgetragen** | Ältere Tanks entstanden vor der Etikett-Funktion |
+| Im Kopf steht das **offizielle Brisco-Logo** (public/brisco-logo.png, aus dem Original-SVG erzeugt) auf weißem Grund, darunter der grüne Balken — wie im Briefkopf | Betreiber 2026-08-18: „verwende für die Tank-Labels das offizielle Brisco-Logo". Die Wortmarke wird nicht mehr nachgetippt. Fehlt die Datei, trägt das Etikett ersatzweise den Schriftzug — es bleibt in jedem Fall druckbar |
 
 ## Technik
 

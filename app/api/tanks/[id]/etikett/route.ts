@@ -20,6 +20,7 @@ import {
   SEITE_B,
   SEITE_H,
   qrFuerTank,
+  briscoLogo,
   zeichneEtikett,
   schnittlinie,
 } from "@/lib/tank-etikett";
@@ -69,12 +70,13 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   pdf.setProducer("Brisco Systems GmbH");
   const fett = await pdf.embedFont(StandardFonts.HelveticaBold);
   const normal = await pdf.embedFont(StandardFonts.Helvetica);
+  const logo = await briscoLogo(pdf);
   const seite = pdf.addPage([SEITE_B, SEITE_H]);
   const qr = await qrFuerTank(pdf, token);
 
   schnittlinie(seite);
-  zeichneEtikett(seite, { ...tank, qrToken: token }, qr, { fett, normal }, 0);
-  zeichneEtikett(seite, { ...tank, qrToken: token }, qr, { fett, normal }, 1);
+  zeichneEtikett(seite, { ...tank, qrToken: token }, qr, { fett, normal }, 0, logo);
+  zeichneEtikett(seite, { ...tank, qrToken: token }, qr, { fett, normal }, 1, logo);
 
   const bytes = await pdf.save();
   const datei = `Tank-Etikett-${tank.name.replace(/[^\w-]+/g, "-")}.pdf`;

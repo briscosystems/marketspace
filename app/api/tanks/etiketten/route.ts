@@ -17,6 +17,7 @@ import {
   SEITE_B,
   SEITE_H,
   qrFuerTank,
+  briscoLogo,
   zeichneEtikett,
   schnittlinie,
   type EtikettTank,
@@ -73,13 +74,14 @@ export async function GET() {
   pdf.setProducer("Brisco Systems GmbH");
   const fett = await pdf.embedFont(StandardFonts.HelveticaBold);
   const normal = await pdf.embedFont(StandardFonts.Helvetica);
+  const logo = await briscoLogo(pdf);
 
   for (let i = 0; i < fertig.length; i++) {
     const haelfte: 0 | 1 = i % 2 === 0 ? 0 : 1;
     const seite = haelfte === 0 ? pdf.addPage([SEITE_B, SEITE_H]) : pdf.getPage(pdf.getPageCount() - 1);
     if (haelfte === 0) schnittlinie(seite);
     const qr = await qrFuerTank(pdf, fertig[i].qrToken);
-    zeichneEtikett(seite, fertig[i], qr, { fett, normal }, haelfte);
+    zeichneEtikett(seite, fertig[i], qr, { fett, normal }, haelfte, logo);
   }
 
   const bytes = await pdf.save();

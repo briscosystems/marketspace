@@ -11,6 +11,8 @@
  * Refraktometer-Faktor, Volumen — mehr braucht niemand am Tank. Dazu die
  * Aufforderung „Scannen und Messwert eintragen" und der Brisco-Fuß.
  */
+import fs from "node:fs";
+import path from "node:path";
 import { PDFDocument, PDFFont, PDFImage, PDFPage, rgb } from "pdf-lib";
 import QRCode from "qrcode";
 import { siteUrl } from "@/lib/site-url";
@@ -38,6 +40,23 @@ export type EtikettTank = {
     manufacturer: { name: string };
   } | null;
 };
+
+/**
+ * Das offizielle Brisco-Logo einbetten (Betreiber 2026-08-18: „verwende für
+ * die Tank-Labels das offizielle Brisco-Logo"). Die Wortmarke wird nicht
+ * nachgebaut, sondern das Original verwendet — als PNG, weil pdf-lib kein SVG
+ * kann. Fehlt die Datei, bleibt das Etikett brauchbar und trägt nur den
+ * Schriftzug.
+ */
+export async function briscoLogo(pdf: PDFDocument): Promise<PDFImage | null> {
+  try {
+    return await pdf.embedPng(
+      fs.readFileSync(path.join(process.cwd(), "public", "brisco-logo.png")),
+    );
+  } catch {
+    return null;
+  }
+}
 
 /** QR-Bild für einen Tank erzeugen und ins Dokument einbetten. */
 export async function qrFuerTank(pdf: PDFDocument, token: string): Promise<PDFImage> {
@@ -68,6 +87,7 @@ export function zeichneEtikett(
   qrBild: PDFImage,
   fonts: { fett: PDFFont; normal: PDFFont },
   haelfte: 0 | 1,
+  logo?: PDFImage | null,
 ) {
   const { fett, normal } = fonts;
   const RAND = 34;
@@ -87,16 +107,24 @@ export function zeichneEtikett(
     color: rgb(1, 1, 1),
   });
 
-  // Kopfbalken
-  const kopfH = 40;
-  seite.drawRectangle({ x, y: y + etiH - kopfH, width: etiB, height: kopfH, color: GRUEN });
-  seite.drawText("BRISCO Systems GmbH", {
-    x: x + 18,
-    y: y + etiH - 26,
-    size: 15,
-    font: fett,
-    color: rgb(1, 1, 1),
-  });
+  // Kopf im Briefkopf-Stil: offizielles Logo auf Weiß, darunter der grüne
+  // Balken der Hausgestaltung (Betreiber 2026-08-18).
+  const kopfH = 46;
+  if (logo) {
+    const h = 26;
+    const b = (logo.width / logo.height) * h;
+    seite.drawImage(logo, { x: x + 18, y: y + etiH - h - 8, width: b, height: h });
+  } else {
+    seite.drawText("BRISCO Systems", {
+      x: x + 18,
+      y: y + etiH - 28,
+      size: 17,
+      font: fett,
+      color: DUNKEL,
+    });
+  }
+  // Grüner Trennbalken unter dem Logo
+  seite.drawRectangle({ x, y: y + etiH - kopfH, width: etiB, height: 4, color: GRUEN });
 
   // QR-Code links — groß, damit er aus Distanz trifft
   const qrGroesse = 190;
