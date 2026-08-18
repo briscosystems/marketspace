@@ -137,9 +137,16 @@ export async function POST(req: Request) {
   // Anmelde-Aktion (z. B. Messe 2026): Gutschrift für den Neukunden, bei
   // geworbener Anmeldung zusätzlich für den Werber. Fehler hier dürfen die
   // Registrierung nie scheitern lassen.
+  let aktionInfo: string | null = null;
   try {
     const aktion = await passendeAktion(aktionsCode);
     if (aktion) {
+      aktionInfo =
+        `„${aktion.titel}": ${(aktion.creditsAnmeldung / 10).toFixed(0)} € ` +
+        `(${aktion.creditsAnmeldung} Credits) gutgeschrieben` +
+        (referrer && aktion.creditsEmpfehlung > 0
+          ? `, Werber ${referrer.pseudonym} zusätzlich ${(aktion.creditsEmpfehlung / 10).toFixed(0)} €`
+          : "");
       await grantCredits(
         user.id,
         aktion.creditsAnmeldung,
@@ -164,7 +171,7 @@ export async function POST(req: Request) {
     userId: user.id,
     kind: "ADMIN_NEW_USER",
     to: ADMIN_NOTIFY_EMAIL,
-    subject: `Neue Registrierung: ${user.pseudonym} (${role})`,
+    subject: `Neue Anmeldung: ${user.pseudonym}${companyName ? " — " + companyName : ""} (${role})`,
     body: [
       "Neuer Nutzer auf markt.brisco.ch:",
       "",
@@ -176,8 +183,13 @@ export async function POST(req: Request) {
       vatId ? `USt-ID:    ${vatId}` : "",
       referrer ? `Geworben von: ${referrer.pseudonym}` : "",
       `Trial bis: ${trialEndsAt.toLocaleDateString("de-CH")}`,
+      // Im Testbetrieb das Wichtigste: Hat eine Aktion gegriffen und wie viel
+      // wurde gutgeschrieben (Betreiber 2026-08-19)?
+      aktionInfo ? `Aktion:    ${aktionInfo}` : "Aktion:    keine",
+      `Angemeldet: ${new Date().toLocaleString("de-CH")}`,
       "",
-      "→ Admin: https://markt.brisco.ch/admin",
+      "→ Konto ansehen, Credits anpassen, Gratis-Jahr setzen:",
+      "  https://markt.brisco.ch/admin",
     ]
       .filter(Boolean)
       .join("\n"),

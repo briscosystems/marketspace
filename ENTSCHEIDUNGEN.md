@@ -853,6 +853,17 @@ ausrechnen, mit wie viel Konzentration er nachfüllen muss."
 | Auf der **QR-Seite ohne Anmeldung** erscheint die Foto-Schätzung **nicht** | Sie kostet einen Credit; über den QR-Code kommt man ohne Konto herein — ein Fremder dürfte sonst das Guthaben des Betriebs verbrauchen. Messwerte eintragen bleibt ohne Anmeldung möglich |
 | Unter jedem Ergebnis steht: „Schätzung aus dem Bild, keine Messung. Nach dem Auffüllen die Konzentration nachmessen." | Ehrliche Einordnung statt Scheingenauigkeit |
 
+## Betreiber-Mail bei jeder Anmeldung (2026-08-19)
+
+Betreiber: „Sende ein Info-E-Mail auf jgosch@brisco.ch, sobald sich ein
+Testkunde angemeldet hat."
+
+| Entscheidung | Begründung |
+|---|---|
+| Die Benachrichtigung an `jgosch@brisco.ch` **gab es bereits** bei jeder Registrierung — sie ist geblieben und wurde um die Testbetriebs-Angaben ergänzt: **welche Aktion gegriffen hat und wie viel gutgeschrieben wurde**, Werber, Zeitpunkt der Anmeldung | Im Testbetrieb ist genau das die Frage: Kam der Kunde über die Messe-Aktion? Hat er seine 25 € bekommen? |
+| Betreff nennt jetzt **Pseudonym, Firma und Rolle** statt nur Pseudonym | Man sieht am Betreff, ob es ein Betrieb, Händler oder Endkunde ist — ohne die Mail zu öffnen |
+| Die Mail bleibt **fire-and-forget**: Schlägt der Versand fehl, wird die Registrierung trotzdem abgeschlossen | Kein Kunde darf an einem Mailproblem scheitern. Ob die Mail rausging, steht seit 2026-08-18 im Protokoll unter /admin |
+
 ## Technik
 
 | Entscheidung | Begründung |
