@@ -223,14 +223,18 @@ export async function resolveProtectionRefund(formData: FormData) {
  * Live-Versand (ZeptoMail) wirklich zustellt. Ergebnis erscheint als Log-Eintrag
  * unter „System-E-Mails".
  */
-export async function sendTestEmail() {
+export async function sendTestEmail(formData?: FormData) {
   await assertOwner();
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
   if (!userId) return;
   // Adresse zuverlässig aus der DB holen (die Session führt sie evtl. nicht).
   const me = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } });
-  const to = me?.email;
+  // Zieladresse frei wählbar (Betreiber 2026-08-18): Ein Nutzer bekam keine
+  // Passwort-Mail; um solche Fälle zu prüfen, muss man gezielt an die betroffene
+  // Adresse senden können, nicht nur an das eigene Postfach.
+  const gewuenscht = String(formData?.get("to") ?? "").trim();
+  const to = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(gewuenscht) ? gewuenscht : me?.email;
   if (!to) return;
   await sendEmail({
     userId,
@@ -593,5 +597,50 @@ export async function deleteMessage(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   if (!id) return;
   await prisma.message.delete({ where: { id } }).catch(() => {});
+  revalidatePath("/admin");
+}
+
+/**
+ * Konto endgültig löschen (Betreiber 2026-08-18).
+ *
+ * Mit allem, was daran hängt: Angebote, Anfragen, Gespräche, Messungen,
+ * Erfahrungsberichte (Datenbank-Beziehungen räumen kaskadierend auf).
+ *
+ * Zwei Sicherungen, die bewusst NICHT verhandelbar sind:
+ *  1. Ein Admin-Konto lässt sich nicht löschen — sonst sperrt man sich selbst aus.
+ *  2. Wer abgeschlossene Transaktionen hat, wird nur gesperrt statt gelöscht:
+ *     Geschäftsvorfälle müssen nachvollziehbar bleiben (Buchhaltung, Streitfall).
+ *     Das Konto verschwindet aus der Nutzung, die Belege bleiben.
+ */
+export async function deleteUserAccount(formData: FormData) {
+  await assertOwner();
+  const id = String(formData.get("userId") ?? "");
+  if (!id) return;
+
+  const u = await prisma.user.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      role: true,
+      pseudonym: true,
+      _count: { select: { buyerTxns: true, sellerTxns: true } },
+    },
+  });
+  if (!u || u.role === "ADMIN") return;
+
+  if (u._count.buyerTxns + u._count.sellerTxns > 0) {
+    // Nicht löschen, sondern stilllegen — die Geschäftsvorfälle bleiben lesbar.
+    await prisma.user.update({
+      where: { id },
+      data: {
+        blockedAt: new Date(),
+        blockedReason: "Konto auf Wunsch entfernt — wegen bestehender Transaktionen nur gesperrt.",
+      },
+    });
+    revalidatePath("/admin");
+    return;
+  }
+
+  await prisma.user.delete({ where: { id } }).catch(() => {});
   revalidatePath("/admin");
 }

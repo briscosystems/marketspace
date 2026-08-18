@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BlockUserButton } from "@/components/admin/BlockUserButton";
+import { DeleteUserButton } from "@/components/admin/DeleteUserButton";
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -227,7 +228,7 @@ export default async function AdminPage() {
         membershipValidUntil: true,
         blockedAt: true,
         blockedReason: true,
-        _count: { select: { listings: true, referrals: true } },
+        _count: { select: { listings: true, referrals: true, buyerTxns: true, sellerTxns: true } },
       },
       orderBy: [{ searchBoost: "desc" }, { pseudonym: "asc" }],
     }),
@@ -267,7 +268,9 @@ export default async function AdminPage() {
     prisma.emailLog.findMany({
       orderBy: { createdAt: "desc" },
       take: 30,
-      select: { id: true, kind: true, to: true, subject: true, createdAt: true },
+      select: {
+        sent: true,
+        sendError: true, id: true, kind: true, to: true, subject: true, createdAt: true },
     }),
   ]);
 
@@ -1863,16 +1866,26 @@ export default async function AdminPage() {
               </span>
             ))}
           </div>
-          {/* Live-Beweis: Test-Mail an das eigene Admin-Postfach. */}
+          {/* Live-Beweis: Test-Mail — an das eigene Postfach oder gezielt an eine
+              Adresse, bei der etwas nicht ankam (Betreiber 2026-08-18). */}
           {mailStatus.configured && (
-            <form action={sendTestEmail} className="mt-3">
+            <form action={sendTestEmail} className="mt-3 flex flex-wrap items-center gap-2">
+              <input
+                type="email"
+                name="to"
+                placeholder="Adresse (leer = an mich)"
+                className="w-64 rounded-md border border-slate-300 px-2 py-1.5 text-xs"
+              />
               <button
                 type="submit"
                 className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
               >
                 <Mail size={14} />
-                Test-E-Mail an mich senden
+                Test-E-Mail senden
               </button>
+              <span className="text-xs text-slate-500">
+                Ergebnis steht danach unten im Protokoll (Spalte „Versand").
+              </span>
             </form>
           )}
         </div>
@@ -1886,6 +1899,7 @@ export default async function AdminPage() {
               <th className="px-4 py-3">Art</th>
               <th className="px-4 py-3">An</th>
               <th className="px-4 py-3">Betreff</th>
+              <th className="px-4 py-3">Versand</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -1895,15 +1909,37 @@ export default async function AdminPage() {
                   {e.createdAt.toLocaleString("de-DE")}
                 </td>
                 <td className="px-4 py-3 text-slate-600">
-                  {e.kind === "MEMBERSHIP_RENEWAL_REMINDER" ? "Erinnerung" : "Bestätigung"}
+                  {{
+                    MEMBERSHIP_RENEWAL_REMINDER: "Erinnerung",
+                    MEMBERSHIP_RENEWED: "Bestätigung",
+                    PASSWORD_RESET: "Passwort zurücksetzen",
+                    ADMIN_NEW_USER: "Neue Registrierung",
+                    RFQ_EXPIRED: "Anfrage ausgelaufen",
+                  }[e.kind] ?? e.kind}
                 </td>
                 <td className="px-4 py-3 text-slate-600">{e.to}</td>
                 <td className="px-4 py-3 text-slate-900">{e.subject}</td>
+                <td className="px-4 py-3">
+                  {e.sent === true ? (
+                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs text-emerald-900">
+                      versendet
+                    </span>
+                  ) : e.sent === false ? (
+                    <span
+                      title={e.sendError ?? "Grund unbekannt"}
+                      className="rounded-full bg-red-50 px-2 py-0.5 text-xs text-red-700 ring-1 ring-red-200"
+                    >
+                      fehlgeschlagen
+                    </span>
+                  ) : (
+                    <span className="text-xs text-slate-400">unbekannt</span>
+                  )}
+                </td>
               </tr>
             ))}
             {emailLogs.length === 0 && (
               <tr>
-                <td colSpan={4} className="py-4 text-center text-slate-500">
+                <td colSpan={5} className="py-4 text-center text-slate-500">
                   Noch keine System-E-Mails versendet.
                 </td>
               </tr>
@@ -1926,161 +1962,158 @@ export default async function AdminPage() {
         </p>
       </section>
 
-      <section className="card overflow-x-auto p-0">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500">
-              <th className="px-4 py-3">Reseller</th>
-              <th className="px-4 py-3">Vertrauensstufe</th>
-              <th className="px-4 py-3">Angebote</th>
-              <th className="px-4 py-3">Umsatz</th>
-              <th className="px-4 py-3">Boost (0–100)</th>
-              <th className="px-4 py-3">Credits</th>
-              <th className="px-4 py-3">Trial / Abo</th>
-              <th className="px-4 py-3">Sperre</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {users.map((u) => (
-              <tr
-                key={u.id}
-                className={u.blockedAt ? "bg-red-50/70" : u.searchBoost > 0 ? "bg-amber-50/60" : ""}
-              >
-                <td className="px-4 py-3">
-                  <div className="font-medium text-slate-900">{u.pseudonym}</div>
-                  <div className="text-xs text-slate-500">
-                    {u.companyName ? `${u.companyName} · ` : ""}
-                    {u.email}
-                  </div>
-                </td>
-                <td className="px-4 py-3 text-slate-600">{u.trustTier}</td>
-                <td className="px-4 py-3 text-slate-600">{u._count.listings}</td>
-                <td className="px-4 py-3 text-slate-600">
-                  {formatCurrency(revenueBySellerId.get(u.id) ?? 0, "EUR")}
-                </td>
-                <td className="px-4 py-3">
-                  <form action={updateSearchBoost} className="flex items-center gap-2">
-                    <input type="hidden" name="userId" value={u.id} />
-                    <input
-                      type="number"
-                      name="boost"
-                      min={0}
-                      max={100}
-                      defaultValue={u.searchBoost}
-                      className="w-20 rounded-md border border-slate-300 px-2 py-1"
-                    />
-                    <button
-                      type="submit"
-                      className="rounded-md bg-slate-900 px-3 py-1 text-xs font-semibold text-white hover:bg-slate-700"
-                    >
-                      Speichern
-                    </button>
-                  </form>
-                </td>
-                <td className="px-4 py-3">
-                  <div className="mb-1 font-semibold text-slate-900">
-                    {u.creditBalance}
-                    <span className="ml-1 text-xs font-normal text-slate-500">
-                      {u._count.referrals > 0 ? `· ${u._count.referrals} geworben` : ""}
-                    </span>
-                  </div>
-                  <form action={adjustCredits} className="flex items-center gap-1">
-                    <input type="hidden" name="userId" value={u.id} />
-                    <input
-                      type="number"
-                      name="amount"
-                      placeholder="±"
-                      className="w-16 rounded-md border border-slate-300 px-2 py-1 text-xs"
-                    />
-                    <button
-                      type="submit"
-                      className="rounded-md bg-slate-900 px-2 py-1 text-xs font-semibold text-white hover:bg-slate-700"
-                      title="Credits gutschreiben (+) oder abziehen (−)"
-                    >
-                      ±
-                    </button>
-                  </form>
-                </td>
-                <td className="px-4 py-3">
-                  <div className="mb-1 text-xs">
-                    {isMembershipActive(u.membershipValidUntil) ? (
-                      <span className="font-medium text-emerald-700">
-                        Abo bis {u.membershipValidUntil!.toLocaleDateString("de-CH")}
-                      </span>
-                    ) : u.trialEndsAt && u.trialEndsAt.getTime() > Date.now() ? (
-                      <span className="text-blue-700">
-                        Trial bis {u.trialEndsAt.toLocaleDateString("de-CH")}
-                      </span>
-                    ) : (
-                      <span className="text-slate-400">abgelaufen / kein Abo</span>
-                    )}
-                  </div>
-                  <form action={setTrialDays} className="flex items-center gap-1">
-                    <input type="hidden" name="userId" value={u.id} />
-                    <input
-                      type="number"
-                      name="days"
-                      min={0}
-                      max={365}
-                      placeholder="Tage"
-                      className="w-16 rounded-md border border-slate-300 px-2 py-1 text-xs"
-                    />
-                    <button
-                      type="submit"
-                      className="rounded-md bg-slate-900 px-2 py-1 text-xs font-semibold text-white hover:bg-slate-700"
-                      title="Trial ab heute auf X Tage setzen (0 = beenden)"
-                    >
-                      Set
-                    </button>
-                  </form>
-                  {/* Gratis-Konto: Mitgliedschaft auf X Jahre — für Gründungs-Händler/Partner */}
-                  <form action={setFreeMembership} className="mt-1 flex items-center gap-1">
-                    <input type="hidden" name="userId" value={u.id} />
-                    <select
-                      name="months"
-                      defaultValue="12"
-                      className="rounded-md border border-emerald-300 bg-emerald-50 px-1.5 py-1 text-xs text-emerald-900"
-                    >
-                      <option value="1">1 Monat</option>
-                      <option value="2">2 Monate</option>
-                      <option value="3">3 Monate</option>
-                      <option value="6">6 Monate</option>
-                      <option value="12">12 Monate</option>
-                      <option value="24">24 Monate</option>
-                      <option value="36">36 Monate</option>
-                      <option value="0">entfernen</option>
-                    </select>
-                    <button
-                      type="submit"
-                      className="rounded-md bg-emerald-600 px-2 py-1 text-xs font-semibold text-white hover:bg-emerald-700"
-                      title="Gratis-Konto: Mitgliedschaft ab heute auf X Monate setzen (entfernen = Abo-Datum löschen — Achtung, gilt auch für bezahlte Abos)"
-                    >
-                      Gratis
-                    </button>
-                  </form>
-                </td>
-                <td className="px-4 py-3 align-top">
-                  {u.blockedAt && (
-                    <div
-                      className="mb-1 text-[11px] font-semibold text-red-700"
-                      title={u.blockedReason ?? undefined}
-                    >
-                      gesperrt seit {u.blockedAt.toLocaleDateString("de-CH")}
-                    </div>
-                  )}
-                  <BlockUserButton userId={u.id} pseudonym={u.pseudonym} blocked={!!u.blockedAt} />
-                </td>
-              </tr>
-            ))}
-            {users.length === 0 && (
-              <tr>
-                <td colSpan={8} className="px-4 py-6 text-center text-slate-500">
-                  Noch keine Kundenkonten vorhanden.
-                </td>
-              </tr>
+      {/* Karten statt Tabelle (Betreiber 2026-08-18): Acht Spalten mit Formularen
+          liefen rechts aus dem Bild — die Sperre war nur per Scrollbalken
+          erreichbar. Jede Zeile ist jetzt eine Karte, die sich umbricht. */}
+      <section className="space-y-3">
+        {users.length === 0 && (
+          <p className="card text-center text-slate-500">Noch keine Kundenkonten vorhanden.</p>
+        )}
+        {users.map((u) => (
+          <div
+            key={u.id}
+            className={`card space-y-3 ${
+              u.blockedAt ? "bg-red-50/70" : u.searchBoost > 0 ? "bg-amber-50/60" : ""
+            }`}
+          >
+            {/* Kopf: wer, Stufe, Zahlen */}
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <span className="font-semibold text-slate-900">{u.pseudonym}</span>
+              <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">
+                {u.trustTier}
+              </span>
+              <span className="text-xs text-slate-500">
+                {u.companyName ? `${u.companyName} · ` : ""}
+                {u.email}
+              </span>
+              <span className="ml-auto text-xs text-slate-500">
+                {u._count.listings} Angebote · {formatCurrency(revenueBySellerId.get(u.id) ?? 0, "EUR")} Umsatz
+                {u._count.referrals > 0 ? ` · ${u._count.referrals} geworben` : ""}
+              </span>
+            </div>
+
+            {u.blockedAt && (
+              <p className="text-xs font-semibold text-red-700" title={u.blockedReason ?? undefined}>
+                gesperrt seit {u.blockedAt.toLocaleDateString("de-CH")}
+                {u.blockedReason ? ` · ${u.blockedReason}` : ""}
+              </p>
             )}
-          </tbody>
-        </table>
+
+            {/* Werkzeuge: umbrechen statt abschneiden */}
+            <div className="flex flex-wrap items-end gap-x-6 gap-y-3">
+              <form action={updateSearchBoost} className="flex items-end gap-2">
+                <label className="text-xs text-slate-500">
+                  Boost (0–100)
+                  <input type="hidden" name="userId" value={u.id} />
+                  <input
+                    type="number"
+                    name="boost"
+                    min={0}
+                    max={100}
+                    defaultValue={u.searchBoost}
+                    className="mt-0.5 block w-20 rounded-md border border-slate-300 px-2 py-1 text-sm"
+                  />
+                </label>
+                <button
+                  type="submit"
+                  className="rounded-md bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-700"
+                >
+                  Speichern
+                </button>
+              </form>
+
+              <form action={adjustCredits} className="flex items-end gap-2">
+                <label className="text-xs text-slate-500">
+                  Credits: <strong className="text-slate-900">{u.creditBalance}</strong>
+                  <input type="hidden" name="userId" value={u.id} />
+                  <input
+                    type="number"
+                    name="amount"
+                    placeholder="±"
+                    className="mt-0.5 block w-20 rounded-md border border-slate-300 px-2 py-1 text-sm"
+                  />
+                </label>
+                <button
+                  type="submit"
+                  className="rounded-md bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-700"
+                  title="Credits gutschreiben (+) oder abziehen (−)"
+                >
+                  Buchen
+                </button>
+              </form>
+
+              <form action={setTrialDays} className="flex items-end gap-2">
+                <label className="text-xs text-slate-500">
+                  {isMembershipActive(u.membershipValidUntil) ? (
+                    <span className="font-medium text-emerald-700">
+                      Abo bis {u.membershipValidUntil!.toLocaleDateString("de-CH")}
+                    </span>
+                  ) : u.trialEndsAt && u.trialEndsAt.getTime() > Date.now() ? (
+                    <span className="text-blue-700">
+                      Trial bis {u.trialEndsAt.toLocaleDateString("de-CH")}
+                    </span>
+                  ) : (
+                    <span className="text-slate-400">abgelaufen / kein Abo</span>
+                  )}
+                  <input type="hidden" name="userId" value={u.id} />
+                  <input
+                    type="number"
+                    name="days"
+                    min={0}
+                    max={365}
+                    placeholder="Trial-Tage"
+                    className="mt-0.5 block w-24 rounded-md border border-slate-300 px-2 py-1 text-sm"
+                  />
+                </label>
+                <button
+                  type="submit"
+                  className="rounded-md bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-700"
+                  title="Trial ab heute auf X Tage setzen (0 = beenden)"
+                >
+                  Set
+                </button>
+              </form>
+
+              <form action={setFreeMembership} className="flex items-end gap-2">
+                <label className="text-xs text-slate-500">
+                  Gratis-Konto
+                  <input type="hidden" name="userId" value={u.id} />
+                  <select
+                    name="months"
+                    defaultValue="12"
+                    className="mt-0.5 block rounded-md border border-emerald-300 bg-emerald-50 px-2 py-1 text-sm text-emerald-900"
+                  >
+                    <option value="1">1 Monat</option>
+                    <option value="3">3 Monate</option>
+                    <option value="6">6 Monate</option>
+                    <option value="12">12 Monate</option>
+                    <option value="24">24 Monate</option>
+                    <option value="36">36 Monate</option>
+                    <option value="0">entfernen</option>
+                  </select>
+                </label>
+                <button
+                  type="submit"
+                  className="rounded-md bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700"
+                  title="Mitgliedschaft ab heute auf X Monate setzen"
+                >
+                  Gratis
+                </button>
+              </form>
+
+              <div className="ml-auto flex items-end gap-2">
+                <BlockUserButton userId={u.id} pseudonym={u.pseudonym} blocked={!!u.blockedAt} />
+                {u.role !== "ADMIN" && (
+                  <DeleteUserButton
+                    userId={u.id}
+                    pseudonym={u.pseudonym}
+                    hatGeschaefte={(u._count.buyerTxns ?? 0) + (u._count.sellerTxns ?? 0) > 0}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
       </section>
     </div>
   );

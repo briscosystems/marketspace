@@ -131,7 +131,13 @@ export function Mischungsrechner({
       </div>
 
       {ergebnis?.ok && (
-        <div className="space-y-3 rounded-xl bg-emerald-50 p-4 ring-1 ring-emerald-200">
+        <div
+          className={`space-y-3 rounded-xl p-4 ring-1 ${
+            ergebnis.sollErreicht
+              ? "bg-emerald-50 ring-emerald-200"
+              : "bg-amber-50 ring-amber-200"
+          }`}
+        >
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="rounded-lg bg-white/70 p-3">
               <div className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-slate-500">
@@ -151,12 +157,35 @@ export function Mischungsrechner({
               </div>
             </div>
           </div>
-          <p className="text-sm text-emerald-900">
+
+          <p className="text-sm text-slate-800">
             {fill(t("mix.resultLine"), {
               nachfuell: komma(ergebnis.nachfuellProzent),
               ergebnis: komma(ergebnis.ergebnisProzent),
             })}
           </p>
+
+          {/* Sollwert nicht getroffen — ehrlich sagen, in welche Richtung und warum
+              (Betreiber 2026-08-18). */}
+          {!ergebnis.sollErreicht && (
+            <p className="flex items-start gap-1.5 rounded-lg bg-white/80 p-2.5 text-sm text-amber-900">
+              <TriangleAlert className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>
+                <strong>{t("mix.sollNichtErreicht")}</strong>{" "}
+                {fill(
+                  ergebnis.abweichung === "ueber_soll"
+                    ? t("mix.ueberSoll")
+                    : t("mix.unterSoll"),
+                  { ergebnis: komma(ergebnis.ergebnisProzent), soll: komma(zahl(soll)) },
+                )}
+              </span>
+            </p>
+          )}
+
+          {ergebnis.sehrFett && (
+            <p className="rounded-lg bg-white/80 p-2.5 text-sm text-amber-900">{t("mix.sehrFett")}</p>
+          )}
+
           <p className="flex items-start gap-1.5 rounded-lg bg-amber-100 p-2.5 text-sm font-medium text-amber-900">
             <TriangleAlert className="mt-0.5 h-4 w-4 shrink-0" />
             {t("mix.waterFirst")}
@@ -164,27 +193,10 @@ export function Mischungsrechner({
         </div>
       )}
 
-      {ergebnis && !ergebnis.ok && ergebnis.grund === "zu_mager" && (
-        <div className="space-y-2 rounded-xl bg-amber-50 p-4 text-sm text-amber-900 ring-1 ring-amber-200">
-          <p className="font-medium">{t("mix.tooLeanTitle")}</p>
-          <p>
-            {fill(t("mix.tooLeanText"), {
-              maximal: komma(ergebnis.maximalProzent ?? 0),
-              empfehlung: komma(ergebnis.empfehlungProzent ?? 0),
-            })}
-          </p>
-        </div>
-      )}
-
-      {ergebnis && !ergebnis.ok && ergebnis.grund === "zu_fett" && (
-        <div className="rounded-xl bg-slate-100 p-4 text-sm text-slate-700">
-          {fill(t("mix.tooRichText"), { maximal: komma(ergebnis.maximalProzent ?? 0) })}
-        </div>
-      )}
-
-      {ergebnis && !ergebnis.ok && ergebnis.grund === "eingabe" && (
+      {ergebnis && !ergebnis.ok && (
         <div className="rounded-xl bg-slate-100 p-4 text-sm text-slate-700">{t("mix.badInput")}</div>
       )}
+
     </>
   );
 

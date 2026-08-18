@@ -1,7 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, Wrench, MessagesSquare, ArrowRight, Loader2, Info, KeyRound } from "lucide-react";
+import {
+  Sparkles,
+  Wrench,
+  MessagesSquare,
+  ArrowRight,
+  Loader2,
+  Info,
+  KeyRound,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { BASE_PATH } from "@/lib/base-path";
 import { OilBarrels } from "@/components/OilBarrels";
 
@@ -27,6 +37,9 @@ import { OilBarrels } from "@/components/OilBarrels";
 export function TestkundenWillkommen() {
   const [busy, setBusy] = useState(false);
   const [passwort, setPasswort] = useState("");
+  // Passwort im Klartext prüfen können (Betreiber 2026-08-18) — gerade auf dem
+  // Handy vertippt man sich sonst und weiß nicht, woran es lag.
+  const [sichtbar, setSichtbar] = useState(false);
   const [fehler, setFehler] = useState<string | null>(null);
 
   // Einfacher Test-Login (Betreiber 2026-08-15): ein fixes Passwort für alle
@@ -142,13 +155,22 @@ export function TestkundenWillkommen() {
             <label className="relative min-w-0 flex-1 sm:max-w-xs">
               <KeyRound className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
               <input
-                type="password"
+                type={sichtbar ? "text" : "password"}
                 value={passwort}
                 onChange={(e) => setPasswort(e.target.value)}
                 placeholder="Passwort aus Ihrer Einladung"
                 autoComplete="off"
-                className="w-full rounded-xl border border-slate-300 py-3 pl-9 pr-3 text-base focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
+                className="w-full rounded-xl border border-slate-300 py-3 pl-9 pr-11 text-base focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
               />
+              <button
+                type="button"
+                onClick={() => setSichtbar(!sichtbar)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+                aria-label={sichtbar ? "Passwort verbergen" : "Passwort anzeigen"}
+                title={sichtbar ? "Passwort verbergen" : "Passwort anzeigen"}
+              >
+                {sichtbar ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
             </label>
             <button
               type="submit"

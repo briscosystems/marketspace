@@ -775,6 +775,29 @@ Prüfung (siehe „Offen") soll ihn mitprüfen.
 | **PDF-Messbericht** ([app/api/tanks/[id]/bericht/route.ts](app/api/tanks/[id]/bericht/route.ts)): Brisco-Logo im Kopf, Stammdaten, Sollwerte, komplette Messreihe mit **roten Werten außerhalb** — dazu am Fuß **dezent** der Hinweis, dass DOSIMETRIX® hybrid diese Arbeit automatisch übernimmt und typischerweise über 25 % Konzentrat spart | Der Bericht taugt als Nachweis für Audit und Berufsgenossenschaft. Die Werbung steht klein und ganz unten — der Bericht ist ein Werkzeug, keine Anzeige |
 | **Tank teilen** (`TankFreigabe`): lesende Freigabe an ein anderes Konto über dessen Anzeigenamen, jederzeit widerrufbar | Der Empfänger sieht Messreihe, Bemerkungen und Bilder, kann aber nichts eintragen und nichts ändern. Wer Betriebsdaten preisgibt, muss das mit einem Klick zurücknehmen können; die E-Mail bleibt wie überall verborgen |
 
+## Mischungsrechner: nie mit reinem Wasser (2026-08-18)
+
+Betreiber: „Wenn der Tank fetter ist als er sollte, meldet der Rechner ‚mit
+Wasser nachfüllen'. Das ist aber absolut verpönt, da es keine guten Mischungen
+gibt. Deshalb muss mit mindestens 0,5 % nachbefüllt werden."
+
+| Entscheidung | Begründung |
+|---|---|
+| Jede Nachfüllung rechnet mit **mindestens 0,5 % Konzentrat** (`MIN_NACHFUELL_PROZENT`) — auch wenn der Tank bereits über Soll liegt | Reines Wasser ergibt keine gute Mischung, fördert Korrosion an der Nachfüllstelle und verschiebt die Additiv-Balance |
+| Wird der Sollwert damit **nicht getroffen, sagt der Rechner es ausdrücklich** — mit Richtung und Grund: „kommt auf X % statt Y %" | Betreiber-Vorgabe. Lieber eine ehrliche Abweichung als eine schöne Zahl, die nicht stimmt |
+| Am anderen Ende wird auf **100 % begrenzt**: Reicht selbst reines Konzentrat nicht, steht der erreichbare Wert da plus der Rat, nach dem Auffüllen erneut zu messen | Vorher meldete der Rechner in diesem Fall nur „geht nicht" und rechnete gar nicht |
+| Zusätzlich Hinweis bei Nachfüllmischungen **über 15 %**: besser in zwei Schritten | Sehr fette Nachfüllungen schlagen sonst über das Ziel hinaus |
+
+## Admin-Ansicht, Konto löschen, E-Mail-Diagnose (2026-08-18)
+
+| Entscheidung | Begründung |
+|---|---|
+| Die Kundenliste im Admin ist **keine Tabelle mehr, sondern Karten** | Acht Spalten mit Formularen liefen rechts aus dem Bild — die Sperre war nur über den Scrollbalken erreichbar. Karten brechen um und schneiden nichts ab |
+| Neuer Knopf **„Löschen"** je Konto ([components/admin/DeleteUserButton.tsx](components/admin/DeleteUserButton.tsx)) mit deutlicher Rückfrage | Zwei feste Sicherungen: **Admin-Konten** lassen sich nicht löschen (sonst sperrt man sich selbst aus), und wer **abgeschlossene Transaktionen** hat, wird nur gesperrt statt gelöscht — Geschäftsvorfälle müssen nachvollziehbar bleiben. Beides steht in der Rückfrage |
+| Das E-Mail-Protokoll speichert jetzt, **ob die Mail wirklich rausging** (`EmailLog.sent`, `sendError`) und zeigt es als Spalte „Versand" | Ein Passwort-Reset war protokolliert, kam aber nie an — das Protokoll allein sagte nichts über den Erfolg. Alte Einträge stehen auf „unbekannt" |
+| Die **Test-E-Mail** lässt sich an eine **beliebige Adresse** schicken, nicht nur an das eigene Postfach | Um genau den gemeldeten Fall zu prüfen: Mail an die betroffene Adresse senden und im Protokoll nachsehen |
+| Auf der Testkunden-Willkommensseite gibt es ein **Auge zum Anzeigen des Passworts** | Auf dem Handy vertippt man sich sonst und weiß nicht, woran es lag |
+
 ## Technik
 
 | Entscheidung | Begründung |

@@ -112,6 +112,10 @@ export async function sendEmail(params: {
 }): Promise<{ sent: boolean }> {
   const provider = mailProvider();
   let sent = false;
+  // Fehlergrund mitschreiben (Betreiber 2026-08-18): Das Protokoll allein sagte
+  // bisher nicht, OB die Mail rausging — ein nie zugestellter Passwort-Reset
+  // sah aus wie ein erfolgreicher.
+  let fehler: string | null = null;
 
   try {
     if (provider === "zeptomail") {
@@ -121,11 +125,13 @@ export async function sendEmail(params: {
       await sendViaSmtp(params.to, params.subject, params.body);
       sent = true;
     } else {
+      fehler = "Kein Versandweg konfiguriert (weder ZeptoMail noch SMTP).";
       console.log(
         `[E-Mail] kein Versand konfiguriert — nicht verschickt. An ${params.to} — ${params.subject}`,
       );
     }
   } catch (e) {
+    fehler = e instanceof Error ? e.message.slice(0, 500) : String(e).slice(0, 500);
     // Nicht werfen: Ein Mailproblem darf den Aufrufer (z.B. Passwort-Reset) nicht
     // scheitern lassen — sonst verrät ein Fehler dem Angreifer, ob ein Konto
     // existiert. Der Fehler landet im Log; der Admin-Kasten zeigt den Grund.
@@ -140,6 +146,8 @@ export async function sendEmail(params: {
         to: params.to,
         subject: params.subject,
         body: params.body,
+        sent,
+        sendError: fehler,
       },
     });
   }

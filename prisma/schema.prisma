@@ -692,6 +692,12 @@ model EmailLog {
   to        String
   subject   String
   body      String
+  /// Ist die Mail wirklich rausgegangen? (Betreiber 2026-08-18: Ein Passwort-
+  /// Reset war protokolliert, kam aber nie an — das Protokoll allein sagte
+  /// nichts über den Erfolg.) null = alter Eintrag von vor dieser Änderung.
+  sent      Boolean?
+  /// Fehlermeldung des Providers, wenn der Versand scheiterte.
+  sendError String?
   createdAt DateTime  @default(now())
 
   @@index([userId])
