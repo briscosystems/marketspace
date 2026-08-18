@@ -203,6 +203,7 @@ export default async function TankDetailPage({ params }: { params: Promise<{ id:
       />
 
       <Mischungsrechner
+        tankId={tank.id}
         tankVolumen={tank.volumeLiters}
         sollMin={soll.recommendedConcentrationMin}
         sollMax={soll.recommendedConcentrationMax}

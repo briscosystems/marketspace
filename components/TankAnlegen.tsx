@@ -17,6 +17,7 @@ export function TankAnlegen({ produkte }: { produkte: Produkt[] }) {
   const [name, setName] = useState("");
   const [machine, setMachine] = useState("");
   const [volume, setVolume] = useState("");
+  const [hoehe, setHoehe] = useState("");
   const [productId, setProductId] = useState("");
   const [productFreetext, setProductFreetext] = useState("");
   const [dh, setDh] = useState("");
@@ -42,6 +43,7 @@ export function TankAnlegen({ produkte }: { produkte: Produkt[] }) {
           productId: productId || null,
           productFreetext: productId ? null : productFreetext || null,
           waterHardnessDh: zahl(dh),
+          heightCm: zahl(hoehe),
           filledAt: filledAt ? new Date(filledAt).toISOString() : null,
         }),
       });
@@ -146,6 +148,21 @@ export function TankAnlegen({ produkte }: { produkte: Produkt[] }) {
             placeholder="400"
             className="input"
           />
+        </div>
+
+        <div>
+          <label htmlFor="tank-hoehe" className="mb-1 block text-sm font-medium text-slate-700">
+            {t("tank.fHoehe")}
+          </label>
+          <input
+            id="tank-hoehe"
+            inputMode="decimal"
+            value={hoehe}
+            onChange={(e) => setHoehe(e.target.value)}
+            placeholder="80"
+            className="input"
+          />
+          <p className="mt-1 text-xs text-slate-500">{t("tank.fHoeheHint")}</p>
         </div>
         <div>
           <label htmlFor="tank-dh" className="mb-1 block text-sm font-medium text-slate-700">

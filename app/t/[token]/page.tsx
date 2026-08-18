@@ -11,6 +11,8 @@
  * ein abfotografierter Aufkleber gibt also keine Betriebsdaten preis.
  */
 import Link from "next/link";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getT } from "@/lib/i18n-server";
@@ -26,6 +28,7 @@ export const metadata = {
 export default async function QrMessungPage({ params }: { params: Promise<{ token: string }> }) {
   const t = await getT();
   const { token } = await params;
+  const session = await getServerSession(authOptions);
 
   const tank = await prisma.coolantTank.findFirst({
     where: { qrToken: token, archivedAt: null },
@@ -83,7 +86,12 @@ export default async function QrMessungPage({ params }: { params: Promise<{ toke
         token={token}
       />
 
+      {/* Foto-Schätzung nur für Angemeldete (2026-08-19): Sie kostet einen
+          Credit. Über den QR-Code kommt man ohne Konto herein — dann dürfte
+          ein Fremder das Guthaben des Betriebs verbrauchen. Messwerte
+          eintragen bleibt wie bisher ohne Anmeldung möglich. */}
       <Mischungsrechner
+        tankId={session?.user?.id ? tank.id : undefined}
         tankVolumen={tank.volumeLiters}
         sollMin={tank.product?.recommendedConcentrationMin ?? null}
         sollMax={tank.product?.recommendedConcentrationMax ?? null}

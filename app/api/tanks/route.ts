@@ -18,6 +18,8 @@ const TankSchema = z.object({
   productId: z.string().trim().min(1).optional().nullable(),
   productFreetext: z.string().trim().max(160).optional().nullable(),
   waterHardnessDh: z.number().min(0).max(200).optional().nullable(),
+  // Innenhöhe für die Füllstands-Schätzung per Foto (2026-08-19)
+  heightCm: z.number().min(1).max(1000).optional().nullable(),
   filledAt: z.string().datetime().optional().nullable(),
   notes: z.string().trim().max(2000).optional().nullable(),
 });
@@ -77,6 +79,7 @@ export async function POST(req: Request) {
       productId,
       productFreetext: productId ? null : d.productFreetext || null,
       waterHardnessDh: d.waterHardnessDh ?? null,
+      heightCm: d.heightCm ?? null,
       filledAt: d.filledAt ? new Date(d.filledAt) : null,
       notes: d.notes || null,
     },

@@ -832,6 +832,27 @@ Messwert in den Mischungsrechner übernommen werden."
 | Sobald der Nutzer selbst tippt, verschwindet der Hinweis | Dann ist es sein Wert, nicht der gemessene |
 | Auf der **QR-Seite** bekommt der Rechner weiterhin **keine** letzte Messung vom Server — nur die eigene, gerade gespeicherte über das Ereignis | Sonst gäbe ein abfotografierter Aufkleber Betriebsdaten preis. Diese Festlegung bleibt unangetastet |
 
+## Fehlvolumen aus dem Tankfoto schätzen (2026-08-19)
+
+Betreiber-Idee: „Wenn der Kunde zuerst den QR-Code scannt, dann die Messung
+macht und speichert — wenn er jetzt gleich noch den Tank fotografieren kann, um
+zu sehen wie hoch der Füllstand ist, dann könnte der Mischungsrechner sofort
+ausrechnen, mit wie viel Konzentration er nachfüllen muss."
+
+**Erst geprüft, dann gebaut.** Test mit Bildern bekannter Füllstände
+(2026-08-19): Schätzung 30→30 %, 55→57 %, 80→87 % (mit Skala im Bild) und
+25→25 %, 60→63 %, 85→90 % (ohne Skala). Abweichung also 0–7 Prozentpunkte.
+
+| Entscheidung | Begründung |
+|---|---|
+| Foto-Schätzung gebaut ([app/api/tanks/[id]/fuellstand/route.ts](app/api/tanks/[id]/fuellstand/route.ts), [components/FuellstandFoto.tsx](components/FuellstandFoto.tsx)), direkt beim Feld „Fehlvolumen" im Mischungsrechner; bis zu drei Aufnahmen auf einmal | Der Anwender steht ohnehin mit dem Handy am Tank |
+| Der Wert wird **nicht automatisch gesetzt**, sondern als Vorschlag mit **Spanne in Litern** gezeigt; erst ein Klick übernimmt ihn | Das Fehlvolumen ist die Differenz zum vollen Tank — aus 5 Prozentpunkten Schätzfehler wird bei fast vollem Tank schnell ein Drittel Abweichung. Wer den Tank kennt, sieht sofort, ob der Vorschlag passt |
+| **Trotzdem brauchbar**, weil der Fehler sich weitgehend aufhebt: nachgerechnet ergibt eine Schätzung von 65 % statt 60 % eine Endkonzentration von 7,3 % statt 7,0 %; im ungünstigsten Fall (fast voller Tank) rund 1 Prozentpunkt | Man füllt mit der berechneten Mischung auf, bis der Tank voll ist — nicht mit einer abgezählten Menge. Deshalb schlägt der Volumenfehler nur gedämpft durch |
+| Die KI **rät nicht**: Ohne erkennbaren Flüssigkeitsspiegel und Höhenbezug sagt sie „nicht beurteilbar" und nennt, was ein besseres Foto zeigen müsste — der Credit wird zurückgebucht | Hausregel. Im Test korrekt erkannt |
+| Neues, freiwilliges Feld **Innenhöhe des Tanks in cm** | Macht die Schätzung deutlich sicherer, ist aber keine Pflicht |
+| Auf der **QR-Seite ohne Anmeldung** erscheint die Foto-Schätzung **nicht** | Sie kostet einen Credit; über den QR-Code kommt man ohne Konto herein — ein Fremder dürfte sonst das Guthaben des Betriebs verbrauchen. Messwerte eintragen bleibt ohne Anmeldung möglich |
+| Unter jedem Ergebnis steht: „Schätzung aus dem Bild, keine Messung. Nach dem Auffüllen die Konzentration nachmessen." | Ehrliche Einordnung statt Scheingenauigkeit |
+
 ## Technik
 
 | Entscheidung | Begründung |

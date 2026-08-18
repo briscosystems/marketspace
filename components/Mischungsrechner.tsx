@@ -6,6 +6,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { fill } from "@/lib/i18n";
 import { berechneMischung } from "@/lib/mischungsrechner";
 import { QrTankScanner } from "@/components/QrTankScanner";
+import { FuellstandFoto } from "@/components/FuellstandFoto";
 
 /**
  * Mischungsrechner: „Was muss ich jetzt reinkippen?"
@@ -15,12 +16,16 @@ import { QrTankScanner } from "@/components/QrTankScanner";
  * viel fehlt.
  */
 export function Mischungsrechner({
+  tankId,
   tankVolumen,
   sollMin,
   sollMax,
   istKonzentration,
   kompakt = false,
 }: {
+  /** Nur gesetzt, wenn der Rechner an einem konkreten Tank steht — dann kann
+   *  das Fehlvolumen per Foto geschätzt werden (Betreiber 2026-08-19). */
+  tankId?: string;
   tankVolumen?: number | null;
   sollMin?: number | null;
   sollMax?: number | null;
@@ -124,6 +129,11 @@ export function Mischungsrechner({
             placeholder="80"
             className="input"
           />
+          {tankId && tankVolumen != null && (
+            <div className="mt-2">
+              <FuellstandFoto tankId={tankId} onFehlvolumen={(l) => setFehl(String(l))} />
+            </div>
+          )}
         </div>
         <div>
           <label htmlFor="mix-soll" className="mb-1 block text-sm font-medium text-slate-700">

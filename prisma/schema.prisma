@@ -1606,6 +1606,10 @@ model CoolantTank {
 
   /// Ansetzwasser-Härte am Standort in °dH — bleibt über alle Messungen gleich.
   waterHardnessDh Float?
+  /// Innenhöhe des Tanks in cm — Grundlage für die Füllstands-Schätzung per
+  /// Foto (Betreiber 2026-08-19). Ohne Angabe schätzt die KI nur den Anteil
+  /// der Höhe; mit Angabe wird daraus das Fehlvolumen in Litern.
+  heightCm        Float?
 
   /// Wann zuletzt frisch angesetzt wurde. Aus diesem Datum und dem Wechsel
   /// entsteht die echte Standzeit.
