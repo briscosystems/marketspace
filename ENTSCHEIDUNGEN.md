@@ -805,6 +805,19 @@ gibt. Deshalb muss mit mindestens 0,5 % nachbefüllt werden."
 | Der Bereich heißt jetzt **KSS-Management** (EN „Coolant management", NL „Koelsmeermiddel-beheer") — Überschrift, Menü, Seitentitel und alle abgeleiteten Texte | Betreiber-Wortlaut. Geschrieben mit Bindestrich, wie es die deutsche Rechtschreibung bei Abkürzungs-Zusammensetzungen verlangt |
 | Dabei die englische Falschübersetzung **„Sump register" → „Coolant management"** ersetzt; auch „sump life" heißt jetzt „tank life" | „Sumpf" ist laut Festlegung eine Falschübersetzung und darf nirgends stehen — sie hatte sich in der englischen Fassung noch gehalten |
 
+## Tank-Etiketten: halbe A4-Seite, Sammeldruck (2026-08-18)
+
+Betreiber: „Auf dieser Übersichtsseite muss auch der Button Tank-Etikett
+drucken stehen. Dazu ein PDF generieren, wobei ein Tank-Label eine 1/2 Seite A4
+groß ist. Ein Etikett pro Tank."
+
+| Entscheidung | Begründung |
+|---|---|
+| Neuer Knopf **„Etiketten für alle Tanks drucken"** auf der KSS-Management-Übersicht → ein PDF mit **einem Etikett je Tank**, zwei Etiketten pro A4-Blatt, gestrichelte Schnittlinie in der Mitte | Wer zehn Maschinen hat, druckt einmal und klebt der Reihe nach — statt zehnmal einzeln |
+| Etikett-Format **halbe A4-Seite** statt der bisherigen vier kleinen pro Blatt: QR-Code 190 pt, Tankname 26 pt, Sollkonzentration 19 pt in Grün | Der Code muss aus Distanz und mit öliger Hand sicher zu treffen sein; die Sollwerte müssen ohne Bücken lesbar sein |
+| Gezeichnet wird aus **einem gemeinsamen Baustein** ([lib/tank-etikett.ts](lib/tank-etikett.ts)); die Einzel-Route auf der Tankseite nutzt ihn ebenfalls und liefert jetzt zwei identische Etiketten (Tank + Reserve) | Ein Design an einer Stelle — Einzel- und Sammeldruck können nicht auseinanderlaufen |
+| Tanks ohne QR-Schlüssel bekommen ihn beim Druck **nachgetragen** | Ältere Tanks entstanden vor der Etikett-Funktion |
+
 ## Technik
 
 | Entscheidung | Begründung |

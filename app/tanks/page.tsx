@@ -7,7 +7,7 @@ import { getT } from "@/lib/i18n-server";
 import { fill } from "@/lib/i18n";
 import { TankAnlegen } from "@/components/TankAnlegen";
 import { bewerteMessung, schlechteste, standzeitWochen, type Ampel } from "@/lib/tank-bewertung";
-import { Droplets, Gauge } from "lucide-react";
+import { Droplets, Gauge, Printer } from "lucide-react";
 
 export const metadata = { title: "KSS-Management — Brisco Marketplace" };
 
@@ -71,8 +71,19 @@ export default async function TanksPage() {
         <p className="max-w-3xl text-sm text-slate-600">{t("tank.intro")}</p>
         {/* Am Tank steht der QR-Aufkleber: scannen führt direkt ins
             Messformular dieses Tanks (Betreiber 2026-08-17). */}
-        <div className="pt-1">
+        <div className="flex flex-wrap items-center gap-2 pt-1">
           <QrTankScanner />
+          {/* Etiketten für alle Tanks auf einmal (Betreiber 2026-08-18):
+              ein Etikett je Tank, halbe A4-Seite, zwei pro Blatt. */}
+          {tanks.length > 0 && (
+            <a
+              href="/api/tanks/etiketten"
+              className="inline-flex items-center gap-2 rounded-lg bg-slate-100 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200"
+            >
+              <Printer className="h-4 w-4" />
+              {t("tank.etikettenAlle")}
+            </a>
+          )}
         </div>
       </header>
 
