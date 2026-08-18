@@ -819,6 +819,19 @@ groß ist. Ein Etikett pro Tank."
 | Tanks ohne QR-Schlüssel bekommen ihn beim Druck **nachgetragen** | Ältere Tanks entstanden vor der Etikett-Funktion |
 | Im Kopf steht das **offizielle Brisco-Logo** (public/brisco-logo.png, aus dem Original-SVG erzeugt) auf weißem Grund, darunter der grüne Balken — wie im Briefkopf | Betreiber 2026-08-18: „verwende für die Tank-Labels das offizielle Brisco-Logo". Die Wortmarke wird nicht mehr nachgetippt. Fehlt die Datei, trägt das Etikett ersatzweise den Schriftzug — es bleibt in jedem Fall druckbar |
 
+## Gemessener Wert landet im Mischungsrechner (2026-08-19)
+
+Betreiber: „Sobald eine Messung gemacht und gespeichert wird, muss dieser
+Messwert in den Mischungsrechner übernommen werden."
+
+| Entscheidung | Begründung |
+|---|---|
+| Nach dem Speichern übernimmt der Mischungsrechner die **gerechnete Konzentration** sofort ins Feld „Gemessene Konzentration"; darunter steht „Aus deiner letzten Messung übernommen" | Der Wert war gerade eingetippt — ihn ein zweites Mal einzugeben ist unnötige Arbeit und eine Fehlerquelle |
+| Die Messwert-Route gibt die **berechnete Konzentration zurück** (Brix × Refraktometer-Faktor), der Rechner rechnet nicht selbst | Eine Rechenstelle, ein Ergebnis — sonst driften Server und Anzeige auseinander |
+| Übernommen wird über ein **Fenster-Ereignis** (`brisco:messung`) UND über einen Prop-Abgleich | Das Ereignis wirkt sofort und auch auf der QR-Seite; der Prop-Abgleich fängt das Neuladen der Tankseite ab. Ohne ihn blieb der alte Wert stehen: Der Anfangswert von `useState` wird beim Aktualisieren nicht neu gesetzt — genau der gemeldete Fehler |
+| Sobald der Nutzer selbst tippt, verschwindet der Hinweis | Dann ist es sein Wert, nicht der gemessene |
+| Auf der **QR-Seite** bekommt der Rechner weiterhin **keine** letzte Messung vom Server — nur die eigene, gerade gespeicherte über das Ereignis | Sonst gäbe ein abfotografierter Aufkleber Betriebsdaten preis. Diese Festlegung bleibt unangetastet |
+
 ## Technik
 
 | Entscheidung | Begründung |

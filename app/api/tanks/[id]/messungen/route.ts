@@ -103,8 +103,14 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       note: d.note || null,
       source: d.source ?? "WEB",
     },
-    select: { id: true },
+    select: { id: true, concentrationPct: true },
   });
 
-  return NextResponse.json({ ok: true, id: m.id }, { status: 201 });
+  // Die gerechnete Konzentration kommt mit zurück: Der Mischungsrechner
+  // übernimmt sie direkt, ohne den Refraktometer-Faktor selbst anzuwenden
+  // (Betreiber 2026-08-19).
+  return NextResponse.json(
+    { ok: true, id: m.id, messung: { concentrationPct: m.concentrationPct } },
+    { status: 201 },
+  );
 }

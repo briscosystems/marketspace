@@ -115,6 +115,17 @@ export function MessungErfassen({
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error ?? t("tank.errSave"));
+      // Den frisch gemessenen Wert an den Mischungsrechner weiterreichen
+      // (Betreiber 2026-08-19). Über ein Fenster-Ereignis, weil beide
+      // Bausteine Geschwister sind — auf der Tankseite UND auf der QR-Seite,
+      // wo der Rechner die letzte Messung nicht vom Server bekommt.
+      const gemessen = data?.messung?.concentrationPct ?? vorschau;
+      if (typeof gemessen === "number") {
+        window.dispatchEvent(
+          new CustomEvent("brisco:messung", { detail: { konzentration: gemessen } }),
+        );
+      }
+
       setBrix("");
       setPh("");
       setNitrit("");

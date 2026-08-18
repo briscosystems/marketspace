@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Calculator, Droplet, TriangleAlert } from "lucide-react";
 import { useLocale } from "@/components/LocaleProvider";
 import { fill } from "@/lib/i18n";
@@ -37,6 +37,34 @@ export function Mischungsrechner({
   const [soll, setSoll] = useState(zielVorgabe != null ? String(zielVorgabe) : "");
   const [fehl, setFehl] = useState("");
   const [ist, setIst] = useState(istKonzentration != null ? String(istKonzentration) : "");
+  // Zeigt an, dass der Wert aus einer Messung stammt und nicht getippt wurde.
+  const [ausMessung, setAusMessung] = useState(istKonzentration != null);
+
+  // Neue Messung übernehmen (Betreiber 2026-08-19). Zwei Wege, weil der
+  // Rechner an zwei Stellen steht:
+  //  - Fenster-Ereignis: sofort nach dem Speichern, auch auf der QR-Seite,
+  //    wo der Server dem Rechner keine letzte Messung mitgibt.
+  //  - Prop-Abgleich: nach dem Neuladen der Tankseite. Der Anfangswert von
+  //    useState allein reicht nicht — er wird beim Aktualisieren nicht neu
+  //    gesetzt, deshalb blieb der alte Wert bisher stehen.
+  useEffect(() => {
+    function uebernehmen(e: Event) {
+      const wert = (e as CustomEvent<{ konzentration?: number }>).detail?.konzentration;
+      if (typeof wert === "number") {
+        setIst(String(Math.round(wert * 100) / 100));
+        setAusMessung(true);
+      }
+    }
+    window.addEventListener("brisco:messung", uebernehmen);
+    return () => window.removeEventListener("brisco:messung", uebernehmen);
+  }, []);
+
+  useEffect(() => {
+    if (istKonzentration != null) {
+      setIst(String(istKonzentration));
+      setAusMessung(true);
+    }
+  }, [istKonzentration]);
 
   const zahl = (s: string): number => Number(s.replace(",", "."));
   const vollstaendig =
@@ -123,10 +151,16 @@ export function Mischungsrechner({
             id="mix-ist"
             inputMode="decimal"
             value={ist}
-            onChange={(e) => setIst(e.target.value)}
+            onChange={(e) => {
+              setIst(e.target.value);
+              setAusMessung(false);
+            }}
             placeholder="5"
             className="input"
           />
+          {ausMessung && ist.trim() !== "" && (
+            <p className="mt-1 text-xs text-emerald-700">{t("mix.ausMessung")}</p>
+          )}
         </div>
       </div>
 
