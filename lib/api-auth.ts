@@ -89,3 +89,72 @@ export async function apiAuth(req: Request): Promise<ApiAuthErgebnis> {
 
   return { ok: true, caller: { userId: key.user.id, keyId: key.id } };
 }
+
+/**
+ * Authentifizierung für die GERÄTE-Endpunkte (/api/v1/geraet/*).
+ *
+ * Unterschied zu apiAuth(): Ein Schlüssel der Art GERAET braucht KEINE
+ * Marke-Stufe (Betreiber 2026-09-22). Grund: Der eMix1500 steht beim Kunden
+ * des Mischers — der ist nicht zwingend Marke-Mitglied. Das Gerät liest
+ * ausschließlich Stammdaten, die auf den Produktseiten ohnehin öffentlich
+ * stehen (Refraktometer-Faktor, Sollkonzentration, pH-Fenster).
+ *
+ * Ein PLATTFORM-Schlüssel darf die Geräte-Endpunkte ebenfalls benutzen —
+ * dann aber mit der üblichen Marke-Prüfung. So kann ein Marke-Mitglied seine
+ * bestehende Anbindung weiterverwenden.
+ */
+export async function apiAuthGeraet(req: Request): Promise<ApiAuthErgebnis> {
+  const header = req.headers.get("authorization") ?? "";
+  const m = /^Bearer\s+(brisco_[a-f0-9]{48})$/i.exec(header.trim());
+  if (!m) {
+    return fehler(
+      401,
+      "missing_key",
+      "API-Schlüssel fehlt. Erwartet: Authorization: Bearer brisco_…",
+    );
+  }
+
+  const key = await prisma.apiKey.findUnique({
+    where: { keyHash: hashApiKey(m[1]) },
+    select: {
+      id: true,
+      kind: true,
+      revokedAt: true,
+      user: {
+        select: {
+          id: true,
+          blockedAt: true,
+          membershipTier: true,
+          membershipValidUntil: true,
+        },
+      },
+    },
+  });
+  if (!key || key.revokedAt) {
+    return fehler(401, "invalid_key", "API-Schlüssel ungültig oder widerrufen.");
+  }
+  if (key.user.blockedAt) {
+    return fehler(403, "account_blocked", "Dieses Konto ist gesperrt.");
+  }
+
+  // Plattform-Schlüssel behalten die Marke-Pflicht; Geräte-Schlüssel nicht.
+  if (key.kind === "PLATTFORM") {
+    const tier = activeTier({
+      membershipTier: key.user.membershipTier,
+      membershipValidUntil: key.user.membershipValidUntil,
+    });
+    if (tier !== "MARKE") {
+      return fehler(
+        403,
+        "tier_required",
+        "Dieser Schlüssel gehört zu einem Konto ohne aktive Marke-Stufe. Für Maschinen bitte einen Geräte-Schlüssel anlegen.",
+      );
+    }
+  }
+
+  prisma.apiKey
+    .update({ where: { id: key.id }, data: { lastUsedAt: new Date() } })
+    .catch(() => {});
+
+  return { ok: true, caller: { userId: key.user.id, keyId: key.id } };
+}

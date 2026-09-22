@@ -865,6 +865,42 @@ Testkunde angemeldet hat."
 | Betreff nennt jetzt **Pseudonym, Firma und Rolle** statt nur Pseudonym | Man sieht am Betreff, ob es ein Betrieb, Händler oder Endkunde ist — ohne die Mail zu öffnen |
 | Die Mail bleibt **fire-and-forget**: Schlägt der Versand fehl, wird die Registrierung trotzdem abgeschlossen | Kein Kunde darf an einem Mailproblem scheitern. Ob die Mail rausging, steht seit 2026-08-18 im Protokoll unter /admin |
 
+## Geräte-Schnittstelle für den eMix1500 (2026-09-22)
+
+Betreiber: „Mach eine REST-Schnittstelle, wo externe, insbesondere der eMix1500
+IoT-Mischer, auf diese Datenbank zugreifen kann … Der eMix benötigt
+insbesondere den Umrechnungsfaktor Brix zu Konzentration. … Diese Plattform
+matcht den KSS-Typen, es kann sein, dass der Typ im eMix nicht genau erfasst
+ist. Ev. wäre eine Auswahlbox, wenn man den Hersteller eingibt, noch besser."
+
+Vier Endpunkte unter `/api/v1/geraet/` — [kss](app/api/v1/geraet/kss/route.ts)
+(Typ erkennen), [hersteller](app/api/v1/geraet/hersteller/route.ts),
+[produkte](app/api/v1/geraet/produkte/route.ts) und
+[kss/{id}](app/api/v1/geraet/kss/[id]/route.ts). Logik in
+[lib/kss-matching.ts](lib/kss-matching.ts) und
+[lib/kss-geraet.ts](lib/kss-geraet.ts).
+
+| Entscheidung | Begründung |
+|---|---|
+| **Es wird nicht geraten.** Ein Treffer gilt nur als eindeutig, wenn er mindestens 80 von 100 Punkten hat **und** mindestens 15 Punkte vor dem Zweitbesten liegt. Sonst kommen alle Kandidaten zurück und der Bediener wählt am Gerät | Ein falscher Refraktometer-Faktor setzt die Emulsion falsch an: zu mager gibt Korrosion und Werkzeugverschleiss, zu fett kostet Geld und reizt die Haut. Lieber eine Rückfrage als eine falsche Zahl |
+| Fehlt der Faktor, steht `refraktometerFaktor: null` und `faktorVorhanden: false` — **nie** ein angenommener Wert wie 1,0 | dito. Von 185 wassermischbaren Produkten haben 39 keinen Faktor hinterlegt |
+| Schreibweise egal: „bcool755", „B-Cool 755", „B Cool 755 Blaser" führen alle zum selben Produkt (Levenshtein + normalisierte Suchtoken) | Im Gerät steht der Stoff so, wie ihn irgendwann jemand eingetippt hat |
+| Findet die Erkennung nichts, wird wenigstens der **Hersteller** aus der Eingabe erkannt und mitgegeben | Sonst steht das Gerät in einer Sackgasse. So springt es direkt in die Produktliste dieses Herstellers |
+| Neue Schlüsselart **GERAET** (`ApiKeyKind`) neben PLATTFORM; Geräte-Schlüssel brauchen **keine Marke-Stufe** und dürfen von jedem Konto angelegt werden (bis 25 Stück, je Gerät einer) | Der Mischer steht beim Werkstattkunden, nicht bei einem Marke-Mitglied. Er liest nur Daten, die ohnehin auf jeder Produktseite öffentlich stehen. Ein Zwang zur Marke-Stufe hätte das Feature für die eigentliche Zielgruppe unbrauchbar gemacht |
+| Geräte-Schlüssel tragen ein freiwilliges Feld **Seriennummer** (`geraetLabel`) | Bei mehreren Mischern muss man einen einzelnen widerrufen können, ohne die anderen lahmzulegen |
+| Nur wassermischbare Produkte (`COOLANT_WATER_MIX`) werden durchsucht; `alle=1` hebt das auf | Ein Mischer kann Schleiföl oder Vollöl nicht ansetzen |
+| Eigener Endpunkt `produkte` fürs Durchblättern, getrennt von `kss` fürs Erkennen | Das eine rät nicht und soll es auch nicht — das andere ist eine schlichte Liste zum Antippen |
+
+**Geprüft am 2026-09-22** gegen die lokale Datenbank: „bcool755" und
+„B Cool 755 Blaser" → eindeutig B-Cool 755; „B-Cool" → fünf Kandidaten zur
+Auswahl; „Blasocut BC 940" → eindeutig, aber mit Hinweis auf den fehlenden
+Faktor; „Blaser Superkuehl 9000" → kein Produkt, aber Hersteller erkannt.
+
+**Dabei aufgefallen (offen):** Im Katalog stehen Doppel-Einträge —
+„B-Cool 755" / „B-Cool 755 (Art. 11755)" und „B-Cool MC 610" /
+„B-Cool MC 610 (DE)". Sie machen die Auswahl am Gerät unnötig mehrdeutig und
+gehören mit der ohnehin ausstehenden Produktbereinigung zusammengelegt.
+
 ## Technik
 
 | Entscheidung | Begründung |

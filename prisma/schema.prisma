@@ -791,17 +791,32 @@ enum CreditTxKind {
  * wird nur der sha256-Hash; der Klartext wird genau einmal angezeigt.
  */
 model ApiKey {
-  id         String    @id @default(cuid())
-  userId     String
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name       String // vom Nutzer vergebener Zweck, z.B. "ERP-Anbindung"
-  keyHash    String    @unique // sha256 des Klartext-Schlüssels
-  prefix     String // erste 12 Zeichen zur Wiedererkennung in der Liste
-  createdAt  DateTime  @default(now())
-  lastUsedAt DateTime?
-  revokedAt  DateTime?
+  id          String     @id @default(cuid())
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String // vom Nutzer vergebener Zweck, z.B. "ERP-Anbindung"
+  keyHash     String     @unique // sha256 des Klartext-Schlüssels
+  prefix      String // erste 12 Zeichen zur Wiedererkennung in der Liste
+  /// Welche Art Zugang (Betreiber 2026-09-22):
+  ///  - PLATTFORM: voller Lesezugriff auf Katalog, SDS und KI — nur mit
+  ///    aktiver Marke-Stufe.
+  ///  - GERAET: nur die Geräte-Endpunkte (/api/v1/geraet/*) für Maschinen wie
+  ///    den eMix1500. BEWUSST OHNE Marke-Zwang: Der Mischer steht beim Kunden
+  ///    des Geräts, nicht beim Marke-Mitglied. Er liest ausschließlich
+  ///    Stammdaten, die auf den Produktseiten ohnehin öffentlich stehen.
+  kind        ApiKeyKind @default(PLATTFORM)
+  /// Freitext zur Zuordnung, z. B. Seriennummer des Mischers.
+  geraetLabel String?
+  createdAt   DateTime   @default(now())
+  lastUsedAt  DateTime?
+  revokedAt   DateTime?
 
   @@index([userId])
+}
+
+enum ApiKeyKind {
+  PLATTFORM
+  GERAET
 }
 
 /**

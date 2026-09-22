@@ -22,7 +22,7 @@ import {
   packagePriceEur,
 } from "@/lib/credits";
 import { currencyForUser, convertCurrency, formatCurrency } from "@/lib/currency";
-import { CreditCard, ShieldCheck, Lock, Coins, Gift, Clock, Ticket, ScrollText, Store, KeyRound } from "lucide-react";
+import { CreditCard, ShieldCheck, Lock, Coins, Gift, Clock, Ticket, ScrollText, Store, KeyRound, Cpu } from "lucide-react";
 import { ApiKeyManager } from "@/components/ApiKeyManager";
 
 export const metadata = { title: "Mitgliedschaft & Kosten — Brisco Marketplace" };
@@ -268,6 +268,25 @@ export default async function MembershipPage() {
           <ApiKeyManager />
         </div>
       )}
+
+      {/* Geräte-Anbindung (eMix1500 & Co.) — bewusst für jedes Konto, nicht nur Marke */}
+      <div className="card space-y-3">
+        <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+          <Cpu size={18} className="text-brand-600" />
+          Maschinen anbinden (eMix1500)
+        </div>
+        <p className="text-sm text-slate-600">
+          Dein Mischer holt sich die Daten zum eingestellten Kühlschmierstoff direkt hier:
+          den Umrechnungsfaktor Brix → Konzentration, das Sollfenster, die pH-Werte und die
+          Vorgaben zur Wasserhärte. Du musst nichts mehr von Hand eintippen — und wenn ein
+          Hersteller seine Angaben ändert, zieht die Maschine nach. Lege je Gerät einen
+          eigenen Schlüssel an, dann kannst du ihn einzeln widerrufen.{" "}
+          <Link href="/api-doku#geraete" className="font-medium text-brand-700 hover:underline">
+            Anleitung für Techniker →
+          </Link>
+        </p>
+        <ApiKeyManager art="GERAET" />
+      </div>
 
       {/* Käuferschutz als Verkäufer anbieten */}
       <div className="card space-y-3">

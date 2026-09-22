@@ -1,8 +1,16 @@
 /**
  * Selbstverwaltung der API-Schlüssel (Mitgliedschaftsseite).
  *
- * Anlegen nur mit aktiver Marke-Stufe; Widerruf jederzeit. Der Klartext-
- * Schlüssel wird genau EINMAL zurückgegeben und nirgends gespeichert.
+ * Zwei Arten (Betreiber 2026-09-22):
+ *  - PLATTFORM: voller Lesezugriff auf die Katalog-Endpunkte, nur mit aktiver
+ *    Marke-Stufe.
+ *  - GERAET: nur die Geräte-Endpunkte /api/v1/geraet/* für Maschinen wie den
+ *    eMix1500. Bewusst OHNE Marke-Zwang — der Mischer steht beim Werkstatt-
+ *    kunden, nicht bei einem Marke-Mitglied, und liest nur Daten, die ohnehin
+ *    auf jeder Produktseite stehen.
+ *
+ * Widerruf jederzeit. Der Klartext-Schlüssel wird genau EINMAL zurückgegeben
+ * und nirgends gespeichert.
  */
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
@@ -12,13 +20,23 @@ import { generateApiKey, hashApiKey } from "@/lib/api-auth";
 import { activeTier } from "@/lib/membership-tiers";
 
 const MAX_SCHLUESSEL = 5;
+/** Eine Werkstatt kann mehrere Mischer haben — je Gerät ein eigener Schlüssel. */
+const MAX_GERAETE = 25;
 
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return NextResponse.json({ error: "Nicht angemeldet." }, { status: 401 });
   const keys = await prisma.apiKey.findMany({
     where: { userId: session.user.id, revokedAt: null },
-    select: { id: true, name: true, prefix: true, createdAt: true, lastUsedAt: true },
+    select: {
+      id: true,
+      name: true,
+      prefix: true,
+      createdAt: true,
+      lastUsedAt: true,
+      kind: true,
+      geraetLabel: true,
+    },
     orderBy: { createdAt: "desc" },
   });
   return NextResponse.json({ keys });
@@ -35,25 +53,39 @@ export async function POST(req: Request) {
   if (!user || user.blockedAt) {
     return NextResponse.json({ error: "Konto gesperrt." }, { status: 403 });
   }
-  if (activeTier(user) !== "MARKE") {
+  const body = (await req.json().catch(() => null)) as
+    | { name?: string; kind?: string; geraetLabel?: string }
+    | null;
+  const geraet = body?.kind === "GERAET";
+
+  // Nur der volle Plattform-Zugang verlangt die Marke-Stufe. Ein Geräte-
+  // Schlüssel darf jedes Konto anlegen — sonst könnte ein eMix-Besitzer seinen
+  // eigenen Mischer nicht anbinden.
+  if (!geraet && activeTier(user) !== "MARKE") {
     return NextResponse.json(
       { error: "API-Schlüssel stehen nur Konten mit aktiver Marke-Stufe offen." },
       { status: 403 },
     );
   }
 
+  const grenze = geraet ? MAX_GERAETE : MAX_SCHLUESSEL;
   const anzahl = await prisma.apiKey.count({
-    where: { userId: session.user.id, revokedAt: null },
+    where: {
+      userId: session.user.id,
+      revokedAt: null,
+      kind: geraet ? "GERAET" : "PLATTFORM",
+    },
   });
-  if (anzahl >= MAX_SCHLUESSEL) {
+  if (anzahl >= grenze) {
     return NextResponse.json(
-      { error: `Maximal ${MAX_SCHLUESSEL} aktive Schlüssel — widerrufe zuerst einen.` },
+      { error: `Maximal ${grenze} aktive Schlüssel dieser Art — widerrufe zuerst einen.` },
       { status: 409 },
     );
   }
 
-  const body = (await req.json().catch(() => null)) as { name?: string } | null;
-  const name = (body?.name ?? "").trim().slice(0, 60) || "API-Schlüssel";
+  const name =
+    (body?.name ?? "").trim().slice(0, 60) || (geraet ? "Geräte-Schlüssel" : "API-Schlüssel");
+  const geraetLabel = (body?.geraetLabel ?? "").trim().slice(0, 80) || null;
 
   const klartext = generateApiKey();
   const key = await prisma.apiKey.create({
@@ -62,8 +94,10 @@ export async function POST(req: Request) {
       name,
       keyHash: hashApiKey(klartext),
       prefix: klartext.slice(0, 12),
+      kind: geraet ? "GERAET" : "PLATTFORM",
+      geraetLabel: geraet ? geraetLabel : null,
     },
-    select: { id: true, name: true, prefix: true, createdAt: true },
+    select: { id: true, name: true, prefix: true, createdAt: true, kind: true, geraetLabel: true },
   });
   // Klartext genau einmal — danach existiert nur noch der Hash.
   return NextResponse.json({ ...key, schluessel: klartext }, { status: 201 });
