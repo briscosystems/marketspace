@@ -12,6 +12,7 @@ import { createHash, randomBytes } from "crypto";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { activeTier } from "@/lib/membership-tiers";
+import { drossel, DROSSEL_GRENZE } from "@/lib/geraet-drossel";
 
 export function generateApiKey(): string {
   return "brisco_" + randomBytes(24).toString("hex");
@@ -53,6 +54,7 @@ export async function apiAuth(req: Request): Promise<ApiAuthErgebnis> {
     where: { keyHash: hashApiKey(m[1]) },
     select: {
       id: true,
+      kind: true,
       revokedAt: true,
       user: {
         select: {
@@ -69,6 +71,17 @@ export async function apiAuth(req: Request): Promise<ApiAuthErgebnis> {
   }
   if (key.user.blockedAt) {
     return fehler(403, "account_blocked", "Dieses Konto ist gesperrt.");
+  }
+  // Ein Geräte-Schlüssel darf NUR an die Geräte-Endpunkte. Er steckt in einer
+  // Maschine in der Werkstatt, wo ihn jeder auslesen kann — damit darf man
+  // weder den vollen Katalog abziehen noch KI-Aufrufe auslösen, die Credits
+  // kosten. Auch dann nicht, wenn der Besitzer die Marke-Stufe hat.
+  if (key.kind === "GERAET") {
+    return fehler(
+      403,
+      "wrong_key_kind",
+      "Das ist ein Geräte-Schlüssel. Er gilt nur für /api/v1/geraet/… — für den vollen Zugang bitte einen Plattform-Schlüssel anlegen.",
+    );
   }
   const tier = activeTier({
     membershipTier: key.user.membershipTier,
@@ -150,6 +163,23 @@ export async function apiAuthGeraet(req: Request): Promise<ApiAuthErgebnis> {
         "Dieser Schlüssel gehört zu einem Konto ohne aktive Marke-Stufe. Für Maschinen bitte einen Geräte-Schlüssel anlegen.",
       );
     }
+  }
+
+  // Drossel: schützt die Datenbank vor einem Gerät, das im Sekundentakt fragt.
+  const takt = drossel(key.id);
+  if (!takt.erlaubt) {
+    return {
+      ok: false,
+      response: NextResponse.json(
+        {
+          error: {
+            code: "rate_limited",
+            message: `Zu viele Aufrufe. Erlaubt sind ${DROSSEL_GRENZE} pro Minute je Schlüssel — in ${takt.wartenSekunden} Sekunden geht es weiter.`,
+          },
+        },
+        { status: 429, headers: { "Retry-After": String(takt.wartenSekunden) } },
+      ),
+    };
   }
 
   prisma.apiKey

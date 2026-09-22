@@ -90,7 +90,17 @@ export default function ApiDokuPage() {
           zur Wasserhärte. Genau das liefern die Endpunkte unter{" "}
           <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs">/api/v1/geraet/</code>.
           Sie brauchen <strong>keine Marke-Stufe</strong> — es reicht ein Geräte-Schlüssel, den
-          jedes Konto unter Mitgliedschaft anlegen kann, am besten einen je Maschine.
+          jedes Konto unter Mitgliedschaft anlegen kann, am besten einen je Maschine. Die
+          vollständige Spezifikation für Techniker/Entwickler von Drittgeräten liegt als
+          eigenständiges Dokument bei:{" "}
+          <a
+            href="https://github.com/briscosystems/marketspace/blob/main/GERAETE_API.md"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-brand-700 hover:underline"
+          >
+            GERAETE_API.md →
+          </a>
         </p>
         <div className="rounded-xl bg-amber-50 p-3 text-sm text-amber-900 ring-1 ring-amber-200">
           <strong>Es wird nicht geraten.</strong> Passt der übergebene Name nicht eindeutig zu

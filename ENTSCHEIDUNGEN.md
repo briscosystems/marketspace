@@ -873,12 +873,26 @@ insbesondere den Umrechnungsfaktor Brix zu Konzentration. … Diese Plattform
 matcht den KSS-Typen, es kann sein, dass der Typ im eMix nicht genau erfasst
 ist. Ev. wäre eine Auswahlbox, wenn man den Hersteller eingibt, noch besser."
 
-Vier Endpunkte unter `/api/v1/geraet/` — [kss](app/api/v1/geraet/kss/route.ts)
-(Typ erkennen), [hersteller](app/api/v1/geraet/hersteller/route.ts),
+Fünf Endpunkte unter `/api/v1/geraet/` — [status](app/api/v1/geraet/status/route.ts)
+(Verbindungstest), [kss](app/api/v1/geraet/kss/route.ts) (Typ erkennen),
+[hersteller](app/api/v1/geraet/hersteller/route.ts),
 [produkte](app/api/v1/geraet/produkte/route.ts) und
 [kss/{id}](app/api/v1/geraet/kss/[id]/route.ts). Logik in
-[lib/kss-matching.ts](lib/kss-matching.ts) und
-[lib/kss-geraet.ts](lib/kss-geraet.ts).
+[lib/kss-matching.ts](lib/kss-matching.ts), [lib/kss-geraet.ts](lib/kss-geraet.ts)
+und [lib/geraet-drossel.ts](lib/geraet-drossel.ts) (60 Aufrufe/Minute je
+Schlüssel). Eigenständige Spezifikation für Dritte:
+[GERAETE_API.md](GERAETE_API.md) — verlinkt aus der In-App-Doku
+`/api-doku`.
+
+**Nachträglich ergänzt (2026-09-22, gleicher Tag):** Beim Schreiben der
+Spezifikation fiel auf, dass `apiAuth()` (Plattform-Endpunkte) die
+Schlüsselart nie prüfte — ein Geräte-Schlüssel eines Marke-Mitglieds hätte
+also auch den vollen Katalog- und KI-Zugang bekommen. Jetzt weist
+`apiAuth()` Geräte-Schlüssel mit `403 wrong_key_kind` zurück; nur
+`apiAuthGeraet()` lässt sie durch. Zusätzlich eine einfache
+In-Memory-Drossel (60/Min. je Schlüssel), weil die Typ-Erkennung im
+ungünstigsten Fall den halben Katalog lädt und ein fehlerhaftes Gerät die
+Datenbank sonst unnötig belasten könnte.
 
 | Entscheidung | Begründung |
 |---|---|
